@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daftar - Click2Pay</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<style>
+:root{
+    --primary:#3b82f6;
+    --primary2:#2563eb;
+    --bg-light:#f1f5f9;
+    --bg-dark:#020617;
+    --card-light:rgba(255,255,255,0.7);
+    --card-dark:rgba(15,23,42,0.7);
+    --text-light:#0f172a;
+    --text-dark:#f1f5f9;
+}
+
+/* BASE */
+body{
+    margin:0;
+    font-family:"Poppins",sans-serif;
+    transition:0.3s;
+    overflow-x:hidden;
+}
+
+body.light{
+    background:linear-gradient(135deg,#dbeafe,#eff6ff);
+    color:var(--text-light);
+}
+
+body.dark{
+    background:linear-gradient(135deg,#020617,#0f172a);
+    color:var(--text-dark);
+}
+
+/* NAVBAR */
+.navbar{
+    padding:15px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:linear-gradient(90deg,var(--primary),var(--primary2));
+    color:white;
+    position:sticky;
+    top:0;
+}
+
+.navbar a{
+    color:white;
+    text-decoration:none;
+    font-size:14px;
+    background:rgba(255,255,255,0.2);
+    padding:6px 12px;
+    border-radius:8px;
+    transition:0.3s;
+}
+
+.navbar a:hover{
+    background:white;
+    color:#2563eb;
+}
+
+/* CONTAINER */
+.container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:90vh;
+    animation:fadeIn 0.8s ease;
+}
+
+/* CARD GLASS */
+.card{
+    width:100%;
+    max-width:400px;
+    padding:25px;
+    border-radius:18px;
+    backdrop-filter:blur(12px);
+    box-shadow:0 10px 40px rgba(0,0,0,0.15);
+    animation:slideUp 0.6s ease;
+}
+
+body.light .card{
+    background:var(--card-light);
+}
+
+body.dark .card{
+    background:var(--card-dark);
+}
+
+/* INPUT */
+.input-group{
+    margin-bottom:15px;
+}
+
+.input-group input{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    background:rgba(255,255,255,0.8);
+    outline:none;
+    transition:0.3s;
+}
+
+.input-group input:focus{
+    box-shadow:0 0 0 2px #3b82f6;
+}
+
+/* PASSWORD */
+.password-wrap{
+    position:relative;
+}
+
+.password-wrap span{
+    position:absolute;
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
+}
+
+/* BUTTON */
+.btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(90deg,var(--primary),var(--primary2));
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(59,130,246,0.4);
+}
+
+/* ALERT */
+.alert{
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:10px;
+    display:none;
+    animation:fadeIn 0.3s;
+}
+
+.alert.error{
+    background:#ef4444;
+    color:white;
+}
+
+.alert.success{
+    background:#10b981;
+    color:white;
+}
+
+/* FOOTER */
+.footer{
+    text-align:center;
+    padding:15px;
+    font-size:13px;
+    opacity:0.7;
+}
+
+/* ANIMATION */
+@keyframes fadeIn{
+    from{opacity:0}
+    to{opacity:1}
+}
+
+@keyframes slideUp{
+    from{transform:translateY(30px);opacity:0}
+    to{transform:translateY(0);opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <h1>Click2Pay</h1>
+    <a href="/index.html">Beranda</a>
+</div>
+
+<div class="container">
+    <div class="card">
+
+        <h2>Daftar</h2>
+
+        <div id="alert" class="alert"></div>
+
+        <form id="registerForm">
+
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Username" required>
+            </div>
+
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Email" required>
+            </div>
+
+            <div class="input-group password-wrap">
+                <input type="password" id="password" placeholder="Password" required>
+                <span onclick="togglePass('password')">👁</span>
+            </div>
+
+            <div class="input-group password-wrap">
+                <input type="password" id="confirm" placeholder="Konfirmasi Password" required>
+                <span onclick="togglePass('confirm')">👁</span>
+            </div>
+
+            <div class="cf-turnstile" data-sitekey="ISI_SITE_KEY_KAMU"></div>
+
+            <br>
+
+            <button class="btn">Daftar</button>
+
+        </form>
+
+        <p style="text-align:center;margin-top:10px;">
+            Sudah punya akun? <a href="/login.html">Masuk</a>
+        </p>
+
+    </div>
+</div>
+
+<div class="footer">
+    © 2026 Click2Pay
+</div>
+
+<script>
+// AUTO THEME
+const hour = new Date().getHours();
+document.body.classList.add(hour >= 6 && hour < 18 ? "light" : "dark");
+
+// TOGGLE PASSWORD
+function togglePass(id){
+    const input = document.getElementById(id);
+    input.type = input.type === "password" ? "text" : "password";
+}
+
+// ALERT
+function showAlert(msg,type){
+    const alert = document.getElementById("alert");
+    alert.innerText = msg;
+    alert.className = "alert " + type;
+    alert.style.display = "block";
+}
+
+// SIMULASI DB
+let users = [];
+
+// REGISTER
+document.getElementById("registerForm").addEventListener("submit",function(e){
+    e.preventDefault();
+
+    let u = username.value;
+    let e1 = email.value;
+    let p = password.value;
+    let c = confirm.value;
+
+    if(p !== c){
+        return showAlert("Password tidak sama!", "error");
+    }
+
+    let exists = users.find(x => x.username === u || x.email === e1);
+
+    if(exists){
+        return showAlert("Username atau Email sudah digunakan!", "error");
+    }
+
+    users.push({username:u,email:e1,password:p});
+
+    showAlert("Berhasil daftar!", "success");
+});
+</script>
+
+</body>
+</html>
