@@ -1,287 +1,230 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>Daftar - Click2Pay</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
-:root{
-    --primary:#3b82f6;
-    --primary2:#2563eb;
-    --bg-light:#f1f5f9;
-    --bg-dark:#020617;
-    --card-light:rgba(255,255,255,0.7);
-    --card-dark:rgba(15,23,42,0.7);
-    --text-light:#0f172a;
-    --text-dark:#f1f5f9;
-}
-
-/* BASE */
 body{
-    margin:0;
-    font-family:"Poppins",sans-serif;
-    transition:0.3s;
-    overflow-x:hidden;
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#0d6efd,#081b5f);
+    min-height:100vh;
 }
 
-body.light{
-    background:linear-gradient(135deg,#dbeafe,#eff6ff);
-    color:var(--text-light);
-}
-
-body.dark{
-    background:linear-gradient(135deg,#020617,#0f172a);
-    color:var(--text-dark);
-}
-
-/* NAVBAR */
-.navbar{
-    padding:15px 25px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:linear-gradient(90deg,var(--primary),var(--primary2));
+/* CARD */
+.register-card{
+    backdrop-filter:blur(15px);
+    background:rgba(255,255,255,0.08);
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
     color:white;
-    position:sticky;
-    top:0;
-}
-
-.navbar a{
-    color:white;
-    text-decoration:none;
-    font-size:14px;
-    background:rgba(255,255,255,0.2);
-    padding:6px 12px;
-    border-radius:8px;
-    transition:0.3s;
-}
-
-.navbar a:hover{
-    background:white;
-    color:#2563eb;
-}
-
-/* CONTAINER */
-.container{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:90vh;
-    animation:fadeIn 0.8s ease;
-}
-
-/* CARD GLASS */
-.card{
-    width:100%;
-    max-width:400px;
-    padding:25px;
-    border-radius:18px;
-    backdrop-filter:blur(12px);
-    box-shadow:0 10px 40px rgba(0,0,0,0.15);
-    animation:slideUp 0.6s ease;
-}
-
-body.light .card{
-    background:var(--card-light);
-}
-
-body.dark .card{
-    background:var(--card-dark);
 }
 
 /* INPUT */
-.input-group{
-    margin-bottom:15px;
-}
-
-.input-group input{
-    width:100%;
+.form-control{
+    border-radius:12px;
     padding:12px;
-    border-radius:10px;
-    border:none;
-    background:rgba(255,255,255,0.8);
-    outline:none;
-    transition:0.3s;
 }
 
-.input-group input:focus{
-    box-shadow:0 0 0 2px #3b82f6;
-}
-
-/* PASSWORD */
-.password-wrap{
-    position:relative;
-}
-
-.password-wrap span{
-    position:absolute;
-    right:10px;
-    top:50%;
-    transform:translateY(-50%);
-    cursor:pointer;
+.input-group-text{
+    border-radius:12px;
 }
 
 /* BUTTON */
-.btn{
-    width:100%;
+.btn-primary{
+    border-radius:30px;
     padding:12px;
-    border:none;
-    border-radius:12px;
-    background:linear-gradient(90deg,var(--primary),var(--primary2));
-    color:white;
-    font-weight:600;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-.btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 8px 20px rgba(59,130,246,0.4);
 }
 
 /* ALERT */
 .alert{
-    padding:10px;
-    border-radius:10px;
-    margin-bottom:10px;
     display:none;
-    animation:fadeIn 0.3s;
 }
 
-.alert.error{
-    background:#ef4444;
-    color:white;
-}
-
-.alert.success{
-    background:#10b981;
-    color:white;
-}
-
-/* FOOTER */
-.footer{
-    text-align:center;
-    padding:15px;
-    font-size:13px;
-    opacity:0.7;
-}
-
-/* ANIMATION */
-@keyframes fadeIn{
-    from{opacity:0}
-    to{opacity:1}
-}
-
-@keyframes slideUp{
-    from{transform:translateY(30px);opacity:0}
-    to{transform:translateY(0);opacity:1}
+/* NAVBAR FIX */
+.navbar{
+    background:rgba(0,0,0,0.3);
+    backdrop-filter:blur(10px);
 }
 </style>
+
 </head>
 
 <body>
 
-<!-- NAVBAR -->
-<div class="navbar">
-    <h1>Click2Pay</h1>
-    <a href="/index.html">Beranda</a>
-</div>
-
+<!-- NAVBAR (SAMA PERSIS STYLE INDEX) -->
+<nav class="navbar navbar-expand-lg fixed-top">
 <div class="container">
-    <div class="card">
 
-        <h2>Daftar</h2>
+<a class="navbar-brand fw-bold text-white" href="index.html">
+<i class="fa-solid fa-hand-pointer"></i> Click2Pay
+</a>
 
-        <div id="alert" class="alert"></div>
+<button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
+<i class="fa-solid fa-bars"></i>
+</button>
 
-        <form id="registerForm">
+<div class="collapse navbar-collapse" id="navbar">
+<ul class="navbar-nav ms-auto align-items-lg-center">
 
-            <div class="input-group">
-                <input type="text" id="username" placeholder="Username" required>
-            </div>
+<li class="nav-item">
+<a class="nav-link text-white" href="index.html">
+<i class="fa-solid fa-house"></i> Beranda
+</a>
+</li>
 
-            <div class="input-group">
-                <input type="email" id="email" placeholder="Email" required>
-            </div>
+<li class="nav-item">
+<a class="btn btn-outline-light rounded-pill ms-lg-3" href="login.html">
+<i class="fa-solid fa-right-to-bracket"></i> Masuk
+</a>
+</li>
 
-            <div class="input-group password-wrap">
-                <input type="password" id="password" placeholder="Password" required>
-                <span onclick="togglePass('password')">👁</span>
-            </div>
-
-            <div class="input-group password-wrap">
-                <input type="password" id="confirm" placeholder="Konfirmasi Password" required>
-                <span onclick="togglePass('confirm')">👁</span>
-            </div>
-
-            <div class="cf-turnstile" data-sitekey="ISI_SITE_KEY_KAMU"></div>
-
-            <br>
-
-            <button class="btn">Daftar</button>
-
-        </form>
-
-        <p style="text-align:center;margin-top:10px;">
-            Sudah punya akun? <a href="/login.html">Masuk</a>
-        </p>
-
-    </div>
+</ul>
 </div>
 
-<div class="footer">
-    © 2026 Click2Pay
 </div>
+</nav>
+
+<!-- CONTENT -->
+<div class="container d-flex justify-content-center align-items-center" style="min-height:100vh;">
+
+<div class="col-lg-5 col-md-7" data-aos="zoom-in">
+
+<div class="register-card">
+
+<h3 class="fw-bold mb-3 text-center">
+<i class="fa-solid fa-user-plus"></i> Daftar Akun
+</h3>
+
+<div id="alert" class="alert"></div>
+
+<form id="registerForm">
+
+<!-- USERNAME -->
+<div class="mb-3">
+<label class="form-label">Username</label>
+<div class="input-group">
+<span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+<input type="text" id="username" class="form-control" required>
+</div>
+</div>
+
+<!-- EMAIL -->
+<div class="mb-3">
+<label class="form-label">Email</label>
+<div class="input-group">
+<span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+<input type="email" id="email" class="form-control" required>
+</div>
+</div>
+
+<!-- PASSWORD -->
+<div class="mb-3">
+<label class="form-label">Password</label>
+<div class="input-group">
+<span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+<input type="password" id="password" class="form-control" required>
+<span class="input-group-text" onclick="togglePass('password')" style="cursor:pointer;">
+<i class="fa-solid fa-eye"></i>
+</span>
+</div>
+</div>
+
+<!-- CONFIRM -->
+<div class="mb-3">
+<label class="form-label">Konfirmasi Password</label>
+<div class="input-group">
+<span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+<input type="password" id="confirm" class="form-control" required>
+<span class="input-group-text" onclick="togglePass('confirm')" style="cursor:pointer;">
+<i class="fa-solid fa-eye"></i>
+</span>
+</div>
+</div>
+
+<!-- CLOUDFLARE -->
+<div class="mb-3">
+<div class="cf-turnstile" data-sitekey="ISI_SITE_KEY_KAMU"></div>
+</div>
+
+<!-- BUTTON -->
+<button class="btn btn-primary w-100">
+<i class="fa-solid fa-user-plus"></i> Daftar
+</button>
+
+</form>
+
+<p class="text-center mt-3">
+Sudah punya akun?
+<a href="login.html" class="text-warning">Masuk</a>
+</p>
+
+</div>
+
+</div>
+</div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
 <script>
-// AUTO THEME
-const hour = new Date().getHours();
-document.body.classList.add(hour >= 6 && hour < 18 ? "light" : "dark");
+AOS.init();
 
-// TOGGLE PASSWORD
+// SHOW PASSWORD
 function togglePass(id){
-    const input = document.getElementById(id);
+    let input = document.getElementById(id);
     input.type = input.type === "password" ? "text" : "password";
 }
 
 // ALERT
 function showAlert(msg,type){
-    const alert = document.getElementById("alert");
-    alert.innerText = msg;
-    alert.className = "alert " + type;
-    alert.style.display = "block";
+    let alert = document.getElementById("alert");
+    alert.style.display="block";
+    alert.className="alert alert-"+type;
+    alert.innerHTML=msg;
 }
 
 // SIMULASI DB
-let users = [];
+let users=[];
 
 // REGISTER
 document.getElementById("registerForm").addEventListener("submit",function(e){
     e.preventDefault();
 
-    let u = username.value;
-    let e1 = email.value;
-    let p = password.value;
-    let c = confirm.value;
+    let u=username.value;
+    let e1=email.value;
+    let p=password.value;
+    let c=confirm.value;
 
-    if(p !== c){
-        return showAlert("Password tidak sama!", "error");
+    if(p!==c){
+        return showAlert("❌ Password tidak sama","danger");
     }
 
-    let exists = users.find(x => x.username === u || x.email === e1);
+    let exists=users.find(x=>x.username===u||x.email===e1);
 
     if(exists){
-        return showAlert("Username atau Email sudah digunakan!", "error");
+        return showAlert("⚠️ Username atau Email sudah digunakan","danger");
     }
 
     users.push({username:u,email:e1,password:p});
 
-    showAlert("Berhasil daftar!", "success");
+    showAlert("✅ Berhasil daftar!","success");
 });
 </script>
 
