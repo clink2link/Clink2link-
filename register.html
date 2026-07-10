@@ -608,75 +608,91 @@ Platform shortlink modern dengan sistem pembayaran aman.
 <script>
 
 
+const SUPABASE_URL = "MASUKKAN_SUPABASE_URL_KAMU";
+const SUPABASE_KEY = "MASUKKAN_SUPABASE_ANON_KEY_KAMU";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+
 function togglePass(id){
 
-let input=document.getElementById(id);
+    let input=document.getElementById(id);
 
-input.type =
-input.type==="password"
-?"text"
-:"password";
+    input.type =
+    input.type === "password"
+    ? "text"
+    : "password";
 
 }
-
 
 
 
 function showAlert(message,type){
 
-let alertBox=document.getElementById("alert");
+    let alertBox=document.getElementById("alert");
 
+    alertBox.className=
+    "alert alert-"+type;
 
-alertBox.className=
-"alert alert-"+type;
+    alertBox.classList.remove("d-none");
 
-
-alertBox.innerHTML=message;
-
+    alertBox.innerHTML=message;
 
 }
 
-
-
-
-let users=[];
 
 
 
 
 document
 .getElementById("registerForm")
-.addEventListener("submit",function(e){
+.addEventListener("submit",async function(e){
 
 
 e.preventDefault();
 
 
 
-let username=
-document.getElementById("username").value;
+let username =
+document.getElementById("username").value.trim();
 
 
-let email=
-document.getElementById("email").value;
+let email =
+document.getElementById("email").value.trim();
 
 
-let password=
+let password =
 document.getElementById("password").value;
 
 
-let confirm=
+let confirm =
 document.getElementById("confirm").value;
 
 
 
 
-if(password!==confirm){
+if(password !== confirm){
 
-return showAlert(
-"❌ Password tidak sama",
-"danger"
-);
+    return showAlert(
+        "❌ Password tidak sama",
+        "danger"
+    );
+
+}
+
+
+
+
+if(password.length < 6){
+
+    return showAlert(
+        "⚠️ Password minimal 6 karakter",
+        "warning"
+    );
 
 }
 
@@ -684,56 +700,90 @@ return showAlert(
 
 
 
-let exists=users.find(
-x=>x.username===username ||
-x.email===email
-);
+try{
+
+
+// cek username/email
+
+let {data:exist} = await supabaseClient
+.from("users")
+.select("id")
+.or(`username.eq.${username},email.eq.${email}`)
+.single();
 
 
 
-if(exists){
+if(exist){
 
-return showAlert(
-"⚠️ Username atau email sudah digunakan",
-"danger"
-);
+    return showAlert(
+        "⚠️ Username atau email sudah digunakan",
+        "danger"
+    );
 
 }
 
 
 
 
-users.push({
+// hash password nanti pindah backend
+let {error} = await supabaseClient
+.from("users")
+.insert({
 
-username,
-email,
-password
+    username:username,
+
+    email:email,
+
+    password_hash:password
 
 });
 
 
 
+if(error){
+
+    throw error;
+
+}
+
+
+
+
 showAlert(
-"✅ Akun berhasil dibuat",
-"success"
+    "✅ Akun berhasil dibuat",
+    "success"
 );
 
 
 
 setTimeout(()=>{
 
-window.location.href="login.html";
+    window.location.href="login.html";
 
 },1000);
 
 
 
+
+}catch(err){
+
+
+console.log(err);
+
+
+showAlert(
+    "❌ Terjadi kesalahan server",
+    "danger"
+);
+
+
+}
+
+
+
 });
-
-
-
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 </body>
 </html>
