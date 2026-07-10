@@ -600,16 +600,10 @@ Platform shortlink modern dengan sistem pembayaran aman.
 
 </footer>
 
-
-
-
-
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-
-
-const SUPABASE_URL = "MASUKKAN_SUPABASE_URL_KAMU";
-const SUPABASE_KEY = "MASUKKAN_SUPABASE_ANON_KEY_KAMU";
+const SUPABASE_URL = "https://qmrhxsrnvgvggwahufvp.supabase.co/rest/v1/";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtcmh4c3Judmd2Z2d3YWh1ZnZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzU5ODQsImV4cCI6MjA5OTI1MTk4NH0.gR5vX2-r7hG_vzEcEzPKTIhsOKWA9gNep3lfQcyk724";
 
 const supabaseClient = supabase.createClient(
     SUPABASE_URL,
@@ -685,8 +679,6 @@ if(password !== confirm){
 }
 
 
-
-
 if(password.length < 6){
 
     return showAlert(
@@ -750,19 +742,16 @@ if(error){
 
 
 showAlert(
-    "✅ Akun berhasil dibuat",
+    "✅ Pendaftaran berhasil! Silahkan masuk ke akun Anda...",
     "success"
 );
 
 
-
 setTimeout(()=>{
 
-    window.location.href="login.html";
+    window.location.href="login.html?registered=true";
 
-},1000);
-
-
+},2000);
 
 
 }catch(err){
@@ -783,7 +772,7 @@ showAlert(
 
 });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
 </body>
 </html>
