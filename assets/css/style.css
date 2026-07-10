@@ -1787,17 +1787,13 @@ footer::before{
    LAPTOP / DESKTOP
 ===================================================== */
 
-@media (992px - 1199px){
+@media (min-width:992px) and (max-width:1199px){
 
 .hero h1{
-
     font-size:52px;
-
 }
 
-
 }
-
 
 /* =====================================================
    TABLET MODE
@@ -2305,6 +2301,229 @@ body{
 body{
 
     background:white;
+
+}
+
+
+}
+
+/* =====================================================
+   CLICK2PAY FORCE LIGHT PREMIUM MODE
+   Disable Browser Dark Mode
+===================================================== */
+
+:root{
+    color-scheme:light;
+}
+
+
+html{
+
+    background:#ffffff !important;
+
+}
+
+
+
+body{
+
+    background:
+
+    linear-gradient(
+        180deg,
+        #ffffff,
+        #f8fafc
+    ) !important;
+
+    color:#172033 !important;
+
+}
+
+
+
+/* Prevent dark mode browser */
+
+@media (prefers-color-scheme: dark){
+
+    :root{
+
+        color-scheme:light;
+
+    }
+
+
+    body{
+
+        background:
+
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #f8fafc
+        ) !important;
+
+        color:#172033 !important;
+
+    }
+
+
+    .navbar{
+
+        background:
+
+        rgba(255,255,255,.85)!important;
+
+    }
+
+
+    .navbar-brand{
+
+        color:#111827!important;
+
+    }
+
+
+    .nav-link{
+
+        color:#344054!important;
+
+    }
+
+
+    .feature-card{
+
+        background:
+
+        rgba(255,255,255,.95)!important;
+
+        color:#172033!important;
+
+    }
+
+
+    .feature-card p,
+    .text-muted{
+
+        color:#667085!important;
+
+    }
+
+
+}
+
+
+
+/* =====================================================
+   MOBILE FINAL FIX
+===================================================== */
+
+
+@media(max-width:991px){
+
+
+.navbar-collapse{
+
+    background:#ffffff;
+
+    padding:20px;
+
+    border-radius:20px;
+
+    margin-top:15px;
+
+    box-shadow:
+
+    0 20px 50px rgba(0,0,0,.08);
+
+}
+
+
+.hero{
+
+    min-height:auto;
+
+    padding-top:120px;
+
+}
+
+
+
+.hero h1{
+
+    font-size:44px;
+
+}
+
+
+
+}
+
+
+
+@media(max-width:576px){
+
+
+.hero h1{
+
+    font-size:32px;
+
+}
+
+
+.hero p{
+
+    font-size:15px;
+
+}
+
+
+.hero .btn{
+
+    width:100%;
+
+    margin-bottom:12px;
+
+}
+
+
+.feature-card{
+
+    padding:22px;
+
+}
+
+
+.counter{
+
+    font-size:28px;
+
+}
+
+
+footer{
+
+    text-align:center;
+
+}
+
+
+}
+
+
+
+@media(min-width:1200px){
+
+
+.container{
+
+    max-width:1180px;
+
+}
+
+
+.hero h1{
+
+    font-size:64px;
 
 }
 
