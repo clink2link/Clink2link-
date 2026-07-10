@@ -599,6 +599,10 @@ Masuk ke dashboard Click2Pay Anda
 
 <div id="alert" class="alert"></div>
 
+<div id="registerSuccess" class="alert alert-success d-none">
+✅ Daftar berhasil! Silahkan login menggunakan akun Anda.
+</div>
+
 
 <form id="loginForm">
 
@@ -942,7 +946,15 @@ showAlert(
 }
 
 
+const params = new URLSearchParams(window.location.search);
 
+if(params.get("registered") === "true"){
+
+    document
+    .getElementById("registerSuccess")
+    .classList.remove("d-none");
+
+}
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
