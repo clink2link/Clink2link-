@@ -18,129 +18,478 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
-/* ================= ROOT AUTO THEME ================= */
+/* =====================================================
+   CLICK2PAY REGISTER PREMIUM STYLE
+   SAME AS INDEX LANDING PAGE
+===================================================== */
+
 :root{
-    --bg:#f1f5f9;
-    --text:#0f172a;
-    --card:#ffffff;
-    --navbar:rgba(255,255,255,0.75);
-    --input-bg:#f8fafc;
-    --border:#e2e8f0;
+
     --primary:#0d6efd;
+    --primary-dark:#084298;
+    --secondary:#081b5f;
+
+    --dark:#07101f;
+    --text:#172033;
+    --muted:#667085;
+
+    --bg:#f8fafc;
+    --white:#ffffff;
+
+    --radius:22px;
+
+    --shadow:
+    0 20px 60px rgba(0,0,0,.08);
+
+    --shadow-hover:
+    0 30px 80px rgba(13,110,253,.18);
+
 }
 
-/* DARK MODE */
-@media (prefers-color-scheme: dark){
-    :root{
-        --bg:#020617;
-        --text:#ffffff;
-        --card:rgba(15,23,42,0.75);
-        --navbar:rgba(2,6,23,0.7);
-        --input-bg:rgba(255,255,255,0.05);
-        --border:rgba(255,255,255,0.08);
-        --primary:#3b82f6;
-    }
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-/* ================= BASE ================= */
+
 body{
+
     font-family:'Poppins',sans-serif;
-    background:var(--bg);
+
+    background:
+
+    linear-gradient(
+        180deg,
+        #ffffff,
+        #f8fafc
+    );
+
     color:var(--text);
+
+    overflow-x:hidden;
+
 }
+
 
 /* ================= NAVBAR ================= */
+
+
 .navbar{
-    background:var(--navbar);
-    backdrop-filter:blur(12px);
+
+    padding:18px 0;
+
+    background:
+
+    rgba(255,255,255,.75);
+
+    backdrop-filter:blur(18px);
+
+    -webkit-backdrop-filter:blur(18px);
+
+    border-bottom:
+
+    1px solid rgba(255,255,255,.5);
+
+    transition:.3s;
+
 }
 
-.navbar .nav-link,
-.navbar .navbar-brand{
-    color:var(--text) !important;
+
+.navbar-brand{
+
+    font-size:26px;
+
+    font-weight:800;
+
+    color:#111827;
+
 }
 
-/* FIX BUTTON NAV */
-.btn-outline-custom{
-    border:1px solid var(--primary);
+
+.navbar-brand i{
+
     color:var(--primary);
-    border-radius:30px;
+
+    margin-right:8px;
+
+    filter:
+
+    drop-shadow(
+        0 5px 15px rgba(13,110,253,.35)
+    );
+
 }
 
-.btn-outline-custom:hover{
-    background:var(--primary);
-    color:#fff;
+
+
+.nav-link{
+
+    color:#344054;
+
+    font-weight:500;
+
+    margin:0 8px;
+
 }
 
-/* ================= CONTENT ================= */
+
+
+.nav-link:hover{
+
+    color:var(--primary);
+
+}
+
+
+
+/* ================= PAGE ================= */
+
+
 .main-wrapper{
+
     min-height:100vh;
+
     display:flex;
+
     align-items:center;
-    justify-content:center;
-    padding-top:90px; /* biar gak ketutup navbar */
+
+    padding-top:120px;
+
+    padding-bottom:80px;
+
 }
 
-/* ================= CARD ================= */
+
+
+/* ================= REGISTER CARD ================= */
+
+
 .register-card{
-    background:var(--card);
-    border-radius:20px;
-    padding:30px;
-    border:1px solid var(--border);
-    box-shadow:0 15px 40px rgba(0,0,0,0.1);
-    backdrop-filter:blur(20px);
+
+    background:
+
+    rgba(255,255,255,.9);
+
+    border-radius:
+
+    var(--radius);
+
+    padding:40px;
+
+    border:
+
+    1px solid #eef2f7;
+
+    box-shadow:
+
+    var(--shadow);
+
+    transition:.35s;
+
+    position:relative;
+
+    overflow:hidden;
+
 }
+
+
+
+.register-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:
+
+    var(--shadow-hover);
+
+}
+
+
+
+.register-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:22px;
+
+    padding:1px;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        rgba(13,110,253,.35),
+        transparent
+    );
+
+    -webkit-mask:
+
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite:xor;
+
+    opacity:0;
+
+    transition:.3s;
+
+}
+
+
+.register-card:hover::after{
+
+    opacity:1;
+
+}
+
+
+
+/* ================= TITLE ================= */
+
+
+.register-card h3{
+
+    font-weight:800;
+
+}
+
+
+.register-card h3 i{
+
+    color:var(--primary);
+
+}
+
+
 
 /* ================= INPUT ================= */
-.form-control{
-    background:var(--input-bg);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:12px;
-    color:var(--text);
+
+
+.form-label{
+
+    font-weight:600;
+
 }
+
+
+
+.form-control{
+
+    border-radius:14px;
+
+    padding:14px 18px;
+
+    border:1px solid #e5e7eb;
+
+    background:#f8fafc;
+
+}
+
+
 
 .form-control:focus{
-    border-color:var(--primary);
-    box-shadow:0 0 0 3px rgba(13,110,253,0.15);
+
+    border-color:#0d6efd;
+
+    box-shadow:
+
+    0 0 0 .25rem rgba(13,110,253,.15);
+
 }
+
+
 
 .input-group-text{
-    background:var(--input-bg);
-    border:1px solid var(--border);
-    color:var(--text);
+
+    background:#f8fafc;
+
+    border:1px solid #e5e7eb;
+
+    color:#0d6efd;
+
 }
+
+
 
 /* ================= BUTTON ================= */
+
+
 .btn-primary{
-    background:var(--primary);
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #0d6efd,
+        #084298
+    );
+
     border:none;
-    border-radius:30px;
-    padding:12px;
-    font-weight:600;
+
+    border-radius:50px;
+
+    padding:15px;
+
+    font-weight:700;
+
+    position:relative;
+
+    overflow:hidden;
+
 }
+
+
+
+.btn-primary::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-100%;
+
+    width:100%;
+
+    height:100%;
+
+    background:
+
+    linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,.4),
+        transparent
+    );
+
+    transition:.5s;
+
+}
+
+
+
+.btn-primary:hover::before{
+
+    left:100%;
+
+}
+
+
 
 .btn-primary:hover{
-    opacity:0.9;
+
+    transform:translateY(-3px);
+
+    box-shadow:
+
+    0 15px 35px rgba(13,110,253,.35);
+
 }
 
-/* ================= LINK ================= */
-a{
-    color:var(--primary);
-    text-decoration:none;
-}
+
 
 /* ================= ALERT ================= */
+
+
 .alert{
-    display:none;
-    border-radius:12px;
+
+    border-radius:14px;
+
 }
 
+
+
+/* ================= LINK ================= */
+
+
+a{
+
+    color:var(--primary);
+
+    text-decoration:none;
+
+}
+
+
+
+/* ================= TURNSTILE ================= */
+
+
+.cf-turnstile{
+
+    transform:scale(.95);
+
+    transform-origin:center;
+
+}
+
+
+
 /* ================= MOBILE ================= */
-@media (max-width:768px){
-    .register-card{
-        padding:20px;
-    }
+
+
+@media(max-width:991px){
+
+
+.navbar{
+
+    background:white;
+
+}
+
+
+.navbar-nav{
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:20px;
+
+    box-shadow:
+
+    0 20px 50px rgba(0,0,0,.08);
+
+}
+
+
+}
+
+
+
+@media(max-width:576px){
+
+
+.main-wrapper{
+
+    padding-top:100px;
+
+}
+
+
+.register-card{
+
+    padding:25px;
+
+    border-radius:18px;
+
+}
+
+
+.navbar-brand{
+
+    font-size:22px;
+
+}
+
+
 }
 </style>
 
