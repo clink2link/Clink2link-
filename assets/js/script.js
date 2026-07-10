@@ -1,342 +1,838 @@
-/*==================================================
-  CLICK2PAY - assets/js/script.js
-==================================================*/
+/* =====================================================
+   CLICK2PAY PREMIUM JAVASCRIPT
+===================================================== */
 
-// ==============================
-// AOS
-// ==============================
-AOS.init({
-    duration:800,
-    once:true,
-    offset:80
+
+/* =====================================================
+   AOS INITIALIZATION
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    if(typeof AOS !== "undefined"){
+
+        AOS.init({
+
+            duration:800,
+
+            easing:"ease-out-cubic",
+
+            once:true,
+
+            offset:80
+
+        });
+
+    }
+
 });
 
-// ==============================
-// Navbar Shadow
-// ==============================
 
-const navbar=document.querySelector(".navbar");
+
+/* =====================================================
+   NAVBAR SCROLL EFFECT
+===================================================== */
+
+
+const navbar = document.querySelector(".navbar");
+
 
 window.addEventListener("scroll",()=>{
 
-if(window.scrollY>40){
 
-navbar.style.padding="10px 0";
-navbar.style.boxShadow="0 15px 35px rgba(0,0,0,.12)";
+    if(window.scrollY > 50){
 
-}else{
+        navbar.classList.add("scrolled");
 
-navbar.style.padding="18px 0";
-navbar.style.boxShadow="";
+    }
 
-}
+    else{
 
-});
+        navbar.classList.remove("scrolled");
 
-// ==============================
-// Counter
-// ==============================
+    }
 
-document.querySelectorAll(".counter").forEach(counter=>{
-
-const target=+counter.dataset.target;
-
-const speed=200;
-
-const update=()=>{
-
-const value=+counter.innerText.replace(/,/g,'');
-
-const inc=Math.ceil(target/speed);
-
-if(value<target){
-
-counter.innerText=(value+inc).toLocaleString();
-
-requestAnimationFrame(update);
-
-}else{
-
-counter.innerText=target.toLocaleString();
-
-}
-
-}
-
-update();
 
 });
 
-// ==============================
-// Scroll To Top
-// ==============================
 
-const topBtn=document.getElementById("topBtn");
 
-window.onscroll=function(){
+/* =====================================================
+   SMOOTH SCROLL NAVIGATION
+===================================================== */
 
-if(document.documentElement.scrollTop>350){
 
-topBtn.style.display="block";
+document.querySelectorAll('a[href^="#"]').forEach(link=>{
 
-}else{
 
-topBtn.style.display="none";
+    link.addEventListener("click",function(e){
 
-}
 
-};
+        const target =
+        document.querySelector(
+            this.getAttribute("href")
+        );
 
-topBtn.onclick=function(){
 
-window.scrollTo({
+        if(target){
 
-top:0,
+            e.preventDefault();
 
-behavior:"smooth"
 
-});
+            target.scrollIntoView({
 
-};
+                behavior:"smooth",
 
-// ==============================
-// Floating Snow
-// ==============================
+                block:"start"
 
-function createSnow(){
+            });
 
-const snow=document.createElement("span");
 
-snow.innerHTML="❄";
+        }
 
-snow.style.position="fixed";
 
-snow.style.left=Math.random()*100+"vw";
+    });
 
-snow.style.top="-30px";
-
-snow.style.color="white";
-
-snow.style.opacity=Math.random();
-
-snow.style.fontSize=(10+Math.random()*18)+"px";
-
-snow.style.pointerEvents="none";
-
-snow.style.zIndex="0";
-
-document.body.appendChild(snow);
-
-const duration=5000+Math.random()*5000;
-
-snow.animate([
-
-{
-
-transform:"translateY(-30px)"
-
-},
-
-{
-
-transform:"translateY(110vh)"
-
-}
-
-],{
-
-duration:duration,
-
-iterations:1
 
 });
 
-setTimeout(()=>{
 
-snow.remove();
 
-},duration);
+/* =====================================================
+   MOBILE MENU AUTO CLOSE
+===================================================== */
 
-}
 
-setInterval(createSnow,250);
+const navLinks =
+document.querySelectorAll(".navbar-nav .nav-link");
 
-// ==============================
-// Hero Floating Icon
-// ==============================
 
-const heroIcon=document.querySelector(".hero i");
+const navbarCollapse =
+document.querySelector(".navbar-collapse");
 
-if(heroIcon){
 
-setInterval(()=>{
+navLinks.forEach(link=>{
 
-heroIcon.animate([
 
-{
+    link.addEventListener("click",()=>{
 
-transform:"translateY(0)"
 
-},
+        if(
+        window.innerWidth < 992 &&
+        navbarCollapse.classList.contains("show")
+        ){
 
-{
+            new bootstrap.Collapse(
+                navbarCollapse
+            ).hide();
 
-transform:"translateY(-12px)"
+        }
 
-},
 
-{
+    });
 
-transform:"translateY(0)"
-
-}
-
-],{
-
-duration:3000
 
 });
 
-},3000);
+
+
+/* =====================================================
+   STATISTIC COUNTER
+===================================================== */
+
+
+const counters =
+document.querySelectorAll(".counter");
+
+
+let counterStarted=false;
+
+
+
+function startCounter(){
+
+
+    counters.forEach(counter=>{
+
+
+        let target =
+        counter.dataset.target;
+
+
+        let number =
+        parseInt(
+            target
+            .replace(/\D/g,"")
+        );
+
+
+        let suffix="";
+
+
+        if(target.includes("k")){
+
+            suffix="K";
+
+            number=number*1000;
+
+        }
+
+
+        if(target.includes("m")){
+
+            suffix="M";
+
+            number=number*1000000;
+
+        }
+
+
+        let current=0;
+
+
+        let increment =
+        number / 120;
+
+
+
+        let timer =
+        setInterval(()=>{
+
+
+            current += increment;
+
+
+            if(current >= number){
+
+                current=number;
+
+                clearInterval(timer);
+
+            }
+
+
+            if(number >= 1000000){
+
+                counter.innerHTML =
+                Math.floor(current/1000000)
+                +"M+";
+
+            }
+
+            else if(number >=1000){
+
+                counter.innerHTML =
+                Math.floor(current/1000)
+                +"K+";
+
+            }
+
+            else{
+
+                counter.innerHTML =
+                Math.floor(current)
+                +suffix;
+
+            }
+
+
+        },20);
+
+
+
+    });
+
 
 }
 
-// ==============================
-// Button Ripple
-// ==============================
 
-document.querySelectorAll(".btn").forEach(button=>{
 
-button.addEventListener("click",function(e){
+window.addEventListener("scroll",()=>{
 
-const ripple=document.createElement("span");
 
-const rect=this.getBoundingClientRect();
+    const statistic =
+    document.querySelector(".counter");
 
-const size=Math.max(rect.width,rect.height);
 
-ripple.style.width=size+"px";
+    if(!statistic)return;
 
-ripple.style.height=size+"px";
 
-ripple.style.left=e.clientX-rect.left-size/2+"px";
+    const position =
+    statistic.getBoundingClientRect()
+    .top;
 
-ripple.style.top=e.clientY-rect.top-size/2+"px";
+
+    if(
+    position <
+    window.innerHeight
+    &&
+    !counterStarted
+    ){
+
+        counterStarted=true;
+
+        startCounter();
+
+    }
+
+
+});
+
+
+
+/* =====================================================
+   BACK TO TOP
+===================================================== */
+
+
+const topBtn =
+document.getElementById("topBtn");
+
+
+window.addEventListener("scroll",()=>{
+
+
+    if(window.scrollY > 400){
+
+        topBtn.style.display="flex";
+
+        topBtn.style.alignItems="center";
+
+        topBtn.style.justifyContent="center";
+
+    }
+
+    else{
+
+        topBtn.style.display="none";
+
+    }
+
+
+});
+
+
+
+topBtn.addEventListener("click",()=>{
+
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
+
+    });
+
+
+});
+
+
+
+/* =====================================================
+   PARTICLES BACKGROUND
+===================================================== */
+
+
+if(
+typeof tsParticles !== "undefined"
+){
+
+
+tsParticles.load(
+"particles-js",
+{
+
+
+    fpsLimit:60,
+
+
+    particles:{
+
+
+        number:{
+
+
+            value:45
+
+
+        },
+
+
+        color:{
+
+
+            value:"#0d6efd"
+
+
+        },
+
+
+        links:{
+
+
+            enable:true,
+
+            distance:150,
+
+            opacity:.15
+
+
+        },
+
+
+        move:{
+
+
+            enable:true,
+
+            speed:1
+
+
+        },
+
+
+        size:{
+
+
+            value:3
+
+
+        }
+
+
+    },
+
+
+    interactivity:{
+
+
+        events:{
+
+
+            onHover:{
+
+
+                enable:true,
+
+                mode:"repulse"
+
+
+            }
+
+
+        }
+
+
+    },
+
+
+    background:{
+
+
+        color:"transparent"
+
+
+    }
+
+
+});
+
+
+}
+
+
+
+/* =====================================================
+   BUTTON RIPPLE EFFECT
+===================================================== */
+
+
+document.querySelectorAll(".btn")
+.forEach(button=>{
+
+
+button.addEventListener(
+"click",
+function(e){
+
+
+let ripple =
+document.createElement("span");
+
 
 ripple.style.position="absolute";
 
 ripple.style.borderRadius="50%";
 
-ripple.style.background="rgba(255,255,255,.45)";
-
 ripple.style.transform="scale(0)";
 
-ripple.style.animation="ripple .6s linear";
+ripple.style.background=
+"rgba(255,255,255,.5)";
 
-ripple.style.pointerEvents="none";
+ripple.style.width="120px";
+
+ripple.style.height="120px";
+
+ripple.style.left=
+e.offsetX-60+"px";
+
+ripple.style.top=
+e.offsetY-60+"px";
+
 
 this.appendChild(ripple);
+
 
 setTimeout(()=>{
 
 ripple.remove();
 
-},600);
+},500);
+
+
 
 });
 
-});
-
-// ==============================
-// Ripple Style
-// ==============================
-
-const style=document.createElement("style");
-
-style.innerHTML=`
-
-.btn{
-
-position:relative;
-
-overflow:hidden;
-
-}
-
-@keyframes ripple{
-
-to{
-
-transform:scale(4);
-
-opacity:0;
-
-}
-
-}
-
-`;
-
-document.head.appendChild(style);
-
-// ==============================
-// Active Menu
-// ==============================
-
-const sections=document.querySelectorAll("section");
-
-const navLinks=document.querySelectorAll(".nav-link");
-
-window.addEventListener("scroll",()=>{
-
-let current="";
-
-sections.forEach(section=>{
-
-const top=section.offsetTop-120;
-
-if(pageYOffset>=top){
-
-current=section.getAttribute("id");
-
-}
 
 });
 
-navLinks.forEach(link=>{
 
-link.classList.remove("active");
 
-if(link.getAttribute("href")==="#"+current){
+/* =====================================================
+   PAGE READY
+===================================================== */
 
-link.classList.add("active");
+
+window.addEventListener(
+"load",
+()=>{
+
+
+document.body.classList.add(
+"loaded"
+);
+
+
+});
+
+
+/* =====================================================
+   CLICK2PAY FINAL PERFORMANCE BOOST
+===================================================== */
+
+
+/* =====================================================
+   SAFE ELEMENT CHECK
+===================================================== */
+
+
+function exists(selector){
+
+    return document.querySelector(selector) !== null;
 
 }
 
+
+
+/* =====================================================
+   NAVBAR SHADOW ON SCROLL
+===================================================== */
+
+
+const nav = document.querySelector(".navbar");
+
+
+if(nav){
+
+
+window.addEventListener(
+"scroll",
+()=>{
+
+
+if(window.scrollY > 20){
+
+    nav.style.boxShadow =
+    "0 10px 40px rgba(0,0,0,.08)";
+
+}
+
+else{
+
+    nav.style.boxShadow="none";
+
+}
+
+
+},
+{
+passive:true
 });
 
+
+}
+
+
+
+/* =====================================================
+   LAZY LOAD IMAGE
+===================================================== */
+
+
+document
+.querySelectorAll("img")
+.forEach(img=>{
+
+
+img.setAttribute(
+"loading",
+"lazy"
+);
+
+
 });
 
-// ==============================
-// Random Glow Effect
-// ==============================
 
-setInterval(()=>{
 
-document.querySelectorAll(".feature-card").forEach(card=>{
+/* =====================================================
+   RIPPLE ANIMATION FIX
+===================================================== */
 
-card.style.boxShadow="0 10px 35px rgba(13,110,253,.15)";
+
+document
+.querySelectorAll(".btn")
+.forEach(btn=>{
+
+
+btn.style.position="relative";
+
+btn.style.overflow="hidden";
+
+
+btn.addEventListener(
+"click",
+function(e){
+
+
+let circle =
+document.createElement("span");
+
+
+let diameter =
+Math.max(
+this.clientWidth,
+this.clientHeight
+);
+
+
+circle.style.width =
+diameter+"px";
+
+
+circle.style.height =
+diameter+"px";
+
+
+circle.style.position="absolute";
+
+
+circle.style.borderRadius="50%";
+
+
+circle.style.background=
+"rgba(255,255,255,.35)";
+
+
+circle.style.left =
+e.offsetX -
+diameter/2 +"px";
+
+
+circle.style.top =
+e.offsetY -
+diameter/2 +"px";
+
+
+circle.style.transform =
+"scale(0)";
+
+
+circle.style.transition =
+"transform .5s, opacity .5s";
+
+
+this.appendChild(circle);
+
+
+
+requestAnimationFrame(()=>{
+
+circle.style.transform="scale(2)";
+
+circle.style.opacity="0";
+
+});
+
+
 
 setTimeout(()=>{
 
-card.style.boxShadow="";
+circle.remove();
 
-},800);
+},600);
+
+
 
 });
 
-},6000);
 
-// ==============================
-// END
-// ==============================
+});
+
+
+
+/* =====================================================
+   AUTO COPYRIGHT YEAR
+===================================================== */
+
+
+const year =
+document.querySelector(
+"footer p"
+);
+
+
+if(year){
+
+year.innerHTML =
+year.innerHTML.replace(
+"2026",
+new Date().getFullYear()
+);
+
+}
+
+
+
+/* =====================================================
+   DEVICE DETECTION
+===================================================== */
+
+
+const isMobile =
+window.matchMedia(
+"(max-width:768px)"
+).matches;
+
+
+if(isMobile){
+
+document.body.classList.add(
+"mobile-device"
+);
+
+}
+
+else{
+
+document.body.classList.add(
+"desktop-device"
+);
+
+}
+
+
+
+/* =====================================================
+   PREVENT EMPTY LINKS JUMP
+===================================================== */
+
+
+document
+.querySelectorAll('a[href="#"]')
+.forEach(link=>{
+
+
+link.addEventListener(
+"click",
+e=>{
+
+e.preventDefault();
+
+});
+
+
+});
+
+
+
+/* =====================================================
+   CONSOLE BRANDING
+===================================================== */
+
+
+console.log(
+"%c Click2Pay ",
+"background:#0d6efd;color:white;font-size:20px;padding:10px;border-radius:8px;"
+);
+
+
+console.log(
+"Premium Shortlink Platform"
+);
+
+
+
+/* =====================================================
+   OPTIMIZE SCROLL EVENTS
+===================================================== */
+
+
+let ticking=false;
+
+
+window.addEventListener(
+"scroll",
+()=>{
+
+
+if(!ticking){
+
+
+window.requestAnimationFrame(()=>{
+
+
+ticking=false;
+
+
+});
+
+
+ticking=true;
+
+
+}
+
+
+},
+{
+passive:true
+});
+
+
+
+/* =====================================================
+   ERROR HANDLER
+===================================================== */
+
+
+window.addEventListener(
+"error",
+function(e){
+
+console.warn(
+"Click2Pay Script:",
+e.message
+);
+
+});
