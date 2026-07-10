@@ -18,26 +18,65 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
+/* BASE */
 body{
     font-family:'Poppins',sans-serif;
-    background:linear-gradient(135deg,#0d6efd,#081b5f);
     min-height:100vh;
+    margin:0;
+    transition:0.3s;
+}
+
+/* 🌞 LIGHT MODE (SIANG) */
+@media (prefers-color-scheme: light){
+    body{
+        background:linear-gradient(135deg,#ffffff,#dbeafe);
+        color:#0f172a;
+    }
+
+    .register-card{
+        background:rgba(255,255,255,0.95);
+        color:#0f172a;
+        backdrop-filter:blur(10px);
+    }
+
+    .navbar{
+        background:rgba(255,255,255,0.85);
+        backdrop-filter:blur(10px);
+    }
+}
+
+/* 🌙 DARK MODE (MALAM) */
+@media (prefers-color-scheme: dark){
+    body{
+        background:linear-gradient(135deg,#0d6efd,#081b5f);
+        color:white;
+    }
+
+    .register-card{
+        background:rgba(255,255,255,0.08);
+        color:white;
+        backdrop-filter:blur(15px);
+    }
+
+    .navbar{
+        background:rgba(0,0,0,0.4);
+        backdrop-filter:blur(10px);
+    }
 }
 
 /* CARD */
 .register-card{
-    backdrop-filter:blur(15px);
-    background:rgba(255,255,255,0.08);
     border-radius:20px;
     padding:30px;
-    box-shadow:0 10px 40px rgba(0,0,0,0.3);
-    color:white;
+    box-shadow:0 10px 40px rgba(0,0,0,0.25);
+    width:100%;
 }
 
 /* INPUT */
 .form-control{
     border-radius:12px;
     padding:12px;
+    font-size:14px;
 }
 
 .input-group-text{
@@ -48,17 +87,37 @@ body{
 .btn-primary{
     border-radius:30px;
     padding:12px;
+    font-weight:600;
 }
 
 /* ALERT */
 .alert{
     display:none;
+    border-radius:12px;
+    font-size:14px;
 }
 
-/* NAVBAR FIX */
+/* NAVBAR */
 .navbar{
-    background:rgba(0,0,0,0.3);
-    backdrop-filter:blur(10px);
+    transition:0.3s;
+}
+
+/* RESPONSIVE FIX */
+@media (max-width:768px){
+    .register-card{
+        padding:20px;
+        border-radius:16px;
+    }
+
+    .form-control{
+        font-size:13px;
+        padding:10px;
+    }
+
+    .btn-primary{
+        padding:10px;
+        font-size:14px;
+    }
 }
 </style>
 
