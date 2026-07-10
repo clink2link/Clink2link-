@@ -18,91 +18,104 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
-/* BASE */
+/* ================= ROOT (AUTO THEME) ================= */
+:root{
+    --bg: linear-gradient(135deg,#ffffff,#dbeafe);
+    --text:#0f172a;
+    --card:rgba(255,255,255,0.95);
+    --navbar:rgba(255,255,255,0.85);
+    --input-bg:#ffffff;
+    --input-text:#0f172a;
+}
+
+/* DARK MODE */
+@media (prefers-color-scheme: dark){
+    :root{
+        --bg: linear-gradient(135deg,#0d6efd,#081b5f);
+        --text:#ffffff;
+        --card:rgba(255,255,255,0.08);
+        --navbar:rgba(0,0,0,0.4);
+        --input-bg:rgba(255,255,255,0.1);
+        --input-text:#ffffff;
+    }
+}
+
+/* ================= BASE ================= */
 body{
     font-family:'Poppins',sans-serif;
     min-height:100vh;
     margin:0;
+    background:var(--bg);
+    color:var(--text);
     transition:0.3s;
 }
 
-/* 🌞 LIGHT MODE (SIANG) */
-@media (prefers-color-scheme: light){
-    body{
-        background:linear-gradient(135deg,#ffffff,#dbeafe);
-        color:#0f172a;
-    }
-
-    .register-card{
-        background:rgba(255,255,255,0.95);
-        color:#0f172a;
-        backdrop-filter:blur(10px);
-    }
-
-    .navbar{
-        background:rgba(255,255,255,0.85);
-        backdrop-filter:blur(10px);
-    }
+/* ================= NAVBAR ================= */
+.navbar{
+    background:var(--navbar);
+    backdrop-filter:blur(10px);
 }
 
-/* 🌙 DARK MODE (MALAM) */
-@media (prefers-color-scheme: dark){
-    body{
-        background:linear-gradient(135deg,#0d6efd,#081b5f);
-        color:white;
-    }
-
-    .register-card{
-        background:rgba(255,255,255,0.08);
-        color:white;
-        backdrop-filter:blur(15px);
-    }
-
-    .navbar{
-        background:rgba(0,0,0,0.4);
-        backdrop-filter:blur(10px);
-    }
+.navbar .nav-link,
+.navbar .navbar-brand{
+    color:var(--text) !important;
 }
 
-/* CARD */
+/* ================= CARD ================= */
 .register-card{
     border-radius:20px;
     padding:30px;
+    background:var(--card);
+    backdrop-filter:blur(15px);
     box-shadow:0 10px 40px rgba(0,0,0,0.25);
     width:100%;
 }
 
-/* INPUT */
+/* ================= INPUT ================= */
 .form-control{
     border-radius:12px;
     padding:12px;
     font-size:14px;
+    background:var(--input-bg);
+    color:var(--input-text);
+    border:none;
+}
+
+.form-control::placeholder{
+    color:#94a3b8;
 }
 
 .input-group-text{
     border-radius:12px;
+    background:var(--input-bg);
+    color:var(--input-text);
+    border:none;
 }
 
-/* BUTTON */
+/* ================= BUTTON ================= */
 .btn-primary{
     border-radius:30px;
     padding:12px;
     font-weight:600;
 }
+.btn-outline-custom{
+    border:1px solid var(--text);
+    color:var(--text);
+}
 
-/* ALERT */
+.btn-outline-custom:hover{
+    background:var(--text);
+    color:#fff;
+}
+
+/* ================= ALERT ================= */
 .alert{
     display:none;
     border-radius:12px;
     font-size:14px;
 }
 
-/* NAVBAR */
-.navbar{
-    transition:0.3s;
-}
-
-/* RESPONSIVE FIX */
+/* ================= RESPONSIVE ================= */
 @media (max-width:768px){
     .register-card{
         padding:20px;
@@ -119,6 +132,15 @@ body{
         font-size:14px;
     }
 }
+.register-card{
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+@media (prefers-color-scheme: light){
+    .register-card{
+        border:1px solid rgba(0,0,0,0.05);
+    }
+}
 </style>
 
 </head>
@@ -129,11 +151,11 @@ body{
 <nav class="navbar navbar-expand-lg fixed-top">
 <div class="container">
 
-<a class="navbar-brand fw-bold text-white" href="index.html">
+<a class="navbar-brand fw-bold">
 <i class="fa-solid fa-hand-pointer"></i> Click2Pay
 </a>
 
-<button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
 <i class="fa-solid fa-bars"></i>
 </button>
 
@@ -141,13 +163,13 @@ body{
 <ul class="navbar-nav ms-auto align-items-lg-center">
 
 <li class="nav-item">
-<a class="nav-link text-white" href="index.html">
+<a class="nav-link" href="index.html">
 <i class="fa-solid fa-house"></i> Beranda
 </a>
 </li>
 
 <li class="nav-item">
-<a class="btn btn-outline-light rounded-pill ms-lg-3" href="login.html">
+<a class="btn btn-outline-custom rounded-pill ms-lg-3" href="login.html">
 <i class="fa-solid fa-right-to-bracket"></i> Masuk
 </a>
 </li>
@@ -260,22 +282,22 @@ function showAlert(msg,type){
 }
 
 // SIMULASI DB
-let users=[];
+let users = [];
 
 // REGISTER
 document.getElementById("registerForm").addEventListener("submit",function(e){
     e.preventDefault();
 
-    let u=username.value;
-    let e1=email.value;
-    let p=password.value;
-    let c=confirm.value;
+    let u = document.getElementById("username").value;
+    let e1 = document.getElementById("email").value;
+    let p = document.getElementById("password").value;
+    let c = document.getElementById("confirm").value;
 
     if(p!==c){
         return showAlert("❌ Password tidak sama","danger");
     }
 
-    let exists=users.find(x=>x.username===u||x.email===e1);
+    let exists = users.find(x=>x.username===u || x.email===e1);
 
     if(exists){
         return showAlert("⚠️ Username atau Email sudah digunakan","danger");
