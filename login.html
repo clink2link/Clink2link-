@@ -528,6 +528,19 @@ padding-top:100px;
 
 }
 
+.forgot-password {
+    display: block;
+    margin-top: 15px;
+    text-align: center;
+    color: #6366f1;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
 </style>
 
 </head>
@@ -675,6 +688,9 @@ class="fa-solid fa-eye"></i>
 
 
 </div>
+<a href="/forgot-password" class="forgot-password">
+    Lupa kata sandi?
+</a>
 
 <!-- CLOUDFLARE TURNSTILE -->
 
@@ -682,7 +698,7 @@ class="fa-solid fa-eye"></i>
 
 <div class="cf-turnstile"
 
-data-sitekey="ISI_SITE_KEY_KAMU">
+data-sitekey="0x4AAAAAADzUTDQBlFzW8Ch7">
 
 </div>
 
@@ -798,11 +814,9 @@ Bantuan
 </footer>
 
 
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-
-
-const SUPABASE_URL = "https://qmrhxsrnvgvggwahufvp.supabase.co/rest/v1/";
+const SUPABASE_URL = "https://qmrhxsrnvgvggwahufvp.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtcmh4c3Judmd2Z2d3YWh1ZnZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzU5ODQsImV4cCI6MjA5OTI1MTk4NH0.gR5vX2-r7hG_vzEcEzPKTIhsOKWA9gNep3lfQcyk724";
 
 const supabaseClient = supabase.createClient(
@@ -858,7 +872,11 @@ document.getElementById("loginUser").value.trim();
 let password =
 document.getElementById("loginPass").value;
 
+const token = document.querySelector('[name="cf-turnstile-response"]')?.value;
 
+if (!token) {
+    return showAlert("⚠️ Harap verifikasi captcha dulu!", "warning");
+}
 
 try{
 
@@ -957,7 +975,7 @@ if(params.get("registered") === "true"){
 }
 });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
 </body>
 
