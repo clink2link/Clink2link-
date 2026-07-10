@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Reset Password</title>
+</head>
+<body>
+
+<h2>Reset Password Click2Pay</h2>
+
+<input type="email" id="email" placeholder="Masukkan email">
+<br><br>
+
+<button onclick="kirim()">Kirim Reset</button>
+
+<script>
+function kirim() {
+  const email = document.getElementById("email").value;
+
+  fetch("https://qmrhxsrnvgvggwahufvp.supabase.co/functions/v1/send-reset-email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ email })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert("Response: " + JSON.stringify(data));
+  })
+  .catch(err => {
+    alert("Error: " + err);
+  });
+}
+</script>
+
+</body>
+</html>
