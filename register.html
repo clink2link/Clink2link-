@@ -1,667 +1,522 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Daftar - Click2Pay</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0d6efd">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
-/* =====================================================
-   CLICK2PAY REGISTER PREMIUM STYLE
-   SAME AS INDEX LANDING PAGE
-===================================================== */
-
 :root{
-
-    --primary:#0d6efd;
-    --primary-dark:#084298;
-    --secondary:#081b5f;
-
-    --dark:#07101f;
-    --text:#172033;
-    --muted:#667085;
-
-    --bg:#f8fafc;
-    --white:#ffffff;
-
-    --radius:22px;
-
-    --shadow:
-    0 20px 60px rgba(0,0,0,.08);
-
-    --shadow-hover:
-    0 30px 80px rgba(13,110,253,.18);
-
+--primary:#0d6efd;
+--primary-dark:#084298;
+--text:#172033;
+--muted:#667085;
+--bg:#f8fafc;
 }
-
 
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+box-sizing:border-box;
 }
-
 
 body{
-
-    font-family:'Poppins',sans-serif;
-
-    background:
-
-    linear-gradient(
-        180deg,
-        #ffffff,
-        #f8fafc
-    );
-
-    color:var(--text);
-
-    overflow-x:hidden;
-
+margin:0;
+font-family:'Poppins',sans-serif;
+background:
+radial-gradient(circle at top right,rgba(13,110,253,.15),transparent 35%),
+linear-gradient(180deg,#fff,#f8fafc);
+color:var(--text);
+min-height:100vh;
+display:flex;
+flex-direction:column;
 }
 
 
-/* ================= NAVBAR ================= */
-
+/* NAVBAR */
 
 .navbar{
-
-    padding:18px 0;
-
-    background:
-
-    rgba(255,255,255,.75);
-
-    backdrop-filter:blur(18px);
-
-    -webkit-backdrop-filter:blur(18px);
-
-    border-bottom:
-
-    1px solid rgba(255,255,255,.5);
-
-    transition:.3s;
-
+padding:15px 0;
+background:rgba(255,255,255,.8);
+backdrop-filter:blur(18px);
+border-bottom:1px solid #eee;
 }
-
 
 .navbar-brand{
-
-    font-size:26px;
-
-    font-weight:800;
-
-    color:#111827;
-
+font-size:23px;
+font-weight:800;
+color:#111827;
 }
-
 
 .navbar-brand i{
+color:var(--primary);
+margin-right:7px;
+}
 
-    color:var(--primary);
-
-    margin-right:8px;
-
-    filter:
-
-    drop-shadow(
-        0 5px 15px rgba(13,110,253,.35)
-    );
-
+.navbar .btn{
+border-radius:50px;
+padding:9px 20px;
+font-weight:600;
 }
 
 
+/* MAIN */
 
-.nav-link{
-
-    color:#344054;
-
-    font-weight:500;
-
-    margin:0 8px;
-
+.main{
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:100px 20px 40px;
 }
 
 
-
-.nav-link:hover{
-
-    color:var(--primary);
-
-}
-
-
-
-/* ================= PAGE ================= */
-
-
-.main-wrapper{
-
-    min-height:100vh;
-
-    display:flex;
-
-    align-items:center;
-
-    padding-top:120px;
-
-    padding-bottom:80px;
-
-}
-
-
-
-/* ================= REGISTER CARD ================= */
-
+/* CARD */
 
 .register-card{
+width:100%;
+max-width:430px;
+background:#fff;
+border-radius:24px;
+padding:30px;
+border:1px solid #e5e7eb;
+box-shadow:0 25px 70px rgba(15,23,42,.08);
+animation:show .5s ease;
+}
 
-    background:
+@keyframes show{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:none;
+}
+}
 
-    rgba(255,255,255,.9);
+.register-title{
+text-align:center;
+margin-bottom:25px;
+}
 
-    border-radius:
+.register-title .icon{
+width:60px;
+height:60px;
+margin:auto;
+border-radius:18px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(135deg,#0d6efd,#084298);
+color:white;
+font-size:25px;
+box-shadow:0 15px 35px rgba(13,110,253,.3);
+}
 
-    var(--radius);
+.register-title h3{
+font-weight:800;
+margin-top:15px;
+}
 
-    padding:40px;
-
-    border:
-
-    1px solid #eef2f7;
-
-    box-shadow:
-
-    var(--shadow);
-
-    transition:.35s;
-
-    position:relative;
-
-    overflow:hidden;
-
+.register-title p{
+font-size:13px;
+color:var(--muted);
 }
 
 
-
-.register-card:hover{
-
-    transform:translateY(-8px);
-
-    box-shadow:
-
-    var(--shadow-hover);
-
-}
-
-
-
-.register-card::after{
-
-    content:"";
-
-    position:absolute;
-
-    inset:0;
-
-    border-radius:22px;
-
-    padding:1px;
-
-    background:
-
-    linear-gradient(
-        135deg,
-        rgba(13,110,253,.35),
-        transparent
-    );
-
-    -webkit-mask:
-
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-
-    -webkit-mask-composite:xor;
-
-    opacity:0;
-
-    transition:.3s;
-
-}
-
-
-.register-card:hover::after{
-
-    opacity:1;
-
-}
-
-
-
-/* ================= TITLE ================= */
-
-
-.register-card h3{
-
-    font-weight:800;
-
-}
-
-
-.register-card h3 i{
-
-    color:var(--primary);
-
-}
-
-
-
-/* ================= INPUT ================= */
-
+/* INPUT */
 
 .form-label{
-
-    font-weight:600;
-
+font-size:14px;
+font-weight:600;
 }
-
-
-
-.form-control{
-
-    border-radius:14px;
-
-    padding:14px 18px;
-
-    border:1px solid #e5e7eb;
-
-    background:#f8fafc;
-
-}
-
-
-
-.form-control:focus{
-
-    border-color:#0d6efd;
-
-    box-shadow:
-
-    0 0 0 .25rem rgba(13,110,253,.15);
-
-}
-
-
 
 .input-group-text{
+background:#fff;
+border:1px solid #e5e7eb;
+color:#0d6efd;
+}
 
-    background:#f8fafc;
+.form-control{
+height:46px;
+border-radius:0 12px 12px 0;
+border:1px solid #e5e7eb;
+}
 
-    border:1px solid #e5e7eb;
+.input-group-text:first-child{
+border-radius:12px 0 0 12px;
+}
 
-    color:#0d6efd;
+.input-group-text:last-child{
+border-radius:0 12px 12px 0;
+cursor:pointer;
+}
 
+.form-control:focus{
+border-color:#0d6efd;
+box-shadow:0 0 0 3px rgba(13,110,253,.12);
 }
 
 
+/* BUTTON */
 
-/* ================= BUTTON ================= */
+.btn-register{
+height:48px;
+border-radius:50px;
+border:0;
+background:linear-gradient(135deg,#0d6efd,#084298);
+color:#fff;
+font-weight:700;
+transition:.3s;
+}
 
-
-.btn-primary{
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #0d6efd,
-        #084298
-    );
-
-    border:none;
-
-    border-radius:50px;
-
-    padding:15px;
-
-    font-weight:700;
-
-    position:relative;
-
-    overflow:hidden;
-
+.btn-register:hover{
+transform:translateY(-3px);
+box-shadow:0 15px 35px rgba(13,110,253,.35);
 }
 
 
-
-.btn-primary::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:0;
-
-    left:-100%;
-
-    width:100%;
-
-    height:100%;
-
-    background:
-
-    linear-gradient(
-        120deg,
-        transparent,
-        rgba(255,255,255,.4),
-        transparent
-    );
-
-    transition:.5s;
-
-}
-
-
-
-.btn-primary:hover::before{
-
-    left:100%;
-
-}
-
-
-
-.btn-primary:hover{
-
-    transform:translateY(-3px);
-
-    box-shadow:
-
-    0 15px 35px rgba(13,110,253,.35);
-
-}
-
-
-
-/* ================= ALERT ================= */
-
-
-.alert{
-
-    border-radius:14px;
-
-}
-
-
-
-/* ================= LINK ================= */
-
-
-a{
-
-    color:var(--primary);
-
-    text-decoration:none;
-
-}
-
-
-
-/* ================= TURNSTILE ================= */
-
+/* TURNSTILE */
 
 .cf-turnstile{
-
-    transform:scale(.95);
-
-    transform-origin:center;
-
+display:flex;
+justify-content:center;
+transform:scale(.95);
 }
 
 
+/* FOOTER */
 
-/* ================= MOBILE ================= */
+footer{
+background:#07101f;
+color:white;
+padding:25px 0;
+text-align:center;
+}
 
-
-@media(max-width:991px){
-
-
-.navbar{
-
-    background:white;
-
+footer p{
+color:#cbd5e1;
+font-size:13px;
+margin:5px;
 }
 
 
-.navbar-nav{
-
-    background:white;
-
-    padding:20px;
-
-    border-radius:20px;
-
-    box-shadow:
-
-    0 20px 50px rgba(0,0,0,.08);
-
-}
-
-
-}
-
-
+/* MOBILE */
 
 @media(max-width:576px){
-
-
-.main-wrapper{
-
-    padding-top:100px;
-
-}
-
-
 .register-card{
-
-    padding:25px;
-
-    border-radius:18px;
-
+padding:24px;
+border-radius:20px;
 }
-
 
 .navbar-brand{
-
-    font-size:22px;
-
+font-size:20px;
+}
 }
 
-
-}
 </style>
-
 </head>
 
 <body>
 
-<!-- NAVBAR (SAMA PERSIS STYLE INDEX) -->
-<nav class="navbar navbar-expand-lg fixed-top">
+<nav class="navbar fixed-top">
 <div class="container">
 
-<a class="navbar-brand fw-bold">
-<i class="fa-solid fa-hand-pointer"></i> Click2Pay
+<a class="navbar-brand">
+<i class="fa-solid fa-hand-pointer"></i>
+Click2Pay
 </a>
 
-<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
-<i class="fa-solid fa-bars"></i>
-</button>
-
-<div class="collapse navbar-collapse" id="navbar">
-<ul class="navbar-nav ms-auto align-items-lg-center">
-
-<li class="nav-item">
-<a class="nav-link" href="index.html">
-<i class="fa-solid fa-house"></i> Beranda
+<a href="login.html" class="btn btn-outline-primary">
+<i class="fa-solid fa-right-to-bracket"></i>
+Masuk
 </a>
-</li>
-
-<li class="nav-item">
-<a class="btn btn-outline-custom rounded-pill ms-lg-3" href="login.html">
-<i class="fa-solid fa-right-to-bracket"></i> Masuk
-</a>
-</li>
-
-</ul>
-</div>
 
 </div>
 </nav>
 
-<!-- CONTENT -->
-<div class="main-wrapper">
 
-<div class="container">
-<div class="row justify-content-center">
-
-<div class="col-lg-5 col-md-7" data-aos="zoom-in">
-
+<div class="main">
 <div class="register-card">
 
-<h3 class="fw-bold mb-4 text-center">
-<i class="fa-solid fa-user-plus"></i> Daftar Akun
-</h3>
+<div class="register-title">
+
+<div class="icon">
+<i class="fa-solid fa-user-plus"></i>
+</div>
+
+<h3>Buat Akun</h3>
+
+<p>Daftar dan mulai gunakan Click2Pay</p>
+
+</div>
+
 
 <div id="alert" class="alert"></div>
 
+
 <form id="registerForm">
 
-<!-- USERNAME -->
+
 <div class="mb-3">
 <label class="form-label">Username</label>
+
 <div class="input-group">
-<span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-<input type="text" id="username" class="form-control" required>
+
+<span class="input-group-text">
+<i class="fa-solid fa-user"></i>
+</span>
+
+<input id="username" class="form-control" required placeholder="Username">
+
 </div>
 </div>
 
-<!-- EMAIL -->
+
 <div class="mb-3">
 <label class="form-label">Email</label>
-<div class="input-group">
-<span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-<input type="email" id="email" class="form-control" required>
-</div>
-</div>
 
-<!-- PASSWORD -->
+<div class="input-group">
+
+<span class="input-group-text">
+<i class="fa-solid fa-envelope"></i>
+</span>
+
+<input type="email" id="email" class="form-control" required placeholder="Email">
+
+</div>
+</div>
 <div class="mb-3">
 <label class="form-label">Password</label>
+
 <div class="input-group">
-<span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-<input type="password" id="password" class="form-control" required>
-<span class="input-group-text" onclick="togglePass('password')" style="cursor:pointer;">
+
+<span class="input-group-text">
+<i class="fa-solid fa-lock"></i>
+</span>
+
+<input type="password" id="password" class="form-control" placeholder="Password" required>
+
+<span class="input-group-text" onclick="togglePass('password')">
 <i class="fa-solid fa-eye"></i>
 </span>
+
 </div>
 </div>
 
-<!-- CONFIRM -->
+
 <div class="mb-3">
 <label class="form-label">Konfirmasi Password</label>
+
 <div class="input-group">
-<span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-<input type="password" id="confirm" class="form-control" required>
-<span class="input-group-text" onclick="togglePass('confirm')" style="cursor:pointer;">
+
+<span class="input-group-text">
+<i class="fa-solid fa-lock"></i>
+</span>
+
+<input type="password" id="confirm" class="form-control" placeholder="Ulangi password" required>
+
+<span class="input-group-text" onclick="togglePass('confirm')">
 <i class="fa-solid fa-eye"></i>
 </span>
+
 </div>
 </div>
 
-<!-- CLOUDFLARE -->
+
 <div class="mb-3">
-<div class="cf-turnstile" data-sitekey="ISI_SITE_KEY_KAMU"></div>
+
+<div class="cf-turnstile"
+data-sitekey="ISI_SITE_KEY_KAMU">
 </div>
 
-<button class="btn btn-primary w-100">
-<i class="fa-solid fa-user-plus"></i> Daftar
+</div>
+
+
+<button id="registerBtn" class="btn btn-register w-100">
+
+<i class="fa-solid fa-user-plus"></i>
+Daftar Sekarang
+
 </button>
+
 
 </form>
 
-<p class="text-center mt-4">
+
+<p class="text-center mt-4 mb-0" style="font-size:14px;color:#667085">
+
 Sudah punya akun?
-<a href="login.html" class="fw-semibold">Masuk</a>
+
+<a href="login.html" class="fw-semibold">
+
+Masuk
+
+</a>
+
+</p>
+
+
+</div>
+</div>
+
+
+<footer>
+
+<div class="container">
+
+<p>
+<i class="fa-solid fa-hand-pointer text-primary"></i>
+<strong> Click2Pay</strong>
+</p>
+
+<p>
+Platform shortlink modern dengan keamanan Cloudflare.
+</p>
+
+<p>
+© 2026 Click2Pay. All Rights Reserved.
 </p>
 
 </div>
-</div>
-</div>
-</div>
 
-</div>
+</footer>
 
-<!-- JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
 <script>
-AOS.init();
 
-// SHOW PASSWORD
 function togglePass(id){
-    let input = document.getElementById(id);
-    input.type = input.type === "password" ? "text" : "password";
+
+let input=document.getElementById(id);
+
+input.type =
+input.type==="password"
+?
+"text"
+:
+"password";
+
 }
 
-// ALERT
+
+
 function showAlert(msg,type){
-    let alert = document.getElementById("alert");
-    alert.style.display="block";
-    alert.className="alert alert-"+type;
-    alert.innerHTML=msg;
+
+let box=document.getElementById("alert");
+
+box.style.display="block";
+
+box.className="alert alert-"+type;
+
+box.innerHTML=msg;
+
 }
 
-// SIMULASI DB
-let users = [];
 
-// REGISTER
-document.getElementById("registerForm").addEventListener("submit",function(e){
-    e.preventDefault();
 
-    let u = document.getElementById("username").value;
-    let e1 = document.getElementById("email").value;
-    let p = document.getElementById("password").value;
-    let c = document.getElementById("confirm").value;
 
-    if(p!==c){
-        return showAlert("❌ Password tidak sama","danger");
-    }
+document
+.getElementById("registerForm")
+.addEventListener("submit",function(e){
 
-    let exists = users.find(x=>x.username===u || x.email===e1);
+e.preventDefault();
 
-    if(exists){
-        return showAlert("⚠️ Username atau Email sudah digunakan","danger");
-    }
 
-    users.push({username:u,email:e1,password:p});
+let btn=document.getElementById("registerBtn");
 
-    showAlert("✅ Berhasil daftar!","success");
+
+let username=
+document.getElementById("username").value;
+
+
+let email=
+document.getElementById("email").value;
+
+
+let password=
+document.getElementById("password").value;
+
+
+let confirm=
+document.getElementById("confirm").value;
+
+
+
+if(password!==confirm){
+
+return showAlert(
+"❌ Password tidak sama",
+"danger"
+);
+
+}
+
+
+
+if(password.length < 6){
+
+return showAlert(
+"⚠️ Password minimal 6 karakter",
+"warning"
+);
+
+}
+
+
+
+btn.disabled=true;
+
+btn.innerHTML=
+'<i class="fa-solid fa-spinner fa-spin"></i> Membuat akun...';
+
+
+
+/*
+=================================
+SIMULASI REGISTER
+
+Ganti nanti dengan API BACKEND
+=================================
+*/
+
+
+setTimeout(()=>{
+
+
+showAlert(
+"✅ Akun berhasil dibuat, mengalihkan...",
+"success"
+);
+
+
+setTimeout(()=>{
+
+window.location.href="login.html";
+
+},1000);
+
+
+
+},1000);
+
+
+
 });
+
+
 </script>
+
 
 </body>
 </html>
