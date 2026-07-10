@@ -798,49 +798,39 @@ Bantuan
 <script>
 
 
+const SUPABASE_URL = "https://qmrhxsrnvgvggwahufvp.supabase.co/rest/v1/";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtcmh4c3Judmd2Z2d3YWh1ZnZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzU5ODQsImV4cCI6MjA5OTI1MTk4NH0.gR5vX2-r7hG_vzEcEzPKTIhsOKWA9gNep3lfQcyk724";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+
 function togglePass(){
 
+    let p=document.getElementById("loginPass");
 
-let pass=document.getElementById("loginPass");
-
-let eye=document.getElementById("eye");
-
-
-if(pass.type==="password"){
-
-
-pass.type="text";
-
-eye.className="fa-solid fa-eye-slash";
-
-
-}else{
-
-
-pass.type="password";
-
-eye.className="fa-solid fa-eye";
-
-
-}
-
+    p.type =
+    p.type==="password"
+    ?"text"
+    :"password";
 
 }
 
 
 
-function showAlert(message,type){
 
+function showAlert(msg,type){
 
-let alertBox=document.getElementById("alert");
+    let a=document.getElementById("alert");
 
+    a.style.display="block";
 
-alertBox.style.display="block";
+    a.className="alert alert-"+type;
 
-alertBox.className="alert alert-"+type;
-
-alertBox.innerHTML=message;
-
+    a.innerHTML=msg;
 
 }
 
@@ -849,125 +839,113 @@ alertBox.innerHTML=message;
 
 
 document
-
 .getElementById("loginForm")
-
-.addEventListener(
-
-"submit",
-
-function(e){
+.addEventListener("submit",async function(e){
 
 
 e.preventDefault();
 
 
 
-let btn=document.getElementById("loginBtn");
+let loginUser =
+document.getElementById("loginUser").value.trim();
 
 
-let username=
-
-document.getElementById("loginUser").value;
-
-
-let password=
-
+let password =
 document.getElementById("loginPass").value;
 
 
 
-/*
-====================================
-SIMULASI LOGIN
-Nanti ganti dengan API BACKEND
-====================================
-*/
+try{
 
 
-let users=[
+let {data:user,error}=await supabaseClient
 
-{
+.from("users")
 
-username:"admin",
+.select("*")
 
-email:"admin@mail.com",
+.or(`username.eq.${loginUser},email.eq.${loginUser}`)
 
-password:"123456"
-
-}
-
-];
+.single();
 
 
 
-let user=users.find(x=>
 
-(x.username===username ||
+if(error || !user){
 
-x.email===username)
-
-&&
-
-x.password===password
-
-);
-
-
-
-if(!user){
-
-
-showAlert(
-
-"❌ Email atau password salah",
-
-"danger"
-
-);
-
-
-return;
-
+    return showAlert(
+        "❌ Username/email tidak ditemukan",
+        "danger"
+    );
 
 }
 
 
 
-btn.classList.add("loading");
 
 
-btn.innerHTML=
+if(user.password_hash !== password){
 
-'<i class="fa-solid fa-spinner fa-spin"></i> Memproses';
+    return showAlert(
+        "❌ Password salah",
+        "danger"
+    );
+
+}
+
+
+
+
+
+// simpan session sederhana
+
+localStorage.setItem(
+    "user",
+    JSON.stringify({
+        id:user.id,
+        username:user.username,
+        email:user.email
+    })
+);
+
 
 
 
 showAlert(
-
-"✅ Login berhasil, mengalihkan...",
-
-"success"
-
+    "✅ Login berhasil",
+    "success"
 );
 
 
 
 setTimeout(()=>{
 
-
 window.location.href="dashboard.html";
 
+},1000);
 
-},1200);
+
+
+}catch(err){
+
+
+console.log(err);
+
+
+showAlert(
+"❌ Server error",
+"danger"
+);
+
+
+}
 
 
 
 });
-
-
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 </body>
 
