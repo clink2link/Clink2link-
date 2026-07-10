@@ -3,6 +3,7 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Login - Click2Pay</title>
@@ -13,92 +14,319 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
 <style>
 
-/* ================= ROOT ================= */
+/* =====================================================
+   CLICK2PAY LOGIN PREMIUM
+===================================================== */
+
 :root{
-    --bg:#f1f5f9;
-    --text:#0f172a;
-    --card:#ffffff;
-    --border:#e2e8f0;
+    color-scheme:light;
+
     --primary:#0d6efd;
+    --primary-dark:#084298;
+
+    --text:#172033;
+    --muted:#667085;
+
+    --bg:#f8fafc;
+
 }
 
-/* DARK MODE */
-@media (prefers-color-scheme: dark){
-    :root{
-        --bg:#020617;
-        --text:#ffffff;
-        --card:rgba(15,23,42,0.75);
-        --border:rgba(255,255,255,0.08);
-        --primary:#3b82f6;
-    }
+
+*{
+    box-sizing:border-box;
 }
 
-/* BASE */
+
+
 body{
+
     font-family:'Poppins',sans-serif;
-    background:var(--bg);
+
+    background:
+
+    linear-gradient(
+        180deg,
+        #ffffff,
+        #f8fafc
+    );
+
     color:var(--text);
-}
 
-/* NAVBAR */
-.navbar{
-    background:rgba(255,255,255,0.7);
-    backdrop-filter:blur(12px);
-}
-
-.navbar .nav-link,
-.navbar .navbar-brand{
-    color:var(--text) !important;
-}
-
-/* WRAPPER */
-.main{
     min-height:100vh;
+
+}
+
+
+
+/* ================= NAVBAR ================= */
+
+
+.navbar{
+
+    padding:16px 0;
+
+    background:
+
+    rgba(255,255,255,.75);
+
+    backdrop-filter:blur(18px);
+
+    border-bottom:
+
+    1px solid rgba(0,0,0,.05);
+
+}
+
+
+
+.navbar-brand{
+
+    font-size:24px;
+
+    font-weight:800;
+
+}
+
+
+
+.navbar-brand i{
+
+    color:var(--primary);
+
+}
+
+
+
+.navbar .btn{
+
+    border-radius:50px;
+
+}
+
+
+
+/* ================= MAIN ================= */
+
+
+.main{
+
+    min-height:calc(100vh - 150px);
+
     display:flex;
+
     align-items:center;
-    justify-content:center;
-    padding-top:90px;
+
+    padding-top:100px;
+
+    padding-bottom:50px;
+
 }
 
-/* CARD */
+
+
+/* ================= CARD ================= */
+
+
 .login-card{
-    background:var(--card);
-    border-radius:20px;
-    padding:30px;
-    border:1px solid var(--border);
-    box-shadow:0 15px 40px rgba(0,0,0,0.1);
+
+    background:white;
+
+    border-radius:22px;
+
+    padding:32px;
+
+    max-width:420px;
+
+    margin:auto;
+
+    border:
+
+    1px solid #eef2f7;
+
+    box-shadow:
+
+    0 20px 60px rgba(0,0,0,.08);
+
+    transition:.3s;
+
 }
 
-/* INPUT */
-.form-control{
-    border-radius:12px;
-    padding:12px;
-    border:1px solid var(--border);
+
+
+.login-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:
+
+    0 30px 80px rgba(13,110,253,.15);
+
 }
+
+
+
+.login-card h3{
+
+    font-weight:800;
+
+}
+
+
+
+.login-card h3 i{
+
+    color:var(--primary);
+
+}
+
+
+
+/* ================= INPUT ================= */
+
+
+.form-control{
+
+    border-radius:14px;
+
+    padding:13px 16px;
+
+    border:1px solid #e5e7eb;
+
+    background:#f8fafc;
+
+}
+
+
 
 .form-control:focus{
-    border-color:var(--primary);
-    box-shadow:0 0 0 3px rgba(13,110,253,0.15);
+
+    border-color:#0d6efd;
+
+    box-shadow:
+
+    0 0 0 .25rem rgba(13,110,253,.15);
+
 }
 
-/* BUTTON */
+
+
+.input-group-text{
+
+    background:#f8fafc;
+
+    border:1px solid #e5e7eb;
+
+}
+
+
+
+/* ================= BUTTON ================= */
+
+
 .btn-primary{
-    border-radius:30px;
-    padding:12px;
-    font-weight:600;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #0d6efd,
+        #084298
+    );
+
+    border:none;
+
+    border-radius:50px;
+
+    padding:13px;
+
+    font-weight:700;
+
 }
 
-/* ALERT */
-.alert{
-    display:none;
+
+
+.btn-primary:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+
+    0 15px 35px rgba(13,110,253,.35);
+
 }
 
-/* LINK */
-a{
-    color:var(--primary);
-    text-decoration:none;
+
+
+/* ================= TURNSTILE ================= */
+
+
+.cf-turnstile{
+
+    transform:scale(.95);
+
+    transform-origin:center;
+
+}
+
+
+
+/* ================= FOOTER ================= */
+
+
+footer{
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #07101f,
+        #020617
+    );
+
+    color:white;
+
+    padding:25px 0;
+
+}
+
+
+
+footer p{
+
+    color:#cbd5e1;
+
+    margin:0;
+
+}
+
+
+
+/* ================= MOBILE ================= */
+
+
+@media(max-width:576px){
+
+
+.login-card{
+
+    padding:25px;
+
+    border-radius:18px;
+
+}
+
+
+.navbar-brand{
+
+    font-size:21px;
+
+}
+
+
 }
 
 </style>
@@ -158,6 +386,16 @@ a{
 </div>
 </div>
 
+<!-- CLOUDFLARE TURNSTILE -->
+
+<div class="mb-3 text-center">
+
+<div class="cf-turnstile"
+data-sitekey="ISI_SITE_KEY_KAMU">
+</div>
+
+</div>
+
 <button class="btn btn-primary w-100">
 Login
 </button>
@@ -175,6 +413,27 @@ Belum punya akun?
 </div>
 </div>
 </div>
+
+<footer>
+
+<div class="container text-center">
+
+<p>
+<i class="fa-solid fa-hand-pointer text-primary"></i>
+<strong> Click2Pay</strong>
+</p>
+
+<p class="small mt-2">
+Platform shortlink modern dengan sistem keamanan terpercaya.
+</p>
+
+<p class="small mt-2">
+© 2026 Click2Pay. All Rights Reserved.
+</p>
+
+</div>
+
+</footer>
 
 <!-- JS -->
 <script>
