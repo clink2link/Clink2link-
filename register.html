@@ -23,7 +23,7 @@
     --bg:#f1f5f9;
     --text:#0f172a;
     --card:#ffffff;
-    --navbar:rgba(255,255,255,0.8);
+    --navbar:rgba(255,255,255,0.75);
     --input-bg:#f8fafc;
     --border:#e2e8f0;
     --primary:#0d6efd;
@@ -47,7 +47,6 @@ body{
     font-family:'Poppins',sans-serif;
     background:var(--bg);
     color:var(--text);
-    min-height:100vh;
 }
 
 /* ================= NAVBAR ================= */
@@ -61,13 +60,35 @@ body{
     color:var(--text) !important;
 }
 
+/* FIX BUTTON NAV */
+.btn-outline-custom{
+    border:1px solid var(--primary);
+    color:var(--primary);
+    border-radius:30px;
+}
+
+.btn-outline-custom:hover{
+    background:var(--primary);
+    color:#fff;
+}
+
+/* ================= CONTENT ================= */
+.main-wrapper{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding-top:90px; /* biar gak ketutup navbar */
+}
+
 /* ================= CARD ================= */
 .register-card{
     background:var(--card);
     border-radius:20px;
     padding:30px;
     border:1px solid var(--border);
-    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    box-shadow:0 15px 40px rgba(0,0,0,0.1);
+    backdrop-filter:blur(20px);
 }
 
 /* ================= INPUT ================= */
@@ -87,6 +108,7 @@ body{
 .input-group-text{
     background:var(--input-bg);
     border:1px solid var(--border);
+    color:var(--text);
 }
 
 /* ================= BUTTON ================= */
@@ -100,6 +122,12 @@ body{
 
 .btn-primary:hover{
     opacity:0.9;
+}
+
+/* ================= LINK ================= */
+a{
+    color:var(--primary);
+    text-decoration:none;
 }
 
 /* ================= ALERT ================= */
@@ -154,13 +182,16 @@ body{
 </nav>
 
 <!-- CONTENT -->
-<div class="container d-flex justify-content-center align-items-center vh-100">
+<div class="main-wrapper">
+
+<div class="container">
+<div class="row justify-content-center">
 
 <div class="col-lg-5 col-md-7" data-aos="zoom-in">
 
 <div class="register-card">
 
-<h3 class="fw-bold mb-3 text-center">
+<h3 class="fw-bold mb-4 text-center">
 <i class="fa-solid fa-user-plus"></i> Daftar Akun
 </h3>
 
@@ -215,21 +246,22 @@ body{
 <div class="cf-turnstile" data-sitekey="ISI_SITE_KEY_KAMU"></div>
 </div>
 
-<!-- BUTTON -->
 <button class="btn btn-primary w-100">
 <i class="fa-solid fa-user-plus"></i> Daftar
 </button>
 
 </form>
 
-<p class="text-center mt-3">
+<p class="text-center mt-4">
 Sudah punya akun?
-<a href="login.html" class="text-warning">Masuk</a>
+<a href="login.html" class="fw-semibold">Masuk</a>
 </p>
 
 </div>
-
 </div>
+</div>
+</div>
+
 </div>
 
 <!-- JS -->
