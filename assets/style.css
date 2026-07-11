@@ -1,24 +1,30 @@
+/* =========================
+   GLOBAL
+========================= */
 body {
   margin: 0;
   font-family: sans-serif;
 }
 
-/* NAVBAR */
-.navbar {
+/* =========================
+   DASHBOARD ONLY
+========================= */
+
+body.dashboard .navbar {
   display: flex;
   justify-content: space-between;
   padding: 12px;
-  background: #0d6efd;
+  background: #0d6efd; /* tetap warna lu */
   color: white;
 }
 
-.nav-left {
+body.dashboard .nav-left {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-button {
+body.dashboard button {
   background: none;
   border: none;
   color: white;
@@ -27,7 +33,7 @@ button {
 }
 
 /* PROFILE */
-.profile-dropdown {
+body.dashboard .profile-dropdown {
   display: none;
   position: absolute;
   right: 10px;
@@ -38,6 +44,15 @@ button {
   border-radius: 10px;
 }
 
-.profile-dropdown.show {
+body.dashboard .profile-dropdown.show {
   display: block;
+}
+
+/* FOOTER */
+body.dashboard .footer {
+  background: #0d6efd;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  margin-top: 40px;
 }
