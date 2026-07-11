@@ -1,35 +1,91 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="assets/style.css">
+<title>Dashboard</title>
 
-  <!-- FONT AWESOME -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+/* container */
+.container {
+  padding: 20px;
+}
+</style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
-<div id="navbar"></div>
+<!-- NAVBAR (sementara langsung, nanti baru dipisah) -->
+<nav style="height:60px;background:#0f172a;color:white;display:flex;align-items:center;justify-content:space-between;padding:0 15px;">
+  <span><i class="fa-solid fa-hand-holding-dollar"></i> CLICK2PAY</span>
+  <button id="logoutBtn" style="background:none;border:none;color:white;">
+    <i class="fa-solid fa-right-from-bracket"></i>
+  </button>
+</nav>
+
+<div class="container">
+  <h2>Dashboard</h2>
+
+  <p>Email: <span id="email"></span></p>
+  <p>User ID: <span id="uid"></span></p>
+
+  <p>Username: <span id="username"></span></p>
+  <p>Saldo: <span id="saldo"></span></p>
+</div>
 
 <script>
-fetch("components/navbar.html")
-  .then(res => res.text())
-  .then(data => {
-    document.getElementById("navbar").innerHTML = data
+const supabase = window.supabase.createClient(
+  "https://qmrhxsrnvgvggwahufvp.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtcmh4c3Judmd2Z2d3YWh1ZnZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzU5ODQsImV4cCI6MjA5OTI1MTk4NH0.gR5vX2-r7hG_vzEcEzPKTIhsOKWA9gNep3lfQcyk724"
+);
 
-    // aktifkan tombol setelah load
-    const profileBtn = document.getElementById("profileBtn")
-    const dropdown = document.getElementById("profileDropdown")
+async function init() {
+  const { data: { user } } = await supabase.auth.getUser();
 
-    profileBtn.onclick = () => {
-      dropdown.classList.toggle("show")
-    }
-  })
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  document.getElementById("email").innerText = user.email;
+  document.getElementById("uid").innerText = user.id;
+
+  // ambil username
+  const { data } = await supabase
+    .from("users")
+    .select("username")
+    .eq("user_id", user.id)
+    .single();
+
+  document.getElementById("username").innerText = data?.username || "-";
+
+  // ambil saldo
+  const { data: wallet } = await supabase
+    .from("wallets")
+    .select("balance")
+    .eq("user_id", user.id)
+    .single();
+
+  document.getElementById("saldo").innerText =
+    "Rp " + (wallet?.balance || 0);
+}
+
+// logout
+document.getElementById("logoutBtn").onclick = async () => {
+  await supabase.auth.signOut();
+  window.location.href = "login.html";
+};
+
+init();
 </script>
 
 </body>
