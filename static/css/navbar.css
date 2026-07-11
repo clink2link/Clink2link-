@@ -104,18 +104,16 @@ body{
 
     padding:0 28px;
 
-    background:
-    rgba(255,255,255,.82);
+    background:rgba(255,255,255,.82);
 
     backdrop-filter:blur(20px);
     -webkit-backdrop-filter:blur(20px);
 
     border-bottom:1px solid rgba(255,255,255,.5);
 
-    box-shadow:
-    0 10px 30px rgba(0,0,0,.04);
+    box-shadow:0 10px 30px rgba(0,0,0,.04);
 
-    z-index:1000;
+    z-index:1100;
 
 }
 
@@ -390,15 +388,12 @@ body{
     position:fixed;
 
     top:var(--topbar-height);
-
     left:0;
 
     width:var(--sidebar-width);
-
     height:calc(100vh - var(--topbar-height));
 
-    background:
-    rgba(255,255,255,.88);
+    background:rgba(255,255,255,.88);
 
     backdrop-filter:blur(24px);
     -webkit-backdrop-filter:blur(24px);
@@ -407,13 +402,15 @@ body{
 
     box-shadow:var(--shadow);
 
+    overflow-x:hidden;
     overflow-y:auto;
 
-    overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
 
     transition:.35s ease;
 
-    z-index:998;
+    z-index:1001;
 
 }
 
