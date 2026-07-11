@@ -1,67 +1,47 @@
-<!-- ===========================
-OVERLAY
-=========================== -->
-
+<!-- ========= OVERLAY ========= -->
 <div class="overlay" id="overlay"></div>
 
-<!-- ===========================
-TOPBAR
-=========================== -->
-
+<!-- ========= TOPBAR ========= -->
 <header class="topbar">
 
-    <!-- LEFT -->
-    <div class="top-left">
+    <div class="topbar-left">
 
-        <button class="menu-btn" id="menuBtn">
+        <button id="menuToggle" class="menu-toggle" aria-label="Menu">
             <i class="fa-solid fa-bars"></i>
         </button>
 
-        <a href="/dashboard.html" class="brand">
+        <a href="/dashboard.html" class="logo">
 
-            <div class="brand-logo">
-
+            <div class="logo-icon">
                 <i class="fa-solid fa-hand-pointer"></i>
-
-                <span class="money-icon">
-                    <i class="fa-solid fa-money-bill-wave"></i>
-                </span>
-
             </div>
 
-            <div class="brand-text">
-
+            <div class="logo-text">
                 <h2>CLICK2PAY</h2>
-
                 <small>Smart Link Platform</small>
-
             </div>
 
         </a>
 
     </div>
 
-    <!-- RIGHT -->
+    <div class="topbar-right">
 
-    <div class="top-actions">
+        <button class="top-btn" id="themeToggle" aria-label="Dark Mode">
+            <i class="fa-solid fa-moon"></i>
+        </button>
 
-        <a href="/notifications.html" class="icon-btn">
+        <a href="/notifications.html" class="top-btn notification">
 
             <i class="fa-solid fa-bell"></i>
 
-            <span class="notify">3</span>
+            <span class="badge">3</span>
 
         </a>
 
-        <a href="/messages.html" class="icon-btn">
+        <a href="/profile.html" class="profile">
 
-            <i class="fa-solid fa-envelope"></i>
-
-        </a>
-
-        <a href="/profile.html" class="profile-btn">
-
-            <img src="/assets/avatar.png" alt="Profile">
+            <i class="fa-solid fa-user"></i>
 
         </a>
 
@@ -69,423 +49,199 @@ TOPBAR
 
 </header>
 
-<!-- ===========================
-SIDEBAR
-=========================== -->
+<!-- ========= SIDEBAR ========= -->
 
 <aside class="sidebar" id="sidebar">
-
-    <!-- PROFILE -->
 
     <div class="sidebar-profile">
 
         <div class="avatar">
 
-            <img src="/assets/avatar.png" alt="avatar">
-
-            <span class="online"></span>
+            <i class="fa-solid fa-user"></i>
 
         </div>
 
-        <h2>CLICK2PAY</h2>
+        <h3>Guest User</h3>
 
-        <small>@Guest</small>
+        <small>@guest</small>
 
     </div>
 
-    <!-- MENU -->
-
     <nav>
 
-        <div class="menu-label">
-            MAIN
-        </div>
+        <p class="menu-title">MAIN</p>
 
-        <a href="/dashboard.html" class="active">
+        <ul>
 
-            <span>
+            <li>
+                <a href="/dashboard.html" class="active">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
 
-                <i class="fa-solid fa-gauge-high"></i>
+            <li class="dropdown">
 
-                Dashboard
+                <button class="dropdown-btn">
 
-            </span>
+                    <span>
+                        <i class="fa-solid fa-link"></i>
+                        Link Management
+                    </span>
 
-        </a>
+                    <i class="fa-solid fa-chevron-down arrow"></i>
 
-        <!-- LINK -->
+                </button>
 
-        <details open>
+                <ul class="submenu">
 
-            <summary>
+                    <li>
+                        <a href="/create-link.html">
+                            <i class="fa-solid fa-plus"></i>
+                            Create Link
+                        </a>
+                    </li>
 
-                <span>
+                    <li>
+                        <a href="/links.html">
+                            <i class="fa-solid fa-list"></i>
+                            My Links
+                        </a>
+                    </li>
 
-                    <i class="fa-solid fa-link"></i>
+                    <li>
+                        <a href="/analytics.html">
+                            <i class="fa-solid fa-chart-line"></i>
+                            Analytics
+                        </a>
+                    </li>
 
-                    Manage Links
+                </ul>
 
-                </span>
+            </li>
 
-                <i class="fa-solid fa-chevron-down"></i>
+            <li class="dropdown">
 
-            </summary>
+                <button class="dropdown-btn">
 
-            <a href="/create-link.html">
+                    <span>
+                        <i class="fa-solid fa-wallet"></i>
+                        Finance
+                    </span>
 
-                <span>
+                    <i class="fa-solid fa-chevron-down arrow"></i>
 
-                    <i class="fa-solid fa-plus"></i>
+                </button>
 
-                    Create Link
+                <ul class="submenu">
 
-                </span>
+                    <li>
+                        <a href="/balance.html">
+                            <i class="fa-solid fa-coins"></i>
+                            Balance
+                        </a>
+                    </li>
 
-            </a>
+                    <li>
+                        <a href="/withdraw.html">
+                            <i class="fa-solid fa-money-bill-transfer"></i>
+                            Withdraw
+                        </a>
+                    </li>
 
-            <a href="/links.html">
+                    <li>
+                        <a href="/withdraw-history.html">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            History
+                        </a>
+                    </li>
 
-                <span>
+                </ul>
 
-                    <i class="fa-solid fa-list"></i>
+            </li>
 
-                    My Links
+            <li>
+                <a href="/statistics.html">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Statistics</span>
+                </a>
+            </li>
 
-                </span>
+            <li>
+                <a href="/transactions.html">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>Transactions</span>
+                </a>
+            </li>
 
-            </a>
+        </ul>
 
-            <a href="/analytics.html">
+        <p class="menu-title">COMMUNITY</p>
 
-                <span>
+        <ul>
 
-                    <i class="fa-solid fa-chart-line"></i>
+            <li>
+                <a href="/referral.html">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Referral</span>
+                </a>
+            </li>
 
-                    Analytics
+            <li>
+                <a href="/daily-bonus.html">
+                    <i class="fa-solid fa-gift"></i>
+                    <span>Daily Bonus</span>
+                </a>
+            </li>
 
-                </span>
+            <li>
+                <a href="/leaderboard.html">
+                    <i class="fa-solid fa-trophy"></i>
+                    <span>Leaderboard</span>
+                </a>
+            </li>
 
-            </a>
+        </ul>
 
-        </details>
+        <p class="menu-title">BUSINESS</p>
 
-        <!-- FINANCE -->
+        <ul>
 
-        <details>
-
-            <summary>
-
-                <span>
-
-                    <i class="fa-solid fa-wallet"></i>
-
-                    Payments
-
-                </span>
-
-                <i class="fa-solid fa-chevron-down"></i>
-
-            </summary>
-
-            <a href="/balance.html">
-
-                <span>
-
-                    <i class="fa-solid fa-coins"></i>
-
-                    Balance
-
-                </span>
-
-            </a>
-
-            <a href="/withdraw.html">
-
-                <span>
-
-                    <i class="fa-solid fa-money-bill-transfer"></i>
-
-                    Withdraw
-
-                </span>
-
-            </a>
-
-            <a href="/history.html">
-
-                <span>
-
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-
-                    History
-
-                </span>
-
-            </a>
-
-        </details>
-
-        <a href="/transactions.html">
-
-            <span>
-
-                <i class="fa-solid fa-receipt"></i>
-
-                Transactions
-
-            </span>
-
-        </a>
-
-        <a href="/statistics.html">
-
-            <span>
-
-                <i class="fa-solid fa-chart-pie"></i>
-
-                Statistics
-
-            </span>
-
-        </a>
-
-        <!-- COMMUNITY -->
-
-        <div class="menu-label">
-
-            COMMUNITY
-
-        </div>
-
-        <a href="/referral.html">
-
-            <span>
-
-                <i class="fa-solid fa-users"></i>
-
-                Referral
-
-            </span>
-
-        </a>
-
-        <a href="/daily-bonus.html">
-
-            <span>
-
-                <i class="fa-solid fa-gift"></i>
-
-                Daily Bonus
-
-            </span>
-
-        </a>
-
-        <a href="/leaderboard.html">
-
-            <span>
-
-                <i class="fa-solid fa-trophy"></i>
-
-                Leaderboard
-
-            </span>
-
-        </a>
-
-        <!-- BUSINESS -->
-
-        <div class="menu-label">
-
-            BUSINESS
-
-        </div>
-
-        <details>
-
-            <summary>
-
-                <span>
-
+            <li>
+                <a href="/advertise.html">
                     <i class="fa-solid fa-bullhorn"></i>
+                    <span>Advertise</span>
+                </a>
+            </li>
 
-                    Advertise
-
-                </span>
-
-                <i class="fa-solid fa-chevron-down"></i>
-
-            </summary>
-
-            <a href="/advertise/topup.html">
-
-                <span>
-
-                    <i class="fa-solid fa-wallet"></i>
-
-                    Top Up
-
-                </span>
-
-            </a>
-
-            <a href="/advertise/create.html">
-
-                <span>
-
-                    <i class="fa-solid fa-rectangle-ad"></i>
-
-                    Create Ads
-
-                </span>
-
-            </a>
-
-            <a href="/advertise/list.html">
-
-                <span>
-
-                    <i class="fa-solid fa-link"></i>
-
-                    My Ads
-
-                </span>
-
-            </a>
-
-        </details>
-
-        <!-- SUPPORT -->
-
-        <div class="menu-label">
-
-            HELP CENTER
-
-        </div>
-
-        <details>
-
-            <summary>
-
-                <span>
-
+            <li>
+                <a href="/support.html">
                     <i class="fa-solid fa-headset"></i>
+                    <span>Support</span>
+                </a>
+            </li>
 
-                    Support
-
-                </span>
-
-                <i class="fa-solid fa-chevron-down"></i>
-
-            </summary>
-
-            <a href="#">
-
-                <span>
-
-                    <i class="fa-brands fa-telegram"></i>
-
-                    Telegram
-
-                </span>
-
-            </a>
-
-            <a href="#">
-
-                <span>
-
-                    <i class="fa-brands fa-whatsapp"></i>
-
-                    WhatsApp
-
-                </span>
-
-            </a>
-
-            <a href="mailto:support@click2pay.my.id">
-
-                <span>
-
-                    <i class="fa-solid fa-envelope"></i>
-
-                    Email
-
-                </span>
-
-            </a>
-
-        </details>
-
-        <!-- SETTINGS -->
-
-        <details>
-
-            <summary>
-
-                <span>
-
+            <li>
+                <a href="/settings.html">
                     <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
 
-                    Settings
+        </ul>
 
-                </span>
+        <hr>
 
-                <i class="fa-solid fa-chevron-down"></i>
+        <ul>
 
-            </summary>
+            <li>
+                <a href="/logout.html" class="logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
 
-            <a href="/profile.html">
-
-                <span>
-
-                    <i class="fa-solid fa-user"></i>
-
-                    Profile
-
-                </span>
-
-            </a>
-
-            <a href="/payment-method.html">
-
-                <span>
-
-                    <i class="fa-solid fa-building-columns"></i>
-
-                    Payment Account
-
-                </span>
-
-            </a>
-
-            <a href="/security.html">
-
-                <span>
-
-                    <i class="fa-solid fa-shield-halved"></i>
-
-                    Security
-
-                </span>
-
-            </a>
-
-        </details>
-
-        <!-- LOGOUT -->
-
-        <a href="/logout.html" class="logout">
-
-            <span>
-
-                <i class="fa-solid fa-right-from-bracket"></i>
-
-                Logout
-
-            </span>
-
-        </a>
+        </ul>
 
     </nav>
 
