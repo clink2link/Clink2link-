@@ -1,22 +1,17 @@
-async function loadComponent(id, path) {
-    const res = await fetch(path);
+async function loadComponent(id,url){
 
-    if (!res.ok) {
-        console.error("Gagal memuat:", path);
-        return;
-    }
+    const res=await fetch(url);
 
-    document.getElementById(id).innerHTML = await res.text();
+    if(!res.ok)return;
 
-    // Jalankan navbar.js setelah navbar selesai dimuat
-    if (id === "navbar") {
-        const script = document.createElement("script");
-        script.src = "/static/js/navbar.js";
-        document.body.appendChild(script);
-    }
+    document.getElementById(id).innerHTML=await res.text();
+
 }
 
-window.addEventListener("DOMContentLoaded", async () => {
-    await loadComponent("navbar", "/templates/components/navbar.html");
-    await loadComponent("footer", "/templates/components/footer.html");
+window.addEventListener("DOMContentLoaded",()=>{
+
+    loadComponent("navbar","/static/components/navbar.html");
+
+    loadComponent("footer","/static/components/footer.html");
+
 });
