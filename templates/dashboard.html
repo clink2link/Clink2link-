@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="/static/css/dashboard.css">
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard">
+
+    <!-- Welcome -->
+    <div class="welcome-card">
+
+        <div>
+
+            <h2>👋 Welcome, {{ username }}</h2>
+
+            <p>Manage your links and grow your earnings with CLICK2PAY.</p>
+
+        </div>
+
+        <a href="/create-link" class="create-btn">
+
+            <i class="fa-solid fa-plus"></i>
+
+            Create Link
+
+        </a>
+
+    </div>
+
+    <!-- Earnings -->
+
+    <div class="stats-grid">
+
+        <div class="card">
+
+            <div class="icon blue">
+                <i class="fa-solid fa-rectangle-ad"></i>
+            </div>
+
+            <div>
+
+                <h5>Ads Revenue Today</h5>
+
+                <h2>Rp{{ ads_today }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="icon green">
+                <i class="fa-solid fa-calendar"></i>
+            </div>
+
+            <div>
+
+                <h5>Ads Revenue Month</h5>
+
+                <h2>Rp{{ ads_month }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="icon orange">
+                <i class="fa-solid fa-link"></i>
+            </div>
+
+            <div>
+
+                <h5>Sell Link Today</h5>
+
+                <h2>Rp{{ sell_today }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="icon purple">
+                <i class="fa-solid fa-sack-dollar"></i>
+            </div>
+
+            <div>
+
+                <h5>Sell Link Month</h5>
+
+                <h2>Rp{{ sell_month }}</h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="stats-grid">
+
+        <div class="card">
+
+            <div class="icon cyan">
+                <i class="fa-solid fa-mouse-pointer"></i>
+            </div>
+
+            <div>
+
+                <h5>Today's Clicks</h5>
+
+                <h2>{{ today_clicks }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="icon red">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+
+            <div>
+
+                <h5>Monthly Clicks</h5>
+
+                <h2>{{ month_clicks }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="icon blue">
+                <i class="fa-solid fa-link"></i>
+            </div>
+
+            <div>
+
+                <h5>Total Links</h5>
+
+                <h2>{{ total_links }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="icon green">
+                <i class="fa-solid fa-coins"></i>
+            </div>
+
+            <div>
+
+                <h5>Average CPM</h5>
+
+                <h2>Rp{{ cpm }}</h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Chart -->
+
+    <div class="card chart-card">
+
+        <h3>
+            <i class="fa-solid fa-chart-column"></i>
+            Earnings Statistics
+        </h3>
+
+        <canvas id="earnChart"></canvas>
+
+    </div>
+
+    <!-- Bottom -->
+
+    <div class="bottom-grid">
+
+        <div class="card">
+
+            <h3>
+
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+                Recent Activity
+
+            </h3>
+
+            <!-- isi activity -->
+
+        </div>
+
+        <div class="card">
+
+            <h3>
+
+                <i class="fa-solid fa-fire"></i>
+
+                Top Links
+
+            </h3>
+
+            <!-- isi top links -->
+
+        </div>
+
+    </div>
+
+    <div class="bottom-grid">
+
+        <div class="card">
+
+            <h3>
+
+                <i class="fa-solid fa-gift"></i>
+
+                Daily Bonus
+
+            </h3>
+
+            <a href="/daily-bonus" class="create-btn">
+
+                Claim Bonus
+
+            </a>
+
+        </div>
+
+        <div class="card">
+
+            <h3>
+
+                <i class="fa-solid fa-bullhorn"></i>
+
+                Announcement
+
+            </h3>
+
+            {{ announcement }}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}
