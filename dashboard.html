@@ -1773,18 +1773,7 @@ c2pClose();
 
 });
 
-});
-
-document.getElementById("logoutBtn").addEventListener("click",async()=>{
-
-    await supabaseClient.auth.signOut();
-
-    localStorage.clear();
-    sessionStorage.clear();
-
-    window.location.replace("index.html");
-
-});
+});async()=>{
 
 </script>
 
@@ -2633,7 +2622,15 @@ autoTheme();
 
 setInterval(autoTheme,60000);
 
+document.getElementById("logoutBtn").addEventListener("click",
+    await supabaseClient.auth.signOut();
 
+    localStorage.clear();
+    sessionStorage.clear();
+
+    window.location.replace("index.html");
+
+});
 
 </script>
 
