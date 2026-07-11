@@ -241,3 +241,90 @@ body.dashboard{
     }
 
 }
+/* =====================================================
+   DASHBOARD NAVBAR
+===================================================== */
+
+.dashboard .navbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 30px;
+
+    background:#ffffff;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.06);
+
+}
+
+
+.dashboard .nav-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:24px;
+
+    font-weight:800;
+
+    color:#111827;
+
+}
+
+
+.dashboard .nav-left i{
+
+    color:#0d6efd;
+
+    filter:
+    drop-shadow(
+        0 5px 15px rgba(13,110,253,.35)
+    );
+
+}
+
+
+.dashboard .nav-right button{
+
+    width:45px;
+
+    height:45px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:
+    linear-gradient(
+        135deg,
+        #0d6efd,
+        #084298
+    );
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    transition:.3s;
+
+}
+
+
+.dashboard .nav-right button:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+    0 10px 25px rgba(13,110,253,.35);
+
+}
