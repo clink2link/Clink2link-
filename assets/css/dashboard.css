@@ -1,0 +1,243 @@
+/* =====================================================
+   CLICK2PAY DASHBOARD PREMIUM
+===================================================== */
+
+:root{
+    --primary:#0d6efd;
+    --primary-dark:#084298;
+    --bg:#f8fafc;
+    --white:#ffffff;
+    --text:#172033;
+    --muted:#667085;
+    --radius:22px;
+
+    --shadow:
+    0 20px 60px rgba(0,0,0,.08);
+}
+
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+
+body.dashboard{
+
+    font-family:'Poppins',sans-serif;
+
+    background:
+    linear-gradient(
+        180deg,
+        #ffffff,
+        #f8fafc
+    );
+
+    color:var(--text);
+
+    min-height:100vh;
+
+}
+
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.dashboard .navbar{
+
+    background:white;
+
+    padding:18px 0;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.05);
+
+}
+
+
+.dashboard .navbar-brand{
+
+    font-size:25px;
+
+    font-weight:800;
+
+    color:#111827;
+
+}
+
+
+.dashboard .nav-link{
+
+    color:#344054;
+
+    font-weight:500;
+
+}
+
+
+
+.dashboard .nav-link:hover{
+
+    color:var(--primary);
+
+}
+
+
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+
+
+.dashboard .container{
+
+    max-width:1180px;
+
+    margin:auto;
+
+    padding:40px 20px;
+
+}
+
+
+
+/* =====================================================
+   TITLE
+===================================================== */
+
+
+.dashboard h2{
+
+    font-size:36px;
+
+    font-weight:800;
+
+    margin-bottom:30px;
+
+}
+
+
+
+/* =====================================================
+   PROFILE INFO CARD
+===================================================== */
+
+
+.dashboard .container > p{
+
+    background:white;
+
+    padding:22px;
+
+    margin-bottom:15px;
+
+    border-radius:18px;
+
+    box-shadow:var(--shadow);
+
+    border:1px solid #eef2f7;
+
+    font-weight:500;
+
+}
+
+
+
+.dashboard span{
+
+    color:var(--primary);
+
+    font-weight:700;
+
+}
+
+
+
+/* =====================================================
+   BUTTON
+===================================================== */
+
+
+.dashboard button,
+.dashboard .btn{
+
+    border-radius:50px;
+
+    padding:12px 25px;
+
+    font-weight:600;
+
+}
+
+
+
+.dashboard .btn-primary{
+
+    background:
+    linear-gradient(
+        135deg,
+        #0d6efd,
+        #084298
+    );
+
+    border:none;
+
+}
+
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+
+.dashboard footer{
+
+    background:
+    linear-gradient(
+        135deg,
+        #07101f,
+        #020617
+    );
+
+    color:white;
+
+    margin-top:60px;
+
+}
+
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+
+@media(max-width:768px){
+
+    .dashboard h2{
+
+        font-size:28px;
+
+    }
+
+
+    .dashboard .container{
+
+        padding:25px 15px;
+
+    }
+
+
+    .dashboard .container > p{
+
+        padding:18px;
+
+        font-size:14px;
+
+    }
+
+}
