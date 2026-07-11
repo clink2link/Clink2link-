@@ -396,17 +396,19 @@ background:#1e293b;
 box-sizing:border-box;
 }
 
-/* CARD */
+/* ===========================
+   CREATE LINK
+=========================== */
 
 .create-form{
-max-width:700px;
 width:100%;
-margin:0 auto 24px;
-padding:22px;
+max-width:620px;
+margin:0 auto 22px;
+padding:18px;
 background:#fff;
-border:1px solid #dbeafe;
-border-radius:20px;
-box-shadow:0 10px 30px rgba(15,23,42,.08);
+border:1px solid #e2e8f0;
+border-radius:18px;
+box-shadow:0 8px 25px rgba(15,23,42,.06);
 }
 
 /* HEADER */
@@ -414,32 +416,33 @@ box-shadow:0 10px 30px rgba(15,23,42,.08);
 .create-header{
 display:flex;
 align-items:center;
-gap:14px;
-margin-bottom:20px;
+gap:12px;
+margin-bottom:16px;
 }
 
 .create-icon{
-width:48px;
-height:48px;
-border-radius:14px;
+width:42px;
+height:42px;
+border-radius:12px;
 display:flex;
 align-items:center;
 justify-content:center;
 background:linear-gradient(135deg,#2563eb,#38bdf8);
 color:#fff;
-font-size:20px;
+font-size:18px;
+flex-shrink:0;
 }
 
 .create-header h2{
 margin:0;
-font-size:22px;
+font-size:20px;
 font-weight:700;
 color:#2563eb;
 }
 
 .create-header p{
 margin-top:3px;
-font-size:13px;
+font-size:12px;
 color:#64748b;
 }
 
@@ -447,7 +450,7 @@ color:#64748b;
 
 .create-form label{
 display:block;
-margin:14px 0 8px;
+margin:12px 0 6px;
 font-size:13px;
 font-weight:600;
 color:#64748b;
@@ -457,57 +460,60 @@ color:#64748b;
 
 .input-box{
 position:relative;
-margin-bottom:12px;
+margin-bottom:10px;
 }
 
 .input-box i{
 position:absolute;
-left:16px;
+left:15px;
 top:50%;
 transform:translateY(-50%);
+font-size:15px;
 color:#94a3b8;
-font-size:16px;
 }
 
 .input-box input,
 .input-box select{
 width:100%;
-height:48px;
-padding-left:48px;
-padding-right:16px;
+height:44px;
+padding:0 14px 0 45px;
 border:1px solid #dbeafe;
-border-radius:14px;
+border-radius:12px;
 background:#f8fafc;
 font-size:14px;
 font-family:Poppins,sans-serif;
 outline:none;
-transition:.25s;
+transition:.2s;
 appearance:none;
 }
 
 .input-box input:focus,
 .input-box select:focus{
-border-color:#2563eb;
 background:#fff;
+border-color:#2563eb;
 box-shadow:0 0 0 3px rgba(37,99,235,.08);
 }
 
 /* BUTTON */
 
 .btn-group{
-display:flex;
-gap:12px;
-margin-top:18px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:14px;
 }
 
 .btn-group button{
-flex:1;
-height:46px;
+height:42px;
 border:none;
-border-radius:14px;
+border-radius:12px;
 font-size:14px;
 font-weight:700;
 font-family:Poppins,sans-serif;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:8px;
 cursor:pointer;
 transition:.25s;
 }
@@ -529,18 +535,16 @@ transform:translateY(-2px);
 /* NOTE */
 
 .create-note{
-margin-top:16px;
+margin-top:14px;
 text-align:center;
 font-size:12px;
 color:#64748b;
+line-height:1.5;
 }
 
-.create-note i{
-margin-right:6px;
-color:#2563eb;
-}
-
-/* DARK */
+/* ===========================
+   DARK MODE
+=========================== */
 
 body.dark .create-form{
 background:#0f172a;
@@ -564,34 +568,446 @@ border-color:#334155;
 color:#fff;
 }
 
+body.dark .input-box input:focus,
+body.dark .input-box select:focus{
+background:#162033;
+}
+
 body.dark .btn-secondary{
 background:#1e293b;
 color:#60a5fa;
 }
 
-/* MOBILE */
+/* ===========================
+   MOBILE
+=========================== */
 
 @media(max-width:600px){
 
 .create-form{
+padding:16px;
+border-radius:16px;
+}
+
+.create-header{
+margin-bottom:14px;
+}
+
+.create-header h2{
+font-size:18px;
+}
+
+.create-header p{
+font-size:11px;
+}
+
+.input-box input,
+.input-box select{
+height:42px;
+font-size:13px;
+}
+
+.btn-group{
+grid-template-columns:1fr 1fr;
+gap:8px;
+}
+
+.btn-group button{
+height:40px;
+font-size:13px;
+}
+
+.create-note{
+font-size:11px;
+}
+
+}
+/* ===========================
+   REPORT
+=========================== */
+
+.report-section{
+margin-top:30px;
+}
+
+.report-title{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:15px;
+padding:18px 24px;
+border-radius:18px;
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+color:#fff;
+font-size:22px;
+font-weight:700;
+margin-bottom:20px;
+box-shadow:0 12px 30px rgba(37,99,235,.25);
+}
+
+.report-title i{
+font-size:22px;
+}
+
+.report-title small{
+font-size:15px;
+font-weight:500;
+opacity:.9;
+}
+
+.report-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:18px;
+}
+
+.report-card{
+position:relative;
+background:#fff;
+border-radius:20px;
+padding:22px;
+border:1px solid #e2e8f0;
+box-shadow:0 8px 25px rgba(15,23,42,.06);
+overflow:hidden;
+transition:.25s;
+}
+
+.report-card:hover{
+transform:translateY(-4px);
+}
+
+.report-icon{
+position:absolute;
+top:20px;
+right:20px;
+width:62px;
+height:62px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+color:#fff;
+}
+
+.green{
+background:linear-gradient(135deg,#34d399,#14b8a6);
+}
+
+.blue{
+background:linear-gradient(135deg,#38bdf8,#2563eb);
+}
+
+.orange{
+background:linear-gradient(135deg,#fb923c,#f97316);
+}
+
+.purple{
+background:linear-gradient(135deg,#a855f7,#8b5cf6);
+}
+
+.report-card h4{
+margin:0;
+font-size:16px;
+font-weight:700;
+color:#64748b;
+}
+
+.report-card h2{
+margin:14px 0 0;
+font-size:28px;
+font-weight:800;
+color:#0f172a;
+}
+
+/* DARK */
+
+body.dark .report-card{
+background:#0f172a;
+border-color:#1e293b;
+}
+
+body.dark .report-card h4{
+color:#94a3b8;
+}
+
+body.dark .report-card h2{
+color:#fff;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.report-grid{
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.report-title{
+font-size:18px;
+padding:14px 18px;
+}
+
+.report-title small{
+font-size:12px;
+}
+
+.report-card{
+padding:16px;
+border-radius:16px;
+}
+
+.report-icon{
+width:52px;
+height:52px;
+font-size:20px;
+}
+
+.report-card h4{
+font-size:13px;
+}
+
+.report-card h2{
+font-size:22px;
+}
+
+}
+
+@media(max-width:520px){
+
+.report-grid{
+grid-template-columns:1fr;
+}
+
+}
+.stats-box{
+background:#fff;
+border:1px solid #e2e8f0;
+border-radius:22px;
+padding:22px;
+box-shadow:0 10px 30px rgba(15,23,42,.06);
+}
+
+.stats-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:18px;
+gap:15px;
+}
+
+.stats-head h2{
+margin:0;
+font-size:22px;
+color:#2563eb;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.stats-head select{
+height:40px;
+padding:0 14px;
+border:none;
+border-radius:12px;
+background:#f1f5f9;
+font-family:Poppins,sans-serif;
+font-weight:600;
+}
+
+.stats-box canvas{
+width:100%!important;
+height:320px!important;
+margin-top:10px;
+}
+
+.stats-info{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+margin-top:20px;
+text-align:center;
+}
+
+.stats-info div{
+padding:12px;
+background:#f8fafc;
+border-radius:12px;
+}
+
+.stats-info span{
+display:block;
+font-size:13px;
+color:#64748b;
+margin-bottom:4px;
+}
+
+.stats-info b{
+font-size:18px;
+color:#2563eb;
+}
+
+.stats-note{
+margin-top:16px;
+text-align:center;
+font-size:13px;
+color:#64748b;
+}
+
+body.dark .stats-box{
+background:#0f172a;
+border-color:#1e293b;
+}
+
+body.dark .stats-head h2{
+color:#60a5fa;
+}
+
+body.dark .stats-head select{
+background:#1e293b;
+color:#fff;
+}
+
+body.dark .stats-info div{
+background:#1e293b;
+}
+
+body.dark .stats-info span,
+body.dark .stats-note{
+color:#94a3b8;
+}
+
+body.dark .stats-info b{
+color:#fff;
+}
+
+@media(max-width:768px){
+
+.stats-head{
+flex-direction:column;
+align-items:flex-start;
+}
+
+.stats-box canvas{
+height:250px!important;
+}
+
+.stats-info{
+grid-template-columns:1fr;
+}
+
+}
+.report-card{
+background:#fff;
+border-radius:24px;
+padding:24px;
+box-shadow:0 10px 30px rgba(0,0,0,.06);
+margin-top:24px;
+overflow:hidden;
+}
+
+.report-header{
+display:flex;
+align-items:center;
+gap:10px;
+font-size:28px;
+font-weight:700;
+color:#1d4ed8;
+margin-bottom:22px;
+}
+
+.report-header i{
+font-size:24px;
+}
+
+.report-table{
+overflow-x:auto;
+}
+
+.report-table table{
+width:100%;
+border-collapse:separate;
+border-spacing:0 12px;
+min-width:600px;
+}
+
+.report-table th{
+font-size:18px;
+font-weight:700;
+color:#1f2937;
+padding:10px;
+text-align:center;
+}
+
+.report-table td{
+padding:16px 12px;
+font-size:17px;
+text-align:center;
+background:#f3f6fc;
+}
+
+.report-table tr td:first-child{
+border-radius:12px 0 0 12px;
+}
+
+.report-table tr td:last-child{
+border-radius:0 12px 12px 0;
+}
+
+.report-table tbody tr:nth-child(even) td{
+background:#fff;
+}
+
+.report-table .earning{
+color:#1d4ed8;
+font-weight:700;
+}
+
+.report-table .empty{
+background:none;
+font-size:16px;
+padding:30px;
+}
+
+body.dark .report-card{
+background:#0f172a;
+}
+
+body.dark .report-table th{
+color:#fff;
+}
+
+body.dark .report-table td{
+background:#1e293b;
+color:#fff;
+}
+
+body.dark .report-table tbody tr:nth-child(even) td{
+background:#162033;
+}
+
+@media(max-width:768px){
+
+.report-card{
 padding:18px;
 border-radius:18px;
 }
 
-.create-header h2{
-font-size:20px;
+.report-header{
+font-size:22px;
 }
 
-.btn-group{
-flex-direction:column;
+.report-table th{
+font-size:15px;
 }
 
-.btn-group button{
-width:100%;
+.report-table td{
+font-size:15px;
+padding:14px 10px;
 }
 
 }
-
   
   
 /* ===== FOOTER ===== */
@@ -1438,232 +1854,221 @@ Dashboard Click2Pay
 </div>
 
 
-<!-- REPORT PENDAPATAN -->
+<!-- =========================
+     REPORT PENDAPATAN
+========================= -->
 
-<div class="dash-stats">
+<div class="report-section">
 
+    <!-- HARIAN -->
 
+    <div class="report-title">
+        <i class="fa-solid fa-calendar-day"></i>
+        <span>Report Harian</span>
 
-<div class="dash-card">
+        <small id="todayDate">
+            -
+        </small>
+    </div>
 
-<div class="dash-icon">
-<i class="fa-solid fa-calendar-day"></i>
+    <div class="report-grid">
+
+        <div class="report-card">
+
+            <div class="report-icon green">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+
+            <h4>Ads Hari Ini</h4>
+
+            <h2 id="adsToday">
+                Rp 0
+            </h2>
+
+        </div>
+
+        <div class="report-card">
+
+            <div class="report-icon blue">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+
+            <h4>Ads Bulan Ini</h4>
+
+            <h2 id="adsMonth">
+                Rp 0
+            </h2>
+
+        </div>
+
+        <div class="report-card sell-only" style="display:none">
+
+            <div class="report-icon orange">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+
+            <h4>Sell Hari Ini</h4>
+
+            <h2 id="sellToday">
+                Rp 0
+            </h2>
+
+        </div>
+
+        <div class="report-card sell-only" style="display:none">
+
+            <div class="report-icon purple">
+                <i class="fa-solid fa-chart-pie"></i>
+            </div>
+
+            <h4>Sell Bulan Ini</h4>
+
+            <h2 id="sellMonth">
+                Rp 0
+            </h2>
+
+        </div>
+
+    </div>
+
 </div>
 
-<h3>Ads Hari Ini</h3>
-
-<h2 id="adsToday">
-Rp 0
-</h2>
-
-</div>
 
 
-
-
-<div class="dash-card">
-
-<div class="dash-icon">
-<i class="fa-solid fa-calendar"></i>
-</div>
-
-<h3>Ads Bulan Ini</h3>
-
-<h2 id="adsMonth">
-Rp 0
-</h2>
-
-</div>
-
-
-
-
-<div class="dash-card sell-only" style="display:none">
-
-<div class="dash-icon">
-<i class="fa-solid fa-cart-shopping"></i>
-</div>
-
-<h3>Sell Hari Ini</h3>
-
-<h2 id="sellToday">
-Rp 0
-</h2>
-
-</div>
-
-
-
-
-<div class="dash-card sell-only" style="display:none">
-
-<div class="dash-icon">
-<i class="fa-solid fa-chart-line"></i>
-</div>
-
-<h3>Sell Bulan Ini</h3>
-
-<h2 id="sellMonth">
-Rp 0
-</h2>
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-<!-- STATISTIK -->
-
+<!-- ===========================
+     STATISTIK
+=========================== -->
 
 <div class="dash-grid">
 
+    <!-- ADS -->
+
+    <div class="stats-box">
+
+        <div class="stats-head">
+
+            <h2>
+                <i class="fa-solid fa-chart-line"></i>
+                Statistik Ads
+            </h2>
+
+            <select id="adsMonthSelect">
+                <option>July 2026</option>
+            </select>
+
+        </div>
+
+        <canvas id="adsChart"></canvas>
+
+        <div class="stats-info">
+
+            <div>
+                <span>Views</span>
+                <b id="adsViews">0</b>
+            </div>
+
+            <div>
+                <span>Klik</span>
+                <b id="adsClicks">0</b>
+            </div>
+
+            <div>
+                <span>CPM</span>
+                <b id="adsCpm">0</b>
+            </div>
+
+        </div>
+
+        <p class="stats-note">
+            Report berdasarkan waktu Asia/Jakarta.
+        </p>
+
+    </div>
 
 
-<div class="dash-box">
+    <!-- SELL -->
 
+    <div class="stats-box sell-only" style="display:none;">
 
-<h2>
-<i class="fa-solid fa-chart-simple"></i>
-Statistik Ads
-</h2>
+        <div class="stats-head">
 
+            <h2>
+                <i class="fa-solid fa-cart-shopping"></i>
+                Statistik Sell Link
+            </h2>
 
-<p>
-Views :
-<b id="adsViews">0</b>
-</p>
+            <select id="sellMonthSelect">
+                <option>July 2026</option>
+            </select>
 
+        </div>
 
-<p>
-Klik :
-<b id="adsClicks">0</b>
-</p>
+        <canvas id="sellChart"></canvas>
 
+        <div class="stats-info">
 
-<p>
-CPM :
-<b id="adsCpm">0</b>
-</p>
+            <div>
+                <span>Views</span>
+                <b id="sellViews">0</b>
+            </div>
 
+            <div>
+                <span>Klik</span>
+                <b id="sellClicks">0</b>
+            </div>
+
+            <div>
+                <span>CPM</span>
+                <b id="sellCpm">0</b>
+            </div>
+
+        </div>
+
+        <p class="stats-note">
+            Report berdasarkan waktu Asia/Jakarta.
+        </p>
+
+    </div>
 
 </div>
-
-
-
-
-
-
-<div class="dash-box sell-only" style="display:none">
-
-
-<h2>
-<i class="fa-solid fa-cart-shopping"></i>
-Statistik Sell Link
-</h2>
-
-
-<p>
-Views :
-<b id="sellViews">0</b>
-</p>
-
-
-<p>
-Klik :
-<b id="sellClicks">0</b>
-</p>
-
-
-<p>
-CPM :
-<b id="sellCpm">0</b>
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
 <!-- REPORT TABLE -->
 
 
-<div class="dash-box">
+<div class="report-card">
 
+<div class="report-header">
+<i class="fa-solid fa-chart-column"></i>
+<span>Detail Report Harian Ads Link</span>
+</div>
 
-<h2>
-<i class="fa-solid fa-table"></i>
-Report Pendapatan
-</h2>
+<div class="report-table">
 
-
-<div style="overflow-x:auto">
-
-
-<table width="100%" cellpadding="12">
-
+<table>
 
 <thead>
-
 <tr>
-
-<th>Tanggal</th>
-
-<th>Views</th>
-
-<th>Link Earnings</th>
-
+<th>Date</th>
+<th>Valid</th>
+<th>Earnings</th>
 <th>Daily CPM</th>
-
-<th>Penghasilan</th>
-
-
 </tr>
-
 </thead>
-
-
 
 <tbody id="reportTable">
 
-
 <tr>
-
-<td colspan="5" align="center">
-
+<td colspan="4" class="empty">
 Belum ada data
-
 </td>
-
 </tr>
-
 
 </tbody>
 
-
 </table>
 
-
 </div>
 
-
 </div>
-
-
-
-
 
 
 
@@ -1878,78 +2283,106 @@ document.getElementById("adsToday").innerHTML=
 "Rp "+Number(profile.ads_earning_today)
 .toLocaleString("id-ID");
 
-
-
 document.getElementById("adsMonth").innerHTML=
 "Rp "+Number(profile.ads_earning_month)
 .toLocaleString("id-ID");
 
+const now = new Date();
 
-
-
-
-
+document.getElementById("todayDate").innerHTML =
+now.toLocaleString("id-ID",{
+day:"2-digit",
+month:"long",
+year:"numeric",
+hour:"2-digit",
+minute:"2-digit"
+});
 
 // SELL LINK UNLOCK
 
-const sellOption = document.querySelector('#linkType option[value="sell"]');
+/* SELL LINK */
+
+const sellOption=document.querySelector('#linkType option[value="sell"]');
 
 if(profile.sell_link_enabled){
 
-    document.querySelectorAll(".sell-only").forEach(el=>{
-        el.style.display="block";
-    });
+document.querySelectorAll(".sell-only").forEach(el=>{
+el.style.display="";
+});
 
-    sellOption.disabled = false;
-    sellOption.textContent = "Sell Link";
+sellOption.disabled=false;
+sellOption.textContent="🛒 Sell Link";
 
-    document.getElementById("sellToday").innerHTML =
-        "Rp " + Number(profile.sell_earning_today).toLocaleString("id-ID");
+document.getElementById("sellToday").textContent=
+"Rp "+Number(profile.sell_earning_today||0).toLocaleString("id-ID");
 
-    document.getElementById("sellMonth").innerHTML =
-        "Rp " + Number(profile.sell_earning_month).toLocaleString("id-ID");
+document.getElementById("sellMonth").textContent=
+"Rp "+Number(profile.sell_earning_month||0).toLocaleString("id-ID");
 
-    document.getElementById("sellInfo").innerHTML =
-        '<i class="fa-solid fa-circle-check"></i> Sell Link sudah aktif.';
+document.getElementById("sellInfo").innerHTML=
+'<i class="fa-solid fa-circle-check"></i> Sell Link sudah aktif.';
 
 }else{
 
-    document.querySelectorAll(".sell-only").forEach(el=>{
-        el.style.display="none";
-    });
+document.querySelectorAll(".sell-only").forEach(el=>{
+el.style.display="none";
+});
 
-    sellOption.disabled = true;
-    sellOption.textContent = "Sell Link 🔒";
+sellOption.disabled=true;
+sellOption.textContent="🛒 Sell Link 🔒";
 
-    document.getElementById("sellInfo").innerHTML =
-        '<i class="fa-solid fa-lock"></i> Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.';
+document.getElementById("sellInfo").innerHTML=
+'<i class="fa-solid fa-lock"></i> Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.';
 
 }
 
-document.getElementById("shortenBtn").addEventListener("click", function () {
 
-    const url = document.getElementById("urlInput").value.trim();
-    const type = document.getElementById("linkType").value;
+/* CREATE LINK */
 
-    if (url === "") {
-        alert("Masukkan URL terlebih dahulu.");
-        return;
-    }
+document.getElementById("shortenBtn").addEventListener("click",async()=>{
 
-    // Simpan URL agar bisa dipakai di halaman berikutnya
-    localStorage.setItem("create_url", url);
+const url=document.getElementById("urlInput").value.trim();
+const type=document.getElementById("linkType").value;
 
-    if (type === "ads") {
+if(!url){
+alert("Masukkan URL terlebih dahulu.");
+return;
+}
 
-        // Arahkan ke halaman Task 1
-        window.location.href = "task1.html";
+try{
 
-    } else if (type === "sell") {
+new URL(url);
 
-        // Rencana diarahkan ke BayarGG
-        window.location.href = "bayargg.html";
+}catch{
 
-    }
+alert("URL tidak valid.");
+return;
+
+}
+
+localStorage.setItem("create_url",url);
+
+if(type==="ads"){
+
+window.location.href="task1.html";
+
+return;
+
+}
+
+if(type==="sell"){
+
+if(!profile.sell_link_enabled){
+
+alert("Sell Link belum tersedia.");
+
+return;
+
+}
+
+window.location.href="bayargg.html";
+
+}
 
 });
 
@@ -1958,144 +2391,146 @@ document.getElementById("shortenBtn").addEventListener("click", function () {
 /* STATISTIK LINK */
 
 
-const {data:links}=
-
-await supabaseClient
-
+const {data:links,error:linkError}=await supabaseClient
 .from("links")
-
-.select("*")
-
+.select("type,total_views,total_clicks")
 .eq("user_id",authId);
-
-
-
 
 let adsViews=0;
 let adsClicks=0;
-
-
 let sellViews=0;
 let sellClicks=0;
 
-
+if(!linkError&&links){
 
 links.forEach(link=>{
 
-
 if(link.type==="ads"){
 
-adsViews+=link.total_views;
-
-adsClicks+=link.total_clicks;
-
+adsViews+=Number(link.total_views||0);
+adsClicks+=Number(link.total_clicks||0);
 
 }else if(link.type==="sell"){
 
-
-sellViews+=link.total_views;
-
-sellClicks+=link.total_clicks;
-
+sellViews+=Number(link.total_views||0);
+sellClicks+=Number(link.total_clicks||0);
 
 }
 
-
 });
 
+}
+
+document.getElementById("adsViews").textContent=adsViews.toLocaleString("id-ID");
+document.getElementById("adsClicks").textContent=adsClicks.toLocaleString("id-ID");
+
+const sellViewsEl=document.getElementById("sellViews");
+const sellClicksEl=document.getElementById("sellClicks");
+
+if(sellViewsEl)sellViewsEl.textContent=sellViews.toLocaleString("id-ID");
+if(sellClicksEl)sellClicksEl.textContent=sellClicks.toLocaleString("id-ID");
 
 
+   
 
+const {data:chartData}=await supabaseClient
+.from("dashboard_daily_report")
+.select("report_date,views")
+.eq("user_id",authId)
+.order("report_date",{ascending:true})
+.limit(7);
 
-document.getElementById("adsViews")
-.innerHTML=adsViews;
+const chartLabels=chartData.map(item=>item.report_date);
+const chartViews=chartData.map(item=>Number(item.views||0));
 
-
-
-document.getElementById("adsClicks")
-.innerHTML=adsClicks;
-
-
-
-document.getElementById("sellViews")
-.innerHTML=sellViews;
-
-
-
-document.getElementById("sellClicks")
-.innerHTML=sellClicks;
-
-
-
-
-
-
+new Chart(document.getElementById("adsChart"),{
+type:"line",
+data:{
+labels:chartLabels,
+datasets:[{
+label:"Views",
+data:chartViews,
+borderColor:"#2dd4bf",
+backgroundColor:"rgba(45,212,191,.15)",
+fill:true,
+tension:.35,
+pointRadius:4
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+plugins:{
+legend:{display:false}
+}
+}
+});
 
 /* REPORT TABLE */
 
 
-const {data:reports}=
-
-await supabaseClient
-
+const {data:reports,error:reportError}=await supabaseClient
 .from("dashboard_daily_report")
-
-.select("*")
-
+.select("report_date,views,link_earnings,daily_cpm,penghasilan")
 .eq("user_id",authId)
-
+.order("report_date",{ascending:false})
 .limit(30);
 
+let html="";
+
+if(!reportError&&reports&&reports.length){
+
+reports.forEach(row=>{
+
+html+=`
+<tr>
+<td>${row.report_date}</td>
+<td>${Number(row.views||0).toLocaleString("id-ID")}</td>
+<td>Rp ${Number(row.link_earnings||0).toLocaleString("id-ID")}</td>
+<td>${Number(row.daily_cpm||0).toLocaleString("id-ID")}</td>
+<td>Rp ${Number(row.penghasilan||0).toLocaleString("id-ID")}</td>
+</tr>
+`;
+
+});
+
+}else{
+
+html=`
+<tr>
+<td colspan="5" style="text-align:center;padding:20px;color:#94a3b8">
+Belum ada data report.
+</td>
+</tr>
+`;
+
+}
+
+document.getElementById("reportTable").innerHTML=html;
 
 
 
 let html="";
 
-
 reports.forEach(row=>{
 
-
 html+=`
-
 <tr>
-
 <td>${row.report_date}</td>
-
-<td>${row.views}</td>
-
-<td>
-Rp ${Number(row.link_earnings)
-.toLocaleString("id-ID")}
+<td>${Number(row.views||0).toLocaleString("id-ID")}</td>
+<td class="earning">
+Rp ${Number(row.link_earnings||0).toLocaleString("id-ID")}
 </td>
-
-
-<td>
-${row.daily_cpm}
-</td>
-
-
-<td>
-Rp ${Number(row.penghasilan)
-.toLocaleString("id-ID")}
-</td>
-
-
+<td>${Number(row.daily_cpm||0).toLocaleString("id-ID")}</td>
 </tr>
-
 `;
 
 });
 
-
-
-document.getElementById("reportTable")
-.innerHTML=html;
-
-
-
-
-
-
+document.getElementById("reportTable").innerHTML=html||`
+<tr>
+<td colspan="4" class="empty">Belum ada data</td>
+</tr>`;
 /* ANNOUNCEMENT */
 
 
