@@ -392,201 +392,202 @@ background:#1e293b;
    CREATE FORM
 ========================= */
 
+*{
+box-sizing:border-box;
+}
+
+/* CARD */
+
 .create-form{
-    max-width:720px;
-    width:100%;
-    margin:0 auto 20px;
-    padding:16px 18px;
-    background:#fff;
-    border:1px solid #e2e8f0;
-    border-radius:18px;
-    box-shadow:0 8px 20px rgba(15,23,42,.06);
+max-width:700px;
+width:100%;
+margin:0 auto 24px;
+padding:22px;
+background:#fff;
+border:1px solid #dbeafe;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(15,23,42,.08);
 }
 
-.create-form h2{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin:0;
-    font-size:19px;
-    font-weight:700;
-    color:#2563eb;
+/* HEADER */
+
+.create-header{
+display:flex;
+align-items:center;
+gap:14px;
+margin-bottom:20px;
 }
 
-.create-form h2 i{
-    width:34px;
-    height:34px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#eff6ff;
-    color:#2563eb;
-    border-radius:10px;
-    font-size:15px;
+.create-icon{
+width:48px;
+height:48px;
+border-radius:14px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(135deg,#2563eb,#38bdf8);
+color:#fff;
+font-size:20px;
 }
 
-.create-desc{
-    margin:8px 0 14px;
-    color:#64748b;
-    font-size:13px;
+.create-header h2{
+margin:0;
+font-size:22px;
+font-weight:700;
+color:#2563eb;
+}
+
+.create-header p{
+margin-top:3px;
+font-size:13px;
+color:#64748b;
+}
+
+/* LABEL */
+
+.create-form label{
+display:block;
+margin:14px 0 8px;
+font-size:13px;
+font-weight:600;
+color:#64748b;
 }
 
 /* INPUT */
 
-.input-wrapper{
-    position:relative;
-    margin-bottom:12px;
+.input-box{
+position:relative;
+margin-bottom:12px;
 }
 
-.input-wrapper i{
-    position:absolute;
-    left:15px;
-    top:50%;
-    transform:translateY(-50%);
-    color:#94a3b8;
-    font-size:15px;
-    pointer-events:none;
+.input-box i{
+position:absolute;
+left:16px;
+top:50%;
+transform:translateY(-50%);
+color:#94a3b8;
+font-size:16px;
 }
 
-.create-input,
-.create-select{
-    width:100%;
-    height:46px;
-    padding:0 15px 0 45px;
-    border:1px solid #dbeafe;
-    border-radius:12px;
-    background:#f8fafc;
-    font-family:Poppins,sans-serif;
-    font-size:14px;
-    outline:none;
-    transition:.25s;
-    appearance:none;
+.input-box input,
+.input-box select{
+width:100%;
+height:48px;
+padding-left:48px;
+padding-right:16px;
+border:1px solid #dbeafe;
+border-radius:14px;
+background:#f8fafc;
+font-size:14px;
+font-family:Poppins,sans-serif;
+outline:none;
+transition:.25s;
+appearance:none;
 }
 
-.create-input:focus,
-.create-select:focus{
-    background:#fff;
-    border-color:#2563eb;
-    box-shadow:0 0 0 3px rgba(37,99,235,.08);
-}
-
-.create-label{
-    margin-bottom:6px;
-    display:block;
-    font-size:13px;
-    font-weight:600;
-    color:#64748b;
+.input-box input:focus,
+.input-box select:focus{
+border-color:#2563eb;
+background:#fff;
+box-shadow:0 0 0 3px rgba(37,99,235,.08);
 }
 
 /* BUTTON */
 
-.create-actions{
-    display:flex;
-    gap:10px;
-    margin-top:12px;
+.btn-group{
+display:flex;
+gap:12px;
+margin-top:18px;
 }
 
-.create-actions button{
-    flex:1;
-    height:42px;
-    border:none;
-    border-radius:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    font-family:Poppins,sans-serif;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-    transition:.25s;
+.btn-group button{
+flex:1;
+height:46px;
+border:none;
+border-radius:14px;
+font-size:14px;
+font-weight:700;
+font-family:Poppins,sans-serif;
+cursor:pointer;
+transition:.25s;
 }
 
-.btn-shorten{
-    background:linear-gradient(135deg,#2563eb,#1d4ed8);
-    color:#fff;
+.btn-primary{
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+color:#fff;
 }
 
-.btn-advance{
-    background:#eff6ff;
-    color:#2563eb;
+.btn-secondary{
+background:#eff6ff;
+color:#2563eb;
 }
 
-.btn-shorten:hover,
-.btn-advance:hover{
-    transform:translateY(-2px);
+.btn-group button:hover{
+transform:translateY(-2px);
 }
 
-#sellInfo{
-    margin-top:10px;
-    display:block;
-    text-align:center;
-    font-size:12px;
-    color:#64748b;
+/* NOTE */
+
+.create-note{
+margin-top:16px;
+text-align:center;
+font-size:12px;
+color:#64748b;
 }
 
-/* =========================
-   DARK MODE
-========================= */
+.create-note i{
+margin-right:6px;
+color:#2563eb;
+}
+
+/* DARK */
 
 body.dark .create-form{
-    background:#0f172a;
-    border-color:#1e293b;
+background:#0f172a;
+border-color:#1e293b;
 }
 
-body.dark .create-form h2{
-    color:#60a5fa;
+body.dark .create-header h2{
+color:#60a5fa;
 }
 
-body.dark .create-form h2 i{
-    background:#1e293b;
-    color:#60a5fa;
+body.dark .create-header p,
+body.dark .create-form label,
+body.dark .create-note{
+color:#94a3b8;
 }
 
-body.dark .create-desc,
-body.dark .create-label,
-body.dark #sellInfo{
-    color:#94a3b8;
+body.dark .input-box input,
+body.dark .input-box select{
+background:#1e293b;
+border-color:#334155;
+color:#fff;
 }
 
-body.dark .input-wrapper i{
-    color:#64748b;
+body.dark .btn-secondary{
+background:#1e293b;
+color:#60a5fa;
 }
 
-body.dark .create-input,
-body.dark .create-select{
-    background:#1e293b;
-    border-color:#334155;
-    color:#fff;
-}
-
-body.dark .create-input:focus,
-body.dark .create-select:focus{
-    background:#162033;
-}
-
-body.dark .btn-advance{
-    background:#1e293b;
-    color:#60a5fa;
-}
-
-/* =========================
-   MOBILE
-========================= */
+/* MOBILE */
 
 @media(max-width:600px){
 
 .create-form{
-    max-width:100%;
-    padding:14px;
+padding:18px;
+border-radius:18px;
 }
 
-.create-actions{
-    flex-direction:column;
+.create-header h2{
+font-size:20px;
 }
 
-.create-actions button{
-    width:100%;
+.btn-group{
+flex-direction:column;
+}
+
+.btn-group button{
+width:100%;
 }
 
 }
@@ -1380,90 +1381,59 @@ Dashboard Click2Pay
 
 <div class="create-form">
 
-    <div class="create-title">
+    <div class="create-header">
 
-        <div class="title-icon">
+        <div class="create-icon">
             <i class="fa-solid fa-bolt"></i>
         </div>
 
         <div>
             <h2>Create Link</h2>
-            <p>Buat Ads Link atau Sell Link hanya dalam beberapa detik.</p>
+            <p>Buat Ads Link atau Sell Link dengan mudah.</p>
         </div>
 
     </div>
 
-    <label class="create-label">
-        <i class="fa-solid fa-earth-asia"></i>
-        Destination URL
-    </label>
+    <label>Destination URL</label>
 
-    <div class="input-wrapper">
-
+    <div class="input-box">
         <i class="fa-solid fa-globe"></i>
 
         <input
             type="url"
             id="urlInput"
-            class="create-input"
             placeholder="https://example.com">
-
     </div>
 
-    <label class="create-label">
-        <i class="fa-solid fa-shapes"></i>
-        Link Type
-    </label>
+    <label>Link Type</label>
 
-    <div class="input-wrapper">
-
+    <div class="input-box">
         <i class="fa-solid fa-link"></i>
 
-        <select
-            id="linkType"
-            class="create-select">
-
-            <option value="ads">
-                Ads Link
-            </option>
-
-            <option value="sell" disabled>
-                Sell Link 🔒
-            </option>
-
+        <select id="linkType">
+            <option value="ads">Ads Link</option>
+            <option value="sell" disabled>Sell Link 🔒</option>
         </select>
-
     </div>
 
-    <div class="create-actions">
+    <div class="btn-group">
 
-        <button
-            id="shortenBtn"
-            class="btn-shorten">
-
+        <button class="btn-primary" id="shortenBtn">
             <i class="fa-solid fa-wand-magic-sparkles"></i>
             Create Link
-
         </button>
 
-        <button
-            id="advanceBtn"
-            class="btn-advance">
-
+        <button class="btn-secondary" id="advanceBtn">
             <i class="fa-solid fa-sliders"></i>
             Advanced
-
         </button>
 
     </div>
 
-    <small id="sellInfo">
-
+    <div class="create-note">
         <i class="fa-solid fa-shield-check"></i>
-
-        Sell Link akan terbuka setelah berhasil melakukan <b>1× Withdraw</b>.
-
-    </small>
+        Sell Link akan aktif setelah 1× Withdraw.
+    </div>
 
 </div>
 
