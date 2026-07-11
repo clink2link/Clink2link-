@@ -1340,18 +1340,12 @@ c2pClose();
 /* DATA PLACEHOLDER */
 
 const dashboardData={
-
 saldo:0,
-
 totalLink:0,
-
 totalKlik:0,
-
 pendapatan:0
-
 };
 
-<script>
 function autoTheme(){
 const jam=new Date().getHours();
 
@@ -1364,23 +1358,15 @@ document.body.classList.remove("dark");
 
 autoTheme();
 setInterval(autoTheme,60000);
-</script>
-
 
 /*
-
 Nanti bagian ini diganti API:
 
 fetch("https://worker-domain.workers.dev/user")
-
 .then(res=>res.json())
-
 .then(data=>{
-
 dashboardData=data;
-
 })
-
 */
 
 
