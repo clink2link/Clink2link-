@@ -4,99 +4,126 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Dashboard</title>
-<link rel="stylesheet" href="/assets/css/dashboard.css">
+<title>Dashboard - Click2Pay</title>
 
+<link rel="stylesheet" href="/assets/css/dashboard.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 </head>
 
 <body class="dashboard">
+
 <div id="navbar"></div>
 
-<div class="container">
-  <h2>Dashboard</h2>
+<main class="container">
 
-  <p>Email: <span id="email"></span></p>
-  <p>User ID: <span id="uid"></span></p>
+    <h2>Dashboard</h2>
 
-  <p>Username: <span id="username"></span></p>
-  <p>Saldo: <span id="saldo"></span></p>
-</div>
+    <div class="dashboard-grid">
+
+        <div class="dashboard-card">
+            <i class="fa-solid fa-envelope"></i>
+            <div>
+                <small>Email</small>
+                <p id="email">-</p>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <i class="fa-solid fa-id-card"></i>
+            <div>
+                <small>User ID</small>
+                <p id="uid">-</p>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <i class="fa-solid fa-user"></i>
+            <div>
+                <small>Username</small>
+                <p id="username">-</p>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <i class="fa-solid fa-wallet"></i>
+            <div>
+                <small>Saldo</small>
+                <p id="saldo">Rp 0</p>
+            </div>
+        </div>
+
+    </div>
+
+</main>
 
 <div id="footer"></div>
 
 <script>
 const supabase = window.supabase.createClient(
-  "https://qmrhxsrnvgvggwahufvp.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtcmh4c3Judmd2Z2d3YWh1ZnZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzU5ODQsImV4cCI6MjA5OTI1MTk4NH0.gR5vX2-r7hG_vzEcEzPKTIhsOKWA9gNep3lfQcyk724"
+    "https://qmrhxsrnvgvggwahufvp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJncmh4c3Judmd2Z2d3YWh1ZnZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzU5ODQsImV4cCI6MjA5OTI1MTk4NH0.gR5vX2-r7hG_vzEcEzPKTIhsOKWA9gNep3lfQcyk724"
 );
 
-// LOAD COMPONENT
-async function loadComponent(id, file) {
-  const res = await fetch(file);
-  const html = await res.text();
-  document.getElementById(id).innerHTML = html;
+async function loadComponent(id, file){
+    const res = await fetch(file);
+    const html = await res.text();
+    document.getElementById(id).innerHTML = html;
 }
 
-async function main() {
-  // load dulu
-  await loadComponent("navbar", "/components/navbar.html");
-  await loadComponent("footer", "/components/footer.html");
+async function main(){
+    await loadComponent("navbar", "/components/navbar.html");
+    await loadComponent("footer", "/components/footer.html");
 
-  // baru init setelah HTML masuk
-  initNavbar();
-  init();
+    initNavbar();
+    init();
 }
 
-// INIT USER
-async function init() {
-  const { data: { user } } = await supabase.auth.getUser();
+async function init(){
 
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
+    const { data:{ user } } = await supabase.auth.getUser();
 
-  document.getElementById("email").innerText = user.email;
-  document.getElementById("uid").innerText = user.id;
+    if(!user){
+        window.location.href="login.html";
+        return;
+    }
 
-  const { data } = await supabase
-    .from("users")
-    .select("username")
-    .eq("user_id", user.id)
-    .single();
+    document.getElementById("email").innerText = user.email;
+    document.getElementById("uid").innerText = user.id;
 
-  document.getElementById("username").innerText = data?.username || "-";
+    const { data } = await supabase
+        .from("users")
+        .select("username")
+        .eq("user_id", user.id)
+        .single();
 
-  const { data: wallet } = await supabase
-    .from("wallets")
-    .select("balance")
-    .eq("user_id", user.id)
-    .single();
+    document.getElementById("username").innerText =
+        data?.username || "-";
 
-  document.getElementById("saldo").innerText =
-    "Rp " + (wallet?.balance || 0);
+    const { data:wallet } = await supabase
+        .from("wallets")
+        .select("balance")
+        .eq("user_id", user.id)
+        .single();
+
+    document.getElementById("saldo").innerText =
+        "Rp " + Number(wallet?.balance || 0).toLocaleString("id-ID");
 }
 
-// INIT NAVBAR (INI YANG TADI ERROR)
-function initNavbar() {
-  // logout
-  document.getElementById("logoutBtn").onclick = async () => {
-    await supabase.auth.signOut();
-    window.location.href = "index.html";
-  };
+function initNavbar(){
 
-  // profile toggle
-  document.getElementById("profileBtn").onclick = () => {
-    document
-      .getElementById("profileDropdown")
-      .classList.toggle("show");
-  };
+    const logout = document.getElementById("logoutBtn");
+
+    if(logout){
+        logout.onclick = async()=>{
+            await supabase.auth.signOut();
+            window.location.href="index.html";
+        };
+    }
+
 }
 
-// jalanin
 main();
 </script>
 
