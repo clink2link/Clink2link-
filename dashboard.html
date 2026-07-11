@@ -1459,8 +1459,8 @@ Rp 0
 
 <br>
 
-<button>
-Logout
+<button id="logoutBtn">
+    Logout
 </button>
 
 </div>
@@ -1772,6 +1772,17 @@ link.addEventListener("click",()=>{
 c2pClose();
 
 });
+
+});
+
+document.getElementById("logoutBtn").addEventListener("click",async()=>{
+
+    await supabaseClient.auth.signOut();
+
+    localStorage.clear();
+    sessionStorage.clear();
+
+    window.location.replace("index.html");
 
 });
 
