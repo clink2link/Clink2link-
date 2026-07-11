@@ -40,19 +40,20 @@
 
             <i class="fa-regular fa-bell"></i>
 
-            {% if unread_notifications > 0 %}
-            <span class="badge">{{ unread_notifications }}</span>
-            {% endif %}
+            <span class="badge" id="notificationBadge" style="display:none;">0</span>
 
         </a>
 
         <a href="/profile" class="profile-btn">
 
-            {% if avatar %}
-                <img src="{{ avatar }}" alt="">
-            {% else %}
-                <i class="fa-solid fa-user"></i>
-            {% endif %}
+            <img id="avatarImg"
+                 src="{{ avatar_url or '/static/img/default-avatar.png' }}"
+                 onerror="this.src='/static/img/default-avatar.png'"
+                 alt="Avatar">
+
+            <i id="defaultAvatar"
+               class="fa-solid fa-user"
+               style="display:none;"></i>
 
         </a>
 
@@ -74,7 +75,7 @@
 
         <h2>CLICK2PAY</h2>
 
-        <small>@{{ username }}</small>
+        <small id="username">@Guest</small>
 
     </div>
 
