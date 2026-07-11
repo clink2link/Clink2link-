@@ -1773,7 +1773,7 @@ c2pClose();
 
 });
 
-});async()=>{
+});
 
 </script>
 
@@ -1849,6 +1849,11 @@ Dashboard Click2Pay
     <div class="create-note">
         <i class="fa-solid fa-shield-check"></i>
         Sell Link akan aktif setelah 1× Withdraw.
+    </div>
+
+    <div id="sellInfo" class="create-note">
+        <i class="fa-solid fa-lock"></i>
+        Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.
     </div>
 
 </div>
@@ -2051,6 +2056,7 @@ Dashboard Click2Pay
 <th>Valid</th>
 <th>Earnings</th>
 <th>Daily CPM</th>
+<th>Total</th>
 </tr>
 </thead>
 
@@ -2141,7 +2147,7 @@ CLICK<span>2PAY</span>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 
 /* DASHBOARD ANIMATION */
@@ -2622,7 +2628,8 @@ autoTheme();
 
 setInterval(autoTheme,60000);
 
-document.getElementById("logoutBtn").addEventListener("click",
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+
     await supabaseClient.auth.signOut();
 
     localStorage.clear();
