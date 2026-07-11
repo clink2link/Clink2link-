@@ -1,65 +1,48 @@
-// NAVBAR
+/* ==========================================
+   CLICK2PAY COMPONENT LOADER
+========================================== */
 
-fetch("/static/components/navbar.html")
-.then(res=>res.text())
-.then(data=>{
+async function loadComponent(id, url) {
 
-const navbar=document.getElementById("navbar");
+    const element = document.getElementById(id);
 
-if(navbar){
+    if (!element) return;
 
-navbar.innerHTML=data;
+    try {
 
+        const response = await fetch(url);
 
-const menu=document.getElementById("menuBtn");
-const sidebar=document.getElementById("sidebar");
-const overlay=document.getElementById("overlay");
+        if (!response.ok) {
+            throw new Error("Failed to load " + url);
+        }
 
+        const html = await response.text();
 
-if(menu){
+        element.innerHTML = html;
 
-menu.onclick=()=>{
+        // Jalankan navbar setelah HTML selesai dimuat
+        if (id === "navbar" && typeof initNavbar === "function") {
 
-sidebar.classList.toggle("active");
-overlay.classList.toggle("active");
+            initNavbar();
 
-}
+        }
 
-}
+    } catch (error) {
 
+        console.error(error);
 
-if(overlay){
-
-overlay.onclick=()=>{
-
-sidebar.classList.remove("active");
-overlay.classList.remove("active");
+    }
 
 }
 
-}
+/* ==========================================
+   LOAD COMPONENTS
+========================================== */
 
+document.addEventListener("DOMContentLoaded", () => {
 
-}
+    loadComponent("navbar", "/static/components/navbar.html");
 
-
-});
-
-
-
-
-// FOOTER
-
-fetch("/static/components/footer.html")
-.then(res=>res.text())
-.then(data=>{
-
-const footer=document.getElementById("footer");
-
-if(footer){
-
-footer.innerHTML=data;
-
-}
+    loadComponent("footer", "/static/components/footer.html");
 
 });
