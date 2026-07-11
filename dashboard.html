@@ -388,53 +388,53 @@ body.dark .dash-progress{
 background:#1e293b;
 }
 
-/* ===========================
-   CREATE LINK
-=========================== */
+/* =========================
+   CREATE FORM
+========================= */
 
 .create-form{
-    max-width:620px;
-    margin:0 auto 30px;
-    padding:26px;
+    max-width:560px;
+    width:100%;
+    margin:0 auto 24px;
+    padding:18px;
     background:#fff;
     border:1px solid #e5edf8;
-    border-radius:24px;
-    box-shadow:0 15px 35px rgba(15,23,42,.08);
+    border-radius:18px;
+    box-shadow:0 8px 20px rgba(15,23,42,.06);
 }
 
 .create-form h2{
     display:flex;
     align-items:center;
-    gap:12px;
-    margin:0 0 10px;
-    font-size:24px;
+    gap:10px;
+    margin:0 0 6px;
+    font-size:20px;
     font-weight:700;
     color:#2563eb;
 }
 
 .create-form h2 i{
-    width:46px;
-    height:46px;
+    width:36px;
+    height:36px;
+    border-radius:10px;
     display:flex;
     align-items:center;
     justify-content:center;
-    border-radius:14px;
     background:#eff6ff;
     color:#2563eb;
-    font-size:20px;
+    font-size:16px;
 }
 
 .create-desc{
-    margin-bottom:22px;
+    margin-bottom:16px;
+    font-size:13px;
     color:#64748b;
-    font-size:15px;
-    line-height:1.6;
 }
 
 .create-label{
     display:block;
-    margin-bottom:10px;
-    font-size:15px;
+    margin-bottom:6px;
+    font-size:13px;
     font-weight:600;
     color:#64748b;
 }
@@ -442,49 +442,49 @@ background:#1e293b;
 .create-input,
 .create-select{
     width:100%;
-    height:58px;
+    height:46px;
+    padding:0 14px;
+    margin-bottom:14px;
     border:none;
-    border-radius:18px;
+    border-radius:12px;
     background:#f5f7fb;
-    padding:0 20px;
-    margin-bottom:20px;
-    font-size:17px;
+    font-size:14px;
     font-family:Poppins,sans-serif;
     color:#334155;
     outline:none;
-    transition:.25s;
+    transition:.2s;
 }
 
 .create-input:focus,
 .create-select:focus{
     background:#fff;
-    box-shadow:0 0 0 3px rgba(37,99,235,.15);
+    box-shadow:0 0 0 2px rgba(37,99,235,.15);
 }
 
 .create-actions{
     display:flex;
-    gap:16px;
-    margin-top:8px;
+    gap:10px;
+    margin-top:4px;
 }
 
 .create-actions button{
     flex:1;
-    height:54px;
+    height:44px;
     border:none;
-    border-radius:18px;
-    font-family:Poppins,sans-serif;
-    font-size:17px;
-    font-weight:700;
+    border-radius:12px;
     display:flex;
     justify-content:center;
     align-items:center;
-    gap:10px;
+    gap:8px;
+    font-family:Poppins,sans-serif;
+    font-size:14px;
+    font-weight:600;
     cursor:pointer;
     transition:.25s;
 }
 
 .btn-shorten{
-    background:linear-gradient(135deg,#1d4ed8,#2563eb);
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
     color:#fff;
 }
 
@@ -495,21 +495,20 @@ background:#1e293b;
 
 .btn-shorten:hover,
 .btn-advance:hover{
-    transform:translateY(-3px);
-    box-shadow:0 12px 25px rgba(37,99,235,.25);
+    transform:translateY(-2px);
 }
 
 #sellInfo{
     display:block;
-    margin-top:18px;
+    margin-top:12px;
     text-align:center;
+    font-size:12px;
     color:#64748b;
-    font-size:13px;
 }
 
-/* ===========================
+/* =========================
    DARK MODE
-=========================== */
+========================= */
 
 body.dark .create-form{
     background:#0f172a;
@@ -539,86 +538,65 @@ body.dark .create-select{
 
 body.dark .create-input:focus,
 body.dark .create-select:focus{
-    background:#0f172a;
+    background:#162033;
 }
 
 body.dark .btn-advance{
     background:linear-gradient(135deg,#38bdf8,#0ea5e9);
 }
 
-/* ===========================
+/* =========================
    TABLET
-=========================== */
+========================= */
 
-@media(max-width:768px){
+@media (max-width:768px){
 
 .create-form{
     max-width:100%;
-    padding:22px;
-}
-
-.create-actions{
-    gap:12px;
-}
-
-.create-actions button{
-    height:52px;
-    font-size:16px;
-}
-
-.create-input,
-.create-select{
-    height:54px;
-    font-size:16px;
+    padding:16px;
 }
 
 }
 
-/* ===========================
+/* =========================
    MOBILE
-=========================== */
+========================= */
 
-@media(max-width:480px){
+@media (max-width:480px){
 
 .create-form{
-    padding:18px;
-    border-radius:20px;
+    padding:14px;
+    border-radius:16px;
 }
 
 .create-form h2{
-    font-size:20px;
-}
-
-.create-form h2 i{
-    width:40px;
-    height:40px;
     font-size:18px;
 }
 
-.create-desc{
-    font-size:14px;
-}
-
-.create-label{
-    font-size:14px;
+.create-form h2 i{
+    width:34px;
+    height:34px;
+    font-size:15px;
 }
 
 .create-input,
 .create-select{
-    height:52px;
-    font-size:15px;
-    border-radius:16px;
+    height:44px;
+    font-size:14px;
 }
 
 .create-actions{
-    flex-direction:row;
-    gap:10px;
+    gap:8px;
 }
 
 .create-actions button{
-    height:50px;
-    font-size:15px;
-    border-radius:16px;
+    height:42px;
+    font-size:13px;
+}
+
+#createInfo,
+#sellInfo{
+    font-size:11px;
 }
 
 }
@@ -1403,10 +1381,6 @@ c2pClose();
 <i class="fa-solid fa-house"></i>
 Dashboard Click2Pay
 </h1>
-
-<p>
-Kelola link, pendapatan, statistik dan akun kamu secara real-time.
-</p>
 
 </div>
 
