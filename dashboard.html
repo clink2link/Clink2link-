@@ -388,121 +388,128 @@ body.dark .dash-progress{
 background:#1e293b;
 }
 
-/* ===== CREATE LINK ===== */
+/* ===========================
+   CREATE LINK
+=========================== */
 
 .create-form{
-    max-width:700px;
-    margin:0 auto 25px;
-    padding:24px;
+    max-width:620px;
+    margin:0 auto 30px;
+    padding:26px;
     background:#fff;
-    border:1px solid #dbeafe;
-    border-radius:22px;
-    box-shadow:0 10px 30px rgba(15,23,42,.08);
+    border:1px solid #e5edf8;
+    border-radius:24px;
+    box-shadow:0 15px 35px rgba(15,23,42,.08);
 }
 
 .create-form h2{
-    margin:0;
     display:flex;
     align-items:center;
-    gap:10px;
-    font-size:22px;
-    color:#2563eb;
+    gap:12px;
+    margin:0 0 10px;
+    font-size:24px;
     font-weight:700;
+    color:#2563eb;
 }
 
 .create-form h2 i{
-    width:42px;
-    height:42px;
-    border-radius:12px;
+    width:46px;
+    height:46px;
     display:flex;
     align-items:center;
     justify-content:center;
+    border-radius:14px;
     background:#eff6ff;
     color:#2563eb;
-    font-size:18px;
+    font-size:20px;
 }
 
 .create-desc{
-    margin:10px 0 22px;
+    margin-bottom:22px;
     color:#64748b;
-    font-size:14px;
+    font-size:15px;
+    line-height:1.6;
 }
 
 .create-label{
     display:block;
-    margin-bottom:8px;
-    font-size:14px;
+    margin-bottom:10px;
+    font-size:15px;
     font-weight:600;
-    color:#475569;
+    color:#64748b;
 }
 
 .create-input,
 .create-select{
     width:100%;
-    height:52px;
-    border:1px solid #dbeafe;
-    border-radius:14px;
-    padding:0 16px;
-    background:#f8fafc;
-    font-size:15px;
+    height:58px;
+    border:none;
+    border-radius:18px;
+    background:#f5f7fb;
+    padding:0 20px;
+    margin-bottom:20px;
+    font-size:17px;
     font-family:Poppins,sans-serif;
+    color:#334155;
     outline:none;
     transition:.25s;
-    margin-bottom:16px;
 }
 
 .create-input:focus,
 .create-select:focus{
-    border-color:#2563eb;
     background:#fff;
-    box-shadow:0 0 0 4px rgba(37,99,235,.10);
+    box-shadow:0 0 0 3px rgba(37,99,235,.15);
 }
 
 .create-actions{
     display:flex;
-    gap:12px;
-    margin-top:18px;
+    gap:16px;
+    margin-top:8px;
 }
 
 .create-actions button{
     flex:1;
-    height:50px;
+    height:54px;
     border:none;
-    border-radius:14px;
+    border-radius:18px;
+    font-family:Poppins,sans-serif;
+    font-size:17px;
+    font-weight:700;
     display:flex;
     justify-content:center;
     align-items:center;
-    gap:8px;
-    font-family:Poppins,sans-serif;
-    font-size:15px;
-    font-weight:700;
+    gap:10px;
     cursor:pointer;
     transition:.25s;
 }
 
 .btn-shorten{
-    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    background:linear-gradient(135deg,#1d4ed8,#2563eb);
     color:#fff;
 }
 
 .btn-advance{
-    background:#eff6ff;
-    color:#2563eb;
+    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+    color:#fff;
 }
 
 .btn-shorten:hover,
 .btn-advance:hover{
-    transform:translateY(-2px);
+    transform:translateY(-3px);
+    box-shadow:0 12px 25px rgba(37,99,235,.25);
 }
 
 #sellInfo{
     display:block;
-    margin-top:15px;
-    font-size:13px;
+    margin-top:18px;
+    text-align:center;
     color:#64748b;
+    font-size:13px;
 }
 
-/* ===== DARK MODE ===== */
+/* ===========================
+   DARK MODE
+=========================== */
 
 body.dark .create-form{
     background:#0f172a;
@@ -527,70 +534,91 @@ body.dark #sellInfo{
 body.dark .create-input,
 body.dark .create-select{
     background:#1e293b;
-    border-color:#334155;
     color:#fff;
 }
 
-body.dark .btn-advance{
-    background:#1e293b;
-    color:#60a5fa;
+body.dark .create-input:focus,
+body.dark .create-select:focus{
+    background:#0f172a;
 }
 
-/* ===== TABLET ===== */
+body.dark .btn-advance{
+    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+}
 
-@media (max-width:768px){
+/* ===========================
+   TABLET
+=========================== */
+
+@media(max-width:768px){
 
 .create-form{
     max-width:100%;
-    padding:20px;
+    padding:22px;
+}
+
+.create-actions{
+    gap:12px;
+}
+
+.create-actions button{
+    height:52px;
+    font-size:16px;
+}
+
+.create-input,
+.create-select{
+    height:54px;
+    font-size:16px;
+}
+
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media(max-width:480px){
+
+.create-form{
+    padding:18px;
+    border-radius:20px;
 }
 
 .create-form h2{
     font-size:20px;
 }
 
-.create-actions{
-    flex-direction:column;
-}
-
-.create-actions button{
-    width:100%;
-}
-
-}
-
-/* ===== MOBILE ===== */
-
-@media (max-width:480px){
-
-.create-form{
-    padding:18px;
-    border-radius:18px;
-}
-
-.create-form h2{
+.create-form h2 i{
+    width:40px;
+    height:40px;
     font-size:18px;
 }
 
-.create-form h2 i{
-    width:38px;
-    height:38px;
-    font-size:16px;
+.create-desc{
+    font-size:14px;
+}
+
+.create-label{
+    font-size:14px;
 }
 
 .create-input,
 .create-select{
-    height:48px;
-    font-size:14px;
+    height:52px;
+    font-size:15px;
+    border-radius:16px;
+}
+
+.create-actions{
+    flex-direction:row;
+    gap:10px;
 }
 
 .create-actions button{
-    height:48px;
-    font-size:14px;
-}
-
-.create-desc{
-    font-size:13px;
+    height:50px;
+    font-size:15px;
+    border-radius:16px;
 }
 
 }
