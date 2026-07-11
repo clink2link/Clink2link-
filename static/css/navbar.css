@@ -415,3 +415,49 @@ font-size:14px;
 }
 
 }
+
+/*========== DARK MODE ==========*/
+
+body.dark{
+--bg:#0f172a;
+--white:#111827;
+--text:#f8fafc;
+--muted:#94a3b8;
+--border:#1f2937;
+background:#0f172a;
+color:#f8fafc;
+}
+
+body.dark .topbar,
+body.dark .sidebar{
+background:#111827;
+border-color:#1f2937;
+}
+
+body.dark .menu-toggle,
+body.dark .top-btn{
+background:#1e293b;
+color:#fff;
+}
+
+body.dark nav a,
+body.dark .dropdown-btn{
+color:#e2e8f0;
+}
+
+body.dark nav a:hover,
+body.dark .dropdown-btn:hover{
+background:#1e293b;
+}
+
+body.dark .submenu a{
+border-left-color:#334155;
+}
+
+body.dark hr{
+background:#1f2937;
+}
+
+body.dark .menu-title{
+color:#64748b;
+}
