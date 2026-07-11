@@ -44,6 +44,24 @@ const supabase = window.supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtcmh4c3Judmd2Z2d3YWh1ZnZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzU5ODQsImV4cCI6MjA5OTI1MTk4NH0.gR5vX2-r7hG_vzEcEzPKTIhsOKWA9gNep3lfQcyk724"
 );
 
+// LOAD COMPONENT
+async function loadComponent(id, file) {
+  const res = await fetch(file);
+  const html = await res.text();
+  document.getElementById(id).innerHTML = html;
+}
+
+async function main() {
+  // load dulu
+  await loadComponent("navbar", "/components/navbar.html");
+  await loadComponent("footer", "/components/footer.html");
+
+  // baru init setelah HTML masuk
+  initNavbar();
+  init();
+}
+
+// INIT USER
 async function init() {
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -55,7 +73,6 @@ async function init() {
   document.getElementById("email").innerText = user.email;
   document.getElementById("uid").innerText = user.id;
 
-  // ambil username
   const { data } = await supabase
     .from("users")
     .select("username")
@@ -64,7 +81,6 @@ async function init() {
 
   document.getElementById("username").innerText = data?.username || "-";
 
-  // ambil saldo
   const { data: wallet } = await supabase
     .from("wallets")
     .select("balance")
@@ -75,23 +91,24 @@ async function init() {
     "Rp " + (wallet?.balance || 0);
 }
 
-// logout
-document.getElementById("logoutBtn").onclick = async () => {
-  await supabase.auth.signOut();
-  window.location.href = "index.html";
-};
+// INIT NAVBAR (INI YANG TADI ERROR)
+function initNavbar() {
+  // logout
+  document.getElementById("logoutBtn").onclick = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "index.html";
+  };
 
-init();
-
-async function loadComponent(id, file) {
-  const res = await fetch(file);
-  const html = await res.text();
-  document.getElementById(id).innerHTML = html;
+  // profile toggle
+  document.getElementById("profileBtn").onclick = () => {
+    document
+      .getElementById("profileDropdown")
+      .classList.toggle("show");
+  };
 }
 
-// load navbar & footer
-await loadComponent("navbar", "/components/navbar.html");
-await loadComponent("footer", "/components/footer.html");
+// jalanin
+main();
 </script>
 
 </body>
