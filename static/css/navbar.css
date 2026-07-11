@@ -449,3 +449,309 @@ box-shadow:
 0 0 30px rgba(0,234,255,.7);
 }
 
+/* ================= CLICK2PAY PREMIUM FINAL ================= */
+
+
+.topbar{
+box-shadow:
+0 10px 40px rgba(0,0,0,.45),
+inset 0 -1px rgba(0,234,255,.12);
+}
+
+
+/* BRAND EFFECT */
+
+.brand span{
+background:
+linear-gradient(
+90deg,
+#ffffff,
+#00eaff,
+#00ff9d
+);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+
+.brand-icon{
+animation:
+brandGlow 3s infinite ease-in-out;
+}
+
+
+@keyframes brandGlow{
+
+0%,100%{
+filter:
+drop-shadow(0 0 8px #00eaff);
+}
+
+50%{
+filter:
+drop-shadow(0 0 25px #00ff9d);
+}
+
+}
+
+
+
+/* PREMIUM LOGO */
+
+.logo-circle{
+
+position:relative;
+overflow:hidden;
+
+}
+
+
+.logo-circle::before{
+
+content:"";
+
+position:absolute;
+
+width:140px;
+height:140px;
+
+background:
+conic-gradient(
+transparent,
+var(--cyan),
+transparent
+);
+
+animation:
+spin 5s linear infinite;
+
+}
+
+
+.logo-circle i{
+
+position:relative;
+z-index:2;
+
+}
+
+
+
+@keyframes spin{
+
+100%{
+transform:rotate(360deg);
+}
+
+}
+
+
+
+
+/* SIDEBAR GLASS */
+
+.sidebar{
+
+background:
+linear-gradient(
+180deg,
+rgba(8,20,38,.88),
+rgba(2,6,23,.96)
+);
+
+backdrop-filter:
+blur(25px);
+
+}
+
+
+
+/* MENU CARD EFFECT */
+
+
+nav a,
+summary{
+
+border:
+1px solid transparent;
+
+background:
+rgba(255,255,255,.025);
+
+}
+
+
+nav a:hover,
+summary:hover{
+
+border-color:
+rgba(0,234,255,.25);
+
+box-shadow:
+
+0 10px 30px rgba(0,234,255,.12);
+
+}
+
+
+
+
+/* ICON GLOW */
+
+nav a i,
+summary i{
+
+transition:.3s;
+
+}
+
+
+nav a:hover i,
+summary:hover i{
+
+text-shadow:
+0 0 12px var(--cyan);
+
+transform:scale(1.15);
+
+}
+
+
+
+
+
+/* ACTIVE MENU */
+
+nav a.active{
+
+background:
+linear-gradient(
+90deg,
+rgba(0,234,255,.22),
+rgba(0,255,157,.08)
+);
+
+border:
+1px solid rgba(0,234,255,.35);
+
+box-shadow:
+
+0 0 25px rgba(0,234,255,.18);
+
+}
+
+
+
+
+/* PROFILE ICON PREMIUM */
+
+
+.profile-btn{
+
+animation:
+profilePulse 3s infinite;
+
+}
+
+
+@keyframes profilePulse{
+
+0%,100%{
+
+box-shadow:
+0 0 15px rgba(0,234,255,.4);
+
+}
+
+
+50%{
+
+box-shadow:
+0 0 35px rgba(0,255,157,.7);
+
+}
+
+}
+
+
+
+/* NOTIFICATION */
+
+.icon-btn{
+
+overflow:visible;
+
+}
+
+
+.icon-btn:hover{
+
+transform:
+translateY(-3px);
+
+}
+
+
+
+
+/* DROPDOWN OPEN */
+
+details[open] summary{
+
+color:white;
+
+background:
+rgba(0,234,255,.12);
+
+}
+
+
+details[open] summary i:last-child{
+
+transform:
+rotate(180deg);
+
+}
+
+
+summary i:last-child{
+
+transition:.3s;
+
+}
+
+
+
+
+
+/* MOBILE PREMIUM */
+
+@media(max-width:900px){
+
+.sidebar{
+
+box-shadow:
+
+40px 0 100px rgba(0,0,0,.8);
+
+}
+
+}
+
+
+@media(max-width:480px){
+
+.brand span{
+
+font-size:18px;
+
+}
+
+.top-actions{
+
+gap:8px;
+
+}
+
+}
