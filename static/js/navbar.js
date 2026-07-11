@@ -1,152 +1,129 @@
-/*==========================
-CLICK2PAY NAVBAR
-==========================*/
+/* ==========================================
+   CLICK2PAY NAVBAR
+========================================== */
 
-const menuToggle=document.getElementById("menuToggle");
-const sidebar=document.getElementById("sidebar");
-const overlay=document.getElementById("overlay");
-const dropdowns=document.querySelectorAll(".dropdown");
-const themeToggle=document.getElementById("themeToggle");
+const body = document.body;
 
-/*========== SIDEBAR ==========*/
+const sidebar = document.getElementById("sidebar");
 
-function openSidebar(){
-sidebar.classList.add("active");
-overlay.classList.add("active");
-document.body.style.overflow="hidden";
-}
+const overlay = document.getElementById("overlay");
 
-function closeSidebar(){
-sidebar.classList.remove("active");
-overlay.classList.remove("active");
-document.body.style.overflow="";
-}
+const menuToggle = document.getElementById("menuToggle");
 
-menuToggle.addEventListener("click",()=>{
+const themeToggle = document.getElementById("themeToggle");
 
-if(sidebar.classList.contains("active")){
-closeSidebar();
-}else{
-openSidebar();
-}
+/* ==========================================
+   SIDEBAR
+========================================== */
 
-});
+menuToggle.addEventListener("click", () => {
 
-overlay.addEventListener("click",closeSidebar);
+    if (window.innerWidth <= 991) {
 
-/*========== ESC CLOSE ==========*/
+        sidebar.classList.toggle("show");
+        overlay.classList.toggle("show");
 
-document.addEventListener("keydown",(e)=>{
+    } else {
 
-if(e.key==="Escape"){
-closeSidebar();
-}
+        sidebar.classList.toggle("collapsed");
+
+    }
 
 });
 
-/*========== AUTO CLOSE MOBILE ==========*/
+/* ==========================================
+   OVERLAY
+========================================== */
 
-document.querySelectorAll("nav a").forEach(link=>{
+overlay.addEventListener("click", () => {
 
-link.addEventListener("click",()=>{
+    sidebar.classList.remove("show");
 
-if(window.innerWidth<=900){
-closeSidebar();
-}
-
-});
+    overlay.classList.remove("show");
 
 });
 
-/*========== DROPDOWN ==========*/
+/* ==========================================
+   DROPDOWN
+========================================== */
 
-dropdowns.forEach(drop=>{
+document.querySelectorAll(".dropdown-btn").forEach(btn => {
 
-const btn=drop.querySelector(".dropdown-btn");
+    btn.addEventListener("click", function () {
 
-btn.addEventListener("click",()=>{
+        this.parentElement.classList.toggle("active");
 
-dropdowns.forEach(item=>{
-
-if(item!==drop){
-item.classList.remove("active");
-}
+    });
 
 });
 
-drop.classList.toggle("active");
+/* ==========================================
+   DARK MODE
+========================================== */
 
-});
+if (localStorage.getItem("theme") === "dark") {
 
-});
+    body.classList.add("dark");
 
-/*========== ACTIVE MENU ==========*/
-
-const page=location.pathname.split("/").pop();
-
-document.querySelectorAll("nav a").forEach(link=>{
-
-const href=link.getAttribute("href");
-
-if(href.endsWith(page)){
-
-document.querySelectorAll("nav a").forEach(a=>{
-a.classList.remove("active");
-});
-
-link.classList.add("active");
-
-const parent=link.closest(".dropdown");
-
-if(parent){
-parent.classList.add("active");
-}
+    themeToggle.innerHTML =
+        '<i class="fa-solid fa-sun"></i>';
 
 }
 
-});
+themeToggle.addEventListener("click", () => {
 
-/*========== DARK MODE ==========*/
+    body.classList.toggle("dark");
 
-if(localStorage.getItem("theme")=="dark"){
-document.body.classList.add("dark");
-themeToggle.innerHTML='<i class="fa-solid fa-sun"></i>';
-}
+    if (body.classList.contains("dark")) {
 
-themeToggle.addEventListener("click",()=>{
+        localStorage.setItem("theme", "dark");
 
-document.body.classList.toggle("dark");
+        themeToggle.innerHTML =
+            '<i class="fa-solid fa-sun"></i>';
 
-if(document.body.classList.contains("dark")){
+    } else {
 
-localStorage.setItem("theme","dark");
+        localStorage.setItem("theme", "light");
 
-themeToggle.innerHTML='<i class="fa-solid fa-sun"></i>';
+        themeToggle.innerHTML =
+            '<i class="fa-solid fa-moon"></i>';
 
-}else{
-
-localStorage.setItem("theme","light");
-
-themeToggle.innerHTML='<i class="fa-solid fa-moon"></i>';
-
-}
+    }
 
 });
 
-/*========== TOPBAR SHADOW ==========*/
+/* ==========================================
+   CLOSE SIDEBAR ON MOBILE
+========================================== */
 
-window.addEventListener("scroll",()=>{
+document.querySelectorAll(".sidebar a").forEach(link => {
 
-const topbar=document.querySelector(".topbar");
+    link.addEventListener("click", () => {
 
-if(window.scrollY>10){
+        if (window.innerWidth <= 991) {
 
-topbar.style.boxShadow="0 10px 30px rgba(15,23,42,.08)";
+            sidebar.classList.remove("show");
 
-}else{
+            overlay.classList.remove("show");
 
-topbar.style.boxShadow="none";
+        }
 
-}
+    });
+
+});
+
+/* ==========================================
+   RESIZE
+========================================== */
+
+window.addEventListener("resize", () => {
+
+    if (window.innerWidth > 991) {
+
+        sidebar.classList.remove("show");
+
+        overlay.classList.remove("show");
+
+    }
 
 });
