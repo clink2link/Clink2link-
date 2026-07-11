@@ -1170,12 +1170,70 @@ Dashboard Click2Pay
 </h1>
 
 <p>
-Selamat datang kembali. Kelola link, pendapatan dan akun kamu dengan mudah.
+Kelola link, pendapatan, statistik dan akun kamu secara real-time.
 </p>
 
 </div>
 
 
+
+<!-- CREATE LINK -->
+
+<div class="dash-box">
+
+<h2>
+<i class="fa-solid fa-link"></i>
+Create Link
+</h2>
+
+
+<p style="color:#64748b">
+Pilih tipe link yang ingin dibuat.
+</p>
+
+
+<div class="dash-buttons">
+
+
+<button class="dash-btn dash-primary">
+
+<i class="fa-solid fa-bullseye"></i>
+
+Ads Link
+
+</button>
+
+
+
+<button 
+class="dash-btn dash-secondary"
+id="sellLinkButton"
+disabled>
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+Sell Link 🔒
+
+</button>
+
+
+</div>
+
+
+<p id="sellInfo" style="color:#64748b">
+
+Sell Link terbuka setelah Withdraw berhasil 1x.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<!-- REPORT PENDAPATAN -->
 
 <div class="dash-stats">
 
@@ -1184,12 +1242,12 @@ Selamat datang kembali. Kelola link, pendapatan dan akun kamu dengan mudah.
 <div class="dash-card">
 
 <div class="dash-icon">
-<i class="fa-solid fa-wallet"></i>
+<i class="fa-solid fa-calendar-day"></i>
 </div>
 
-<h3>Saldo Saat Ini</h3>
+<h3>Ads Hari Ini</h3>
 
-<h2>
+<h2 id="adsToday">
 Rp 0
 </h2>
 
@@ -1201,93 +1259,48 @@ Rp 0
 <div class="dash-card">
 
 <div class="dash-icon">
-<i class="fa-solid fa-link"></i>
+<i class="fa-solid fa-calendar"></i>
 </div>
 
-<h3>Total Link</h3>
+<h3>Ads Bulan Ini</h3>
 
-<h2>
-0
-</h2>
-
-</div>
-
-
-
-
-<div class="dash-card">
-
-<div class="dash-icon">
-<i class="fa-solid fa-mouse-pointer"></i>
-</div>
-
-<h3>Total Klik</h3>
-
-<h2>
-0
-</h2>
-
-</div>
-
-
-
-
-<div class="dash-card">
-
-<div class="dash-icon">
-<i class="fa-solid fa-money-bill-transfer"></i>
-</div>
-
-<h3>Pendapatan</h3>
-
-<h2>
+<h2 id="adsMonth">
 Rp 0
 </h2>
 
 </div>
 
 
-</div>
 
 
+<div class="dash-card sell-only" style="display:none">
 
-
-
-
-<div class="dash-box">
-
-
-<h2>
-<i class="fa-solid fa-bolt"></i>
-Quick Action
-</h2>
-
-
-<br>
-
-
-<div class="dash-buttons">
-
-
-<button class="dash-btn dash-primary">
-
-<i class="fa-solid fa-plus"></i>
-
-Create Link
-
-</button>
-
-
-
-<button class="dash-btn dash-secondary">
-
+<div class="dash-icon">
 <i class="fa-solid fa-cart-shopping"></i>
+</div>
 
-Create Sell Link
+<h3>Sell Hari Ini</h3>
 
-</button>
+<h2 id="sellToday">
+Rp 0
+</h2>
+
+</div>
 
 
+
+
+<div class="dash-card sell-only" style="display:none">
+
+<div class="dash-icon">
+<i class="fa-solid fa-chart-line"></i>
+</div>
+
+<h3>Sell Bulan Ini</h3>
+
+<h2 id="sellMonth">
+Rp 0
+</h2>
 
 </div>
 
@@ -1298,6 +1311,9 @@ Create Sell Link
 
 
 
+
+
+<!-- STATISTIK -->
 
 
 <div class="dash-grid">
@@ -1308,78 +1324,168 @@ Create Sell Link
 
 
 <h2>
-<i class="fa-solid fa-chart-line"></i>
-CPM Performance
+<i class="fa-solid fa-chart-simple"></i>
+Statistik Ads
 </h2>
 
 
-<p style="color:#64748b">
-
-Performa pendapatan bulan ini
-
+<p>
+Views :
+<b id="adsViews">0</b>
 </p>
 
 
+<p>
+Klik :
+<b id="adsClicks">0</b>
+</p>
 
-<div class="dash-progress">
 
-<span></span>
+<p>
+CPM :
+<b id="adsCpm">0</b>
+</p>
+
 
 </div>
 
 
+
+
+
+
+<div class="dash-box sell-only" style="display:none">
+
+
+<h2>
+<i class="fa-solid fa-cart-shopping"></i>
+Statistik Sell Link
+</h2>
+
+
+<p>
+Views :
+<b id="sellViews">0</b>
+</p>
+
+
+<p>
+Klik :
+<b id="sellClicks">0</b>
+</p>
+
+
+<p>
+CPM :
+<b id="sellCpm">0</b>
+</p>
+
+
 </div>
 
 
 
+</div>
+
+
+
+
+
+
+<!-- REPORT TABLE -->
 
 
 <div class="dash-box">
 
 
 <h2>
-<i class="fa-solid fa-clock"></i>
-Aktivitas
+<i class="fa-solid fa-table"></i>
+Report Pendapatan
+</h2>
+
+
+<div style="overflow-x:auto">
+
+
+<table width="100%" cellpadding="12">
+
+
+<thead>
+
+<tr>
+
+<th>Tanggal</th>
+
+<th>Views</th>
+
+<th>Link Earnings</th>
+
+<th>Daily CPM</th>
+
+<th>Penghasilan</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody id="reportTable">
+
+
+<tr>
+
+<td colspan="5" align="center">
+
+Belum ada data
+
+</td>
+
+</tr>
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- PENGUMUMAN -->
+
+
+<div class="dash-box">
+
+
+<h2>
+
+<i class="fa-solid fa-bullhorn"></i>
+
+Pengumuman Admin
 
 </h2>
 
 
-<p>
+<div id="announcementBox">
 
-Klik hari ini :
-<b>0</b>
-
-</p>
-
-
-<br>
-
-
-<p>
-
-Link aktif :
-<b>0</b>
-
-</p>
-
-
-<br>
-
-
-<p>
-
-Payment :
-<b>0</b>
-
-</p>
-
-
+Belum ada pengumuman.
 
 </div>
 
 
-
 </div>
+
 
 
 
@@ -1424,6 +1530,8 @@ CLICK<span>2PAY</span>
 
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 
 /* DASHBOARD ANIMATION */
@@ -1455,14 +1563,14 @@ item.style.transform="translateY(0)";
 
 
 
-/* CLOSE SIDEBAR SAAT KLIK LINK DASHBOARD */
+
+
+/* CLOSE SIDEBAR */
 
 document.querySelectorAll(".c2p-sidebar a")
 .forEach(link=>{
 
-
 link.addEventListener("click",()=>{
-
 
 if(typeof c2pClose==="function"){
 
@@ -1470,49 +1578,410 @@ c2pClose();
 
 }
 
+});
 
 });
 
 
+
+
+
+
+
+/* SUPABASE CONFIG */
+
+
+const SUPABASE_URL="https://qmrhxsrnvgvggwahufvp.supabase.co";
+
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtcmh4c3Judmd2Z2d3YWh1ZnZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzU5ODQsImV4cCI6MjA5OTI1MTk4NH0.gR5vX2-r7hG_vzEcEzPKTIhsOKWA9gNep3lfQcyk724";
+
+
+const supabaseClient =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+
+
+
+
+/* LOAD DASHBOARD */
+
+
+async function loadDashboard(){
+
+
+const user =
+await supabaseClient.auth.getUser();
+
+
+
+if(!user.data.user){
+
+console.log("Belum login");
+
+return;
+
+}
+
+
+
+const authId =
+user.data.user.id;
+
+
+
+
+
+
+/* AMBIL PROFILE */
+
+
+const {data:profile,error}=
+await supabaseClient
+
+.from("profiles")
+
+.select("*")
+
+.eq("id",authId)
+
+.single();
+
+
+
+
+
+if(error){
+
+console.log(error);
+
+return;
+
+}
+
+
+
+
+
+/* PENDAPATAN ADS */
+
+
+document.getElementById("adsToday").innerHTML=
+"Rp "+Number(profile.ads_earning_today)
+.toLocaleString("id-ID");
+
+
+
+document.getElementById("adsMonth").innerHTML=
+"Rp "+Number(profile.ads_earning_month)
+.toLocaleString("id-ID");
+
+
+
+
+
+
+
+/* SELL LINK UNLOCK */
+
+
+if(profile.sell_link_enabled){
+
+
+
+document
+.querySelectorAll(".sell-only")
+.forEach(el=>{
+
+el.style.display="block";
+
 });
 
 
 
-/* DATA PLACEHOLDER */
+document.getElementById("sellLinkButton")
+.disabled=false;
 
-const dashboardData={
-saldo:0,
-totalLink:0,
-totalKlik:0,
-pendapatan:0
-};
+
+
+document.getElementById("sellLinkButton")
+.innerHTML=
+'<i class="fa-solid fa-cart-shopping"></i> Sell Link';
+
+
+
+document.getElementById("sellToday")
+.innerHTML=
+"Rp "+Number(profile.sell_earning_today)
+.toLocaleString("id-ID");
+
+
+
+document.getElementById("sellMonth")
+.innerHTML=
+"Rp "+Number(profile.sell_earning_month)
+.toLocaleString("id-ID");
+
+
+
+}else{
+
+
+document
+.querySelectorAll(".sell-only")
+.forEach(el=>{
+
+el.style.display="none";
+
+});
+
+
+}
+
+
+
+
+
+
+
+/* STATISTIK LINK */
+
+
+const {data:links}=
+
+await supabaseClient
+
+.from("links")
+
+.select("*")
+
+.eq("user_id",authId);
+
+
+
+
+let adsViews=0;
+let adsClicks=0;
+
+
+let sellViews=0;
+let sellClicks=0;
+
+
+
+links.forEach(link=>{
+
+
+if(link.type==="ads"){
+
+adsViews+=link.total_views;
+
+adsClicks+=link.total_clicks;
+
+
+}else if(link.type==="sell"){
+
+
+sellViews+=link.total_views;
+
+sellClicks+=link.total_clicks;
+
+
+}
+
+
+});
+
+
+
+
+
+document.getElementById("adsViews")
+.innerHTML=adsViews;
+
+
+
+document.getElementById("adsClicks")
+.innerHTML=adsClicks;
+
+
+
+document.getElementById("sellViews")
+.innerHTML=sellViews;
+
+
+
+document.getElementById("sellClicks")
+.innerHTML=sellClicks;
+
+
+
+
+
+
+
+/* REPORT TABLE */
+
+
+const {data:reports}=
+
+await supabaseClient
+
+.from("dashboard_daily_report")
+
+.select("*")
+
+.eq("user_id",authId)
+
+.limit(30);
+
+
+
+
+let html="";
+
+
+reports.forEach(row=>{
+
+
+html+=`
+
+<tr>
+
+<td>${row.report_date}</td>
+
+<td>${row.views}</td>
+
+<td>
+Rp ${Number(row.link_earnings)
+.toLocaleString("id-ID")}
+</td>
+
+
+<td>
+${row.daily_cpm}
+</td>
+
+
+<td>
+Rp ${Number(row.penghasilan)
+.toLocaleString("id-ID")}
+</td>
+
+
+</tr>
+
+`;
+
+});
+
+
+
+document.getElementById("reportTable")
+.innerHTML=html;
+
+
+
+
+
+
+/* ANNOUNCEMENT */
+
+
+const {data:news}=
+
+await supabaseClient
+
+.from("announcements")
+
+.select("*")
+
+.eq("is_active",true)
+
+.order("created_at",
+{ascending:false})
+
+.limit(5);
+
+
+
+
+let announcement="";
+
+
+
+news.forEach(item=>{
+
+
+announcement+=`
+
+<div style="margin-bottom:15px">
+
+<b>
+${item.title}
+</b>
+
+<p>
+${item.content}
+</p>
+
+</div>
+
+`;
+
+});
+
+
+
+document.getElementById("announcementBox")
+.innerHTML=
+announcement || "Belum ada pengumuman.";
+
+}
+
+
+
+
+
+loadDashboard();
+
+
+
+
+
+
+
+/* AUTO DARK THEME */
+
 
 function autoTheme(){
+
 const jam=new Date().getHours();
 
+
 if(jam>=18||jam<6){
+
 document.body.classList.add("dark");
+
 }else{
+
 document.body.classList.remove("dark");
+
 }
+
 }
+
 
 autoTheme();
+
 setInterval(autoTheme,60000);
 
-/*
-Nanti bagian ini diganti API:
-
-fetch("https://worker-domain.workers.dev/user")
-.then(res=>res.json())
-.then(data=>{
-dashboardData=data;
-})
-*/
 
 
 </script>
-
 
 </body>
 </html>
