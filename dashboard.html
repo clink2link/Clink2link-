@@ -24,13 +24,7 @@ body {
 
 <body>
 
-<!-- NAVBAR (sementara langsung, nanti baru dipisah) -->
-<nav style="height:60px;background:#0f172a;color:white;display:flex;align-items:center;justify-content:space-between;padding:0 15px;">
-  <span><i class="fa-solid fa-hand-holding-dollar"></i> CLICK2PAY</span>
-  <button id="logoutBtn" style="background:none;border:none;color:white;">
-    <i class="fa-solid fa-right-from-bracket"></i>
-  </button>
-</nav>
+<div id="navbar"></div>
 
 <div class="container">
   <h2>Dashboard</h2>
@@ -41,6 +35,8 @@ body {
   <p>Username: <span id="username"></span></p>
   <p>Saldo: <span id="saldo"></span></p>
 </div>
+
+<div id="footer"></div>
 
 <script>
 const supabase = window.supabase.createClient(
@@ -82,10 +78,20 @@ async function init() {
 // logout
 document.getElementById("logoutBtn").onclick = async () => {
   await supabase.auth.signOut();
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 };
 
 init();
+
+async function loadComponent(id, file) {
+  const res = await fetch(file);
+  const html = await res.text();
+  document.getElementById(id).innerHTML = html;
+}
+
+// load navbar & footer
+await loadComponent("navbar", "/components/navbar.html");
+await loadComponent("footer", "/components/footer.html");
 </script>
 
 </body>
