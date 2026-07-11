@@ -418,3 +418,34 @@ transform:translateX(4px);
 nav a.active{
 box-shadow:0 8px 20px rgba(37,99,235,.15);
 }
+
+
+nav a,
+summary{
+position:relative;
+overflow:hidden;
+}
+
+.ripple{
+position:absolute;
+width:10px;
+height:10px;
+border-radius:50%;
+background:rgba(37,99,235,.25);
+transform:translate(-50%,-50%);
+animation:ripple .5s linear;
+pointer-events:none;
+}
+
+@keyframes ripple{
+from{
+width:0;
+height:0;
+opacity:.5;
+}
+to{
+width:320px;
+height:320px;
+opacity:0;
+}
+}
