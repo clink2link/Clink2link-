@@ -11,14 +11,15 @@ function initNavbar() {
     const menuToggle = document.getElementById("menuToggle");
     const themeToggle = document.getElementById("themeToggle");
 
-    // Pastikan navbar sudah dimuat
-    if (!sidebar || !overlay || !menuToggle) return;
+    if (!sidebar || !overlay || !menuToggle || !themeToggle) {
+        return;
+    }
 
-    /* ==========================================
-       SIDEBAR
-    ========================================== */
+    /* ==========================
+       MENU
+    ========================== */
 
-    menuToggle.addEventListener("click", () => {
+    menuToggle.onclick = () => {
 
         if (window.innerWidth <= 991) {
 
@@ -31,79 +32,40 @@ function initNavbar() {
 
         }
 
-    });
+    };
 
-    /* ==========================================
+    /* ==========================
        OVERLAY
-    ========================================== */
+    ========================== */
 
-    overlay.addEventListener("click", () => {
+    overlay.onclick = () => {
 
         sidebar.classList.remove("show");
         overlay.classList.remove("show");
 
-    });
+    };
 
-    /* ==========================================
+    /* ==========================
        DROPDOWN
-    ========================================== */
+    ========================== */
 
     document.querySelectorAll(".dropdown-btn").forEach(btn => {
 
-        btn.addEventListener("click", function () {
+        btn.onclick = function () {
 
             this.parentElement.classList.toggle("active");
 
-        });
+        };
 
     });
 
-    /* ==========================================
-       DARK MODE
-    ========================================== */
-
-    if (themeToggle) {
-
-        if (localStorage.getItem("theme") === "dark") {
-
-            body.classList.add("dark");
-
-            themeToggle.innerHTML =
-                '<i class="fa-solid fa-sun"></i>';
-
-        }
-
-        themeToggle.addEventListener("click", () => {
-
-            body.classList.toggle("dark");
-
-            if (body.classList.contains("dark")) {
-
-                localStorage.setItem("theme", "dark");
-
-                themeToggle.innerHTML =
-                    '<i class="fa-solid fa-sun"></i>';
-
-            } else {
-
-                localStorage.setItem("theme", "light");
-
-                themeToggle.innerHTML =
-                    '<i class="fa-solid fa-moon"></i>';
-
-            }
-
-        });
-
-    }
-
-    /* ==========================================
-       CLOSE SIDEBAR MOBILE
-    ========================================== */
+    /* ==========================
+       CLOSE MOBILE
+    ========================== */
 
     document.querySelectorAll(".sidebar a").forEach(link => {
 
-        link.addEventListener("click", () => {
+        link.onclick = () => {
 
             if (window.innerWidth <= 991) {
 
@@ -112,15 +74,80 @@ function initNavbar() {
 
             }
 
-        });
+        };
 
     });
 
-    /* ==========================================
-       RESIZE
-    ========================================== */
+    /* ==========================
+       DARK MODE
+    ========================== */
 
-    window.addEventListener("resize", () => {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+
+        body.classList.add("dark");
+
+        themeToggle.innerHTML =
+            '<i class="fa-solid fa-sun"></i>';
+
+    }
+
+    themeToggle.onclick = () => {
+
+        body.classList.toggle("dark");
+
+        if (body.classList.contains("dark")) {
+
+            localStorage.setItem("theme", "dark");
+
+            themeToggle.innerHTML =
+                '<i class="fa-solid fa-sun"></i>';
+
+        } else {
+
+            localStorage.setItem("theme", "light");
+
+            themeToggle.innerHTML =
+                '<i class="fa-solid fa-moon"></i>';
+
+        }
+
+    };
+
+    /* ==========================
+       ACTIVE MENU
+    ========================== */
+
+    const current = location.pathname.split("/").pop();
+
+    document.querySelectorAll(".sidebar a").forEach(link => {
+
+        const href = link.getAttribute("href");
+
+        if (!href) return;
+
+        if (href.endsWith(current)) {
+
+            link.classList.add("active");
+
+            const dropdown = link.closest(".dropdown");
+
+            if (dropdown) {
+
+                dropdown.classList.add("active");
+
+            }
+
+        }
+
+    });
+
+    /* ==========================
+       RESIZE
+    ========================== */
+
+    window.onresize = () => {
 
         if (window.innerWidth > 991) {
 
@@ -129,6 +156,6 @@ function initNavbar() {
 
         }
 
-    });
+    };
 
 }
