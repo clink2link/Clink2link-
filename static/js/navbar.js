@@ -2,13 +2,13 @@
 CLICK2PAY NAVBAR
 ==========================*/
 
-const menuBtn=document.getElementById("menuBtn");
+const menuToggle=document.getElementById("menuToggle");
 const sidebar=document.getElementById("sidebar");
 const overlay=document.getElementById("overlay");
+const dropdowns=document.querySelectorAll(".dropdown");
+const themeToggle=document.getElementById("themeToggle");
 
-/*==========================
-OPEN / CLOSE SIDEBAR
-==========================*/
+/*========== SIDEBAR ==========*/
 
 function openSidebar(){
 sidebar.classList.add("active");
@@ -22,7 +22,7 @@ overlay.classList.remove("active");
 document.body.style.overflow="";
 }
 
-menuBtn.addEventListener("click",()=>{
+menuToggle.addEventListener("click",()=>{
 
 if(sidebar.classList.contains("active")){
 closeSidebar();
@@ -34,9 +34,7 @@ openSidebar();
 
 overlay.addEventListener("click",closeSidebar);
 
-/*==========================
-ESC CLOSE
-==========================*/
+/*========== ESC CLOSE ==========*/
 
 document.addEventListener("keydown",(e)=>{
 
@@ -46,9 +44,7 @@ closeSidebar();
 
 });
 
-/*==========================
-AUTO CLOSE MOBILE
-==========================*/
+/*========== AUTO CLOSE MOBILE ==========*/
 
 document.querySelectorAll("nav a").forEach(link=>{
 
@@ -62,125 +58,95 @@ closeSidebar();
 
 });
 
-/*==========================
-ACTIVE MENU
-==========================*/
+/*========== DROPDOWN ==========*/
 
-const current=window.location.pathname.split("/").pop();
+dropdowns.forEach(drop=>{
+
+const btn=drop.querySelector(".dropdown-btn");
+
+btn.addEventListener("click",()=>{
+
+dropdowns.forEach(item=>{
+
+if(item!==drop){
+item.classList.remove("active");
+}
+
+});
+
+drop.classList.toggle("active");
+
+});
+
+});
+
+/*========== ACTIVE MENU ==========*/
+
+const page=location.pathname.split("/").pop();
 
 document.querySelectorAll("nav a").forEach(link=>{
 
 const href=link.getAttribute("href");
 
-if(href && href.endsWith(current)){
+if(href.endsWith(page)){
 
-document.querySelectorAll("nav a").forEach(a=>a.classList.remove("active"));
+document.querySelectorAll("nav a").forEach(a=>{
+a.classList.remove("active");
+});
 
 link.classList.add("active");
 
-/* buka parent dropdown */
+const parent=link.closest(".dropdown");
 
-const details=link.closest("details");
-
-if(details){
-details.open=true;
+if(parent){
+parent.classList.add("active");
 }
 
 }
 
 });
 
-/*==========================
-AUTO CLOSE WHEN RESIZE
-==========================*/
+/*========== DARK MODE ==========*/
 
-window.addEventListener("resize",()=>{
-
-if(window.innerWidth>900){
-
-sidebar.classList.remove("active");
-overlay.classList.remove("active");
-document.body.style.overflow="";
-
+if(localStorage.getItem("theme")=="dark"){
+document.body.classList.add("dark");
+themeToggle.innerHTML='<i class="fa-solid fa-sun"></i>';
 }
 
-});
+themeToggle.addEventListener("click",()=>{
 
-/*==========================
-DROPDOWN ANIMATION
-==========================*/
+document.body.classList.toggle("dark");
 
-document.querySelectorAll("details").forEach(item=>{
+if(document.body.classList.contains("dark")){
 
-const summary=item.querySelector("summary");
+localStorage.setItem("theme","dark");
 
-summary.addEventListener("click",()=>{
+themeToggle.innerHTML='<i class="fa-solid fa-sun"></i>';
 
-setTimeout(()=>{
-
-const icon=summary.querySelector(".fa-chevron-down");
-
-if(item.open){
-icon.style.transform="rotate(180deg)";
 }else{
-icon.style.transform="rotate(0deg)";
+
+localStorage.setItem("theme","light");
+
+themeToggle.innerHTML='<i class="fa-solid fa-moon"></i>';
+
 }
 
-},10);
-
 });
 
-});
-
-/*==========================
-RIPPLE EFFECT
-==========================*/
-
-document.querySelectorAll("nav a,summary").forEach(btn=>{
-
-btn.addEventListener("click",function(e){
-
-const ripple=document.createElement("span");
-
-const rect=this.getBoundingClientRect();
-
-ripple.style.left=(e.clientX-rect.left)+"px";
-ripple.style.top=(e.clientY-rect.top)+"px";
-
-ripple.className="ripple";
-
-this.appendChild(ripple);
-
-setTimeout(()=>{
-ripple.remove();
-},500);
-
-});
-
-});
-
-/*==========================
-TOPBAR SHADOW
-==========================*/
+/*========== TOPBAR SHADOW ==========*/
 
 window.addEventListener("scroll",()=>{
 
 const topbar=document.querySelector(".topbar");
 
-if(window.scrollY>15){
-topbar.style.boxShadow="0 8px 25px rgba(0,0,0,.08)";
+if(window.scrollY>10){
+
+topbar.style.boxShadow="0 10px 30px rgba(15,23,42,.08)";
+
 }else{
+
 topbar.style.boxShadow="none";
+
 }
-
-});
-
-/*==========================
-LOADING
-==========================*/
-
-window.addEventListener("load",()=>{
-
-document.body.classList.add("loaded");
 
 });
