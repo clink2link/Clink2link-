@@ -14,11 +14,11 @@
 
     <div class="topbar-left">
 
-        <button class="menu-toggle" id="menuToggle">
+        <button type="button" class="menu-toggle" id="menuToggle">
             <i class="fa-solid fa-bars"></i>
         </button>
 
-        <a href="dashboard.html" class="logo">
+        <a href="/dashboard.html" class="logo">
 
             <div class="logo-icon">
                 <i class="fa-solid fa-hand-pointer"></i>
@@ -35,11 +35,11 @@
 
     <div class="topbar-right">
 
-        <button class="top-icon" id="themeToggle">
+        <button type="button" class="top-icon" id="themeToggle" aria-label="Toggle Theme">
             <i class="fa-solid fa-moon"></i>
         </button>
 
-        <a href="notifications.html" class="top-icon notification">
+        <a href="/notifications.html" class="top-icon notification" aria-label="Notifications">
 
             <i class="fa-solid fa-bell"></i>
 
@@ -47,16 +47,10 @@
 
         </a>
 
-        <a href="profile.html" class="profile-btn">
-
-            <img
-            src="assets/img/avatar.png"
-            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <a href="/profile.html" class="profile-btn" aria-label="Profile">
 
             <div class="profile-placeholder">
-
-                <i class="fa-solid fa-user"></i>
-
+                <i class="fa-solid fa-hand-pointer"></i>
             </div>
 
         </a>
@@ -71,27 +65,21 @@
 
 <aside class="sidebar" id="sidebar">
 
-    <!-- User -->
+    <!-- =========================
+         USER INFO
+    ========================== -->
 
     <div class="sidebar-user">
 
         <div class="avatar">
 
-            <img
-            src="assets/img/avatar.png"
-            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-
             <div class="avatar-icon">
-
-                <i class="fa-solid fa-user"></i>
-
+                <i class="fa-solid fa-hand-pointer"></i>
             </div>
 
         </div>
 
-        <h4 id="userName">
-            Guest User
-        </h4>
+        <h4 id="userName">Guest User</h4>
 
         <small id="userEmail">
             guest@click2pay.my.id
