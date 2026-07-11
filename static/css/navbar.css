@@ -236,3 +236,58 @@ z-index:998
 .menu-btn,.icon-btn,.profile-btn{width:42px;height:42px}
 nav a,summary{padding:15px;font-size:14px}
 }
+
+.menu-title{
+font-size:11px;
+font-weight:800;
+letter-spacing:1.5px;
+color:#64748b;
+margin:18px 10px 8px;
+}
+
+.sidebar{
+background:
+linear-gradient(180deg,#050b18,#02040b);
+box-shadow:
+20px 0 60px rgba(0,0,0,.5);
+}
+
+nav a,summary{
+background:
+rgba(255,255,255,.025);
+border:1px solid rgba(255,255,255,.04);
+}
+
+nav a:hover,summary:hover{
+background:
+linear-gradient(90deg,rgba(0,234,255,.18),rgba(0,255,157,.05));
+border-color:rgba(0,234,255,.25);
+}
+
+nav a i,summary i{
+font-size:16px;
+}
+
+details[open] summary{
+color:#fff;
+background:
+rgba(0,234,255,.12);
+}
+
+.sidebar-header h2{
+font-size:28px;
+font-weight:1000;
+}
+
+.brand{
+font-size:34px;
+}
+
+@media(max-width:480px){
+.brand{
+font-size:21px;
+}
+.sidebar-header h2{
+font-size:24px;
+}
+}
