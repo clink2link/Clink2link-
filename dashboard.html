@@ -12,32 +12,23 @@
 
 <style>
 
-*{
+.dash-body{
 margin:0;
-padding:0;
-box-sizing:border-box;
+padding-top:90px;
 font-family:'Poppins',sans-serif;
-}
-
-body{
-
 background:#f8fbff;
 color:#111;
-
-padding-top:90px;
-
+min-height:100vh;
 }
 
 
-/* BACKGROUND */
-
-.bg{
+.dash-bg{
 
 position:fixed;
 inset:0;
 
 background:
-radial-gradient(circle at 20% 20%,rgba(37,99,235,.18),transparent 30%),
+radial-gradient(circle at 20% 20%,rgba(37,99,235,.15),transparent 30%),
 radial-gradient(circle at 80% 80%,rgba(0,184,255,.15),transparent 30%),
 linear-gradient(120deg,#fff,#f1f8ff);
 
@@ -47,25 +38,19 @@ z-index:-1;
 
 
 
-/* CONTAINER */
-
-.dashboard{
-
-padding:20px;
+.dash-container{
 
 max-width:1200px;
-
 margin:auto;
+padding:20px;
 
 }
 
 
 
-/* WELCOME */
+.dash-welcome{
 
-.welcome{
-
-background:white;
+background:#fff;
 
 padding:25px;
 
@@ -73,14 +58,18 @@ border-radius:25px;
 
 border:1px solid #dbeafe;
 
-box-shadow:0 15px 40px rgba(0,0,0,.08);
+box-shadow:
+0 15px 40px rgba(0,0,0,.08);
 
 margin-bottom:25px;
 
 }
 
 
-.welcome h1{
+
+.dash-welcome h1{
+
+margin:0;
 
 font-size:28px;
 
@@ -89,19 +78,18 @@ color:#2563eb;
 }
 
 
-.welcome p{
-
-color:#64748b;
+.dash-welcome p{
 
 margin-top:8px;
+
+color:#64748b;
 
 }
 
 
 
-/* CARDS */
 
-.stats{
+.dash-stats{
 
 display:grid;
 
@@ -112,7 +100,8 @@ gap:20px;
 }
 
 
-.card{
+
+.dash-card{
 
 background:white;
 
@@ -122,70 +111,74 @@ border-radius:22px;
 
 border:1px solid #dbeafe;
 
-box-shadow:0 10px 30px rgba(0,0,0,.06);
+box-shadow:
+0 10px 30px rgba(0,0,0,.06);
 
 transition:.3s;
 
 }
 
 
-.card:hover{
 
-transform:translateY(-8px);
+.dash-card:hover{
 
-box-shadow:0 20px 40px rgba(37,99,235,.2);
+transform:translateY(-7px);
 
 }
 
 
 
-.card i{
+.dash-icon{
 
 width:50px;
+
 height:50px;
 
-display:flex;
-align-items:center;
-justify-content:center;
-
 border-radius:15px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
 
 background:#eff6ff;
 
 color:#2563eb;
 
-font-size:25px;
+font-size:24px;
 
 margin-bottom:15px;
 
 }
 
 
-.card h3{
+
+.dash-card h3{
 
 font-size:14px;
 
 color:#64748b;
 
+margin:0;
+
 }
 
 
-.card h2{
-
-margin-top:8px;
+.dash-card h2{
 
 font-size:28px;
 
+margin:8px 0 0;
+
 }
 
 
 
-/* ACTION */
 
+.dash-box{
 
-.action{
-
-margin-top:30px;
+margin-top:25px;
 
 background:white;
 
@@ -195,22 +188,24 @@ border-radius:25px;
 
 border:1px solid #dbeafe;
 
-box-shadow:0 10px 30px rgba(0,0,0,.06);
+box-shadow:
+0 10px 30px rgba(0,0,0,.06);
 
 }
 
 
-.action h2{
+
+.dash-box h2{
+
+margin-top:0;
 
 color:#2563eb;
 
-margin-bottom:20px;
-
 }
 
 
 
-.buttons{
+.dash-buttons{
 
 display:flex;
 
@@ -221,17 +216,18 @@ flex-wrap:wrap;
 }
 
 
-.btn{
+
+.dash-btn{
+
+border:none;
 
 padding:14px 25px;
 
 border-radius:15px;
 
-border:none;
+font-weight:700;
 
 cursor:pointer;
-
-font-weight:700;
 
 display:flex;
 
@@ -243,7 +239,7 @@ gap:10px;
 
 
 
-.primary{
+.dash-primary{
 
 background:#2563eb;
 
@@ -252,7 +248,8 @@ color:white;
 }
 
 
-.secondary{
+
+.dash-secondary{
 
 background:#eff6ff;
 
@@ -262,12 +259,7 @@ color:#2563eb;
 
 
 
-/* CPM */
-
-
-.cpm{
-
-margin-top:30px;
+.dash-grid{
 
 display:grid;
 
@@ -275,26 +267,13 @@ grid-template-columns:2fr 1fr;
 
 gap:20px;
 
-}
-
-
-.box{
-
-background:white;
-
-padding:30px;
-
-border-radius:25px;
-
-border:1px solid #dbeafe;
-
-box-shadow:0 10px 30px rgba(0,0,0,.06);
+margin-top:25px;
 
 }
 
 
 
-.progress{
+.dash-progress{
 
 height:12px;
 
@@ -309,7 +288,7 @@ margin-top:15px;
 }
 
 
-.progress span{
+.dash-progress span{
 
 display:block;
 
@@ -327,60 +306,29 @@ background:linear-gradient(
 
 
 
-/* ACTIVITY */
-
-
-.activity div{
-
-padding:15px 0;
-
-border-bottom:1px solid #e2e8f0;
-
-display:flex;
-
-justify-content:space-between;
-
-}
-
-
-
 @media(max-width:900px){
 
-.stats{
+.dash-stats{
 
 grid-template-columns:repeat(2,1fr);
 
 }
 
-
-.cpm{
+.dash-grid{
 
 grid-template-columns:1fr;
 
 }
 
 }
+
 
 
 @media(max-width:600px){
 
-.stats{
+.dash-stats{
 
 grid-template-columns:1fr;
-
-}
-
-
-.dashboard{
-
-padding:15px;
-
-}
-
-
-.welcome h1{
-
-font-size:22px;
 
 }
 
@@ -390,22 +338,20 @@ font-size:22px;
 
 </head>
 
-<body>
+<body class="dash-body">
 
 
-<div class="bg"></div>
+<div class="dash-bg"></div>
 
 
-<!-- NAVBAR -->
-
-<div id="navbar"></div>
-
+<!-- TEMPAT NAVBAR -->
+<!-- Copy isi navbar.html kamu di sini -->
 
 
-<div class="dashboard">
+<div class="dash-container">
 
 
-<div class="welcome">
+<div class="dash-welcome">
 
 <h1>
 <i class="fa-solid fa-house"></i>
@@ -413,61 +359,79 @@ Dashboard Click2Pay
 </h1>
 
 <p>
-Selamat datang kembali. Kelola link, pendapatan dan aktivitas akun kamu.
+Selamat datang kembali. Kelola link, pendapatan dan akun kamu dengan mudah.
 </p>
 
 </div>
 
 
 
+<div class="dash-stats">
 
-<div class="stats">
 
 
-<div class="card">
+<div class="dash-card">
 
+<div class="dash-icon">
 <i class="fa-solid fa-wallet"></i>
+</div>
 
-<h3>Saldo</h3>
+<h3>Saldo Saat Ini</h3>
 
-<h2>Rp 0</h2>
+<h2>
+Rp 0
+</h2>
 
 </div>
 
 
 
-<div class="card">
 
+<div class="dash-card">
+
+<div class="dash-icon">
 <i class="fa-solid fa-link"></i>
+</div>
 
 <h3>Total Link</h3>
 
-<h2>0</h2>
+<h2>
+0
+</h2>
 
 </div>
 
 
 
 
-<div class="card">
+<div class="dash-card">
 
-<i class="fa-solid fa-chart-line"></i>
+<div class="dash-icon">
+<i class="fa-solid fa-mouse-pointer"></i>
+</div>
 
 <h3>Total Klik</h3>
 
-<h2>0</h2>
+<h2>
+0
+</h2>
 
 </div>
 
 
 
-<div class="card">
 
+<div class="dash-card">
+
+<div class="dash-icon">
 <i class="fa-solid fa-money-bill-transfer"></i>
+</div>
 
 <h3>Pendapatan</h3>
 
-<h2>Rp 0</h2>
+<h2>
+Rp 0
+</h2>
 
 </div>
 
@@ -478,7 +442,8 @@ Selamat datang kembali. Kelola link, pendapatan dan aktivitas akun kamu.
 
 
 
-<div class="action">
+
+<div class="dash-box">
 
 
 <h2>
@@ -487,10 +452,13 @@ Quick Action
 </h2>
 
 
-<div class="buttons">
+<br>
 
 
-<button class="btn primary">
+<div class="dash-buttons">
+
+
+<button class="dash-btn dash-primary">
 
 <i class="fa-solid fa-plus"></i>
 
@@ -499,7 +467,8 @@ Create Link
 </button>
 
 
-<button class="btn secondary">
+
+<button class="dash-btn dash-secondary">
 
 <i class="fa-solid fa-cart-shopping"></i>
 
@@ -508,34 +477,40 @@ Create Sell Link
 </button>
 
 
-</div>
-
 
 </div>
 
 
+</div>
 
 
 
-<div class="cpm">
 
 
-<div class="box">
+
+
+<div class="dash-grid">
+
+
+
+<div class="dash-box">
+
 
 <h2>
-<i class="fa-solid fa-chart-simple"></i>
+<i class="fa-solid fa-chart-line"></i>
 CPM Performance
 </h2>
 
 
-<p style="margin-top:15px;color:#64748b">
+<p style="color:#64748b">
 
-Performance bulan ini
+Performa pendapatan bulan ini
 
 </p>
 
 
-<div class="progress">
+
+<div class="dash-progress">
 
 <span></span>
 
@@ -547,40 +522,46 @@ Performance bulan ini
 
 
 
-<div class="box">
+
+<div class="dash-box">
 
 
 <h2>
 <i class="fa-solid fa-clock"></i>
 Aktivitas
+
 </h2>
 
 
-<div class="activity">
+<p>
 
-
-<div>
-<span>Klik Hari Ini</span>
+Klik hari ini :
 <b>0</b>
-</div>
+
+</p>
 
 
-<div>
-<span>Link Aktif</span>
+<br>
+
+
+<p>
+
+Link aktif :
 <b>0</b>
-</div>
+
+</p>
 
 
-<div>
-<span>Payment</span>
+<br>
+
+
+<p>
+
+Payment :
 <b>0</b>
-</div>
 
+</p>
 
-</div>
-
-
-</div>
 
 
 </div>
@@ -590,20 +571,93 @@ Aktivitas
 </div>
 
 
+
+</div>
 
 <script>
 
-/* LOAD NAVBAR */
+/* DASHBOARD ANIMATION */
 
-fetch("navbar.html")
+const dashCards=document.querySelectorAll(
+".dash-card,.dash-box"
+);
 
-.then(res=>res.text())
+
+dashCards.forEach((item,index)=>{
+
+item.style.opacity="0";
+item.style.transform="translateY(30px)";
+
+
+setTimeout(()=>{
+
+item.style.transition=".6s";
+
+item.style.opacity="1";
+
+item.style.transform="translateY(0)";
+
+
+},index*120);
+
+
+});
+
+
+
+/* CLOSE SIDEBAR SAAT KLIK LINK DASHBOARD */
+
+document.querySelectorAll(".c2p-sidebar a")
+.forEach(link=>{
+
+
+link.addEventListener("click",()=>{
+
+
+if(typeof c2pClose==="function"){
+
+c2pClose();
+
+}
+
+
+});
+
+
+});
+
+
+
+/* DATA PLACEHOLDER */
+
+const dashboardData={
+
+saldo:0,
+
+totalLink:0,
+
+totalKlik:0,
+
+pendapatan:0
+
+};
+
+
+/*
+
+Nanti bagian ini diganti API:
+
+fetch("https://worker-domain.workers.dev/user")
+
+.then(res=>res.json())
 
 .then(data=>{
 
-document.getElementById("navbar").innerHTML=data;
+dashboardData=data;
 
-});
+})
+
+*/
 
 
 </script>
