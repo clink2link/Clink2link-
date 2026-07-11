@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  background: #0d6efd;
+  color: white;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* PROFILE */
+.profile-dropdown {
+  display: none;
+  position: absolute;
+  right: 10px;
+  top: 60px;
+  background: white;
+  color: black;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.profile-dropdown.show {
+  display: block;
+}
