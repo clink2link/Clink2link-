@@ -196,3 +196,14 @@ details[open] summary .fa-chevron-down{
     }
 
 }
+.page-content{
+    padding-top:75px;
+    min-height:100vh;
+}
+
+@media(min-width:992px){
+    .page-content{
+        margin-left:280px;
+        padding:85px 25px 25px;
+    }
+}
