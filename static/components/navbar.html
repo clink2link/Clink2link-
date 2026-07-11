@@ -1,27 +1,32 @@
-<!-- =========================
+<!-- ==========================================
      CLICK2PAY NAVBAR
-     PART 1
-========================= -->
+========================================== -->
 
 <!-- Overlay -->
 <div class="overlay" id="overlay"></div>
 
-<!-- =========================
+<!-- ==========================================
      TOPBAR
-========================= -->
+========================================== -->
 
 <header class="topbar">
 
     <div class="topbar-left">
 
-        <button type="button" class="menu-toggle" id="menuToggle">
+        <button
+            type="button"
+            class="menu-toggle"
+            id="menuToggle"
+            aria-label="Toggle Menu">
+
             <i class="fa-solid fa-bars"></i>
+
         </button>
 
         <a href="/dashboard.html" class="logo">
 
             <div class="logo-icon">
-                <i class="fa-solid fa-hand-pointer"></i>
+                C2P
             </div>
 
             <div class="logo-text">
@@ -35,22 +40,38 @@
 
     <div class="topbar-right">
 
-        <button type="button" class="top-icon" id="themeToggle" aria-label="Toggle Theme">
+        <button
+            type="button"
+            class="top-icon"
+            id="themeToggle"
+            aria-label="Toggle Theme">
+
             <i class="fa-solid fa-moon"></i>
+
         </button>
 
-        <a href="/notifications.html" class="top-icon notification" aria-label="Notifications">
+        <a
+            href="/notifications.html"
+            class="top-icon notification"
+            aria-label="Notifications">
 
             <i class="fa-solid fa-bell"></i>
 
-            <span class="badge">3</span>
+            <span
+                class="badge"
+                id="notificationCount">
+                0
+            </span>
 
         </a>
 
-        <a href="/profile.html" class="profile-btn" aria-label="Profile">
+        <a
+            href="/profile.html"
+            class="profile-btn"
+            aria-label="Profile">
 
             <div class="profile-placeholder">
-                <i class="fa-solid fa-hand-pointer"></i>
+                C2P
             </div>
 
         </a>
@@ -59,27 +80,29 @@
 
 </header>
 
-<!-- =========================
+<!-- ==========================================
      SIDEBAR
-========================= -->
+========================================== -->
 
-<aside class="sidebar" id="sidebar">
+<aside
+    class="sidebar"
+    id="sidebar">
 
-    <!-- =========================
-         USER INFO
-    ========================== -->
+    <!-- USER -->
 
     <div class="sidebar-user">
 
         <div class="avatar">
 
             <div class="avatar-icon">
-                <i class="fa-solid fa-hand-pointer"></i>
+                C2P
             </div>
 
         </div>
 
-        <h4 id="userName">Guest User</h4>
+        <h4 id="userName">
+            Guest User
+        </h4>
 
         <small id="userEmail">
             guest@click2pay.my.id
@@ -102,16 +125,12 @@
             <li>
 
                 <a
-                href="dashboard.html"
-                class="active">
+                    href="/dashboard.html"
+                    class="active">
 
                     <i class="fa-solid fa-house"></i>
 
-                    <span>
-
-                        Dashboard
-
-                    </span>
+                    <span>Dashboard</span>
 
                 </a>
 
@@ -121,17 +140,15 @@
 
             <li class="dropdown">
 
-                <button class="dropdown-btn">
+                <button
+                    type="button"
+                    class="dropdown-btn">
 
                     <div>
 
                         <i class="fa-solid fa-link"></i>
 
-                        <span>
-
-                            Manage Links
-
-                        </span>
+                        <span>Manage Links</span>
 
                     </div>
 
@@ -143,11 +160,11 @@
 
                     <li>
 
-                        <a href="links-ads.html">
+                        <a href="/links-ads.html">
 
                             <i class="fa-solid fa-link"></i>
 
-                            Links Ads
+                            <span>Links Ads</span>
 
                         </a>
 
@@ -155,11 +172,11 @@
 
                     <li>
 
-                        <a href="sell-links.html">
+                        <a href="/sell-links.html">
 
                             <i class="fa-solid fa-tags"></i>
 
-                            Sell Links
+                            <span>Sell Links</span>
 
                         </a>
 
@@ -168,13 +185,14 @@
                 </ul>
 
             </li>
-                        <!-- =========================
-                 PAYMENTS
-            ========================== -->
+
+            <!-- Payments -->
 
             <li class="dropdown">
 
-                <button class="dropdown-btn">
+                <button
+                    type="button"
+                    class="dropdown-btn">
 
                     <div>
 
@@ -192,11 +210,11 @@
 
                     <li>
 
-                        <a href="balance.html">
+                        <a href="/balance.html">
 
                             <i class="fa-solid fa-wallet"></i>
 
-                            Balance
+                            <span>Balance</span>
 
                         </a>
 
@@ -204,11 +222,11 @@
 
                     <li>
 
-                        <a href="withdraw.html">
+                        <a href="/withdraw.html">
 
                             <i class="fa-solid fa-money-bill-transfer"></i>
 
-                            Withdraw
+                            <span>Withdraw</span>
 
                         </a>
 
@@ -216,11 +234,11 @@
 
                     <li>
 
-                        <a href="withdraw-history.html">
+                        <a href="/withdraw-history.html">
 
                             <i class="fa-solid fa-clock-rotate-left"></i>
 
-                            Withdrawal History
+                            <span>Withdrawal History</span>
 
                         </a>
 
@@ -230,13 +248,11 @@
 
             </li>
 
-            <!-- =========================
-                 REFERRALS
-            ========================== -->
+            <!-- Referrals -->
 
             <li>
 
-                <a href="referrals.html">
+                <a href="/referrals.html">
 
                     <i class="fa-solid fa-user-group"></i>
 
@@ -246,13 +262,13 @@
 
             </li>
 
-            <!-- =========================
-                 ADVERTISE
-            ========================== -->
+            <!-- Advertise -->
 
             <li class="dropdown">
 
-                <button class="dropdown-btn">
+                <button
+                    type="button"
+                    class="dropdown-btn">
 
                     <div>
 
@@ -270,11 +286,11 @@
 
                     <li>
 
-                        <a href="topup.html">
+                        <a href="/topup.html">
 
                             <i class="fa-solid fa-coins"></i>
 
-                            Top Up
+                            <span>Top Up</span>
 
                         </a>
 
@@ -282,11 +298,11 @@
 
                     <li>
 
-                        <a href="create-ads.html">
+                        <a href="/create-ads.html">
 
                             <i class="fa-solid fa-plus"></i>
 
-                            Create Ads
+                            <span>Create Ads</span>
 
                         </a>
 
@@ -294,11 +310,11 @@
 
                     <li>
 
-                        <a href="my-ads.html">
+                        <a href="/my-ads.html">
 
                             <i class="fa-solid fa-rectangle-ad"></i>
 
-                            My Ads
+                            <span>My Ads</span>
 
                         </a>
 
@@ -306,11 +322,11 @@
 
                     <li>
 
-                        <a href="ads-history.html">
+                        <a href="/ads-history.html">
 
                             <i class="fa-solid fa-receipt"></i>
 
-                            History
+                            <span>History</span>
 
                         </a>
 
@@ -320,13 +336,11 @@
 
             </li>
 
-            <!-- =========================
-                 LIST CPM
-            ========================== -->
+            <!-- CPM -->
 
             <li>
 
-                <a href="cpm.html">
+                <a href="/cpm.html">
 
                     <i class="fa-solid fa-chart-line"></i>
 
@@ -335,13 +349,14 @@
                 </a>
 
             </li>
-                        <!-- =========================
-                 SETTINGS
-            ========================== -->
+
+            <!-- Settings -->
 
             <li class="dropdown">
 
-                <button class="dropdown-btn">
+                <button
+                    type="button"
+                    class="dropdown-btn">
 
                     <div>
 
@@ -359,11 +374,11 @@
 
                     <li>
 
-                        <a href="profile.html">
+                        <a href="/profile.html">
 
                             <i class="fa-solid fa-user"></i>
 
-                            Profile
+                            <span>Profile</span>
 
                         </a>
 
@@ -371,11 +386,11 @@
 
                     <li>
 
-                        <a href="payment-method.html">
+                        <a href="/payment-method.html">
 
                             <i class="fa-solid fa-credit-card"></i>
 
-                            Payment Methods
+                            <span>Payment Methods</span>
 
                         </a>
 
@@ -385,13 +400,13 @@
 
             </li>
 
-            <!-- =========================
-                 SUPPORT
-            ========================== -->
+            <!-- Support -->
 
             <li class="dropdown">
 
-                <button class="dropdown-btn">
+                <button
+                    type="button"
+                    class="dropdown-btn">
 
                     <div>
 
@@ -413,7 +428,7 @@
 
                             <i class="fa-brands fa-telegram"></i>
 
-                            Telegram
+                            <span>Telegram</span>
 
                         </a>
 
@@ -425,7 +440,7 @@
 
                             <i class="fa-brands fa-whatsapp"></i>
 
-                            WhatsApp
+                            <span>WhatsApp</span>
 
                         </a>
 
@@ -437,7 +452,7 @@
 
                             <i class="fa-solid fa-envelope"></i>
 
-                            Gmail
+                            <span>Gmail</span>
 
                         </a>
 
@@ -453,11 +468,11 @@
 
         <ul>
 
-            <!-- LOGOUT -->
-
             <li>
 
-                <a href="logout.html" class="logout">
+                <a
+                    href="/logout.html"
+                    class="logout">
 
                     <i class="fa-solid fa-right-from-bracket"></i>
 
@@ -472,3 +487,4 @@
     </nav>
 
 </aside>
+
