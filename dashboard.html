@@ -2345,52 +2345,41 @@ document.getElementById("sellInfo").innerHTML=
 
 /* CREATE LINK */
 
-document.getElementById("shortenBtn").addEventListener("click",async()=>{
+document.getElementById("shortenBtn").onclick = async () => {
 
-const url=document.getElementById("urlInput").value.trim();
-const type=document.getElementById("linkType").value;
+    const url = document.getElementById("urlInput").value.trim();
+    const type = document.getElementById("linkType").value;
 
-if(!url){
-alert("Masukkan URL terlebih dahulu.");
-return;
-}
+    if (!url) {
+        alert("Masukkan URL terlebih dahulu.");
+        return;
+    }
 
-try{
+    try {
+        new URL(url);
+    } catch (e) {
+        alert("URL tidak valid.");
+        return;
+    }
 
-new URL(url);
+    localStorage.setItem("create_url", url);
 
-}catch{
+    if (type === "ads") {
+        window.location.href = "task1.html";
+        return;
+    }
 
-alert("URL tidak valid.");
-return;
+    if (type === "sell") {
 
-}
+        if (!profile.sell_link_enabled) {
+            alert("Sell Link belum tersedia.");
+            return;
+        }
 
-localStorage.setItem("create_url",url);
+        window.location.href = "bayargg.html";
+    }
 
-if(type==="ads"){
-
-window.location.href="task1.html";
-
-return;
-
-}
-
-if(type==="sell"){
-
-if(!profile.sell_link_enabled){
-
-alert("Sell Link belum tersedia.");
-
-return;
-
-}
-
-window.location.href="bayargg.html";
-
-}
-
-});
+};
 
 
 
@@ -2486,7 +2475,12 @@ let html="";
 
 if(!reportError&&reports&&reports.length){
 
-reports.forEach(row=>{
+if (reports && reports.length) {
+    reports.forEach(row => {
+
+    });
+
+}
 
 html+=`
 <tr>
