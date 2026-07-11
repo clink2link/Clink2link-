@@ -13,23 +13,37 @@ async function loadComponent(id, url) {
         const response = await fetch(url);
 
         if (!response.ok) {
-            throw new Error("Failed to load " + url);
-        }
 
-        const html = await response.text();
-
-        element.innerHTML = html;
-
-        // Jalankan navbar setelah HTML selesai dimuat
-        if (id === "navbar" && typeof initNavbar === "function") {
-
-            initNavbar();
+            throw new Error(`Failed to load ${url}`);
 
         }
 
-    } catch (error) {
+        element.innerHTML = await response.text();
 
-        console.error(error);
+        // Inisialisasi navbar setelah HTML selesai dimuat
+        if (id === "navbar") {
+
+            if (typeof initNavbar === "function") {
+
+                initNavbar();
+
+            } else {
+
+                console.warn("initNavbar() tidak ditemukan.");
+
+            }
+
+        }
+
+    } catch (err) {
+
+        console.error(err);
+
+        element.innerHTML = `
+            <div style="padding:20px;color:#ef4444;text-align:center">
+                Failed to load ${url}
+            </div>
+        `;
 
     }
 
@@ -39,10 +53,14 @@ async function loadComponent(id, url) {
    LOAD COMPONENTS
 ========================================== */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
-    loadComponent("navbar", "/static/components/navbar.html");
+    await Promise.all([
 
-    loadComponent("footer", "/static/components/footer.html");
+        loadComponent("navbar", "/static/components/navbar.html"),
+
+        loadComponent("footer", "/static/components/footer.html")
+
+    ]);
 
 });
