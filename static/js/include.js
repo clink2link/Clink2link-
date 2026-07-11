@@ -1,28 +1,39 @@
-async function loadComponent(id, url) {
+fetch("/static/components/navbar.html")
+.then(res=>res.text())
+.then(data=>{
 
-    const res = await fetch(url);
+document.getElementById("navbar").innerHTML=data;
 
-    if (!res.ok) {
-        console.error("Gagal memuat:", url);
-        return;
-    }
 
-    document.getElementById(id).innerHTML = await res.text();
+const menu=document.getElementById("menuBtn");
+const sidebar=document.getElementById("sidebar");
+const overlay=document.getElementById("overlay");
 
-    if (id === "navbar") {
 
-        const script = document.createElement("script");
-        script.src = "/static/js/navbar.js";
-        document.body.appendChild(script);
+if(menu){
 
-    }
+menu.onclick=()=>{
+
+sidebar.classList.toggle("active");
+
+overlay.classList.toggle("active");
 
 }
 
-window.addEventListener("DOMContentLoaded", async () => {
+}
 
-    await loadComponent("navbar", "/static/components/navbar.html");
 
-    await loadComponent("footer", "/static/components/footer.html");
+if(overlay){
+
+overlay.onclick=()=>{
+
+sidebar.classList.remove("active");
+
+overlay.classList.remove("active");
+
+}
+
+}
+
 
 });
