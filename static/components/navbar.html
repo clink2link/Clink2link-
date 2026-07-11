@@ -1,90 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>CLICK2PAY</title>
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
-<link rel="stylesheet"
-href="/static/css/navbar.css">
-
-</head>
-
-<body>
-
-<div class="overlay" id="overlay"></div>
-
-
 <header class="topbar">
 
-
-<button id="menuBtn"
-class="menu-btn"
-aria-label="Open Menu">
-
+<button id="menuBtn" class="menu-btn">
 <i class="fa-solid fa-bars"></i>
-
 </button>
 
-
-
-<a href="/dashboard" class="brand">
+<a href="/dashboard.html" class="brand">
 
 <div class="brand-icon">
-
 <i class="fa-solid fa-hand-pointer"></i>
-
 <i class="fa-solid fa-money-bill-wave money"></i>
-
 </div>
 
-<span>
-CLICK2PAY
-</span>
+<span>CLICK2PAY</span>
 
 </a>
-
-
 
 
 <div class="top-actions">
 
-
-<a href="/notifications"
-class="icon-btn"
-title="Notifications">
-
+<a href="/notifications.html" class="icon-btn">
 <i class="fa-solid fa-bell"></i>
-
-<span class="badge"
-id="notificationBadge">
-0
-</span>
-
+<span class="badge">0</span>
 </a>
 
 
-
-<a href="/profile"
-class="profile-btn"
-title="Profile">
-
+<a href="/profile.html" class="profile-btn">
 <i class="fa-solid fa-user"></i>
-
 </a>
-
 
 
 </div>
 
-
 </header>
-
-
 
 
 
@@ -103,14 +50,9 @@ title="Profile">
 </div>
 
 
-<h2>
-CLICK2PAY
-</h2>
+<h2>CLICK2PAY</h2>
 
-
-<small id="username">
-@Guest
-</small>
+<small>@Guest</small>
 
 
 </div>
@@ -118,75 +60,49 @@ CLICK2PAY
 
 
 
-
 <nav>
 
 
-
-<a href="/dashboard" class="active">
-
+<a href="/dashboard.html">
 <i class="fa-solid fa-gauge-high"></i>
-
 Dashboard
-
 </a>
 
 
 
-
-
-<details open>
-
+<details>
 
 <summary>
 
 <span>
-
 <i class="fa-solid fa-link"></i>
-
 Manage Links
-
 </span>
-
 
 <i class="fa-solid fa-chevron-down"></i>
 
 </summary>
 
 
-
-<a href="/create-link">
-
+<a href="/create-link.html">
 <i class="fa-solid fa-plus"></i>
-
 Create Link
-
 </a>
 
 
-
-<a href="/links">
-
+<a href="/links.html">
 <i class="fa-solid fa-list"></i>
-
 My Links
-
 </a>
 
 
-
-<a href="/analytics">
-
+<a href="/analytics.html">
 <i class="fa-solid fa-chart-line"></i>
-
 Analytics
-
 </a>
 
 
 </details>
-
-
 
 
 
@@ -198,13 +114,9 @@ Analytics
 <summary>
 
 <span>
-
 <i class="fa-solid fa-wallet"></i>
-
 Earnings
-
 </span>
-
 
 <i class="fa-solid fa-chevron-down"></i>
 
@@ -212,158 +124,101 @@ Earnings
 
 
 
-<a href="/balance">
-
+<a href="/balance.html">
 <i class="fa-solid fa-coins"></i>
-
 Balance
-
 </a>
 
 
-
-<a href="/withdraw">
-
+<a href="/withdraw.html">
 <i class="fa-solid fa-money-bill-transfer"></i>
-
 Withdraw
-
 </a>
 
 
-
-<a href="/withdraw-history">
-
+<a href="/withdraw-history.html">
 <i class="fa-solid fa-clock-rotate-left"></i>
-
-Withdraw History
-
-</a>
-
-
-
-</details>
-
-
-
-
-
-
-
-<a href="/transactions">
-
-<i class="fa-solid fa-receipt"></i>
-
-Transactions
-
-</a>
-
-
-
-
-<a href="/statistics">
-
-<i class="fa-solid fa-chart-pie"></i>
-
-Statistics
-
-</a>
-
-
-
-
-<a href="/referral">
-
-<i class="fa-solid fa-user-group"></i>
-
-Referral
-
-</a>
-
-
-
-
-<a href="/daily-bonus">
-
-<i class="fa-solid fa-gift"></i>
-
-Daily Bonus
-
-</a>
-
-
-
-
-<a href="/leaderboard">
-
-<i class="fa-solid fa-trophy"></i>
-
-Leaderboard
-
-</a>
-
-
-
-
-
-
-
-<details>
-
-
-<summary>
-
-<span>
-
-<i class="fa-solid fa-bullhorn"></i>
-
-Advertise
-
-</span>
-
-
-<i class="fa-solid fa-chevron-down"></i>
-
-</summary>
-
-
-
-<a href="/advertise/topup">
-
-<i class="fa-solid fa-wallet"></i>
-
-Top Up
-
-</a>
-
-
-
-<a href="/advertise/create">
-
-<i class="fa-solid fa-rectangle-ad"></i>
-
-Create Ads
-
-</a>
-
-
-
-<a href="/advertise/links">
-
-<i class="fa-solid fa-link"></i>
-
-My Ads
-
-</a>
-
-
-
-<a href="/advertise/history">
-
-<i class="fa-solid fa-clock"></i>
-
 History
+</a>
 
+
+</details>
+
+
+
+
+
+<a href="/transactions.html">
+<i class="fa-solid fa-receipt"></i>
+Transactions
+</a>
+
+
+
+<a href="/statistics.html">
+<i class="fa-solid fa-chart-pie"></i>
+Statistics
+</a>
+
+
+
+<a href="/referral.html">
+<i class="fa-solid fa-users"></i>
+Referral
+</a>
+
+
+
+<a href="/daily-bonus.html">
+<i class="fa-solid fa-gift"></i>
+Daily Bonus
+</a>
+
+
+
+<a href="/leaderboard.html">
+<i class="fa-solid fa-trophy"></i>
+Leaderboard
+</a>
+
+
+
+
+
+
+<details>
+
+
+<summary>
+
+<span>
+<i class="fa-solid fa-bullhorn"></i>
+Advertise
+</span>
+
+<i class="fa-solid fa-chevron-down"></i>
+
+</summary>
+
+
+
+<a href="/advertise/topup.html">
+<i class="fa-solid fa-wallet"></i>
+Top Up
+</a>
+
+
+
+<a href="/advertise/create.html">
+<i class="fa-solid fa-rectangle-ad"></i>
+Create Ads
+</a>
+
+
+
+<a href="/advertise/list.html">
+<i class="fa-solid fa-link"></i>
+My Ads
 </a>
 
 
@@ -382,13 +237,9 @@ History
 <summary>
 
 <span>
-
 <i class="fa-solid fa-headset"></i>
-
 Support
-
 </span>
-
 
 <i class="fa-solid fa-chevron-down"></i>
 
@@ -397,31 +248,22 @@ Support
 
 
 <a href="#">
-
 <i class="fa-brands fa-telegram"></i>
-
 Telegram
-
 </a>
 
 
 
 <a href="#">
-
 <i class="fa-brands fa-whatsapp"></i>
-
 WhatsApp
-
 </a>
 
 
 
 <a href="mailto:support@click2pay.com">
-
 <i class="fa-solid fa-envelope"></i>
-
-Gmail
-
+Email
 </a>
 
 
@@ -440,13 +282,9 @@ Gmail
 <summary>
 
 <span>
-
 <i class="fa-solid fa-gear"></i>
-
 Settings
-
 </span>
-
 
 <i class="fa-solid fa-chevron-down"></i>
 
@@ -454,22 +292,16 @@ Settings
 
 
 
-<a href="/profile">
-
+<a href="/profile.html">
 <i class="fa-solid fa-user"></i>
-
 Profile
-
 </a>
 
 
 
-<a href="/payment-method">
-
+<a href="/payment-method.html">
 <i class="fa-solid fa-building-columns"></i>
-
 Payment Account
-
 </a>
 
 
@@ -481,9 +313,7 @@ Payment Account
 
 
 
-
-<a href="/logout"
-class="logout">
+<a href="/logout.html" class="logout">
 
 <i class="fa-solid fa-right-from-bracket"></i>
 
@@ -497,12 +327,3 @@ Logout
 
 
 </aside>
-
-
-
-
-
-<script src="/static/js/navbar.js"></script>
-
-</body>
-</html>
