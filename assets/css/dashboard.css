@@ -1,6 +1,4 @@
-/* =====================================================
-   CLICK2PAY DASHBOARD PREMIUM
-===================================================== */
+/* CLICK2PAY DASHBOARD PREMIUM */
 
 :root{
     --primary:#0d6efd;
@@ -10,11 +8,8 @@
     --text:#172033;
     --muted:#667085;
     --radius:22px;
-
-    --shadow:
-    0 20px 60px rgba(0,0,0,.08);
+    --shadow:0 20px 60px rgba(0,0,0,.08);
 }
-
 
 *{
     margin:0;
@@ -22,309 +17,185 @@
     box-sizing:border-box;
 }
 
-
 body.dashboard{
-
     font-family:'Poppins',sans-serif;
-
-    background:
-    linear-gradient(
-        180deg,
-        #ffffff,
-        #f8fafc
-    );
-
+    background:linear-gradient(180deg,#fff,#f8fafc);
     color:var(--text);
-
     min-height:100vh;
-
 }
 
-
-
-/* =====================================================
-   NAVBAR
-===================================================== */
+/* NAVBAR */
 
 .dashboard .navbar{
-
-    background:white;
-
-    padding:18px 0;
-
-    box-shadow:
-    0 10px 30px rgba(0,0,0,.05);
-
-}
-
-
-.dashboard .navbar-brand{
-
-    font-size:25px;
-
-    font-weight:800;
-
-    color:#111827;
-
-}
-
-
-.dashboard .nav-link{
-
-    color:#344054;
-
-    font-weight:500;
-
-}
-
-
-
-.dashboard .nav-link:hover{
-
-    color:var(--primary);
-
-}
-
-
-
-/* =====================================================
-   CONTAINER
-===================================================== */
-
-
-.dashboard .container{
-
-    max-width:1180px;
-
-    margin:auto;
-
-    padding:40px 20px;
-
-}
-
-
-
-/* =====================================================
-   TITLE
-===================================================== */
-
-
-.dashboard h2{
-
-    font-size:36px;
-
-    font-weight:800;
-
-    margin-bottom:30px;
-
-}
-
-
-
-/* =====================================================
-   PROFILE INFO CARD
-===================================================== */
-
-
-.dashboard .container > p{
-
-    background:white;
-
-    padding:22px;
-
-    margin-bottom:15px;
-
-    border-radius:18px;
-
-    box-shadow:var(--shadow);
-
-    border:1px solid #eef2f7;
-
-    font-weight:500;
-
-}
-
-
-
-.dashboard span{
-
-    color:var(--primary);
-
-    font-weight:700;
-
-}
-
-
-
-/* =====================================================
-   BUTTON
-===================================================== */
-
-
-.dashboard button,
-.dashboard .btn{
-
-    border-radius:50px;
-
-    padding:12px 25px;
-
-    font-weight:600;
-
-}
-
-
-
-.dashboard .btn-primary{
-
-    background:
-    linear-gradient(
-        135deg,
-        #0d6efd,
-        #084298
-    );
-
-    border:none;
-
-}
-
-
-
-/* =====================================================
-   FOOTER
-===================================================== */
-
-
-.dashboard footer{
-
-    background:
-    linear-gradient(
-        135deg,
-        #07101f,
-        #020617
-    );
-
-    color:white;
-
-    margin-top:60px;
-
-}
-
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-
-@media(max-width:768px){
-
-    .dashboard h2{
-
-        font-size:28px;
-
-    }
-
-
-    .dashboard .container{
-
-        padding:25px 15px;
-
-    }
-
-
-    .dashboard .container > p{
-
-        padding:18px;
-
-        font-size:14px;
-
-    }
-
-}
-/* =====================================================
-   DASHBOARD NAVBAR
-===================================================== */
-
-.dashboard .navbar{
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     padding:18px 30px;
-
-    background:#ffffff;
-
-    box-shadow:
-    0 10px 30px rgba(0,0,0,.06);
-
+    background:#fff;
+    box-shadow:0 10px 30px rgba(0,0,0,.06);
 }
-
 
 .dashboard .nav-left{
-
     display:flex;
-
     align-items:center;
-
     gap:10px;
-
     font-size:24px;
-
     font-weight:800;
-
     color:#111827;
-
 }
-
 
 .dashboard .nav-left i{
-
     color:#0d6efd;
-
-    filter:
-    drop-shadow(
-        0 5px 15px rgba(13,110,253,.35)
-    );
-
+    filter:drop-shadow(0 5px 15px rgba(13,110,253,.35));
 }
-
 
 .dashboard .nav-right button{
-
     width:45px;
-
     height:45px;
-
     border:none;
-
     border-radius:50%;
-
-    background:
-    linear-gradient(
-        135deg,
-        #0d6efd,
-        #084298
-    );
-
-    color:white;
-
+    background:linear-gradient(135deg,#0d6efd,#084298);
+    color:#fff;
     cursor:pointer;
-
     font-size:18px;
-
     transition:.3s;
-
 }
 
-
 .dashboard .nav-right button:hover{
-
     transform:translateY(-3px);
+    box-shadow:0 10px 25px rgba(13,110,253,.35);
+}
 
-    box-shadow:
-    0 10px 25px rgba(13,110,253,.35);
+/* CONTAINER */
 
+.dashboard .container{
+    max-width:1180px;
+    margin:auto;
+    padding:40px 20px;
+}
+
+/* TITLE */
+
+.dashboard h2{
+    font-size:36px;
+    font-weight:800;
+    margin-bottom:30px;
+}
+
+/* CARD */
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.dashboard-card{
+    background:#fff;
+    border-radius:var(--radius);
+    padding:25px;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    border:1px solid #eef2f7;
+    box-shadow:var(--shadow);
+    transition:.3s;
+    position:relative;
+    overflow:hidden;
+}
+
+.dashboard-card::before{
+    content:"";
+    position:absolute;
+    width:120px;
+    height:120px;
+    right:-40px;
+    top:-40px;
+    border-radius:50%;
+    background:rgba(13,110,253,.08);
+}
+
+.dashboard-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 30px 80px rgba(13,110,253,.15);
+}
+
+.dashboard-card i{
+    width:60px;
+    height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:20px;
+    background:linear-gradient(135deg,rgba(13,110,253,.15),rgba(13,110,253,.03));
+    color:var(--primary);
+    font-size:25px;
+}
+
+.dashboard-card small{
+    color:var(--muted);
+    font-size:14px;
+}
+
+.dashboard-card p{
+    margin:5px 0 0;
+    font-size:17px;
+    font-weight:700;
+    color:var(--text);
+    word-break:break-word;
+}
+
+/* FOOTER */
+
+.dashboard footer{
+    background:linear-gradient(135deg,#07101f,#020617);
+    color:#fff;
+    margin-top:60px;
+}
+
+/* ANIMATION */
+
+.dashboard .container{
+    animation:dashboardShow .5s ease;
+}
+
+@keyframes dashboardShow{
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+    .dashboard h2{
+        font-size:28px;
+    }
+
+    .dashboard .container{
+        padding:25px 15px;
+    }
+}
+
+@media(max-width:576px){
+    .dashboard .navbar{
+        padding:15px 20px;
+    }
+
+    .dashboard .nav-left{
+        font-size:20px;
+    }
+
+    .dashboard-grid{
+        grid-template-columns:1fr;
+    }
+
+    .dashboard-card{
+        padding:20px;
+    }
 }
