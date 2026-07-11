@@ -393,12 +393,12 @@ background:#1e293b;
 ========================= */
 
 .create-form{
-    max-width:560px;
+    max-width:720px;
     width:100%;
-    margin:0 auto 24px;
-    padding:18px;
+    margin:0 auto 20px;
+    padding:16px 18px;
     background:#fff;
-    border:1px solid #e5edf8;
+    border:1px solid #e2e8f0;
     border-radius:18px;
     box-shadow:0 8px 20px rgba(15,23,42,.06);
 }
@@ -407,74 +407,93 @@ background:#1e293b;
     display:flex;
     align-items:center;
     gap:10px;
-    margin:0 0 6px;
-    font-size:20px;
+    margin:0;
+    font-size:19px;
     font-weight:700;
     color:#2563eb;
 }
 
 .create-form h2 i{
-    width:36px;
-    height:36px;
-    border-radius:10px;
+    width:34px;
+    height:34px;
     display:flex;
     align-items:center;
     justify-content:center;
     background:#eff6ff;
     color:#2563eb;
-    font-size:16px;
+    border-radius:10px;
+    font-size:15px;
 }
 
 .create-desc{
-    margin-bottom:16px;
-    font-size:13px;
+    margin:8px 0 14px;
     color:#64748b;
+    font-size:13px;
 }
 
-.create-label{
-    display:block;
-    margin-bottom:6px;
-    font-size:13px;
-    font-weight:600;
-    color:#64748b;
+/* INPUT */
+
+.input-wrapper{
+    position:relative;
+    margin-bottom:12px;
+}
+
+.input-wrapper i{
+    position:absolute;
+    left:15px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#94a3b8;
+    font-size:15px;
+    pointer-events:none;
 }
 
 .create-input,
 .create-select{
     width:100%;
     height:46px;
-    padding:0 14px;
-    margin-bottom:14px;
-    border:none;
+    padding:0 15px 0 45px;
+    border:1px solid #dbeafe;
     border-radius:12px;
-    background:#f5f7fb;
-    font-size:14px;
+    background:#f8fafc;
     font-family:Poppins,sans-serif;
-    color:#334155;
+    font-size:14px;
     outline:none;
-    transition:.2s;
+    transition:.25s;
+    appearance:none;
 }
 
 .create-input:focus,
 .create-select:focus{
     background:#fff;
-    box-shadow:0 0 0 2px rgba(37,99,235,.15);
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,.08);
 }
+
+.create-label{
+    margin-bottom:6px;
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:#64748b;
+}
+
+/* BUTTON */
 
 .create-actions{
     display:flex;
     gap:10px;
-    margin-top:4px;
+    margin-top:12px;
 }
 
 .create-actions button{
     flex:1;
-    height:44px;
+    height:42px;
     border:none;
     border-radius:12px;
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
     gap:8px;
     font-family:Poppins,sans-serif;
     font-size:14px;
@@ -489,8 +508,8 @@ background:#1e293b;
 }
 
 .btn-advance{
-    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
-    color:#fff;
+    background:#eff6ff;
+    color:#2563eb;
 }
 
 .btn-shorten:hover,
@@ -499,8 +518,8 @@ background:#1e293b;
 }
 
 #sellInfo{
+    margin-top:10px;
     display:block;
-    margin-top:12px;
     text-align:center;
     font-size:12px;
     color:#64748b;
@@ -530,9 +549,14 @@ body.dark #sellInfo{
     color:#94a3b8;
 }
 
+body.dark .input-wrapper i{
+    color:#64748b;
+}
+
 body.dark .create-input,
 body.dark .create-select{
     background:#1e293b;
+    border-color:#334155;
     color:#fff;
 }
 
@@ -542,61 +566,27 @@ body.dark .create-select:focus{
 }
 
 body.dark .btn-advance{
-    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
-}
-
-/* =========================
-   TABLET
-========================= */
-
-@media (max-width:768px){
-
-.create-form{
-    max-width:100%;
-    padding:16px;
-}
-
+    background:#1e293b;
+    color:#60a5fa;
 }
 
 /* =========================
    MOBILE
 ========================= */
 
-@media (max-width:480px){
+@media(max-width:600px){
 
 .create-form{
+    max-width:100%;
     padding:14px;
-    border-radius:16px;
-}
-
-.create-form h2{
-    font-size:18px;
-}
-
-.create-form h2 i{
-    width:34px;
-    height:34px;
-    font-size:15px;
-}
-
-.create-input,
-.create-select{
-    height:44px;
-    font-size:14px;
 }
 
 .create-actions{
-    gap:8px;
+    flex-direction:column;
 }
 
 .create-actions button{
-    height:42px;
-    font-size:13px;
-}
-
-#createInfo,
-#sellInfo{
-    font-size:11px;
+    width:100%;
 }
 
 }
@@ -1390,34 +1380,49 @@ Dashboard Click2Pay
 
 <div class="create-form">
 
-    <h2>
-        <i class="fa-solid fa-wand-magic-sparkles"></i>
-        Create Link
-    </h2>
+    <div class="create-title">
 
-    <p class="create-desc">
-        <i class="fa-solid fa-circle-info"></i>
-        Masukkan URL yang ingin dipersingkat.
-    </p>
+        <div class="title-icon">
+            <i class="fa-solid fa-bolt"></i>
+        </div>
+
+        <div>
+            <h2>Create Link</h2>
+            <p>Buat Ads Link atau Sell Link hanya dalam beberapa detik.</p>
+        </div>
+
+    </div>
+
+    <label class="create-label">
+        <i class="fa-solid fa-earth-asia"></i>
+        Destination URL
+    </label>
 
     <div class="input-wrapper">
+
         <i class="fa-solid fa-globe"></i>
+
         <input
             type="url"
             id="urlInput"
             class="create-input"
-            placeholder="https://example.com"
-        >
+            placeholder="https://example.com">
+
     </div>
 
     <label class="create-label">
-        <i class="fa-solid fa-layer-group"></i>
+        <i class="fa-solid fa-shapes"></i>
         Link Type
     </label>
 
     <div class="input-wrapper">
+
         <i class="fa-solid fa-link"></i>
-        <select id="linkType" class="create-select">
+
+        <select
+            id="linkType"
+            class="create-select">
+
             <option value="ads">
                 Ads Link
             </option>
@@ -1425,26 +1430,39 @@ Dashboard Click2Pay
             <option value="sell" disabled>
                 Sell Link 🔒
             </option>
+
         </select>
+
     </div>
 
     <div class="create-actions">
 
-        <button id="shortenBtn" class="btn-shorten">
-            <i class="fa-solid fa-bolt"></i>
-            Shorten Link
+        <button
+            id="shortenBtn"
+            class="btn-shorten">
+
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            Create Link
+
         </button>
 
-        <button id="advanceBtn" class="btn-advance">
+        <button
+            id="advanceBtn"
+            class="btn-advance">
+
             <i class="fa-solid fa-sliders"></i>
             Advanced
+
         </button>
 
     </div>
 
     <small id="sellInfo">
-        <i class="fa-solid fa-lock"></i>
-        Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.
+
+        <i class="fa-solid fa-shield-check"></i>
+
+        Sell Link akan terbuka setelah berhasil melakukan <b>1× Withdraw</b>.
+
     </small>
 
 </div>
