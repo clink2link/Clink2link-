@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Dashboard - Click2Pay</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+
+background:#f8fbff;
+color:#111;
+
+padding-top:90px;
+
+}
+
+
+/* BACKGROUND */
+
+.bg{
+
+position:fixed;
+inset:0;
+
+background:
+radial-gradient(circle at 20% 20%,rgba(37,99,235,.18),transparent 30%),
+radial-gradient(circle at 80% 80%,rgba(0,184,255,.15),transparent 30%),
+linear-gradient(120deg,#fff,#f1f8ff);
+
+z-index:-1;
+
+}
+
+
+
+/* CONTAINER */
+
+.dashboard{
+
+padding:20px;
+
+max-width:1200px;
+
+margin:auto;
+
+}
+
+
+
+/* WELCOME */
+
+.welcome{
+
+background:white;
+
+padding:25px;
+
+border-radius:25px;
+
+border:1px solid #dbeafe;
+
+box-shadow:0 15px 40px rgba(0,0,0,.08);
+
+margin-bottom:25px;
+
+}
+
+
+.welcome h1{
+
+font-size:28px;
+
+color:#2563eb;
+
+}
+
+
+.welcome p{
+
+color:#64748b;
+
+margin-top:8px;
+
+}
+
+
+
+/* CARDS */
+
+.stats{
+
+display:grid;
+
+grid-template-columns:repeat(4,1fr);
+
+gap:20px;
+
+}
+
+
+.card{
+
+background:white;
+
+padding:25px;
+
+border-radius:22px;
+
+border:1px solid #dbeafe;
+
+box-shadow:0 10px 30px rgba(0,0,0,.06);
+
+transition:.3s;
+
+}
+
+
+.card:hover{
+
+transform:translateY(-8px);
+
+box-shadow:0 20px 40px rgba(37,99,235,.2);
+
+}
+
+
+
+.card i{
+
+width:50px;
+height:50px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+border-radius:15px;
+
+background:#eff6ff;
+
+color:#2563eb;
+
+font-size:25px;
+
+margin-bottom:15px;
+
+}
+
+
+.card h3{
+
+font-size:14px;
+
+color:#64748b;
+
+}
+
+
+.card h2{
+
+margin-top:8px;
+
+font-size:28px;
+
+}
+
+
+
+/* ACTION */
+
+
+.action{
+
+margin-top:30px;
+
+background:white;
+
+padding:30px;
+
+border-radius:25px;
+
+border:1px solid #dbeafe;
+
+box-shadow:0 10px 30px rgba(0,0,0,.06);
+
+}
+
+
+.action h2{
+
+color:#2563eb;
+
+margin-bottom:20px;
+
+}
+
+
+
+.buttons{
+
+display:flex;
+
+gap:15px;
+
+flex-wrap:wrap;
+
+}
+
+
+.btn{
+
+padding:14px 25px;
+
+border-radius:15px;
+
+border:none;
+
+cursor:pointer;
+
+font-weight:700;
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+}
+
+
+
+.primary{
+
+background:#2563eb;
+
+color:white;
+
+}
+
+
+.secondary{
+
+background:#eff6ff;
+
+color:#2563eb;
+
+}
+
+
+
+/* CPM */
+
+
+.cpm{
+
+margin-top:30px;
+
+display:grid;
+
+grid-template-columns:2fr 1fr;
+
+gap:20px;
+
+}
+
+
+.box{
+
+background:white;
+
+padding:30px;
+
+border-radius:25px;
+
+border:1px solid #dbeafe;
+
+box-shadow:0 10px 30px rgba(0,0,0,.06);
+
+}
+
+
+
+.progress{
+
+height:12px;
+
+background:#e2e8f0;
+
+border-radius:20px;
+
+overflow:hidden;
+
+margin-top:15px;
+
+}
+
+
+.progress span{
+
+display:block;
+
+height:100%;
+
+width:70%;
+
+background:linear-gradient(
+90deg,
+#2563eb,
+#00b8ff
+);
+
+}
+
+
+
+/* ACTIVITY */
+
+
+.activity div{
+
+padding:15px 0;
+
+border-bottom:1px solid #e2e8f0;
+
+display:flex;
+
+justify-content:space-between;
+
+}
+
+
+
+@media(max-width:900px){
+
+.stats{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+
+.cpm{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+
+@media(max-width:600px){
+
+.stats{
+
+grid-template-columns:1fr;
+
+}
+
+
+.dashboard{
+
+padding:15px;
+
+}
+
+
+.welcome h1{
+
+font-size:22px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="bg"></div>
+
+
+<!-- NAVBAR -->
+
+<div id="navbar"></div>
+
+
+
+<div class="dashboard">
+
+
+<div class="welcome">
+
+<h1>
+<i class="fa-solid fa-house"></i>
+Dashboard Click2Pay
+</h1>
+
+<p>
+Selamat datang kembali. Kelola link, pendapatan dan aktivitas akun kamu.
+</p>
+
+</div>
+
+
+
+
+<div class="stats">
+
+
+<div class="card">
+
+<i class="fa-solid fa-wallet"></i>
+
+<h3>Saldo</h3>
+
+<h2>Rp 0</h2>
+
+</div>
+
+
+
+<div class="card">
+
+<i class="fa-solid fa-link"></i>
+
+<h3>Total Link</h3>
+
+<h2>0</h2>
+
+</div>
+
+
+
+
+<div class="card">
+
+<i class="fa-solid fa-chart-line"></i>
+
+<h3>Total Klik</h3>
+
+<h2>0</h2>
+
+</div>
+
+
+
+<div class="card">
+
+<i class="fa-solid fa-money-bill-transfer"></i>
+
+<h3>Pendapatan</h3>
+
+<h2>Rp 0</h2>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="action">
+
+
+<h2>
+<i class="fa-solid fa-bolt"></i>
+Quick Action
+</h2>
+
+
+<div class="buttons">
+
+
+<button class="btn primary">
+
+<i class="fa-solid fa-plus"></i>
+
+Create Link
+
+</button>
+
+
+<button class="btn secondary">
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+Create Sell Link
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="cpm">
+
+
+<div class="box">
+
+<h2>
+<i class="fa-solid fa-chart-simple"></i>
+CPM Performance
+</h2>
+
+
+<p style="margin-top:15px;color:#64748b">
+
+Performance bulan ini
+
+</p>
+
+
+<div class="progress">
+
+<span></span>
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="box">
+
+
+<h2>
+<i class="fa-solid fa-clock"></i>
+Aktivitas
+</h2>
+
+
+<div class="activity">
+
+
+<div>
+<span>Klik Hari Ini</span>
+<b>0</b>
+</div>
+
+
+<div>
+<span>Link Aktif</span>
+<b>0</b>
+</div>
+
+
+<div>
+<span>Payment</span>
+<b>0</b>
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+<script>
+
+/* LOAD NAVBAR */
+
+fetch("navbar.html")
+
+.then(res=>res.text())
+
+.then(data=>{
+
+document.getElementById("navbar").innerHTML=data;
+
+});
+
+
+</script>
+
+
+</body>
+</html>
