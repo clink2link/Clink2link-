@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-<title>My Link - Click2Pay</title>
-
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Link - Click2Pay</title>
 
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/theme.css">
 <link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/my-link.css">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -24,6 +26,7 @@
 <i class="fa-solid fa-link"></i>
 My Link
 </div>
+
 
 <div class="link-filter">
 
@@ -52,6 +55,7 @@ Belum ada link
 
 </div>
 
+
 </main>
 
 
@@ -59,26 +63,72 @@ Belum ada link
 
 
 
-<!-- SUPABASE -->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
-<!-- GLOBAL -->
 
 <script src="js/database.js"></script>
 <script src="js/theme.js"></script>
 
-
-<!-- COMPONENT -->
-
 <script src="js/navbar.js"></script>
 <script src="js/footer.js"></script>
 
-
-<!-- PAGE -->
-
 <script src="js/my-link.js"></script>
+
+
+<script>
+
+// LOAD NAVBAR
+
+fetch("components/navbar.html")
+.then(res=>res.text())
+.then(data=>{
+
+document.getElementById("navbar").innerHTML=data;
+
+
+if(typeof c2pInit==="function"){
+c2pInit();
+}
+
+
+const logoutBtn=document.getElementById("logoutBtn");
+
+if(logoutBtn){
+
+logoutBtn.onclick=async()=>{
+
+await database.logout();
+
+localStorage.clear();
+sessionStorage.clear();
+
+window.location.replace("index.html");
+
+};
+
+}
+
+
+});
+
+
+
+// LOAD FOOTER
+
+fetch("components/footer.html")
+.then(res=>res.text())
+.then(data=>{
+
+document.getElementById("footer").innerHTML=data;
+
+
+if(typeof c2pFooterInit==="function"){
+c2pFooterInit();
+}
+
+});
+
+</script>
 
 
 </body>
