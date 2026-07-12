@@ -168,18 +168,21 @@ if(sellClicksEl){
 sellClicksEl.innerHTML=sellClicks.toLocaleString("id-ID");
 }
 
-// CHART
-const reports=await database.getReports(authId);
+// ===========================
+// CHART ADS
+// ===========================
 
-let labels=[];
-let views=[];
+const reports = await database.getReports(authId);
+
+let labels = [];
+let views = [];
 
 if(reports && reports.length){
 
-const chartData=reports.slice(0,7).reverse();
+const chartData = reports.slice(0,7).reverse();
 
-labels=chartData.map(item=>item.report_date);
-views=chartData.map(item=>Number(item.views||0));
+labels = chartData.map(item=>item.report_date);
+views = chartData.map(item=>Number(item.views || 0));
 
 }else{
 
@@ -193,49 +196,87 @@ labels=[
 "Hari 7"
 ];
 
-views=[
-0,0,0,0,0,0,0
-];
+views=[0,0,0,0,0,0,0];
 
 }
 
 
-const adsChart=document.getElementById("adsChart");
+const adsCanvas = document.getElementById("adsChart");
 
-if(adsChart){
+if(adsCanvas){
 
-new Chart(adsChart,{
+new Chart(adsCanvas,{
 type:"line",
+
 data:{
 labels:labels,
+
 datasets:[{
 label:"Views",
 data:views,
+
 borderColor:"#2563eb",
-backgroundColor:"rgba(37,99,235,.15)",
+backgroundColor:"rgba(37,99,235,.12)",
+
+borderWidth:3,
 fill:true,
-tension:.35,
-pointRadius:4
+tension:.45,
+
+pointRadius:5,
+pointHoverRadius:8,
+pointBackgroundColor:"#2563eb",
+pointBorderWidth:2
 }]
 },
+
 options:{
 responsive:true,
 maintainAspectRatio:false,
+
+interaction:{
+mode:"index",
+intersect:false
+},
+
 plugins:{
 legend:{
 display:false
+},
+
+tooltip:{
+backgroundColor:"#0f172a",
+padding:12,
+
+titleFont:{
+size:13
+},
+
+bodyFont:{
+size:14
+}
 }
 },
+
 scales:{
+x:{
+grid:{
+display:false
+}
+},
+
 y:{
-beginAtZero:true
+beginAtZero:true,
+
+grid:{
+color:"rgba(148,163,184,.15)"
 }
 }
 }
+}
+
 });
 
 }
-
 // CPM
 if(reports.length){
 
