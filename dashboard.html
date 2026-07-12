@@ -537,6 +537,56 @@ font-size:12px;
 color:#64748b;
 line-height:1.5;
 }
+.advanced-modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(15,23,42,.5);
+z-index:999;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+
+.advanced-box{
+width:100%;
+max-width:450px;
+background:#fff;
+border-radius:22px;
+padding:22px;
+box-shadow:0 20px 50px rgba(0,0,0,.2);
+}
+
+.advanced-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.advanced-header h3{
+margin:0;
+color:#2563eb;
+}
+
+.advanced-header button{
+border:none;
+background:#eff6ff;
+color:#2563eb;
+width:35px;
+height:35px;
+border-radius:50%;
+cursor:pointer;
+}
+
+
+body.dark .advanced-box{
+background:#0f172a;
+}
+
+body.dark .advanced-header h3{
+color:#60a5fa;
+}
 
 /* ===========================
    DARK MODE
@@ -1332,6 +1382,96 @@ Dashboard Click2Pay
         <i class="fa-solid fa-lock"></i>
         Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.
     </div>
+
+</div>
+
+<!-- ADVANCED MODAL -->
+
+<div id="advancedModal" class="advanced-modal">
+
+<div class="advanced-box">
+
+<div class="advanced-header">
+<h3>
+<i class="fa-solid fa-sliders"></i>
+Advanced Settings
+</h3>
+
+<button id="closeAdvanced">
+<i class="fa-solid fa-xmark"></i>
+</button>
+</div>
+
+
+<label>Custom Alias</label>
+
+<div class="input-box">
+<i class="fa-solid fa-tag"></i>
+<input 
+id="customAlias"
+placeholder="contoh: promo-juli">
+</div>
+
+
+<label>Expired Link</label>
+
+<div class="input-box">
+<i class="fa-solid fa-clock"></i>
+
+<select id="expiredLink">
+<option value="never">Tidak Pernah</option>
+<option value="1">1 Hari</option>
+<option value="7">7 Hari</option>
+<option value="30">30 Hari</option>
+</select>
+
+</div>
+
+
+<label>Campaign Name</label>
+
+<div class="input-box">
+<i class="fa-solid fa-bullseye"></i>
+
+<input
+id="campaignName"
+placeholder="contoh: Promo Facebook">
+
+</div>
+
+
+<label>Target Device</label>
+
+<div class="input-box">
+
+<i class="fa-solid fa-mobile-screen"></i>
+
+<select id="targetDevice">
+
+<option value="all">
+Semua Device
+</option>
+
+<option value="android">
+Android
+</option>
+
+<option value="ios">
+iPhone / iOS
+</option>
+
+</select>
+
+</div>
+
+
+<button id="saveAdvanced" class="btn-primary">
+<i class="fa-solid fa-check"></i>
+Simpan
+</button>
+
+
+</div>
 
 </div>
 
