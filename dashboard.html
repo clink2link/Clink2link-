@@ -1341,20 +1341,20 @@ CLICK<span>2PAY</span>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/database.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/navbar.js"></script>
+
 <script>
-const dashCards=document.querySelectorAll(".dash-card,.dash-box");
+fetch("components/navbar.html")
+.then(res=>res.text())
+.then(data=>{
 
-dashCards.forEach((item,index)=>{
-item.style.opacity="0";
-item.style.transform="translateY(30px)";
-setTimeout(()=>{
-item.style.transition=".6s";
-item.style.opacity="1";
-item.style.transform="translateY(0)";
-},index*120);
-});
+document.getElementById("navbar").innerHTML=data;
 
-/* CLOSE SIDEBAR */
+if(typeof c2pInit==="function"){
+c2pInit();
+}
 
 document.querySelectorAll(".c2p-sidebar a").forEach(link=>{
 link.addEventListener("click",()=>{
@@ -1364,313 +1364,17 @@ c2pClose();
 });
 });
 
-/* SUPABASE CONFIG */
-
-const SUPABASE_URL="https://qmrhxsrnvgvggwahufvp.supabase.co";
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtcmh4c3Judmd2Z2d3YWh1ZnZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzU5ODQsImV4cCI6MjA5OTI1MTk4NH0.gR5vX2-r7hG_vzEcEzPKTIhsOKWA9gNep3lfQcyk724";
-
-const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-
-/* LOAD DASHBOARD */
-
-async function loadDashboard(){
-
-const {data:{user}}=await supabaseClient.auth.getUser();
-
-if(!user){
-console.log("Belum login");
-return;
-}
-
-const authId=user.id;
-
-/* AMBIL PROFILE */
-
-const {data:profile,error}=await supabaseClient
-.from("profiles")
-.select("*")
-.eq("id",authId)
-.single();
-
-if(error){
-console.log(error);
-return;
-}
-
-/* PENDAPATAN ADS */
-
-
-document.getElementById("adsToday").innerHTML=
-"Rp "+Number(profile.ads_earning_today)
-.toLocaleString("id-ID");
-
-document.getElementById("adsMonth").innerHTML=
-"Rp "+Number(profile.ads_earning_month)
-.toLocaleString("id-ID");
-
-const now = new Date();
-
-document.getElementById("todayDate").innerHTML =
-now.toLocaleString("id-ID",{
-day:"2-digit",
-month:"long",
-year:"numeric",
-hour:"2-digit",
-minute:"2-digit"
-});
-
-/* SELL LINK */
-
-const sellOption=document.querySelector('#linkType option[value="sell"]');
-
-if(profile.sell_link_enabled){
-
-document.querySelectorAll(".sell-only").forEach(el=>{
-el.style.display="";
-});
-
-sellOption.disabled=false;
-sellOption.textContent="🛒 Sell Link";
-
-document.getElementById("sellToday").textContent=
-"Rp "+Number(profile.sell_earning_today||0).toLocaleString("id-ID");
-
-document.getElementById("sellMonth").textContent=
-"Rp "+Number(profile.sell_earning_month||0).toLocaleString("id-ID");
-
-document.getElementById("sellInfo").innerHTML=
-'<i class="fa-solid fa-circle-check"></i> Sell Link sudah aktif.';
-
-}else{
-
-document.querySelectorAll(".sell-only").forEach(el=>{
-el.style.display="none";
-});
-
-sellOption.disabled=true;
-sellOption.textContent="🛒 Sell Link 🔒";
-
-document.getElementById("sellInfo").innerHTML=
-'<i class="fa-solid fa-lock"></i> Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.';
-
-}
-
-
-/* CREATE LINK */
-
-document.getElementById("shortenBtn").onclick=async()=>{
-
-const url=document.getElementById("urlInput").value.trim();
-const type=document.getElementById("linkType").value;
-
-if(!url){
-alert("Masukkan URL terlebih dahulu.");
-return;
-}
-
-try{
-new URL(url);
-}catch{
-alert("URL tidak valid.");
-return;
-}
-
-localStorage.setItem("create_url",url);
-
-if(type==="ads"){
-window.location.href="task1.html";
-return;
-}
-
-if(type==="sell"){
-
-if(!profile.sell_link_enabled){
-alert("Sell Link belum tersedia.");
-return;
-}
-
-window.location.href="bayargg.html";
-}
-
-};
-
-/* STATISTIK LINK */
-
-const {data:links,error:linkError}=await supabaseClient
-.from("links")
-.select("type,total_views,total_clicks")
-.eq("user_id",authId);
-
-let adsViews=0;
-let adsClicks=0;
-let sellViews=0;
-let sellClicks=0;
-
-if(!linkError&&links){
-
-links.forEach(link=>{
-
-if(link.type==="ads"){
-adsViews+=Number(link.total_views||0);
-adsClicks+=Number(link.total_clicks||0);
-}else if(link.type==="sell"){
-sellViews+=Number(link.total_views||0);
-sellClicks+=Number(link.total_clicks||0);
-}
-
-});
-
-}
-
-document.getElementById("adsViews").textContent=adsViews.toLocaleString("id-ID");
-document.getElementById("adsClicks").textContent=adsClicks.toLocaleString("id-ID");
-
-const sellViewsEl=document.getElementById("sellViews");
-const sellClicksEl=document.getElementById("sellClicks");
-
-if(sellViewsEl)sellViewsEl.textContent=sellViews.toLocaleString("id-ID");
-if(sellClicksEl)sellClicksEl.textContent=sellClicks.toLocaleString("id-ID");
-
-/* CHART */
-
-const {data:chartData=[]}=await supabaseClient
-.from("dashboard_daily_report")
-.select("report_date,views")
-.eq("user_id",authId)
-.order("report_date",{ascending:true})
-.limit(7);
-
-const chartLabels=chartData.map(item=>item.report_date);
-const chartViews=chartData.map(item=>Number(item.views||0));
-
-new Chart(document.getElementById("adsChart"),{
-type:"line",
-data:{
-labels:chartLabels,
-datasets:[{
-label:"Views",
-data:chartViews,
-borderColor:"#2dd4bf",
-backgroundColor:"rgba(45,212,191,.15)",
-fill:true,
-tension:.35,
-pointRadius:4
-}]
-},
-options:{
-responsive:true,
-maintainAspectRatio:false,
-plugins:{
-legend:{display:false}
-}
-}
-});
-
-/* REPORT TABLE */
-
-const {data:reports,error:reportError}=await supabaseClient
-.from("dashboard_daily_report")
-.select("report_date,views,link_earnings,daily_cpm,penghasilan")
-.eq("user_id",authId)
-.order("report_date",{ascending:false})
-.limit(30);
-
-let html="";
-
-if(!reportError&&reports&&reports.length){
-
-reports.forEach(row=>{
-
-html+=`
-<tr>
-<td>${row.report_date}</td>
-<td>${Number(row.views||0).toLocaleString("id-ID")}</td>
-<td class="earning">Rp ${Number(row.link_earnings||0).toLocaleString("id-ID")}</td>
-<td>${Number(row.daily_cpm||0).toLocaleString("id-ID")}</td>
-<td>Rp ${Number(row.penghasilan||0).toLocaleString("id-ID")}</td>
-</tr>
-`;
-
-});
-
-}else{
-
-html=`
-<tr>
-<td colspan="5" class="empty">Belum ada data report.</td>
-</tr>
-`;
-
-}
-
-document.getElementById("reportTable").innerHTML=html;
-
-/* ANNOUNCEMENT */
-
-const {data:news=[]}=await supabaseClient
-.from("announcements")
-.select("*")
-.eq("is_active",true)
-.order("created_at",{ascending:false})
-.limit(5);
-
-let announcement="";
-
-news.forEach(item=>{
-
-announcement+=`
-<div style="margin-bottom:15px">
-<b>${item.title}</b>
-<p>${item.content}</p>
-</div>
-`;
-
-});
-
-document.getElementById("announcementBox").innerHTML=
-announcement||"Belum ada pengumuman.";
-
-}
-
-loadDashboard();
-
-
-/* AUTO DARK THEME */
-
-function autoTheme(){
-const jam=new Date().getHours();
-
-if(jam>=18||jam<6){
-document.body.classList.add("dark");
-}else{
-document.body.classList.remove("dark");
-}
-}
-
-autoTheme();
-setInterval(autoTheme,60000);
-</script>
-<script src="js/navbar.js"></script>
-
-<script>
-fetch("components/navbar.html")
-.then(res=>res.text())
-.then(data=>{
-document.getElementById("navbar").innerHTML=data;
-
-if(typeof c2pInit==="function"){
-c2pInit();
-}
-
 const logoutBtn=document.getElementById("logoutBtn");
+
 if(logoutBtn){
 logoutBtn.onclick=async()=>{
-await supabaseClient.auth.signOut();
+await database.logout();
 localStorage.clear();
 sessionStorage.clear();
 window.location.replace("index.html");
 };
 }
+
 });
 </script>
 </body>
