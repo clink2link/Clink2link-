@@ -1,0 +1,207 @@
+/* ===============================
+CLICK2PAY GLOBAL THEME
+=============================== */
+
+
+*{
+box-sizing:border-box;
+}
+
+
+html,
+body{
+
+margin:0;
+padding:0;
+
+background:#f8fafc;
+color:#0f172a;
+
+transition:.3s;
+
+font-family:
+Inter,
+Arial,
+sans-serif;
+
+}
+
+
+
+/* ===============================
+DARK MODE
+=============================== */
+
+
+html.dark body{
+
+background:#020617;
+color:#e2e8f0;
+
+}
+
+
+
+/* CARD GLOBAL */
+
+.card,
+.box,
+.dash-card,
+.dash-box,
+.link-card,
+.report-card,
+.stats-box{
+
+background:#ffffff;
+color:#0f172a;
+
+border:1px solid #e2e8f0;
+
+transition:.3s;
+
+}
+
+
+
+html.dark .card,
+html.dark .box,
+html.dark .dash-card,
+html.dark .dash-box,
+html.dark .link-card,
+html.dark .report-card,
+html.dark .stats-box{
+
+background:#0f172a;
+
+color:#f8fafc;
+
+border-color:#1e293b;
+
+}
+
+
+
+/* TEXT */
+
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark p,
+html.dark span{
+
+color:#e2e8f0;
+
+}
+
+
+
+/* INPUT */
+
+input,
+select,
+textarea{
+
+background:#fff;
+color:#0f172a;
+
+border:1px solid #cbd5e1;
+
+}
+
+
+html.dark input,
+html.dark select,
+html.dark textarea{
+
+background:#020617;
+
+color:#fff;
+
+border-color:#334155;
+
+}
+
+
+
+/* BUTTON */
+
+button{
+
+transition:.3s;
+
+}
+
+
+
+html.dark button{
+
+color:#fff;
+
+}
+
+
+
+/* TABLE */
+
+table{
+
+width:100%;
+
+}
+
+
+
+html.dark table{
+
+background:#0f172a;
+
+color:#e2e8f0;
+
+}
+
+
+html.dark td,
+html.dark th{
+
+border-color:#334155;
+
+}
+
+
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+body{
+
+font-size:14px;
+
+}
+
+
+.card,
+.box,
+.link-card{
+
+border-radius:16px;
+
+}
+
+
+}
+
+
+
+/* DESKTOP */
+
+@media(min-width:769px){
+
+body{
+
+font-size:15px;
+
+}
+
+}
