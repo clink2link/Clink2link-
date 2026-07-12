@@ -46,10 +46,11 @@ document.getElementById("adsMonth").innerHTML=
 const sellOption=document.querySelector('#linkType option[value="sell"]');
 const sellCards=document.querySelectorAll(".sell-card");
 
-const sellActive =
+const sellActive=
 profile.sell_link_enabled===true ||
 profile.sell_link_enabled===1 ||
 profile.sell_link_enabled==="1";
+
 
 if(sellActive){
 
@@ -57,47 +58,43 @@ sellCards.forEach(el=>{
 el.classList.remove("locked");
 });
 
+
 if(sellOption){
 sellOption.disabled=false;
 sellOption.textContent="🛒 Sell Link";
 }
 
-const sellToday=document.getElementById("sellToday");
-const sellMonth=document.getElementById("sellMonth");
 
-if(sellToday){
-sellToday.innerHTML="Rp "+Number(profile.sell_earning_today||0).toLocaleString("id-ID");
-}
+document.getElementById("sellToday").innerHTML=
+"Rp "+Number(profile.sell_earning_today||0).toLocaleString("id-ID");
 
-if(sellMonth){
-sellMonth.innerHTML="Rp "+Number(profile.sell_earning_month||0).toLocaleString("id-ID");
-}
 
-const sellInfo=document.getElementById("sellInfo");
+document.getElementById("sellMonth").innerHTML=
+"Rp "+Number(profile.sell_earning_month||0).toLocaleString("id-ID");
 
-if(sellInfo){
-sellInfo.innerHTML='<i class="fa-solid fa-circle-check"></i> Sell Link sudah aktif.';
-}
+
+document.getElementById("sellInfo").innerHTML=
+'<i class="fa-solid fa-circle-check"></i> Sell Link sudah aktif.';
+
 
 }else{
+
 
 sellCards.forEach(el=>{
 el.classList.add("locked");
 });
+
 
 if(sellOption){
 sellOption.disabled=true;
 sellOption.textContent="🛒 Sell Link 🔒";
 }
 
-const sellInfo=document.getElementById("sellInfo");
 
-if(sellInfo){
-sellInfo.innerHTML='<i class="fa-solid fa-lock"></i> Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.';
-}
+document.getElementById("sellInfo").innerHTML=
+'<i class="fa-solid fa-lock"></i> Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.';
 
 }
-
 
 // ===========================
 // CREATE LINK
