@@ -48,15 +48,22 @@ async function getProfiles() {
 // LINKS
 // ===============================
 
-async function getLinks() {
-    const { data, error } = await supabaseClient
-        .from("links")
-        .select("*")
-        .order("id", { ascending: false });
+async function getLinks(userId){
 
-    if (error) throw error;
+const {data,error}=await supabaseClient
+.from("links")
+.select("*")
+.eq("user_id",userId)
+.order("id",{ascending:false});
 
-    return data;
+
+if(error){
+console.error("Get Links Error:",error);
+return [];
+}
+
+return data;
+
 }
 
 
@@ -177,6 +184,7 @@ async function getDashboardReport() {
 // ===============================
 
 window.database = {
+    getUser,
     getUsers,
     getProfiles,
     getLinks,
