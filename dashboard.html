@@ -263,15 +263,8 @@ color:#2563eb;
 
 
 .dash-grid{
-
-display:grid;
-
-grid-template-columns:2fr 1fr;
-
-gap:20px;
-
+display:block;
 margin-top:25px;
-
 }
 
 
@@ -784,219 +777,451 @@ grid-template-columns:1fr;
 }
 
 }
-.stats-box{
-background:#fff;
-border:1px solid #e2e8f0;
-border-radius:22px;
-padding:22px;
-box-shadow:0 10px 30px rgba(15,23,42,.06);
+/* ===========================
+   STATISTIK
+=========================== */
+
+.stats-container{
+display:grid;
+grid-template-columns:1fr;
+gap:25px;
+margin-top:25px;
 }
 
+
 .stats-box{
-display:block!important;
-visibility:visible!important;
-opacity:1!important;
+
+background:#fff;
+
+border:1px solid #e2e8f0;
+
+border-radius:22px;
+
+padding:22px;
+
+box-shadow:0 10px 30px rgba(15,23,42,.06);
+
+position:relative;
+
+min-height:480px;
+
+display:block;
+
+visibility:visible;
+
+opacity:1;
+
+overflow:hidden;
+
 }
+
+
 
 .stats-head{
+
 display:flex;
+
 justify-content:space-between;
+
 align-items:center;
-margin-bottom:18px;
+
 gap:15px;
+
+margin-bottom:18px;
+
 }
+
+
 
 .stats-head h2{
+
 margin:0;
+
 font-size:22px;
+
 color:#2563eb;
+
 display:flex;
+
 align-items:center;
+
 gap:10px;
+
 }
+
+
 
 .stats-head select{
+
 height:40px;
+
 padding:0 14px;
+
 border:none;
+
 border-radius:12px;
+
 background:#f1f5f9;
+
 font-family:Poppins,sans-serif;
+
 font-weight:600;
+
 }
+
+
+
+.chart-wrapper{
+
+width:100%;
+
+height:320px;
+
+position:relative;
+
+}
+
+
 
 .stats-box canvas{
+
+display:block!important;
+
 width:100%!important;
-height:320px!important;
-margin-top:10px;
+
+height:100%!important;
+
 }
+
+
 
 .stats-info{
+
 display:grid;
+
 grid-template-columns:repeat(3,1fr);
+
 gap:12px;
+
 margin-top:20px;
+
 text-align:center;
+
 }
+
+
 
 .stats-info div{
+
 padding:12px;
+
 background:#f8fafc;
+
 border-radius:12px;
+
 }
+
+
 
 .stats-info span{
+
 display:block;
+
 font-size:13px;
+
 color:#64748b;
+
 margin-bottom:4px;
+
 }
+
+
 
 .stats-info b{
+
 font-size:18px;
+
 color:#2563eb;
+
 }
+
+
 
 .stats-note{
+
 margin-top:16px;
+
 text-align:center;
+
 font-size:13px;
+
 color:#64748b;
+
 }
+
+
+
+/* ===========================
+   DARK MODE STATISTIK
+=========================== */
+
 
 body.dark .stats-box{
+
 background:#0f172a;
+
 border-color:#1e293b;
+
 }
+
+
 
 body.dark .stats-head h2{
+
 color:#60a5fa;
+
 }
+
+
 
 body.dark .stats-head select{
+
 background:#1e293b;
+
 color:#fff;
+
 }
 
+
+
 body.dark .stats-info div{
+
 background:#1e293b;
+
 }
+
+
 
 body.dark .stats-info span,
 body.dark .stats-note{
+
 color:#94a3b8;
+
 }
+
+
 
 body.dark .stats-info b{
+
 color:#fff;
-}
-
-@media(max-width:768px){
-
-.stats-head{
-flex-direction:column;
-align-items:flex-start;
-}
-
-.stats-box canvas{
-height:250px!important;
-}
-
-.stats-info{
-grid-template-columns:1fr;
-}
 
 }
+
+
+
+/* ===========================
+   REPORT TABLE
+=========================== */
+
+
 .report-card{
+
 background:#fff;
+
 border-radius:24px;
+
 padding:24px;
+
 box-shadow:0 10px 30px rgba(0,0,0,.06);
+
 margin-top:24px;
+
 overflow:hidden;
+
 }
+
+
 
 .report-header{
+
 display:flex;
+
 align-items:center;
+
 gap:10px;
+
 font-size:28px;
+
 font-weight:700;
+
 color:#1d4ed8;
+
 margin-bottom:22px;
+
 }
+
+
 
 .report-header i{
+
 font-size:24px;
+
 }
+
+
 
 .report-table{
+
 overflow-x:auto;
+
 }
 
+
+
 .report-table table{
+
 width:100%;
+
 border-collapse:collapse;
+
 table-layout:fixed;
-min-width:0;
+
 }
+
+
 
 .report-table th,
 .report-table td{
+
 padding:10px 6px;
+
 font-size:13px;
+
 text-align:center;
+
 word-break:break-word;
+
 }
+
+
 
 .report-table th{
+
 font-weight:700;
+
 color:#1f2937;
+
 background:#eef4ff;
+
 }
+
+
 
 .report-table td{
+
 background:#f3f6fc;
+
 }
 
-.report-table tr td:first-child{
-border-radius:10px 0 0 10px;
-}
 
-.report-table tr td:last-child{
-border-radius:0 10px 10px 0;
-}
 
 .report-table .earning{
+
 color:#1d4ed8;
+
 font-weight:700;
+
 }
+
+
+
+/* ===========================
+   DARK REPORT
+=========================== */
+
+
+body.dark .report-card{
+
+background:#0f172a;
+
+}
+
+
 
 body.dark .report-table th{
+
 background:#162033;
+
 color:#fff;
+
 }
 
+
+
 body.dark .report-table td{
+
 background:#1e293b;
+
 color:#fff;
+
 }
+
+
+
+/* ===========================
+   MOBILE
+=========================== */
+
 
 @media(max-width:768px){
 
-.report-table table{
-table-layout:fixed;
+
+.stats-head{
+
+flex-direction:column;
+
+align-items:flex-start;
+
 }
+
+
+.chart-wrapper{
+
+height:250px;
+
+}
+
+
+.stats-info{
+
+grid-template-columns:1fr;
+
+}
+
+
+.stats-box{
+
+min-height:430px;
+
+}
+
+
+.report-header{
+
+font-size:18px;
+
+}
+
 
 .report-table th,
 .report-table td{
+
 padding:8px 4px;
+
 font-size:11px;
+
 }
 
-.report-header{
-font-size:18px;
-}
 
 }
 
@@ -1006,6 +1231,7 @@ font-size:18px;
 </head>
 
 <body class="dash-body">
+<div class="dash-bg"></div>
 
 <div id="navbar"></div>
 
@@ -1156,12 +1382,13 @@ Dashboard Click2Pay
      STATISTIK
 =========================== -->
 
-<div class="dash-grid">
+<div class="stats-container">
 
     <!-- ADS -->
     <div class="stats-box">
 
         <div class="stats-head">
+
             <h2>
                 <i class="fa-solid fa-chart-line"></i>
                 Statistik Ads
@@ -1170,11 +1397,17 @@ Dashboard Click2Pay
             <select id="adsMonthSelect">
                 <option>July 2026</option>
             </select>
+
         </div>
 
-        <canvas id="adsChart"></canvas>
+
+        <div class="chart-wrapper">
+            <canvas id="adsChart"></canvas>
+        </div>
+
 
         <div class="stats-info">
+
             <div>
                 <span>Views</span>
                 <b id="adsViews">0</b>
@@ -1189,7 +1422,9 @@ Dashboard Click2Pay
                 <span>CPM</span>
                 <b id="adsCpm">0</b>
             </div>
+
         </div>
+
 
         <p class="stats-note">
             Report berdasarkan waktu Asia/Jakarta.
@@ -1197,10 +1432,14 @@ Dashboard Click2Pay
 
     </div>
 
+
+
     <!-- SELL -->
+
     <div class="stats-box sell-only" style="display:none;">
 
         <div class="stats-head">
+
             <h2>
                 <i class="fa-solid fa-cart-shopping"></i>
                 Statistik Sell Link
@@ -1209,11 +1448,17 @@ Dashboard Click2Pay
             <select id="sellMonthSelect">
                 <option>July 2026</option>
             </select>
+
         </div>
 
-        <canvas id="sellChart"></canvas>
+
+        <div class="chart-wrapper">
+            <canvas id="sellChart"></canvas>
+        </div>
+
 
         <div class="stats-info">
+
             <div>
                 <span>Views</span>
                 <b id="sellViews">0</b>
@@ -1228,11 +1473,14 @@ Dashboard Click2Pay
                 <span>CPM</span>
                 <b id="sellCpm">0</b>
             </div>
+
         </div>
+
 
         <p class="stats-note">
             Report berdasarkan waktu Asia/Jakarta.
         </p>
+
 
     </div>
 
@@ -1347,9 +1595,10 @@ CLICK<span>2PAY</span>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script src="js/database.js"></script>
-<script src="js/dashboard.js"></script>
 <script src="js/navbar.js"></script>
+<script src="js/dashboard.js"></script>
 
 <script>
 fetch("components/navbar.html")
