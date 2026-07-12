@@ -65,6 +65,23 @@ return [];
 return data;
 
 }
+async function updateLink(id,data){
+
+return supabase
+.from("links")
+.update(data)
+.eq("id",id);
+
+}
+
+async function deleteLink(id){
+
+return supabase
+.from("links")
+.delete()
+.eq("id",id);
+
+}
 
 
 // ===============================
