@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <title>My Link - Click2Pay</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/navbar.css">
@@ -14,146 +11,55 @@
 
 </head>
 
-
 <body>
 
-
-<!-- NAVBAR -->
 <div id="navbar"></div>
-
-
 
 <main class="container">
 
-
 <div class="page-title">
-
-<h2>
 <i class="fa-solid fa-link"></i>
 My Link
-</h2>
-
-<p>
-Daftar semua link yang sudah kamu buat
-</p>
-
 </div>
-
-
-
-<!-- SUMMARY -->
-<div class="link-summary">
-
-
-<div class="summary-card">
-
-<i class="fa-solid fa-link"></i>
-
-<div>
-<span>Total Link</span>
-<h2 id="totalLinks">0</h2>
-</div>
-
-</div>
-
-
-
-<div class="summary-card">
-
-<i class="fa-solid fa-eye"></i>
-
-<div>
-<span>Total Views</span>
-<h2 id="totalViews">0</h2>
-</div>
-
-</div>
-
-
-
-<div class="summary-card">
-
-<i class="fa-solid fa-mouse-pointer"></i>
-
-<div>
-<span>Total Klik</span>
-<h2 id="totalClicks">0</h2>
-</div>
-
-</div>
-
-
-
-<div class="summary-card">
-
-<i class="fa-solid fa-wallet"></i>
-
-<div>
-<span>Pendapatan</span>
-
-<h2 id="totalIncome">
-Rp 0
-</h2>
-
-</div>
-
-</div>
-
-
-</div>
-
-
-
-<!-- FILTER -->
 
 <div class="link-filter">
 
-<button class="active" data-type="all">
+<button class="active" onclick="filterLink('all')">
 Semua
 </button>
 
-
-<button data-type="ads">
-<i class="fa-solid fa-rectangle-ad"></i>
+<button onclick="filterLink('ads')">
 Ads
 </button>
 
-
-<button data-type="sell">
-<i class="fa-solid fa-cart-shopping"></i>
+<button onclick="filterLink('sell')">
 Sell
 </button>
 
-
 </div>
 
-
-
-<!-- LIST LINK -->
 
 <div id="linkList">
 
+<div class="empty">
+Belum ada link
 </div>
 
+</div>
 
 
 </main>
 
-
-
-<!-- FOOTER -->
 <div id="footer"></div>
 
 
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/database.js"></script>
 
-<script src="js/layout.js"></script>
+<script src="js/navbar.js"></script>
 
 <script src="js/my-link.js"></script>
-
 
 </body>
 </html>
