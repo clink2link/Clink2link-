@@ -1435,25 +1435,41 @@ Belum ada pengumuman.
 
 <script src="js/database.js"></script>
 <script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
 <script src="js/dashboard.js"></script>
 
 <script>
 fetch("components/navbar.html")
 .then(res=>res.text())
 .then(data=>{
-
 document.getElementById("navbar").innerHTML=data;
 
-if(typeof c2pInit==="function"){
-c2pInit();
-}
+if(typeof c2pInit==="function") c2pInit();
 
 document.querySelectorAll(".c2p-sidebar a").forEach(link=>{
 link.addEventListener("click",()=>{
-if(typeof c2pClose==="function"){
-c2pClose();
+if(typeof c2pClose==="function") c2pClose();
+});
+});
+
+const logoutBtn=document.getElementById("logoutBtn");
+
+if(logoutBtn){
+logoutBtn.onclick=async()=>{
+await database.logout();
+localStorage.clear();
+sessionStorage.clear();
+window.location.replace("index.html");
+};
 }
 });
+
+fetch("components/footer.html")
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("footer").innerHTML=data;
+
+if(typeof c2pFooterInit==="function") c2pFooterInit();
 });
 
 const logoutBtn=document.getElementById("logoutBtn");
