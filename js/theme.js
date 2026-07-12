@@ -6,15 +6,19 @@ function applyTheme(){
 
 const hour=new Date().getHours();
 
-if(hour>=18 || hour<6){
+const isDark=hour>=18 || hour<6;
+
+if(isDark){
 
 document.documentElement.classList.add("dark");
+document.body.classList.add("dark");
 
 localStorage.setItem("theme","dark");
 
 }else{
 
 document.documentElement.classList.remove("dark");
+document.body.classList.remove("dark");
 
 localStorage.setItem("theme","light");
 
@@ -23,9 +27,11 @@ localStorage.setItem("theme","light");
 }
 
 
-// jalankan langsung
+// START
+
 applyTheme();
 
 
-// cek setiap 1 menit
+// UPDATE SETIAP MENIT
+
 setInterval(applyTheme,60000);
