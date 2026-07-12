@@ -171,11 +171,34 @@ sellClicksEl.innerHTML=sellClicks.toLocaleString("id-ID");
 // CHART
 const reports=await database.getReports(authId);
 
+let labels=[];
+let views=[];
+
+if(reports && reports.length){
+
 const chartData=reports.slice(0,7).reverse();
 
-const labels=chartData.map(item=>item.report_date);
+labels=chartData.map(item=>item.report_date);
+views=chartData.map(item=>Number(item.views||0));
 
-const views=chartData.map(item=>Number(item.views||0));
+}else{
+
+labels=[
+"Hari 1",
+"Hari 2",
+"Hari 3",
+"Hari 4",
+"Hari 5",
+"Hari 6",
+"Hari 7"
+];
+
+views=[
+0,0,0,0,0,0,0
+];
+
+}
+
 
 const adsChart=document.getElementById("adsChart");
 
@@ -201,6 +224,11 @@ maintainAspectRatio:false,
 plugins:{
 legend:{
 display:false
+}
+},
+scales:{
+y:{
+beginAtZero:true
 }
 }
 }
