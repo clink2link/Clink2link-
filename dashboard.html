@@ -1865,73 +1865,55 @@ Dashboard Click2Pay
 
 <div class="report-section">
 
-    <!-- HARIAN -->
-
     <div class="report-title">
-        <i class="fa-solid fa-calendar-day"></i>
-        <span>Report Harian</span>
+        <div>
+            <i class="fa-solid fa-calendar-day"></i>
+            <span>Report Pendapatan</span>
+        </div>
 
-        <small id="todayDate">
-            -
-        </small>
+        <small id="todayDate">-</small>
     </div>
 
     <div class="report-grid">
 
+        <!-- ADS HARI INI -->
         <div class="report-card">
-
             <div class="report-icon green">
                 <i class="fa-solid fa-chart-line"></i>
             </div>
 
             <h4>Ads Hari Ini</h4>
-
-            <h2 id="adsToday">
-                Rp 0
-            </h2>
-
+            <h2 id="adsToday">Rp 0</h2>
         </div>
 
+        <!-- ADS BULAN INI -->
         <div class="report-card">
-
             <div class="report-icon blue">
                 <i class="fa-solid fa-wallet"></i>
             </div>
 
             <h4>Ads Bulan Ini</h4>
-
-            <h2 id="adsMonth">
-                Rp 0
-            </h2>
-
+            <h2 id="adsMonth">Rp 0</h2>
         </div>
 
-        <div class="report-card sell-only" style="display:none">
-
+        <!-- SELL HARI INI -->
+        <div class="report-card sell-only" style="display:none;">
             <div class="report-icon orange">
                 <i class="fa-solid fa-cart-shopping"></i>
             </div>
 
             <h4>Sell Hari Ini</h4>
-
-            <h2 id="sellToday">
-                Rp 0
-            </h2>
-
+            <h2 id="sellToday">Rp 0</h2>
         </div>
 
-        <div class="report-card sell-only" style="display:none">
-
+        <!-- SELL BULAN INI -->
+        <div class="report-card sell-only" style="display:none;">
             <div class="report-icon purple">
                 <i class="fa-solid fa-chart-pie"></i>
             </div>
 
             <h4>Sell Bulan Ini</h4>
-
-            <h2 id="sellMonth">
-                Rp 0
-            </h2>
-
+            <h2 id="sellMonth">Rp 0</h2>
         </div>
 
     </div>
@@ -1947,11 +1929,9 @@ Dashboard Click2Pay
 <div class="dash-grid">
 
     <!-- ADS -->
-
     <div class="stats-box">
 
         <div class="stats-head">
-
             <h2>
                 <i class="fa-solid fa-chart-line"></i>
                 Statistik Ads
@@ -1960,13 +1940,11 @@ Dashboard Click2Pay
             <select id="adsMonthSelect">
                 <option>July 2026</option>
             </select>
-
         </div>
 
         <canvas id="adsChart"></canvas>
 
         <div class="stats-info">
-
             <div>
                 <span>Views</span>
                 <b id="adsViews">0</b>
@@ -1981,7 +1959,6 @@ Dashboard Click2Pay
                 <span>CPM</span>
                 <b id="adsCpm">0</b>
             </div>
-
         </div>
 
         <p class="stats-note">
@@ -1990,13 +1967,10 @@ Dashboard Click2Pay
 
     </div>
 
-
     <!-- SELL -->
-
     <div class="stats-box sell-only" style="display:none;">
 
         <div class="stats-head">
-
             <h2>
                 <i class="fa-solid fa-cart-shopping"></i>
                 Statistik Sell Link
@@ -2005,13 +1979,11 @@ Dashboard Click2Pay
             <select id="sellMonthSelect">
                 <option>July 2026</option>
             </select>
-
         </div>
 
         <canvas id="sellChart"></canvas>
 
         <div class="stats-info">
-
             <div>
                 <span>Views</span>
                 <b id="sellViews">0</b>
@@ -2026,7 +1998,6 @@ Dashboard Click2Pay
                 <span>CPM</span>
                 <b id="sellCpm">0</b>
             </div>
-
         </div>
 
         <p class="stats-note">
@@ -2036,43 +2007,41 @@ Dashboard Click2Pay
     </div>
 
 </div>
-<!-- REPORT TABLE -->
 
+<!-- REPORT TABLE -->
 
 <div class="report-card">
 
-<div class="report-header">
-<i class="fa-solid fa-chart-column"></i>
-<span>Detail Report Harian Ads Link</span>
-</div>
+    <div class="report-header">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Detail Report Harian Ads Link</span>
+    </div>
 
-<div class="report-table">
+    <div class="report-table">
 
-<table>
+        <table>
 
-<thead>
-<tr>
-<th>Date</th>
-<th>Valid</th>
-<th>Earnings</th>
-<th>Daily CPM</th>
-<th>Total</th>
-</tr>
-</thead>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Valid</th>
+                    <th>Earnings</th>
+                    <th>Daily CPM</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
 
-<tbody id="reportTable">
+            <tbody id="reportTable">
+                <tr>
+                    <td colspan="5" class="empty">
+                        Belum ada data
+                    </td>
+                </tr>
+            </tbody>
 
-<tr>
-<td colspan="4" class="empty">
-Belum ada data
-</td>
-</tr>
+        </table>
 
-</tbody>
-
-</table>
-
-</div>
+    </div>
 
 </div>
 
@@ -2463,74 +2432,48 @@ legend:{display:false}
 
 /* REPORT TABLE */
 
+const { data: reports, error: reportError } = await supabaseClient
+    .from("dashboard_daily_report")
+    .select("report_date,views,link_earnings,daily_cpm,penghasilan")
+    .eq("user_id", authId)
+    .order("report_date", { ascending: false })
+    .limit(30);
 
-const {data:reports,error:reportError}=await supabaseClient
-.from("dashboard_daily_report")
-.select("report_date,views,link_earnings,daily_cpm,penghasilan")
-.eq("user_id",authId)
-.order("report_date",{ascending:false})
-.limit(30);
+let html = "";
 
-let html="";
+if (!reportError && reports && reports.length > 0) {
 
-if(!reportError&&reports&&reports.length){
-
-if (reports && reports.length) {
     reports.forEach(row => {
+
+        html += `
+        <tr>
+            <td>${row.report_date}</td>
+            <td>${Number(row.views || 0).toLocaleString("id-ID")}</td>
+            <td class="earning">
+                Rp ${Number(row.link_earnings || 0).toLocaleString("id-ID")}
+            </td>
+            <td>${Number(row.daily_cpm || 0).toLocaleString("id-ID")}</td>
+            <td>
+                Rp ${Number(row.penghasilan || 0).toLocaleString("id-ID")}
+            </td>
+        </tr>
+        `;
 
     });
 
-}
+} else {
 
-html+=`
-<tr>
-<td>${row.report_date}</td>
-<td>${Number(row.views||0).toLocaleString("id-ID")}</td>
-<td>Rp ${Number(row.link_earnings||0).toLocaleString("id-ID")}</td>
-<td>${Number(row.daily_cpm||0).toLocaleString("id-ID")}</td>
-<td>Rp ${Number(row.penghasilan||0).toLocaleString("id-ID")}</td>
-</tr>
-`;
-
-});
-
-}else{
-
-html=`
-<tr>
-<td colspan="5" style="text-align:center;padding:20px;color:#94a3b8">
-Belum ada data report.
-</td>
-</tr>
-`;
+    html = `
+    <tr>
+        <td colspan="5" class="empty">
+            Belum ada data report.
+        </td>
+    </tr>
+    `;
 
 }
 
-document.getElementById("reportTable").innerHTML=html;
-
-
-
-let html="";
-
-reports.forEach(row=>{
-
-html+=`
-<tr>
-<td>${row.report_date}</td>
-<td>${Number(row.views||0).toLocaleString("id-ID")}</td>
-<td class="earning">
-Rp ${Number(row.link_earnings||0).toLocaleString("id-ID")}
-</td>
-<td>${Number(row.daily_cpm||0).toLocaleString("id-ID")}</td>
-</tr>
-`;
-
-});
-
-document.getElementById("reportTable").innerHTML=html||`
-<tr>
-<td colspan="4" class="empty">Belum ada data</td>
-</tr>`;
+document.getElementById("reportTable").innerHTML = html;
 /* ANNOUNCEMENT */
 
 
