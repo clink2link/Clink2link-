@@ -1,6 +1,7 @@
 // js/dashboard.js
 
 async function loadDashboard(){
+
 try{
 
 const user=await database.getUser();
@@ -12,18 +13,28 @@ return;
 
 const authId=user.id;
 
+// ===========================
 // PROFILE
+// ===========================
+
 const profile=await database.getProfile(authId);
 
 if(!profile){
-console.log("Profile tidak ditemukan");
+console.error("Profile tidak ditemukan.");
 return;
 }
 
+// ===========================
 // DATE
+// ===========================
+
 const now=new Date();
 
-document.getElementById("todayDate").innerHTML=
+const todayDate=document.getElementById("todayDate");
+
+if(todayDate){
+
+todayDate.textContent=
 now.toLocaleString("id-ID",{
 day:"2-digit",
 month:"long",
@@ -32,12 +43,24 @@ hour:"2-digit",
 minute:"2-digit"
 });
 
-// ADS EARNING
-document.getElementById("adsToday").innerHTML=
-"Rp "+Number(profile.ads_earning_today||0).toLocaleString("id-ID");
+}
 
-document.getElementById("adsMonth").innerHTML=
+// ===========================
+// ADS REPORT
+// ===========================
+
+const adsToday=document.getElementById("adsToday");
+const adsMonth=document.getElementById("adsMonth");
+
+if(adsToday){
+adsToday.textContent=
+"Rp "+Number(profile.ads_earning_today||0).toLocaleString("id-ID");
+}
+
+if(adsMonth){
+adsMonth.textContent=
 "Rp "+Number(profile.ads_earning_month||0).toLocaleString("id-ID");
+}
 
 // ===========================
 // SELL LINK ACCESS
@@ -47,52 +70,50 @@ const sellOption=document.querySelector('#linkType option[value="sell"]');
 const sellCards=document.querySelectorAll(".sell-card");
 
 const sellActive=
-profile.sell_link_enabled===true ||
-profile.sell_link_enabled===1 ||
+profile.sell_link_enabled===true||
+profile.sell_link_enabled===1||
 profile.sell_link_enabled==="1";
-
 
 if(sellActive){
 
-sellCards.forEach(el=>{
-el.classList.remove("locked");
-});
-
+sellCards.forEach(el=>el.classList.remove("locked"));
 
 if(sellOption){
 sellOption.disabled=false;
 sellOption.textContent="🛒 Sell Link";
 }
 
-
 document.getElementById("sellToday").innerHTML=
 "Rp "+Number(profile.sell_earning_today||0).toLocaleString("id-ID");
-
 
 document.getElementById("sellMonth").innerHTML=
 "Rp "+Number(profile.sell_earning_month||0).toLocaleString("id-ID");
 
+const sellLastMonth=document.getElementById("sellLastMonth");
+if(sellLastMonth){
+sellLastMonth.innerHTML=
+"Rp "+Number(profile.sell_earning_last_month||0).toLocaleString("id-ID");
+}
 
 document.getElementById("sellInfo").innerHTML=
 '<i class="fa-solid fa-circle-check"></i> Sell Link sudah aktif.';
 
-
 }else{
 
-
-sellCards.forEach(el=>{
-el.classList.add("locked");
-});
-
+sellCards.forEach(el=>el.classList.add("locked"));
 
 if(sellOption){
 sellOption.disabled=true;
 sellOption.textContent="🛒 Sell Link 🔒";
 }
 
-
 document.getElementById("sellInfo").innerHTML=
 '<i class="fa-solid fa-lock"></i> Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.';
+
+const sellLastMonth=document.getElementById("sellLastMonth");
+if(sellLastMonth){
+sellLastMonth.innerHTML="Rp 0";
+}
 
 }
 
@@ -142,30 +163,31 @@ window.location.href="bayargg.html";
 
 }
 
+// ===========================
 // LINK STATISTICS
+// ===========================
+
 const links=await database.getLinks(authId);
 
 let adsViews=0;
 let adsClicks=0;
 let sellViews=0;
 let sellClicks=0;
+let totalSell=0;
 
 if(links){
 
 links.forEach(link=>{
 
 if(link.type==="ads"){
-
 adsViews+=Number(link.total_views||0);
 adsClicks+=Number(link.total_clicks||0);
-
 }
 
 if(link.type==="sell"){
-
 sellViews+=Number(link.total_views||0);
 sellClicks+=Number(link.total_clicks||0);
-
+totalSell++;
 }
 
 });
@@ -179,14 +201,52 @@ document.getElementById("adsClicks").innerHTML=
 adsClicks.toLocaleString("id-ID");
 
 const sellViewsEl=document.getElementById("sellViews");
-const sellClicksEl=document.getElementById("sellClicks");
-
 if(sellViewsEl){
-sellViewsEl.innerHTML=sellViews.toLocaleString("id-ID");
+sellViewsEl.innerHTML=
+sellViews.toLocaleString("id-ID");
 }
 
+const sellClicksEl=document.getElementById("sellClicks");
 if(sellClicksEl){
-sellClicksEl.innerHTML=sellClicks.toLocaleString("id-ID");
+sellClicksEl.innerHTML=
+sellClicks.toLocaleString("id-ID");
+}
+
+const sellTotalLink=document.getElementById("sellTotalLink");
+if(sellTotalLink){
+sellTotalLink.innerHTML=
+totalSell.toLocaleString("id-ID");
+}
+
+// ===========================
+// CPM SAAT INI
+// ===========================
+
+function getTodayCPM(){
+
+const day=new Date().getDay();
+
+const range={
+0:[5000,6200], // Minggu
+1:[3000,3600], // Senin
+2:[3100,3700], // Selasa
+3:[3200,3800], // Rabu
+4:[4000,4700], // Kamis
+5:[4500,5300], // Jumat
+6:[3900,4500]  // Sabtu
+};
+
+const [min,max]=range[day];
+
+return Math.floor(Math.random()*(max-min+1))+min;
+
+}
+
+const currentCpm=document.getElementById("currentCpm");
+
+if(currentCpm){
+currentCpm.innerHTML=
+"Rp "+getTodayCPM().toLocaleString("id-ID");
 }
 
 // ===========================
@@ -198,60 +258,39 @@ const advancedModal=document.getElementById("advancedModal");
 const closeAdvanced=document.getElementById("closeAdvanced");
 const saveAdvanced=document.getElementById("saveAdvanced");
 
-
-if(advanceBtn){
-
+if(advanceBtn&&advancedModal){
 advanceBtn.onclick=()=>{
-
 advancedModal.classList.add("active");
-
 };
-
 }
 
-
-if(closeAdvanced){
-
+if(closeAdvanced&&advancedModal){
 closeAdvanced.onclick=()=>{
-
 advancedModal.classList.remove("active");
-
 };
-
 }
 
-
-if(saveAdvanced){
+if(saveAdvanced&&advancedModal){
 
 saveAdvanced.onclick=()=>{
 
-
 const advancedData={
-
-alias:document.getElementById("customAlias").value.trim(),
-
-expired:document.getElementById("expiredLink").value,
-
-campaign:document.getElementById("campaignName").value.trim(),
-
-device:document.getElementById("targetDevice").value
-
+alias:document.getElementById("customAlias")?.value.trim()||"",
+expired:document.getElementById("expiredLink")?.value||"",
+campaign:document.getElementById("campaignName")?.value.trim()||"",
+device:document.getElementById("targetDevice")?.value||""
 };
-
 
 localStorage.setItem(
 "advanced_settings",
 JSON.stringify(advancedData)
 );
 
-
 advancedModal.classList.remove("active");
-
 
 alert("Advanced Settings tersimpan.");
 
 };
-
 
 }
 
@@ -259,17 +298,17 @@ alert("Advanced Settings tersimpan.");
 // CHART ADS
 // ===========================
 
-const reports = await database.getReports(authId);
+const reports=await database.getReports(authId);
 
-let labels = [];
-let views = [];
+let labels=[];
+let views=[];
 
-if(reports && reports.length){
+if(reports&&reports.length){
 
-const chartData = reports.slice(0,7).reverse();
+const chartData=reports.slice(0,7).reverse();
 
-labels = chartData.map(item=>item.report_date);
-views = chartData.map(item=>Number(item.views || 0));
+labels=chartData.map(item=>item.report_date);
+views=chartData.map(item=>Number(item.views||0));
 
 }else{
 
@@ -287,97 +326,86 @@ views=[0,0,0,0,0,0,0];
 
 }
 
-
-const adsCanvas = document.getElementById("adsChart");
+const adsCanvas=document.getElementById("adsChart");
 
 if(adsCanvas){
 
 new Chart(adsCanvas,{
 type:"line",
-
 data:{
-labels:labels,
-
+labels,
 datasets:[{
 label:"Views",
 data:views,
-
 borderColor:"#2563eb",
 backgroundColor:"rgba(37,99,235,.12)",
-
 borderWidth:3,
 fill:true,
 tension:.45,
-
 pointRadius:5,
 pointHoverRadius:8,
 pointBackgroundColor:"#2563eb",
 pointBorderWidth:2
 }]
 },
-
 options:{
 responsive:true,
 maintainAspectRatio:false,
-
 interaction:{
 mode:"index",
 intersect:false
 },
-
 plugins:{
 legend:{
 display:false
 },
-
 tooltip:{
 backgroundColor:"#0f172a",
 padding:12,
-
-titleFont:{
-size:13
-},
-
-bodyFont:{
-size:14
-}
+titleFont:{size:13},
+bodyFont:{size:14}
 }
 },
-
 scales:{
 x:{
-grid:{
-display:false
-}
+grid:{display:false}
 },
-
 y:{
 beginAtZero:true,
-
 grid:{
 color:"rgba(148,163,184,.15)"
 }
 }
 }
 }
-
 });
 
 }
-// CPM
-if(reports.length){
 
-let cpm=Number(reports[0].daily_cpm||0);
+// ===========================
+// CPM REPORT
+// ===========================
 
-document.getElementById("adsCpm").innerHTML=
-cpm.toLocaleString("id-ID");
+const adsCpm=document.getElementById("adsCpm");
+
+if(adsCpm){
+
+if(reports&&reports.length){
+adsCpm.innerHTML=
+Number(reports[0].daily_cpm||0).toLocaleString("id-ID");
+}else{
+adsCpm.innerHTML="0";
+}
 
 }
 
+// ===========================
 // REPORT TABLE
+// ===========================
+
 let reportHTML="";
 
-if(reports.length){
+if(reports&&reports.length){
 
 reports.forEach(row=>{
 
@@ -396,19 +424,26 @@ reportHTML+=`
 
 reportHTML=`
 <tr>
-<td colspan="5">
-Belum ada data report.
-</td>
+<td colspan="5">Belum ada data report.</td>
 </tr>`;
 
 }
 
-document.getElementById("reportTable").innerHTML=reportHTML;
+const reportTable=document.getElementById("reportTable");
 
+if(reportTable){
+reportTable.innerHTML=reportHTML;
+}
+
+// ===========================
 // ANNOUNCEMENT
+// ===========================
+
 const news=await database.getAnnouncements();
 
 let newsHTML="";
+
+if(news&&news.length){
 
 news.forEach(item=>{
 
@@ -420,8 +455,17 @@ newsHTML+=`
 
 });
 
-document.getElementById("announcementBox").innerHTML=
-newsHTML||"Belum ada pengumuman.";
+}else{
+
+newsHTML="Belum ada pengumuman.";
+
+}
+
+const announcementBox=document.getElementById("announcementBox");
+
+if(announcementBox){
+announcementBox.innerHTML=newsHTML;
+}
 
 }catch(error){
 
@@ -431,11 +475,15 @@ console.error("Dashboard Error:",error);
 
 }
 
-
+// ===========================
 // ANIMATION
+// ===========================
+
 document.addEventListener("DOMContentLoaded",()=>{
 
-const cards=document.querySelectorAll(".dash-card,.dash-box,.report-card,.stats-box");
+const cards=document.querySelectorAll(
+".dash-card,.dash-box,.report-card,.stats-box"
+);
 
 cards.forEach((item,index)=>{
 
@@ -454,8 +502,10 @@ item.style.transform="translateY(0)";
 
 });
 
-
+// ===========================
 // AUTO DARK MODE
+// ===========================
+
 function autoTheme(){
 
 const jam=new Date().getHours();
@@ -471,5 +521,9 @@ document.body.classList.remove("dark");
 autoTheme();
 
 setInterval(autoTheme,60000);
+
+// ===========================
+// LOAD DASHBOARD
+// ===========================
 
 loadDashboard();
