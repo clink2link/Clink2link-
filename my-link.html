@@ -3,7 +3,10 @@
 <head>
 <title>My Link - Click2Pay</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
 <link rel="stylesheet" href="css/navbar.css">
 <link rel="stylesheet" href="css/my-link.css">
 
@@ -24,15 +27,15 @@ My Link
 
 <div class="link-filter">
 
-<button class="active" onclick="filterLink('all')">
+<button class="active" onclick="filterLink('all',this)">
 Semua
 </button>
 
-<button onclick="filterLink('ads')">
+<button onclick="filterLink('ads',this)">
 Ads
 </button>
 
-<button onclick="filterLink('sell')">
+<button onclick="filterLink('sell',this)">
 Sell
 </button>
 
@@ -42,24 +45,41 @@ Sell
 <div id="linkList">
 
 <div class="empty">
+<i class="fa-solid fa-link-slash"></i>
+<br>
 Belum ada link
 </div>
 
 </div>
 
-
 </main>
+
 
 <div id="footer"></div>
 
 
+
+<!-- SUPABASE -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
+<!-- GLOBAL -->
+
 <script src="js/database.js"></script>
+<script src="js/theme.js"></script>
+
+
+<!-- COMPONENT -->
 
 <script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+
+
+<!-- PAGE -->
 
 <script src="js/my-link.js"></script>
+
 
 </body>
 </html>
