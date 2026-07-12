@@ -13,7 +13,326 @@
 <link rel="stylesheet" href="css/my-link.css">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* CREATE FORM */
 
+.create-form{
+width:100%;
+max-width:650px;
+margin:0 auto 24px;
+padding:20px;
+background:#fff;
+border:1px solid #e2e8f0;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(15,23,42,.06);
+transition:.3s;
+}
+
+.create-form:hover{
+transform:translateY(-3px);
+box-shadow:0 18px 40px rgba(15,23,42,.1);
+}
+
+.create-header{
+display:flex;
+align-items:center;
+gap:14px;
+margin-bottom:18px;
+}
+
+.create-icon{
+width:48px;
+height:48px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:14px;
+background:linear-gradient(135deg,#2563eb,#38bdf8);
+color:#fff;
+font-size:20px;
+flex-shrink:0;
+}
+
+.create-header h2{
+margin:0;
+font-size:20px;
+font-weight:700;
+color:#2563eb;
+}
+
+.create-header p{
+margin:4px 0 0;
+font-size:13px;
+color:#64748b;
+}
+
+.create-form label{
+display:block;
+margin:12px 0 6px;
+font-size:13px;
+font-weight:600;
+color:#475569;
+}
+
+.input-box{
+position:relative;
+margin-bottom:10px;
+}
+
+.input-box i{
+position:absolute;
+left:14px;
+top:50%;
+transform:translateY(-50%);
+color:#94a3b8;
+font-size:14px;
+}
+
+.input-box input,
+.input-box select{
+width:100%;
+height:46px;
+padding:0 15px 0 42px;
+border:1px solid #dbeafe;
+border-radius:12px;
+background:#f8fafc;
+font-size:14px;
+outline:none;
+transition:.25s;
+}
+
+.input-box input:focus,
+.input-box select:focus{
+background:#fff;
+border-color:#2563eb;
+box-shadow:0 0 0 3px rgba(37,99,235,.1);
+}
+
+.btn-group{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-top:16px;
+}
+
+.btn-group button,
+#saveAdvanced{
+height:46px;
+border:none;
+border-radius:12px;
+font-size:14px;
+font-weight:700;
+cursor:pointer;
+transition:.25s;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+}
+
+.btn-group button:hover,
+#saveAdvanced:hover{
+transform:translateY(-2px);
+}
+
+.btn-primary{
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+color:#fff;
+}
+
+.btn-secondary{
+background:#eff6ff;
+color:#2563eb;
+}
+
+.create-note{
+margin-top:10px;
+font-size:12px;
+text-align:center;
+color:#64748b;
+line-height:1.6;
+}
+
+/* ADVANCED MODAL */
+
+.advanced-modal{
+display:none;
+position:fixed;
+inset:0;
+z-index:9999;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:rgba(15,23,42,.55);
+backdrop-filter:blur(5px);
+}
+
+.advanced-modal.active{
+display:flex;
+}
+
+.advanced-box{
+width:100%;
+max-width:480px;
+padding:22px;
+background:#fff;
+border-radius:20px;
+box-shadow:0 25px 60px rgba(0,0,0,.25);
+}
+
+.advanced-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:18px;
+}
+
+.advanced-header h3{
+margin:0;
+font-size:19px;
+color:#2563eb;
+}
+
+.advanced-header button{
+width:38px;
+height:38px;
+border:none;
+border-radius:50%;
+background:#eff6ff;
+color:#2563eb;
+cursor:pointer;
+transition:.25s;
+}
+
+.advanced-header button:hover{
+background:#dbeafe;
+}
+
+/* DARK MODE */
+
+html.dark .create-form,
+html.dark .advanced-box{
+background:#0f172a;
+border-color:#1e293b;
+}
+
+html.dark .create-header h2,
+html.dark .advanced-header h3{
+color:#60a5fa;
+}
+
+html.dark .create-header p,
+html.dark .create-form label,
+html.dark .create-note{
+color:#94a3b8;
+}
+
+html.dark .input-box input,
+html.dark .input-box select{
+background:#1e293b;
+border-color:#334155;
+color:#fff;
+}
+
+html.dark .input-box input:focus,
+html.dark .input-box select:focus{
+background:#162033;
+}
+
+html.dark .btn-secondary{
+background:#1e293b;
+color:#60a5fa;
+}
+
+html.dark .advanced-header button{
+background:#1e293b;
+color:#60a5fa;
+}
+
+html.dark .advanced-header button:hover{
+background:#334155;
+}
+
+/* TABLET */
+
+@media(max-width:768px){
+
+.create-form{
+padding:18px;
+border-radius:18px;
+}
+
+.btn-group{
+grid-template-columns:1fr;
+}
+
+}
+
+/* MOBILE */
+
+@media(max-width:480px){
+
+.create-form{
+padding:16px;
+}
+
+.create-header{
+align-items:flex-start;
+}
+
+.create-header h2{
+font-size:18px;
+}
+
+.create-header p{
+font-size:12px;
+}
+
+.input-box input,
+.input-box select,
+.btn-group button,
+#saveAdvanced{
+height:44px;
+font-size:13px;
+}
+
+.advanced-box{
+padding:18px;
+border-radius:18px;
+}
+
+}
+.link-actions{
+display:flex;
+gap:8px;
+margin-top:15px;
+flex-wrap:wrap;
+}
+
+.link-actions button{
+flex:1;
+height:40px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:600;
+}
+
+.link-actions .danger{
+background:#ef4444;
+color:#fff;
+}
+
+html.dark .link-actions button{
+background:#1e293b;
+color:#fff;
+}
+
+html.dark .link-actions .danger{
+background:#dc2626;
+}
+
+</style>
 </head>
 
 <body>
@@ -25,6 +344,167 @@
 <div class="page-title">
 <i class="fa-solid fa-link"></i>
 My Link
+</div>
+
+<div class="create-form">
+
+<div class="create-header">
+
+<div class="create-icon">
+<i class="fa-solid fa-bolt"></i>
+</div>
+
+<div>
+<h2>Create Link</h2>
+<p>Buat Ads Link atau Sell Link dengan mudah.</p>
+</div>
+
+</div>
+
+<label>Destination URL</label>
+
+<div class="input-box">
+<i class="fa-solid fa-globe"></i>
+<input type="url" id="urlInput" placeholder="https://example.com">
+</div>
+
+<label>Link Type</label>
+
+<div class="input-box">
+<i class="fa-solid fa-link"></i>
+
+<select id="linkType">
+<option value="ads">Ads Link</option>
+<option value="sell" disabled>Sell Link 🔒</option>
+</select>
+
+</div>
+
+<div class="btn-group">
+
+<button class="btn-primary" id="shortenBtn">
+<i class="fa-solid fa-wand-magic-sparkles"></i>
+Create Link
+</button>
+
+<button class="btn-secondary" id="advanceBtn">
+<i class="fa-solid fa-sliders"></i>
+Advanced
+</button>
+
+</div>
+
+<div class="create-note">
+<i class="fa-solid fa-shield-check"></i>
+Sell Link akan aktif setelah 1× Withdraw berhasil.
+</div>
+
+<div id="sellInfo" class="create-note">
+<i class="fa-solid fa-lock"></i>
+Sell Link belum aktif.
+</div>
+
+</div>
+
+<div id="advancedModal" class="advanced-modal">
+
+<div class="advanced-modal" id="editModal">
+
+<div class="advanced-box">
+
+<div class="advanced-header">
+
+<h3>Edit Link</h3>
+
+<button onclick="closeEdit()">
+<i class="fa-solid fa-xmark"></i>
+</button>
+
+</div>
+
+<input type="hidden" id="editId">
+
+<label>Judul</label>
+<div class="input-box">
+<input id="editTitle">
+</div>
+
+<label>URL</label>
+<div class="input-box">
+<input id="editUrl">
+</div>
+
+<button class="btn-primary" onclick="saveEdit()">
+Simpan Perubahan
+</button>
+
+</div>
+
+</div>
+
+<div class="advanced-box">
+
+<div class="advanced-header">
+
+<h3>
+<i class="fa-solid fa-sliders"></i>
+Advanced Settings
+</h3>
+
+<button id="closeAdvanced">
+<i class="fa-solid fa-xmark"></i>
+</button>
+
+</div>
+
+<label>Custom Alias</label>
+
+<div class="input-box">
+<i class="fa-solid fa-tag"></i>
+<input id="customAlias" placeholder="contoh: promo-juli">
+</div>
+
+<label>Expired Link</label>
+
+<div class="input-box">
+<i class="fa-solid fa-clock"></i>
+
+<select id="expiredLink">
+<option value="never">Tidak Pernah</option>
+<option value="1">1 Hari</option>
+<option value="7">7 Hari</option>
+<option value="30">30 Hari</option>
+</select>
+
+</div>
+
+<label>Campaign Name</label>
+
+<div class="input-box">
+<i class="fa-solid fa-bullseye"></i>
+<input id="campaignName" placeholder="Nama Campaign">
+</div>
+
+<label>Target Device</label>
+
+<div class="input-box">
+<i class="fa-solid fa-mobile-screen"></i>
+
+<select id="targetDevice">
+<option value="all">Semua Device</option>
+<option value="android">Android</option>
+<option value="ios">iPhone / iOS</option>
+</select>
+
+</div>
+
+<button id="saveAdvanced" class="btn-primary">
+<i class="fa-solid fa-check"></i>
+Simpan
+</button>
+
+</div>
+
 </div>
 
 
@@ -83,50 +563,241 @@ fetch("components/navbar.html")
 .then(res=>res.text())
 .then(data=>{
 
-document.getElementById("navbar").innerHTML=data;
-
-
+document.getElementById("navbar").innerHTML=data
 if(typeof c2pInit==="function"){
 c2pInit();
 }
 
-
 const logoutBtn=document.getElementById("logoutBtn");
 
 if(logoutBtn){
-
 logoutBtn.onclick=async()=>{
-
 await database.logout();
-
 localStorage.clear();
 sessionStorage.clear();
-
 window.location.replace("index.html");
-
 };
-
 }
-
-
 });
-
-
 
 // LOAD FOOTER
 
 fetch("components/footer.html")
 .then(res=>res.text())
 .then(data=>{
-
 document.getElementById("footer").innerHTML=data;
-
-
 if(typeof c2pFooterInit==="function"){
 c2pFooterInit();
 }
 
 });
+
+//===============================
+// CREATE LINK + ADVANCED
+//===============================
+
+const advanceBtn=document.getElementById("advanceBtn");
+const advancedModal=document.getElementById("advancedModal");
+const closeAdvanced=document.getElementById("closeAdvanced");
+const saveAdvanced=document.getElementById("saveAdvanced");
+const shortenBtn=document.getElementById("shortenBtn");
+
+if(advanceBtn){
+advanceBtn.onclick=()=>{
+advancedModal.classList.add("active");
+};
+}
+
+if(closeAdvanced){
+closeAdvanced.onclick=()=>{
+advancedModal.classList.remove("active");
+};
+}
+
+window.addEventListener("click",e=>{
+if(e.target===advancedModal){
+advancedModal.classList.remove("active");
+}
+});
+
+if(saveAdvanced){
+saveAdvanced.onclick=()=>{
+
+const data={
+alias:document.getElementById("customAlias").value.trim(),
+expired:document.getElementById("expiredLink").value,
+campaign:document.getElementById("campaignName").value.trim(),
+device:document.getElementById("targetDevice").value
+};
+
+localStorage.setItem("advanced_settings",JSON.stringify(data));
+
+advancedModal.classList.remove("active");
+
+alert("Advanced Settings berhasil disimpan.");
+};
+}
+
+(async()=>{
+
+const sellInfo=document.getElementById("sellInfo");
+const linkType=document.getElementById("linkType");
+
+if(!sellInfo||!linkType)return;
+
+try{
+
+const user=await database.getUser();
+
+if(!user)return;
+
+const withdraws=await database.getWithdraws(user.id);
+
+if(withdraws&&withdraws.length){
+
+linkType.querySelector("option[value='sell']").disabled=false;
+
+sellInfo.innerHTML='<i class="fa-solid fa-circle-check"></i> Sell Link sudah aktif.';
+
+}else{
+
+linkType.value="ads";
+
+linkType.querySelector("option[value='sell']").disabled=true;
+
+sellInfo.innerHTML='<i class="fa-solid fa-lock"></i> Sell Link akan aktif setelah minimal 1x Withdraw berhasil.';
+
+}
+
+}catch(e){
+
+console.error(e);
+
+}
+
+})();
+
+if(shortenBtn){
+
+shortenBtn.onclick=async()=>{
+
+const url=document.getElementById("urlInput").value.trim();
+const type=document.getElementById("linkType").value;
+
+if(!url){
+alert("Masukkan Destination URL.");
+return;
+}
+
+try{
+
+const user=await database.getUser();
+
+if(!user){
+window.location="index.html";
+return;
+}
+
+const advanced=JSON.parse(localStorage.getItem("advanced_settings")||"{}");
+
+const code=Math.random().toString(36).substring(2,8);
+
+const payload={
+user_id:user.id,
+title:advanced.campaign||"Short Link",
+url:url,
+short_url:"https://click2pay.id/"+(advanced.alias||code),
+type:type,
+alias:advanced.alias||null,
+expired:advanced.expired||"never",
+campaign:advanced.campaign||null,
+device:advanced.device||"all",
+total_views:0,
+total_clicks:0,
+created_at:new Date().toISOString()
+};
+
+await database.createLink(payload);
+
+alert("Link berhasil dibuat.");
+
+document.getElementById("urlInput").value="";
+localStorage.removeItem("advanced_settings");
+
+if(typeof loadMyLinks==="function"){
+loadMyLinks();
+}
+
+}catch(error){
+
+console.error(error);
+alert("Gagal membuat link.");
+
+}
+
+};
+
+}
+function editLink(id){
+
+const link=allLinks.find(x=>x.id===id);
+
+if(!link)return;
+
+editModal.classList.add("active");
+
+editId.value=link.id;
+editTitle.value=link.title||"";
+editUrl.value=link.url||"";
+
+}
+
+function closeEdit(){
+
+editModal.classList.remove("active");
+
+}
+async function saveEdit(){
+
+try{
+
+await database.updateLink(editId.value,{
+title:editTitle.value,
+url:editUrl.value
+});
+
+closeEdit();
+
+loadMyLinks();
+
+alert("Link berhasil diperbarui.");
+
+}catch(e){
+
+alert("Gagal update.");
+
+}
+
+}
+async function deleteLink(id){
+
+if(!confirm("Hapus link ini?"))return;
+
+try{
+
+await database.deleteLink(id);
+
+loadMyLinks();
+
+alert("Link berhasil dihapus.");
+
+}catch(e){
+
+alert("Gagal menghapus.");
+
+}
+
+}
 
 </script>
 
