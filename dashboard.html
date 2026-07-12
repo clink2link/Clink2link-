@@ -1220,6 +1220,32 @@ font-size:11px;
 
 }
 
+.sell-card.locked{
+opacity:.65;
+filter:grayscale(.4);
+position:relative;
+}
+
+.sell-card.locked::after{
+content:"🔒 Sell Link Terkunci";
+position:absolute;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(255,255,255,.65);
+font-weight:700;
+font-size:14px;
+color:#64748b;
+backdrop-filter:blur(3px);
+border-radius:20px;
+}
+
+body.dark .sell-card.locked::after{
+background:rgba(15,23,42,.75);
+color:#94a3b8;
+}
+
   
 </style>
 
@@ -1348,7 +1374,7 @@ Dashboard Click2Pay
         </div>
 
         <!-- SELL HARI INI -->
-        <div class="report-card sell-only" style="display:none;">
+        <div class="report-card sell-card">
             <div class="report-icon orange">
                 <i class="fa-solid fa-cart-shopping"></i>
             </div>
@@ -1425,7 +1451,7 @@ Dashboard Click2Pay
     </div>
 
 
-    <div class="stats-box sell-only" style="display:none;">
+    <div class="stats-box sell-card">
 
         <div class="stats-head">
 
