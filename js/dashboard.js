@@ -39,13 +39,22 @@ document.getElementById("adsToday").innerHTML=
 document.getElementById("adsMonth").innerHTML=
 "Rp "+Number(profile.ads_earning_month||0).toLocaleString("id-ID");
 
-// SELL LINK
+// ===========================
+// SELL LINK ACCESS
+// ===========================
+
 const sellOption=document.querySelector('#linkType option[value="sell"]');
+const sellCards=document.querySelectorAll(".sell-card");
 
-if(profile.sell_link_enabled){
+const sellActive =
+profile.sell_link_enabled===true ||
+profile.sell_link_enabled===1 ||
+profile.sell_link_enabled==="1";
 
-document.querySelectorAll(".sell-only").forEach(el=>{
-el.style.display="";
+if(sellActive){
+
+sellCards.forEach(el=>{
+el.classList.remove("locked");
 });
 
 if(sellOption){
@@ -53,19 +62,27 @@ sellOption.disabled=false;
 sellOption.textContent="🛒 Sell Link";
 }
 
-document.getElementById("sellToday").innerHTML=
-"Rp "+Number(profile.sell_earning_today||0).toLocaleString("id-ID");
+const sellToday=document.getElementById("sellToday");
+const sellMonth=document.getElementById("sellMonth");
 
-document.getElementById("sellMonth").innerHTML=
-"Rp "+Number(profile.sell_earning_month||0).toLocaleString("id-ID");
+if(sellToday){
+sellToday.innerHTML="Rp "+Number(profile.sell_earning_today||0).toLocaleString("id-ID");
+}
 
-document.getElementById("sellInfo").innerHTML=
-'<i class="fa-solid fa-circle-check"></i> Sell Link sudah aktif.';
+if(sellMonth){
+sellMonth.innerHTML="Rp "+Number(profile.sell_earning_month||0).toLocaleString("id-ID");
+}
+
+const sellInfo=document.getElementById("sellInfo");
+
+if(sellInfo){
+sellInfo.innerHTML='<i class="fa-solid fa-circle-check"></i> Sell Link sudah aktif.';
+}
 
 }else{
 
-document.querySelectorAll(".sell-only").forEach(el=>{
-el.style.display="none";
+sellCards.forEach(el=>{
+el.classList.add("locked");
 });
 
 if(sellOption){
@@ -73,12 +90,19 @@ sellOption.disabled=true;
 sellOption.textContent="🛒 Sell Link 🔒";
 }
 
-document.getElementById("sellInfo").innerHTML=
-'<i class="fa-solid fa-lock"></i> Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.';
+const sellInfo=document.getElementById("sellInfo");
+
+if(sellInfo){
+sellInfo.innerHTML='<i class="fa-solid fa-lock"></i> Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.';
+}
 
 }
 
+
+// ===========================
 // CREATE LINK
+// ===========================
+
 const shortenBtn=document.getElementById("shortenBtn");
 
 if(shortenBtn){
@@ -108,8 +132,8 @@ window.location.href="task1.html";
 
 if(type==="sell"){
 
-if(!profile.sell_link_enabled){
-alert("Sell Link belum tersedia.");
+if(!sellActive){
+alert("Sell Link belum tersedia. Selesaikan 1x Withdraw terlebih dahulu.");
 return;
 }
 
