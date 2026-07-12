@@ -1,0 +1,234 @@
+/* MY LINK */
+
+.page-title{
+display:flex;
+align-items:center;
+gap:10px;
+margin:20px 0;
+padding:14px 18px;
+border-radius:16px;
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+color:#fff;
+font-size:20px;
+font-weight:700;
+box-shadow:0 10px 25px rgba(37,99,235,.2);
+}
+
+.link-filter{
+display:flex;
+gap:10px;
+margin-bottom:15px;
+}
+
+.link-filter button{
+border:none;
+padding:10px 18px;
+border-radius:12px;
+background:#e2e8f0;
+color:#334155;
+font-weight:600;
+cursor:pointer;
+transition:.25s;
+}
+
+.link-filter button:hover,
+.link-filter button.active{
+background:#2563eb;
+color:#fff;
+}
+
+
+/* LIST */
+
+#linkList{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:14px;
+}
+
+
+.link-card{
+background:#fff;
+border:1px solid #e2e8f0;
+border-radius:18px;
+padding:16px;
+display:flex;
+gap:14px;
+align-items:flex-start;
+box-shadow:0 8px 22px rgba(15,23,42,.06);
+transition:.25s;
+}
+
+
+.link-card:hover{
+transform:translateY(-4px);
+box-shadow:0 15px 35px rgba(15,23,42,.1);
+}
+
+
+.link-icon{
+width:45px;
+height:45px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(135deg,#38bdf8,#2563eb);
+color:#fff;
+font-size:18px;
+flex-shrink:0;
+}
+
+
+.link-info{
+flex:1;
+min-width:0;
+}
+
+
+.link-info h4{
+margin:0;
+font-size:15px;
+color:#0f172a;
+}
+
+
+.link-info p{
+margin:8px 0;
+font-size:12px;
+color:#64748b;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+
+.link-info span{
+display:inline-block;
+padding:5px 10px;
+border-radius:20px;
+font-size:11px;
+font-weight:700;
+background:#dbeafe;
+color:#2563eb;
+}
+
+
+.link-stat{
+display:flex;
+flex-direction:column;
+text-align:right;
+font-size:12px;
+color:#64748b;
+}
+
+
+.link-stat b{
+font-size:15px;
+color:#0f172a;
+}
+
+
+.empty{
+padding:40px;
+text-align:center;
+background:#fff;
+border-radius:18px;
+border:1px solid #e2e8f0;
+color:#64748b;
+}
+
+
+/* DARK MODE */
+
+body.dark .link-card,
+body.dark .empty{
+background:#0f172a;
+border-color:#1e293b;
+box-shadow:0 8px 22px rgba(0,0,0,.35);
+}
+
+
+body.dark .link-info h4,
+body.dark .link-stat b{
+color:#fff;
+}
+
+
+body.dark .link-info p,
+body.dark .link-stat{
+color:#94a3b8;
+}
+
+
+body.dark .link-filter button{
+background:#1e293b;
+color:#cbd5e1;
+}
+
+
+body.dark .link-filter button.active{
+background:#2563eb;
+color:#fff;
+}
+
+
+/* DESKTOP */
+
+@media(min-width:769px){
+
+#linkList{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+
+/* TABLET + ANDROID */
+
+@media(max-width:768px){
+
+#linkList{
+grid-template-columns:1fr;
+}
+
+.page-title{
+font-size:17px;
+padding:12px 15px;
+}
+
+.link-card{
+padding:14px;
+}
+
+}
+
+
+/* HP KECIL */
+
+@media(max-width:480px){
+
+.link-filter{
+overflow-x:auto;
+}
+
+.link-filter button{
+padding:9px 14px;
+font-size:12px;
+}
+
+.link-card{
+gap:10px;
+}
+
+.link-icon{
+width:38px;
+height:38px;
+font-size:15px;
+}
+
+.link-info h4{
+font-size:13px;
+}
+
+}
