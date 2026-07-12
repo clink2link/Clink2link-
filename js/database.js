@@ -1,165 +1,190 @@
-/* ========= USERS ========= */
+// js/database.js
 
-async function getUser(id){
-    return await supabaseClient
+// ===============================
+// SUPABASE DATABASE CONFIG
+// ===============================
+
+const SUPABASE_URL = "https://qmrhxsrnvgvggwahufvp.supabase.co/rest/v1/";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtcmh4c3Judmd2Z2d3YWh1ZnZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NzU5ODQsImV4cCI6MjA5OTI1MTk4NH0.gR5vX2-r7hG_vzEcEzPKTIhsOKWA9gNep3lfQcyk724";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+
+// ===============================
+// USERS
+// ===============================
+
+async function getUsers() {
+    const { data, error } = await supabaseClient
         .from("users")
         .select("*")
-        .eq("id",id)
-        .single();
-}
+        .order("id", { ascending: false });
 
-async function updateUser(id,data){
-    return await supabaseClient
-        .from("users")
-        .update(data)
-        .eq("id",id);
+    if (error) throw error;
+
+    return data;
 }
 
 
-/* ========= PROFILES ========= */
+// ===============================
+// PROFILES
+// ===============================
 
-async function getProfile(id){
-    return await supabaseClient
+async function getProfiles() {
+    const { data, error } = await supabaseClient
         .from("profiles")
-        .select("*")
-        .eq("id",id)
-        .single();
-}
+        .select("*");
 
-async function updateProfile(id,data){
-    return await supabaseClient
-        .from("profiles")
-        .update(data)
-        .eq("id",id);
+    if (error) throw error;
+
+    return data;
 }
 
 
-/* ========= LINKS ========= */
+// ===============================
+// LINKS
+// ===============================
 
-async function getLinks(userId){
-    return await supabaseClient
+async function getLinks() {
+    const { data, error } = await supabaseClient
         .from("links")
         .select("*")
-        .eq("user_id",userId);
-}
+        .order("id", { ascending: false });
 
-async function createLink(data){
-    return await supabaseClient
-        .from("links")
-        .insert(data);
-}
+    if (error) throw error;
 
-async function updateLink(id,data){
-    return await supabaseClient
-        .from("links")
-        .update(data)
-        .eq("id",id);
+    return data;
 }
 
 
-/* ========= SHORTLINKS ========= */
+// ===============================
+// SHORTLINKS
+// ===============================
 
-async function getShortlinks(userId){
-    return await supabaseClient
+async function getShortlinks() {
+    const { data, error } = await supabaseClient
         .from("shortlinks")
         .select("*")
-        .eq("user_id",userId);
+        .order("id", { ascending: false });
+
+    if (error) throw error;
+
+    return data;
 }
 
-async function createShortlink(data){
-    return await supabaseClient
-        .from("shortlinks")
-        .insert(data);
-}
 
+// ===============================
+// CLICKS
+// ===============================
 
-/* ========= CLICKS ========= */
-
-async function addClick(data){
-    return await supabaseClient
-        .from("clicks")
-        .insert(data);
-}
-
-async function getClicks(linkId){
-    return await supabaseClient
+async function getClicks() {
+    const { data, error } = await supabaseClient
         .from("clicks")
         .select("*")
-        .eq("link_id",linkId);
+        .order("id", { ascending: false });
+
+    if (error) throw error;
+
+    return data;
 }
 
 
-/* ========= TRANSACTIONS ========= */
+// ===============================
+// TRANSACTIONS
+// ===============================
 
-async function getTransactions(userId){
-    return await supabaseClient
+async function getTransactions() {
+    const { data, error } = await supabaseClient
         .from("transactions")
         .select("*")
-        .eq("user_id",userId)
-        .order("created_at",{ascending:false});
-}
+        .order("id", { ascending: false });
 
-async function createTransaction(data){
-    return await supabaseClient
-        .from("transactions")
-        .insert(data);
+    if (error) throw error;
+
+    return data;
 }
 
 
-/* ========= WITHDRAW ========= */
+// ===============================
+// WITHDRAWALS
+// ===============================
 
-async function getWithdraws(userId){
-    return await supabaseClient
-        .from("withdraws")
-        .select("*")
-        .eq("user_id",userId);
-}
-
-async function createWithdraw(data){
-    return await supabaseClient
-        .from("withdraws")
-        .insert(data);
-}
-
-
-/* ========= WITHDRAWALS ========= */
-
-async function getWithdrawals(userId){
-    return await supabaseClient
+async function getWithdrawals() {
+    const { data, error } = await supabaseClient
         .from("withdrawals")
         .select("*")
-        .eq("user_id",userId);
+        .order("id", { ascending: false });
+
+    if (error) throw error;
+
+    return data;
 }
 
 
-/* ========= REPORT ========= */
+// ===============================
+// WITHDRAWS
+// ===============================
 
-async function getDailyReport(userId){
-    return await supabaseClient
-        .from("dashboard_daily_report")
+async function getWithdraws() {
+    const { data, error } = await supabaseClient
+        .from("withdraws")
         .select("*")
-        .eq("user_id",userId)
-        .order("report_date",{ascending:false});
+        .order("id", { ascending: false });
+
+    if (error) throw error;
+
+    return data;
 }
 
 
-/* ========= ANNOUNCEMENT ========= */
+// ===============================
+// ANNOUNCEMENTS
+// ===============================
 
-async function getAnnouncements(){
-    return await supabaseClient
+async function getAnnouncements() {
+    const { data, error } = await supabaseClient
         .from("announcements")
         .select("*")
-        .eq("is_active",true)
-        .order("created_at",{ascending:false});
+        .order("id", { ascending: false });
+
+    if (error) throw error;
+
+    return data;
 }
 
 
-/* ========= PASSWORD RESET ========= */
+// ===============================
+// DASHBOARD REPORT
+// ===============================
 
-async function getPasswordReset(token){
-    return await supabaseClient
-        .from("password_resets")
+async function getDashboardReport() {
+    const { data, error } = await supabaseClient
+        .from("dashboard_daily_report")
         .select("*")
-        .eq("token",token)
-        .single();
+        .order("id", { ascending: false });
+
+    if (error) throw error;
+
+    return data;
 }
+
+
+// ===============================
+// EXPORT
+// ===============================
+
+window.database = {
+    getUsers,
+    getProfiles,
+    getLinks,
+    getShortlinks,
+    getClicks,
+    getTransactions,
+    getWithdrawals,
+    getWithdraws,
+    getAnnouncements,
+    getDashboardReport
+};
