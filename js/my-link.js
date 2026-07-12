@@ -1,215 +1,568 @@
-// js/my-link.js
+// ======================================================
+// MY LINK
+// ======================================================
 
-let allLinks=[];
+let allLinks = [];
+let filteredLinks = [];
+
+const linkList = document.getElementById("linkList");
+
+const totalLink = document.getElementById("totalLink");
+const totalView = document.getElementById("totalView");
+const totalClick = document.getElementById("totalClick");
+const totalEarning = document.getElementById("totalEarning");
+
+// ======================================================
+// LOAD LINK
+// ======================================================
 
 async function loadMyLinks(){
 
-try{
+    try{
 
-const user=await database.getUser();
+        const user = await database.getUser();
 
-if(!user){
-window.location.replace("index.html");
-return;
-}
+        if(!user){
 
+            window.location.href = "index.html";
+            return;
 
-allLinks=await database.getLinks(user.id);
+        }
 
-renderLinks("all");
+        const { data, error } = await database.supabase
+        .from("links")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at",{ascending:false});
 
+        if(error) throw error;
 
-}catch(error){
+        allLinks = data || [];
 
-console.error("My Link Error:",error);
+        filteredLinks = [...allLinks];
 
-}
+        updateStats();
 
-}
+        renderLinks(filteredLinks);
 
+    }catch(err){
 
+        console.error(err);
 
-function renderLinks(type){
+        linkList.innerHTML = `
+        <div class="empty">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <h3>Gagal memuat data</h3>
+            <p>${err.message}</p>
+        </div>`;
 
-const box=document.getElementById("linkList");
-
-if(!box)return;
-
-
-let data=allLinks;
-
-
-if(type!=="all"){
-
-data=allLinks.filter(link=>link.type===type);
-
-}
-
-
-
-if(!data || data.length===0){
-
-box.innerHTML=`
-
-<div class="empty">
-
-<i class="fa-solid fa-link-slash"></i>
-
-<br>
-
-Belum ada link
-
-</div>
-
-`;
-
-return;
+    }
 
 }
 
+// ======================================================
+// UPDATE STATS
+// ======================================================
 
+function updateStats(){
 
-let html="";
+    totalLink.textContent = allLinks.length;
 
+    totalView.textContent = allLinks.reduce(
+        (a,b)=>a+(b.total_views||0),0
+    );
 
-data.forEach(link=>{
+    totalClick.textContent = allLinks.reduce(
+        (a,b)=>a+(b.total_clicks||0),0
+    );
 
+    const earning = allLinks.reduce(
+        (a,b)=>a+(b.total_earnings||0),0
+    );
 
-let url=link.short_url || link.url || "-";
+    totalEarning.textContent =
+        "Rp"+earning.toLocaleString("id-ID");
 
+}
 
-html+=`
+// ======================================================
+// RENDER LINK
+// ======================================================
 
-<div class="link-card">
+function renderLinks(list){
 
+    if(!list.length){
 
-<div class="link-icon">
+        linkList.innerHTML=`
 
-<i class="fa-solid fa-link"></i>
+        <div class="empty">
 
-</div>
+            <i class="fa-solid fa-link-slash"></i>
 
+            <h3>Belum Ada Link</h3>
 
+            <p>Silakan buat link pertama.</p>
 
-<div class="link-info">
+        </div>
 
+        `;
 
-<h4>
-${link.title || "Short Link"}
-</h4>
+        return;
 
+    }
 
-<p>
-${url}
-</p>
+    linkList.innerHTML=list.map(item=>{
 
+        const status=getStatus(item);
 
-<span>
+        const ctr=calculateCTR(
+            item.total_views,
+            item.total_clicks
+        );
 
-${link.type==="sell" ? "Sell Link":"Ads Link"}
+        return `
 
-</span>
+        <div class="link-card">
 
+            <div class="link-top">
 
-</div>
+                <div>
 
+                    <div class="link-title">
 
+                        ${item.title || "Short Link"}
 
+                    </div>
 
-<div class="link-stat">
+                    <div class="link-url">
 
+                        ${item.short_url}
 
-<b>
-${Number(link.total_views||0).toLocaleString("id-ID")}
-</b>
+                    </div>
 
-<small>
-Views
-</small>
+                </div>
 
+                <div>
 
+                    <span class="link-type ${item.type}">
 
-<b>
-${Number(link.total_clicks||0).toLocaleString("id-ID")}
-</b>
+                        ${item.type.toUpperCase()}
 
-<small>
-Klik
-</small>
+                    </span>
 
+                </div>
 
+            </div>
 
-<button onclick="copyLink('${url}')">
+            <div class="link-stats">
 
-<i class="fa-solid fa-copy"></i>
+                <div class="link-stat">
 
-</button>
+                    <h5>View</h5>
 
+                    <span>${item.total_views||0}</span>
 
-</div>
+                </div>
 
+                <div class="link-stat">
 
-</div>
+                    <h5>Click</h5>
 
-`;
+                    <span>${item.total_clicks||0}</span>
+
+                </div>
+
+                <div class="link-stat">
+
+                    <h5>CTR</h5>
+
+                    <span>${ctr}%</span>
+
+                </div>
+
+                <div class="link-stat">
+
+                    <h5>Earning</h5>
+
+                    <span>${rupiah(item.total_earnings)}</span>
+
+                </div>
+
+            </div>
+
+            <div class="link-info">
+
+                <p>
+
+                    <i class="fa-solid fa-calendar"></i>
+
+                    ${formatDate(item.created_at)}
+
+                </p>
+
+                <p>
+
+                    <i class="fa-solid fa-tag"></i>
+
+                    ${item.alias || "-"}
+
+                </p>
+
+                <p>
+
+                    <i class="fa-solid fa-bullseye"></i>
+
+                    ${item.campaign || "-"}
+
+                </p>
+
+                <p>
+
+                    <i class="fa-solid fa-mobile-screen"></i>
+
+                    ${item.device || "all"}
+
+                </p>
+
+                <p>
+
+                    <i class="fa-solid fa-circle"></i>
+
+                    <span class="status-${getStatusClass(status)}">
+
+                        ${status}
+
+                    </span>
+
+                </p>
+
+            </div>
+
+            <div class="link-actions">
+
+                <button
+                class="copy-btn"
+                onclick="copyLink('${item.short_url}')">
+
+                    <i class="fa-solid fa-copy"></i>
+
+                    Copy
+
+                </button>
+
+                <button
+                class="edit-btn"
+                onclick="openLink('${item.short_url}')">
+
+                    <i class="fa-solid fa-up-right-from-square"></i>
+
+                    Open
+
+                </button>
+
+                <button
+                class="edit-btn"
+                onclick="shareLink('${item.short_url}')">
+
+                    <i class="fa-solid fa-share-nodes"></i>
+
+                    Share
+
+                </button>
+
+                <button
+                class="edit-btn"
+                onclick="editLink('${item.id}')">
+
+                    <i class="fa-solid fa-pen"></i>
+
+                    Edit
+
+                </button>
+
+                <button
+                class="delete-btn"
+                onclick="deleteLink('${item.id}')">
+
+                    <i class="fa-solid fa-trash"></i>
+
+                    Hapus
+
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+
+    }).join("");
+
+}
+// ======================================================
+// SEARCH LINK
+// ======================================================
+
+function searchLinks(){
+
+    const keyword = document
+        .getElementById("searchLink")
+        .value
+        .toLowerCase()
+        .trim();
+
+    if(keyword===""){
+
+        renderLinks(filteredLinks);
+
+        return;
+
+    }
+
+    const result = filteredLinks.filter(item=>{
+
+        return (
+
+            (item.title || "")
+            .toLowerCase()
+            .includes(keyword)
+
+            ||
+
+            (item.url || "")
+            .toLowerCase()
+            .includes(keyword)
+
+            ||
+
+            (item.short_url || "")
+            .toLowerCase()
+            .includes(keyword)
+
+            ||
+
+            (item.alias || "")
+            .toLowerCase()
+            .includes(keyword)
+
+        );
+
+    });
+
+    renderLinks(result);
+
+}
+
+// ======================================================
+// FILTER LINK
+// ======================================================
+
+function filterLink(type,button){
+
+    document
+        .querySelectorAll(".link-filter button")
+        .forEach(btn=>btn.classList.remove("active"));
+
+    if(button){
+
+        button.classList.add("active");
+
+    }
+
+    if(type==="all"){
+
+        filteredLinks=[...allLinks];
+
+    }else{
+
+        filteredLinks=allLinks.filter(item=>
+
+            item.type===type
+
+        );
+
+    }
+
+    searchLinks();
+
+}
+
+// ======================================================
+// REFRESH DATA
+// ======================================================
+
+async function refreshLinks(){
+
+    await loadMyLinks();
+
+}
+
+// ======================================================
+// AUTO REFRESH
+// ======================================================
+
+setInterval(()=>{
+
+    refreshLinks();
+
+},30000);
+
+// ======================================================
+// FORMAT DATE
+// ======================================================
+
+function formatDate(date){
+
+    if(!date) return "-";
+
+    return new Date(date)
+    .toLocaleString("id-ID",{
+
+        day:"2-digit",
+
+        month:"short",
+
+        year:"numeric",
+
+        hour:"2-digit",
+
+        minute:"2-digit"
+
+    });
+
+}
+
+// ======================================================
+// FORMAT RUPIAH
+// ======================================================
+
+function rupiah(value){
+
+    return "Rp"+Number(value||0)
+    .toLocaleString("id-ID");
+
+}
+
+// ======================================================
+// INIT
+// ======================================================
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    loadMyLinks();
 
 });
 
+// ======================================================
+// OPEN LINK
+// ======================================================
 
-box.innerHTML=html;
+function openLink(url){
 
+    if(!url) return;
 
-}
-
-
-
-
-function filterLink(type,btn){
-
-
-document.querySelectorAll(".link-filter button")
-.forEach(button=>{
-
-button.classList.remove("active");
-
-});
-
-
-if(btn){
-
-btn.classList.add("active");
+    window.open(url,"_blank");
 
 }
 
+// ======================================================
+// SHARE LINK
+// ======================================================
 
-renderLinks(type);
+async function shareLink(url){
 
+    if(!url) return;
+
+    if(navigator.share){
+
+        try{
+
+            await navigator.share({
+
+                title:"Click2Pay",
+
+                text:"Lihat link ini",
+
+                url:url
+
+            });
+
+            return;
+
+        }catch(e){}
+
+    }
+
+    copyLink(url);
 
 }
 
+// ======================================================
+// CALCULATE CTR
+// ======================================================
 
+function calculateCTR(view,click){
 
+    view = Number(view||0);
+    click = Number(click||0);
 
-function copyLink(url){
+    if(view===0) return 0;
 
-if(!url)return;
-
-
-navigator.clipboard.writeText(url)
-.then(()=>{
-
-alert("Link berhasil dicopy");
-
-})
-.catch(()=>{
-
-alert("Gagal copy link");
-
-});
-
+    return ((click/view)*100).toFixed(1);
 
 }
 
+// ======================================================
+// GET STATUS
+// ======================================================
 
+function getStatus(item){
 
-loadMyLinks();
+    if(item.expired==="never")
+        return "Aktif";
+
+    if(!item.created_at)
+        return "Aktif";
+
+    const created = new Date(item.created_at);
+
+    const expire = new Date(created);
+
+    expire.setDate(
+
+        expire.getDate() +
+
+        Number(item.expired)
+
+    );
+
+    if(new Date()>expire){
+
+        return "Expired";
+
+    }
+
+    return "Aktif";
+
+}
+
+// ======================================================
+// STATUS COLOR
+// ======================================================
+
+function getStatusClass(status){
+
+    switch(status){
+
+        case "Expired":
+            return "danger";
+
+        case "Aktif":
+            return "success";
+
+        default:
+            return "secondary";
+
+    }
+
+}
