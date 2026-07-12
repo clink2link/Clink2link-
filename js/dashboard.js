@@ -193,6 +193,72 @@ sellClicksEl.innerHTML=sellClicks.toLocaleString("id-ID");
 }
 
 // ===========================
+// ADVANCED MODAL
+// ===========================
+
+const advanceBtn=document.getElementById("advanceBtn");
+const advancedModal=document.getElementById("advancedModal");
+const closeAdvanced=document.getElementById("closeAdvanced");
+const saveAdvanced=document.getElementById("saveAdvanced");
+
+
+if(advanceBtn){
+
+advanceBtn.onclick=()=>{
+
+advancedModal.classList.add("active");
+
+};
+
+}
+
+
+if(closeAdvanced){
+
+closeAdvanced.onclick=()=>{
+
+advancedModal.classList.remove("active");
+
+};
+
+}
+
+
+if(saveAdvanced){
+
+saveAdvanced.onclick=()=>{
+
+
+const advancedData={
+
+alias:document.getElementById("customAlias").value.trim(),
+
+expired:document.getElementById("expiredLink").value,
+
+campaign:document.getElementById("campaignName").value.trim(),
+
+device:document.getElementById("targetDevice").value
+
+};
+
+
+localStorage.setItem(
+"advanced_settings",
+JSON.stringify(advancedData)
+);
+
+
+advancedModal.classList.remove("active");
+
+
+alert("Advanced Settings tersimpan.");
+
+};
+
+
+}
+
+// ===========================
 // CHART ADS
 // ===========================
 
