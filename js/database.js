@@ -67,7 +67,7 @@ return data;
 }
 async function updateLink(id,data){
 
-return supabase
+return supabaseClient
 .from("links")
 .update(data)
 .eq("id",id);
@@ -76,7 +76,7 @@ return supabase
 
 async function deleteLink(id){
 
-return supabase
+return supabaseClient
 .from("links")
 .delete()
 .eq("id",id);
@@ -201,10 +201,11 @@ async function getDashboardReport() {
 // ===============================
 
 window.database = {
-    getUser,
     getUsers,
     getProfiles,
     getLinks,
+    updateLink,
+    deleteLink,
     getShortlinks,
     getClicks,
     getTransactions,
