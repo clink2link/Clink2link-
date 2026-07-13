@@ -1,35 +1,353 @@
-/* ==========================================
-   MY LINK
-========================================== */
+/* =====================================================
+   MY LINK PAGE
+   PART 1
+   Layout • Form • Stats
+===================================================== */
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container{
+    width:100%;
+    max-width:1200px;
+    margin:auto;
+    padding:24px;
+}
+
+/* =========================
+   PAGE TITLE
+========================= */
 
 .page-title{
     display:flex;
     align-items:center;
-    gap:10px;
-    margin:20px 0;
-    padding:14px 18px;
-    border-radius:16px;
+    gap:12px;
+    margin-bottom:28px;
+    font-size:28px;
+    font-weight:700;
+    color:#2563eb;
+}
+
+.page-title i{
+    font-size:26px;
+}
+
+/* =========================
+   INFO BOX
+========================= */
+
+.info-box{
+    background:#eff6ff;
+    border:1px solid #bfdbfe;
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:28px;
+}
+
+.info-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:16px;
+}
+
+.info-header i{
+    color:#2563eb;
+    font-size:22px;
+}
+
+.info-header h3{
+    margin:0;
+    color:#2563eb;
+    font-size:18px;
+    font-weight:700;
+}
+
+.info-box ul{
+    margin:0;
+    padding-left:22px;
+}
+
+.info-box li{
+    margin:8px 0;
+    color:#475569;
+    line-height:1.7;
+    font-size:14px;
+}
+
+/* =========================
+   CREATE FORM
+========================= */
+
+.create-form{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:22px;
+    padding:24px;
+    margin-bottom:30px;
+    box-shadow:0 12px 30px rgba(15,23,42,.05);
+    transition:.25s;
+}
+
+.create-form:hover{
+    transform:translateY(-2px);
+    box-shadow:0 18px 40px rgba(15,23,42,.08);
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.create-header{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-bottom:24px;
+}
+
+.create-icon{
+    width:56px;
+    height:56px;
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    color:#fff;
+    font-size:22px;
+}
+
+.create-header h2{
+    margin:0;
+    color:#2563eb;
+    font-size:22px;
+    font-weight:700;
+}
+
+.create-header p{
+    margin-top:4px;
+    color:#64748b;
+    font-size:13px;
+}
+
+/* =========================
+   LABEL
+========================= */
+
+.create-form label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:8px;
+    color:#475569;
+    font-size:13px;
+    font-weight:700;
+}
+
+/* =========================
+   INPUT
+========================= */
+
+.input-box{
+    position:relative;
+    margin-bottom:10px;
+}
+
+.input-box i{
+    position:absolute;
+    left:15px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#94a3b8;
+    font-size:15px;
+}
+
+.input-box input,
+.input-box select{
+    width:100%;
+    height:48px;
+    padding-left:45px;
+    padding-right:16px;
+    border-radius:12px;
+    border:1px solid #dbeafe;
+    background:#f8fafc;
+    font-size:14px;
+    transition:.25s;
+    outline:none;
+}
+
+.input-box input:focus,
+.input-box select:focus{
+    background:#fff;
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,.15);
+}
+
+/* =========================
+   BUTTON GROUP
+========================= */
+
+.btn-group{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+    margin-top:22px;
+}
+
+.btn-primary,
+.btn-secondary{
+    height:46px;
+    border:none;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.btn-primary{
     background:linear-gradient(135deg,#2563eb,#1d4ed8);
     color:#fff;
-    font-size:20px;
-    font-weight:700;
-    box-shadow:0 10px 25px rgba(37,99,235,.2);
 }
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 24px rgba(37,99,235,.25);
+}
+
+.btn-secondary{
+    background:#eff6ff;
+    color:#2563eb;
+}
+
+.btn-secondary:hover{
+    transform:translateY(-2px);
+    background:#dbeafe;
+}
+
+/* =========================
+   NOTE
+========================= */
+
+.create-note{
+    margin-top:14px;
+    font-size:12px;
+    color:#64748b;
+    line-height:1.7;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+/* =========================
+   QUICK STATS
+========================= */
+
+.quick-stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-bottom:30px;
+}
+
+.stat-card{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    padding:22px;
+    text-align:center;
+    transition:.25s;
+    box-shadow:0 8px 20px rgba(15,23,42,.04);
+}
+
+.stat-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 14px 28px rgba(15,23,42,.08);
+}
+
+.stat-card i{
+    font-size:24px;
+    color:#2563eb;
+    margin-bottom:12px;
+}
+
+.stat-card h4{
+    margin:0;
+    color:#64748b;
+    font-size:13px;
+    font-weight:600;
+}
+
+.stat-card h2{
+    margin-top:10px;
+    color:#0f172a;
+    font-size:26px;
+    font-weight:700;
+}
+/* =====================================================
+   MY LINK PAGE
+   PART 2
+   Search • Filter • Link List • Empty
+===================================================== */
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-box{
+    position:relative;
+    margin-bottom:22px;
+}
+
+.search-box i{
+    position:absolute;
+    left:16px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#94a3b8;
+    font-size:15px;
+}
+
+.search-box input{
+    width:100%;
+    height:48px;
+    padding:0 16px 0 46px;
+    border:1px solid #dbeafe;
+    border-radius:14px;
+    background:#fff;
+    font-size:14px;
+    outline:none;
+    transition:.25s;
+}
+
+.search-box input:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+
+/* =========================
+   FILTER
+========================= */
 
 .link-filter{
     display:flex;
-    gap:10px;
     flex-wrap:wrap;
-    margin-bottom:18px;
+    gap:10px;
+    margin:20px 0;
 }
 
 .link-filter button{
     padding:10px 18px;
     border:none;
-    border-radius:12px;
-    background:#e2e8f0;
-    color:#334155;
-    font-weight:600;
+    border-radius:999px;
+    background:#eef2ff;
+    color:#2563eb;
+    font-size:13px;
+    font-weight:700;
     cursor:pointer;
     transition:.25s;
 }
@@ -40,244 +358,559 @@
     color:#fff;
 }
 
-/* ==========================================
-   LIST
-========================================== */
+/* =========================
+   INFO NOTE
+========================= */
+
+.info-note{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    margin:22px 0;
+    padding:16px;
+    border-radius:14px;
+    border:1px solid #fde68a;
+    background:#fffbeb;
+    color:#92400e;
+    font-size:13px;
+    line-height:1.7;
+}
+
+.info-note i{
+    margin-top:2px;
+    font-size:16px;
+}
+
+/* =========================
+   LINK LIST
+========================= */
 
 #linkList{
     display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:16px;
+    gap:18px;
 }
 
+/* =========================
+   LINK CARD
+========================= */
+
 .link-card{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:16px;
     background:#fff;
-    border:1px solid #e2e8f0;
-    border-radius:18px;
-    box-shadow:0 8px 22px rgba(15,23,42,.06);
+    border:1px solid #e5e7eb;
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 8px 24px rgba(15,23,42,.05);
     transition:.25s;
 }
 
 .link-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 12px 28px rgba(15,23,42,.12);
+    transform:translateY(-3px);
+    box-shadow:0 16px 36px rgba(15,23,42,.08);
 }
 
-.link-icon{
-    width:46px;
-    height:46px;
+/* =========================
+   CARD HEADER
+========================= */
+
+.link-top{
     display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    margin-bottom:14px;
+}
+
+.link-title{
+    margin-bottom:6px;
+    color:#0f172a;
+    font-size:17px;
+    font-weight:700;
+    word-break:break-word;
+}
+
+.link-url{
+    color:#64748b;
+    font-size:13px;
+    word-break:break-all;
+}
+
+/* =========================
+   TYPE BADGE
+========================= */
+
+.link-type{
+    display:inline-flex;
     align-items:center;
     justify-content:center;
-    flex-shrink:0;
-    border-radius:50%;
-    background:linear-gradient(135deg,#38bdf8,#2563eb);
-    color:#fff;
-    font-size:18px;
-}
-
-.link-info{
-    flex:1;
-    min-width:0;
-}
-
-.link-info h4{
-    margin:0;
-    color:#0f172a;
-    font-size:15px;
-    font-weight:700;
-}
-
-.link-info p{
-    margin:6px 0;
-    color:#64748b;
+    padding:5px 12px;
+    border-radius:999px;
     font-size:12px;
+    font-weight:700;
     white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
 }
 
-.link-info span{
-    display:inline-block;
-    padding:5px 10px;
-    border-radius:20px;
+.link-type.ads{
     background:#dbeafe;
-    color:#2563eb;
-    font-size:11px;
-    font-weight:700;
+    color:#1d4ed8;
+}
+
+.link-type.sell{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+/* =========================
+   STATS GRID
+========================= */
+
+.link-stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-top:18px;
 }
 
 .link-stat{
-    display:flex;
-    flex-direction:column;
-    align-items:flex-end;
-    gap:4px;
+    background:#f8fafc;
+    border-radius:14px;
+    padding:12px;
+    text-align:center;
+}
+
+.link-stat h5{
+    margin:0;
     color:#64748b;
     font-size:12px;
+    font-weight:600;
 }
 
-.link-stat b{
-    color:#0f172a;
-    font-size:15px;
+.link-stat span{
+    display:block;
+    margin-top:6px;
+    color:#2563eb;
+    font-size:18px;
+    font-weight:700;
 }
 
-.link-stat button{
-    width:34px;
-    height:34px;
-    margin-top:8px;
+/* =========================
+   ACTION BUTTONS
+========================= */
+
+.link-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:18px;
+}
+
+.link-actions button{
+    flex:1;
+    height:42px;
     border:none;
-    border-radius:10px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:700;
+    transition:.25s;
+}
+
+.link-actions button:hover{
+    transform:translateY(-2px);
+}
+
+.copy-btn{
     background:#2563eb;
     color:#fff;
+}
+
+.copy-btn:hover{
+    background:#1d4ed8;
+}
+
+.edit-btn{
+    background:#eff6ff;
+    color:#2563eb;
+}
+
+.edit-btn:hover{
+    background:#dbeafe;
+}
+
+.delete-btn{
+    background:#ef4444;
+    color:#fff;
+}
+
+.delete-btn:hover{
+    background:#dc2626;
+}
+
+/* =========================
+   EXTRA INFO
+========================= */
+
+.link-info{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-top:18px;
+}
+
+.link-info p{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:0;
+    color:#64748b;
+    font-size:13px;
+    word-break:break-word;
+}
+
+.status-success{
+    color:#16a34a;
+    font-weight:700;
+}
+
+.status-danger{
+    color:#dc2626;
+    font-weight:700;
+}
+
+.status-secondary{
+    color:#64748b;
+    font-weight:700;
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty{
+    padding:60px 20px;
+    text-align:center;
+    background:#fff;
+    border:2px dashed #cbd5e1;
+    border-radius:20px;
+}
+
+.empty i{
+    font-size:60px;
+    color:#94a3b8;
+    margin-bottom:18px;
+}
+
+.empty h3{
+    margin:0;
+    color:#0f172a;
+    font-size:22px;
+}
+
+.empty p{
+    margin-top:10px;
+    color:#64748b;
+    font-size:14px;
+}
+/* =====================================================
+   MY LINK PAGE
+   PART 3
+   Modal • Dark Mode • Responsive
+===================================================== */
+
+/* =========================
+   MODAL
+========================= */
+
+.advanced-modal{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:rgba(15,23,42,.55);
+    backdrop-filter:blur(5px);
+    z-index:9999;
+}
+
+.advanced-modal.active{
+    display:flex;
+    animation:fadeIn .25s ease;
+}
+
+.advanced-box{
+    width:100%;
+    max-width:520px;
+    background:#fff;
+    border-radius:22px;
+    padding:24px;
+    box-shadow:0 25px 60px rgba(0,0,0,.25);
+    animation:zoomIn .25s ease;
+}
+
+.advanced-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.advanced-header h3{
+    margin:0;
+    color:#2563eb;
+    font-size:20px;
+    font-weight:700;
+}
+
+.advanced-header button{
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:50%;
+    background:#eff6ff;
+    color:#2563eb;
     cursor:pointer;
     transition:.25s;
 }
 
-.link-stat button:hover{
-    background:#1d4ed8;
-    transform:scale(1.05);
+.advanced-header button:hover{
+    background:#dbeafe;
+    transform:rotate(90deg);
 }
 
-/* ==========================================
-   EMPTY
-========================================== */
+/* =========================
+   ANIMATION
+========================= */
 
-.empty{
-    padding:45px 20px;
-    text-align:center;
-    background:#fff;
-    border:1px solid #e2e8f0;
-    border-radius:18px;
-    color:#64748b;
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
+    }
+
 }
 
-/* ==========================================
+@keyframes zoomIn{
+
+    from{
+        opacity:0;
+        transform:scale(.92);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+
+}
+
+/* =========================
    DARK MODE
-========================================== */
+========================= */
 
-body.dark{
+html.dark body{
     background:#020617;
-    color:#fff;
+    color:#e2e8f0;
 }
 
-body.dark .link-card,
-body.dark .empty{
+html.dark .info-box,
+html.dark .create-form,
+html.dark .stat-card,
+html.dark .link-card,
+html.dark .advanced-box,
+html.dark .empty{
     background:#0f172a;
     border-color:#1e293b;
-    box-shadow:0 10px 25px rgba(0,0,0,.4);
+    box-shadow:0 10px 25px rgba(0,0,0,.35);
 }
 
-body.dark .link-info h4,
-body.dark .link-stat b{
+html.dark .link-stat{
+    background:#162033;
+}
+
+html.dark input,
+html.dark select{
+    background:#162033;
+    border-color:#334155;
     color:#fff;
 }
 
-body.dark .link-info p,
-body.dark .link-stat{
+html.dark input::placeholder{
     color:#94a3b8;
 }
 
-body.dark .link-info span{
-    background:#1e3a8a;
-    color:#bfdbfe;
+html.dark .page-title,
+html.dark .create-header h2,
+html.dark .advanced-header h3,
+html.dark .link-title,
+html.dark .stat-card h2,
+html.dark .empty h3{
+    color:#60a5fa;
 }
 
-body.dark .link-filter button{
+html.dark .info-box li,
+html.dark .create-note,
+html.dark .link-url,
+html.dark .empty p,
+html.dark .link-info p,
+html.dark label,
+html.dark .stat-card h4,
+html.dark .link-stat h5{
+    color:#94a3b8;
+}
+
+html.dark .search-box input{
+    background:#162033;
+    border-color:#334155;
+}
+
+html.dark .search-box input:focus{
+    border-color:#2563eb;
+}
+
+html.dark .link-filter button{
     background:#1e293b;
     color:#cbd5e1;
 }
 
-body.dark .link-filter button:hover,
-body.dark .link-filter button.active{
+html.dark .link-filter button:hover,
+html.dark .link-filter button.active{
     background:#2563eb;
     color:#fff;
 }
 
-/* ==========================================
-   DESKTOP
-========================================== */
-
-@media (min-width:1024px){
-
-    #linkList{
-        grid-template-columns:repeat(3,minmax(0,1fr));
-    }
-
+html.dark .btn-secondary{
+    background:#1e293b;
+    color:#cbd5e1;
 }
 
-/* ==========================================
+html.dark .btn-secondary:hover{
+    background:#334155;
+}
+
+html.dark .info-note{
+    background:#3f2d00;
+    border-color:#7c5a00;
+    color:#fde68a;
+}
+
+/* =========================
    TABLET
-========================================== */
+========================= */
 
-@media (max-width:1023px){
+@media(max-width:900px){
 
-    #linkList{
-        grid-template-columns:repeat(2,minmax(0,1fr));
+    .quick-stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .link-stats{
+        grid-template-columns:repeat(2,1fr);
     }
 
 }
 
-/* ==========================================
+/* =========================
    MOBILE
-========================================== */
+========================= */
 
-@media (max-width:600px){
+@media(max-width:768px){
 
-    #linkList{
-        grid-template-columns:1fr;
+    .container{
+        padding:18px;
     }
 
     .page-title{
-        font-size:17px;
-        padding:12px 15px;
+        font-size:24px;
     }
 
-    .link-card{
-        padding:14px;
-    }
-
-    .link-icon{
-        width:42px;
-        height:42px;
-    }
-
-    .link-stat{
-        font-size:11px;
-    }
-
-}
-
-/* ==========================================
-   SMALL PHONE
-========================================== */
-
-@media (max-width:380px){
-
-    .link-card{
+    .create-header{
         flex-direction:column;
         align-items:flex-start;
     }
 
+    .btn-group{
+        grid-template-columns:1fr;
+    }
+
+    .link-top{
+        flex-direction:column;
+    }
+
     .link-info{
+        grid-template-columns:1fr;
+    }
+
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media(max-width:520px){
+
+    .quick-stats{
+        grid-template-columns:1fr;
+    }
+
+    .link-stats{
+        grid-template-columns:1fr;
+    }
+
+    .link-actions{
+        flex-direction:column;
+    }
+
+    .link-actions button{
         width:100%;
     }
 
-    .link-info p{
-        white-space:normal;
-        word-break:break-word;
+    .advanced-box{
+        padding:20px;
     }
 
-    .link-stat{
-        width:100%;
-        flex-direction:row;
-        justify-content:space-between;
-        align-items:center;
-        margin-top:10px;
-        text-align:left;
+    .page-title{
+        font-size:22px;
+    }
+
+    .create-header h2{
+        font-size:20px;
+    }
+
+}
+
+/* =========================
+   VERY SMALL PHONE
+========================= */
+
+@media(max-width:380px){
+
+    .container{
+        padding:15px;
+    }
+
+    .page-title{
+        font-size:20px;
+    }
+
+    .stat-card h2{
+        font-size:22px;
+    }
+
+    .link-title{
+        font-size:15px;
+    }
+
+    .advanced-box{
+        border-radius:18px;
+        padding:18px;
     }
 
 }
