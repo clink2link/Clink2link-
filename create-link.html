@@ -24,7 +24,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 <!-- Sidebar -->
 <div id="sidebar"></div>
 
-<div class="container">
+<main class="container">
 
 <div class="page-title">
 <i class="fa-solid fa-link"></i>
@@ -257,34 +257,70 @@ Silakan buat Link Ads pertama Anda.
 
 </div>
 
-</div>
+</main>
 
-<!-- Footer -->
 <div id="footer"></div>
 
-<!-- Modal -->
-<div id="modal"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- Loading -->
-<div id="loading"></div>
-
-<!-- Toast -->
-<div id="toast"></div>
-
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
-<!-- Database -->
 <script src="js/database.js"></script>
-
-<!-- Auth -->
-<script src="js/auth.js"></script>
-
-<!-- Layout -->
-<script src="js/layout.js"></script>
-
-<!-- Create Link -->
+<script src="js/theme.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
 <script src="js/create-link.js"></script>
+
+<script>
+/* ==========================
+   LOAD NAVBAR
+========================== */
+
+fetch("components/navbar.html")
+.then(res=>res.text())
+.then(html=>{
+
+document.getElementById("navbar").innerHTML=html;
+
+if(typeof c2pInit==="function"){
+c2pInit();
+}
+
+const logoutBtn=document.getElementById("logoutBtn");
+
+if(logoutBtn){
+
+logoutBtn.onclick=async()=>{
+
+try{
+await database.logout();
+}catch(e){}
+
+localStorage.clear();
+sessionStorage.clear();
+
+location.replace("index.html");
+
+};
+
+}
+
+});
+
+/* ==========================
+   LOAD FOOTER
+========================== */
+
+fetch("components/footer.html")
+.then(res=>res.text())
+.then(html=>{
+
+document.getElementById("footer").innerHTML=html;
+
+if(typeof c2pFooterInit==="function"){
+c2pFooterInit();
+}
+
+});
+</script>
 
 </body>
 
