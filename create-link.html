@@ -25,6 +25,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
 <main class="container">
 
+
 <!-- =========================
      PAGE TITLE
 ========================= -->
@@ -36,6 +37,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     <span>Create Link Ads</span>
 
 </div>
+
+
 
 <!-- =========================
      INFO BOX
@@ -51,31 +54,37 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
     </div>
 
+
     <ul>
 
         <li>Gunakan URL tujuan yang valid.</li>
 
-        <li>Nama link hanya digunakan sebagai identitas.</li>
+        <li>Nama link hanya sebagai identitas link.</li>
 
-        <li>Shortlink akan dibuat secara otomatis.</li>
+        <li>Short Link Ads dibuat otomatis.</li>
 
-        <li>Link dapat diedit, disalin maupun dihapus kapan saja.</li>
+        <li>Link dapat dicopy, diedit dan dihapus kapan saja.</li>
 
-        <li>Semua statistik klik akan diperbarui otomatis.</li>
+        <li>Statistik View, Click dan Earnings diperbarui otomatis.</li>
 
     </ul>
 
 </div>
 
+
+
+
 <!-- =========================
      CREATE FORM
 ========================= -->
 
-<form
+<form 
 id="createForm"
 class="create-form">
 
+
 <div class="create-header">
+
 
 <div class="create-icon">
 
@@ -83,38 +92,56 @@ class="create-form">
 
 </div>
 
+
 <div>
 
-<h2>Buat Link Baru</h2>
+<h2>
+Buat Link Ads Baru
+</h2>
+
 
 <p>
-
-Buat Link Ads atau Sell Link baru.
-
+Buat link iklan dan pantau performanya.
 </p>
 
-</div>
 
 </div>
 
-<label>Nama Link</label>
+
+</div>
+
+
+
+
+<label>
+Nama Link
+</label>
+
 
 <div class="input-box">
 
 <i class="fa-solid fa-tag"></i>
 
+
 <input
 type="text"
 id="linkName"
-placeholder="Contoh : Shopee Promo">
+placeholder="Contoh : Promo Shopee">
 
 </div>
 
-<label>Destination URL</label>
+
+
+
+<label>
+Destination URL
+</label>
+
 
 <div class="input-box">
 
 <i class="fa-solid fa-globe"></i>
+
 
 <input
 type="url"
@@ -123,307 +150,430 @@ placeholder="https://example.com">
 
 </div>
 
-<label>Tipe Link</label>
 
-<div class="input-box">
 
-<i class="fa-solid fa-layer-group"></i>
 
-<select id="linkType">
-
-<option value="ads">
-
-Ads Link
-
-</option>
-
-<option value="sell">
-
-Sell Link
-
-</option>
-
-</select>
-
-</div>
 
 <div class="btn-group">
+
 
 <button
 type="submit"
 class="btn-primary">
 
+
 <i class="fa-solid fa-plus"></i>
 
-Create Link
+
+Create Ads Link
+
 
 </button>
+
+
 
 <button
 type="reset"
 class="btn-secondary">
 
+
 <i class="fa-solid fa-rotate"></i>
+
 
 Reset
 
+
 </button>
 
+
+
 </div>
+
+
+
+
 
 <div class="create-note">
 
+
 <i class="fa-solid fa-shield-halved"></i>
+
 
 <span>
 
-Pastikan URL benar sebelum membuat Link.
+Pastikan URL tujuan benar sebelum membuat Ads Link.
 
 </span>
 
+
 </div>
 
+
+
 </form>
+
+
+
+
+
+
 
 <!-- =========================
      QUICK STATS
 ========================= -->
 
+
 <div class="quick-stats">
 
+
+
 <div class="stat-card">
+
 
 <i class="fa-solid fa-link"></i>
 
-<h4>Total Link</h4>
+
+<h4>
+Total Ads Link
+</h4>
+
 
 <h2 id="totalLink">
-
 0
-
 </h2>
+
 
 </div>
 
+
+
+
+
 <div class="stat-card">
+
 
 <i class="fa-solid fa-eye"></i>
 
-<h4>Total View</h4>
+
+<h4>
+Total View
+</h4>
+
 
 <h2 id="totalView">
-
 0
-
 </h2>
+
 
 </div>
 
+
+
+
+
 <div class="stat-card">
+
 
 <i class="fa-solid fa-hand-pointer"></i>
 
-<h4>Total Click</h4>
+
+<h4>
+Total Click
+</h4>
+
 
 <h2 id="totalClick">
-
 0
-
 </h2>
 
+
 </div>
+
+
+
+
 
 <div class="stat-card">
 
+
 <i class="fa-solid fa-wallet"></i>
 
-<h4>Total Earnings</h4>
+
+<h4>
+Total Earnings
+</h4>
+
 
 <h2 id="totalEarning">
-
 Rp0
-
 </h2>
 
-</div>
 
 </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
 
 <!-- =========================
      SEARCH
 ========================= -->
 
+
 <div class="search-box">
+
 
 <i class="fa-solid fa-search"></i>
 
+
 <input
+
 type="text"
+
 id="searchInput"
-placeholder="Cari nama link atau URL...">
+
+placeholder="Cari nama link atau URL..."
+
+>
+
 
 </div>
 
-<!-- =========================
-     FILTER
-========================= -->
 
-<div class="link-filter">
 
-<button
-class="active"
-data-filter="all">
 
-Semua
 
-</button>
 
-<button
-data-filter="ads">
 
-Ads
-
-</button>
-
-<button
-data-filter="sell">
-
-Sell
-
-</button>
-
-</div>
 
 <!-- =========================
      NOTE
 ========================= -->
 
+
 <div class="info-note">
+
 
 <i class="fa-solid fa-lightbulb"></i>
 
+
 <p>
 
-Gunakan tombol Copy untuk membagikan Short Link.
-Statistik View, Click dan Earnings akan diperbarui secara otomatis.
+
+Gunakan tombol Copy untuk membagikan Ads Link.
+Semua statistik View, Click dan Earnings akan diperbarui otomatis.
+
 
 </p>
 
+
 </div>
+
+
+
+
+
+
+
 
 <!-- =========================
      LINK LIST
 ========================= -->
 
+
 <div id="linkList">
+
 
 <div class="empty">
 
+
 <i class="fa-solid fa-link-slash"></i>
+
 
 <h3>
 
-Belum Ada Link
+Belum Ada Ads Link
 
 </h3>
 
+
 <p>
 
-Link Ads yang sudah dibuat akan muncul di sini.
+Ads Link yang dibuat akan muncul di sini.
 
 </p>
 
-</div>
 
 </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
 
 <!-- =========================
      EDIT MODAL
 ========================= -->
 
+
 <div
 id="editModal"
 class="advanced-modal">
 
+
 <div class="advanced-box">
 
+
 <div class="advanced-header">
+
 
 <h3>
 
 <i class="fa-solid fa-pen"></i>
 
-Edit Link
+Edit Ads Link
 
 </h3>
+
+
 
 <button
 type="button"
 onclick="closeEdit()">
 
+
 <i class="fa-solid fa-xmark"></i>
+
 
 </button>
 
+
 </div>
+
+
+
+
 
 <input
 type="hidden"
 id="editId">
 
-<label>Nama Link</label>
+
+
+
+
+<label>
+Nama Link
+</label>
+
 
 <div class="input-box">
+
 
 <i class="fa-solid fa-tag"></i>
 
+
 <input
 type="text"
-id="editTitle">
+id="editTitle"
+>
+
 
 </div>
 
-<label>Destination URL</label>
+
+
+
+
+<label>
+Destination URL
+</label>
+
 
 <div class="input-box">
 
+
 <i class="fa-solid fa-globe"></i>
+
 
 <input
 type="url"
-id="editUrl">
+id="editUrl"
+>
+
 
 </div>
 
+
+
+
+
+
 <div class="btn-group">
+
+
 
 <button
 type="button"
 class="btn-primary"
 onclick="saveEdit()">
 
+
 <i class="fa-solid fa-floppy-disk"></i>
+
 
 Simpan
 
+
 </button>
+
+
+
+
 
 <button
 type="button"
 class="btn-secondary"
 onclick="closeEdit()">
 
+
 <i class="fa-solid fa-xmark"></i>
+
 
 Batal
 
+
 </button>
 
-</div>
+
 
 </div>
 
+
+
+
 </div>
+
+
+</div>
+
+
+
 
 </main>
 
