@@ -6,256 +6,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create Link Ads | Click2Pay</title>
+<title>Create Link Ads • Click2Pay</title>
 
-<link rel="stylesheet" href="assets/css/layout.css">
-<link rel="stylesheet" href="assets/css/create-link.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/create-link.css">
 
 <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>
 
 <body>
 
-<!-- Navbar -->
 <div id="navbar"></div>
-
-<!-- Sidebar -->
-<div id="sidebar"></div>
 
 <main class="container">
 
-<div class="page-title">
-<i class="fa-solid fa-link"></i>
-<span>Create Link Ads</span>
-</div>
-
-<div class="info-box">
-
-<div class="info-header">
-<i class="fa-solid fa-circle-info"></i>
-<h3>Informasi</h3>
-</div>
-
-<ul>
-<li>Gunakan link tujuan yang valid.</li>
-<li>Nama link hanya untuk memudahkan identifikasi.</li>
-<li>Shortlink akan dibuat otomatis.</li>
-<li>Link dapat diedit atau dihapus kapan saja.</li>
-<li>Statistik klik akan diperbarui otomatis.</li>
-</ul>
-
-</div>
-
-<form class="create-form" id="createForm">
-
-<div class="create-header">
-
-<div class="create-icon">
-<i class="fa-solid fa-plus"></i>
-</div>
-
-<div>
-<h2>Buat Link Baru</h2>
-<p>Buat Link Ads baru untuk dibagikan.</p>
-</div>
-
-</div>
-
-<label>Nama Link</label>
-
-<div class="input-box">
-<i class="fa-solid fa-tag"></i>
-<input
-type="text"
-id="linkName"
-placeholder="Contoh : Shopee Promo">
-</div>
-
-<label>URL Tujuan</label>
-
-<div class="input-box">
-<i class="fa-solid fa-globe"></i>
-<input
-type="url"
-id="linkUrl"
-placeholder="https://">
-</div>
-
-<label>Tipe Link</label>
-
-<div class="input-box">
-<i class="fa-solid fa-layer-group"></i>
-
-<select id="linkType">
-
-<option value="ads">
-Ads Link
-</option>
-
-<option value="sell">
-Sell Link
-</option>
-
-</select>
-
-</div>
-
-<div class="btn-group">
-
-<button
-type="submit"
-class="btn-primary">
-
-<i class="fa-solid fa-plus"></i>
-
-Create Link
-
-</button>
-
-<button
-type="reset"
-class="btn-secondary">
-
-<i class="fa-solid fa-rotate"></i>
-
-Reset
-
-</button>
-
-</div>
-
-<div class="create-note">
-<i class="fa-solid fa-shield-halved"></i>
-<span>Pastikan URL yang dimasukkan benar sebelum membuat link.</span>
-</div>
-
-</form>
-
-<div class="quick-stats">
-
-<div class="stat-card">
-
-<i class="fa-solid fa-link"></i>
-
-<h4>Total Link</h4>
-
-<h2 id="totalLink">
-0
-</h2>
-
-</div>
-
-<div class="stat-card">
-
-<i class="fa-solid fa-eye"></i>
-
-<h4>Total View</h4>
-
-<h2 id="totalView">
-0
-</h2>
-
-</div>
-
-<div class="stat-card">
-
-<i class="fa-solid fa-hand-pointer"></i>
-
-<h4>Total Click</h4>
-
-<h2 id="totalClick">
-0
-</h2>
-
-</div>
-
-<div class="stat-card">
-
-<i class="fa-solid fa-wallet"></i>
-
-<h4>Total Earning</h4>
-
-<h2 id="totalEarning">
-Rp0
-</h2>
-
-</div>
-
-</div>
-
-<div class="search-box">
-
-<i class="fa-solid fa-magnifying-glass"></i>
-
-<input
-type="text"
-id="searchInput"
-placeholder="Cari nama link...">
-
-</div>
-
-<div class="link-filter">
-
-<button
-class="active"
-data-filter="all">
-
-Semua
-
-</button>
-
-<button
-data-filter="ads">
-
-Ads
-
-</button>
-
-<button
-data-filter="sell">
-
-Sell
-
-</button>
-
-</div>
-
-<div class="info-note">
-
-<i class="fa-solid fa-lightbulb"></i>
-
-<p>
-
-Klik tombol Copy untuk membagikan shortlink.
-Semua statistik klik akan tercatat otomatis.
-
-</p>
-
-</div>
-
-<div id="linkList">
-
-<div class="empty">
-
-<i class="fa-solid fa-link-slash"></i>
-
-<h3>
-
-Belum Ada Link
-
-</h3>
-
-<p>
-
-Silakan buat Link Ads pertama Anda.
-
-</p>
-
-</div>
-
-</div>
+    <!-- Semua isi Create Link yang sudah kamu buat -->
 
 </main>
 
@@ -270,38 +40,39 @@ Silakan buat Link Ads pertama Anda.
 <script src="js/create-link.js"></script>
 
 <script>
+
 /* ==========================
    LOAD NAVBAR
 ========================== */
 
 fetch("components/navbar.html")
-.then(res=>res.text())
-.then(html=>{
+.then(res => res.text())
+.then(html => {
 
-document.getElementById("navbar").innerHTML=html;
+    document.getElementById("navbar").innerHTML = html;
 
-if(typeof c2pInit==="function"){
-c2pInit();
-}
+    if(typeof c2pInit === "function"){
+        c2pInit();
+    }
 
-const logoutBtn=document.getElementById("logoutBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-if(logoutBtn){
+    if(logoutBtn){
 
-logoutBtn.onclick=async()=>{
+        logoutBtn.onclick = async()=>{
 
-try{
-await database.logout();
-}catch(e){}
+            try{
+                await database.logout();
+            }catch(e){}
 
-localStorage.clear();
-sessionStorage.clear();
+            localStorage.clear();
+            sessionStorage.clear();
 
-location.replace("index.html");
+            location.replace("index.html");
 
-};
+        };
 
-}
+    }
 
 });
 
@@ -310,16 +81,74 @@ location.replace("index.html");
 ========================== */
 
 fetch("components/footer.html")
-.then(res=>res.text())
-.then(html=>{
+.then(res => res.text())
+.then(html => {
 
-document.getElementById("footer").innerHTML=html;
+    document.getElementById("footer").innerHTML = html;
 
-if(typeof c2pFooterInit==="function"){
-c2pFooterInit();
+    if(typeof c2pFooterInit === "function"){
+        c2pFooterInit();
+    }
+
+});
+
+/* ==========================
+   LOAD CREATE LINK
+========================== */
+
+window.addEventListener("load",()=>{
+
+    if(typeof loadLinks==="function"){
+        loadLinks();
+    }
+
+});
+
+/* ==========================
+   SEARCH
+========================== */
+
+const searchInput=document.getElementById("searchInput");
+
+if(searchInput){
+
+searchInput.addEventListener("input",()=>{
+
+if(typeof searchLinks==="function"){
+
+searchLinks(searchInput.value);
+
 }
 
 });
+
+}
+
+/* ==========================
+   FILTER
+========================== */
+
+document.querySelectorAll(".link-filter button")
+.forEach(btn=>{
+
+btn.onclick=()=>{
+
+document
+.querySelectorAll(".link-filter button")
+.forEach(b=>b.classList.remove("active"));
+
+btn.classList.add("active");
+
+if(typeof filterLinks==="function"){
+
+filterLinks(btn.dataset.filter);
+
+}
+
+};
+
+});
+
 </script>
 
 </body>
