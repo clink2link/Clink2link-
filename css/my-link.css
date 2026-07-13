@@ -933,7 +933,7 @@ html.dark .empty{
 @media (max-width:768px){
 
   .container{
-    padding:20px 16px 40px;
+    padding:90px 16px 40px;
   }
 
   .page-title{
@@ -984,7 +984,7 @@ html.dark .empty{
 @media (max-width:480px){
 
   .container{
-    padding:16px;
+    padding:86px 14px 30px;
   }
 
   .page-title{
