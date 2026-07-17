@@ -176,13 +176,16 @@ window.location.href="dashboard.html";
 }catch(err){
 
 console.error(
-"LOGIN ERROR:",
+"LOGIN ERROR DETAIL:",
+err.message,
 err
 );
 
 alert(
-"Terjadi kesalahan sistem"
+err.message
 );
+
+}
 
 
 }finally{
