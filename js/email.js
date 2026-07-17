@@ -1,6 +1,6 @@
-const EMAIL_SERVICE_ID = "ISI_SERVICE_ID";
-const EMAIL_TEMPLATE_ID = "ISI_TEMPLATE_ID";
-const EMAIL_PUBLIC_KEY = "ISI_PUBLIC_KEY";
+const EMAIL_SERVICE_ID = "Clink2link";
+const EMAIL_TEMPLATE_ID = "template_8k3r8zl";
+const EMAIL_PUBLIC_KEY = "ibyL8v-c7knw1zRS9";
 
 
 async function sendResetEmail(
