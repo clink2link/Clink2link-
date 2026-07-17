@@ -70,14 +70,17 @@ AMBIL USER
 const {data,error}=await database.supabase
 .from("users")
 .select("*")
-.or(`username.eq.${login},email.eq.${login}`)
-.single();
-
+.or(
+`username.eq.${login},email.eq.${login}`
+)
+.maybeSingle();
 
 
 if(error || !data){
 
-alert("Akun tidak ditemukan");
+alert(
+"❌ Username atau Gmail belum terdaftar. Silakan daftar terlebih dahulu."
+);
 
 return;
 
@@ -99,7 +102,9 @@ data.password
 
 if(!passwordMatch){
 
-alert("Password salah");
+alert(
+"❌ Password yang kamu masukkan salah."
+);
 
 return;
 
@@ -113,7 +118,9 @@ CEK BAN
 
 if(data.is_banned){
 
-alert("Akun Anda diblokir");
+alert(
+"🚫 Akun kamu telah diblokir oleh admin."
+);
 
 return;
 
