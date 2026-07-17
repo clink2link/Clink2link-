@@ -1,0 +1,279 @@
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+min-height:100vh;
+font-family:'Poppins',sans-serif;
+background:#f8fbff;
+}
+
+.register-bg{
+position:fixed;
+inset:0;
+z-index:-1;
+background:
+radial-gradient(circle at 20% 20%,rgba(37,99,235,.15),transparent 30%),
+radial-gradient(circle at 80% 80%,rgba(0,184,255,.15),transparent 30%),
+linear-gradient(120deg,#fff,#f1f8ff);
+}
+
+.register-container{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:30px 15px;
+}
+
+.register-card{
+width:100%;
+max-width:450px;
+background:#fff;
+border:1px solid #dbeafe;
+border-radius:25px;
+padding:30px;
+box-shadow:0 20px 50px rgba(15,23,42,.08);
+}
+
+.register-logo{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+margin-bottom:20px;
+}
+
+.register-logo i{
+width:45px;
+height:45px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:14px;
+background:linear-gradient(135deg,#2563eb,#38bdf8);
+color:#fff;
+font-size:22px;
+}
+
+.register-logo h1{
+margin:0;
+font-size:28px;
+font-weight:800;
+color:#111827;
+}
+
+.register-logo span{
+color:#2563eb;
+}
+
+.register-title{
+text-align:center;
+}
+
+.register-title h2{
+margin:0;
+font-size:24px;
+color:#2563eb;
+}
+
+.register-title p{
+margin:10px 0 20px;
+font-size:13px;
+color:#64748b;
+line-height:1.6;
+}
+
+label{
+display:block;
+margin:16px 0 8px;
+font-size:13px;
+font-weight:600;
+color:#475569;
+}
+
+label i{
+margin-right:6px;
+color:#2563eb;
+}
+
+.input-box{
+position:relative;
+}
+
+.input-box>i:first-child{
+position:absolute;
+left:15px;
+top:50%;
+transform:translateY(-50%);
+color:#94a3b8;
+}
+
+.input-box input{
+width:100%;
+height:52px;
+padding:0 50px 0 45px;
+border:1px solid #dbeafe;
+border-radius:14px;
+background:#f8fafc;
+outline:none;
+font:500 14px Poppins,sans-serif;
+transition:.25s;
+}
+
+.input-box input:focus{
+background:#fff;
+border-color:#2563eb;
+box-shadow:0 0 0 4px rgba(37,99,235,.1);
+}
+
+.password-box .toggle-password{
+position:absolute;
+right:10px;
+top:50%;
+transform:translateY(-50%);
+width:36px;
+height:36px;
+border:0;
+background:transparent;
+border-radius:10px;
+cursor:pointer;
+color:#64748b;
+}
+
+.password-box .toggle-password:hover{
+background:#eff6ff;
+color:#2563eb;
+}
+
+.turnstile-box{
+margin-top:22px;
+padding:16px;
+border-radius:16px;
+background:#f8fbff;
+border:1px solid #dbeafe;
+}
+
+.turnstile-box p{
+display:flex;
+align-items:center;
+gap:8px;
+font-size:13px;
+font-weight:600;
+color:#2563eb;
+}
+
+.register-btn{
+width:100%;
+height:54px;
+margin-top:20px;
+border:0;
+border-radius:15px;
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+color:#fff;
+font:700 15px Poppins,sans-serif;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+transition:.25s;
+}
+
+.register-btn:hover{
+transform:translateY(-3px);
+box-shadow:0 15px 35px rgba(37,99,235,.3);
+}
+
+.register-links{
+margin-top:25px;
+text-align:center;
+}
+
+.register-links p{
+font-size:14px;
+color:#64748b;
+}
+
+.register-links a{
+color:#2563eb;
+font-weight:700;
+text-decoration:none;
+}
+
+.register-links a:hover{
+color:#00b8ff;
+}
+
+.register-links i{
+margin-right:5px;
+}
+
+
+/* DARK MODE */
+
+body.dark{
+background:#020617;
+}
+
+body.dark .register-bg{
+background:
+radial-gradient(circle at 20% 20%,rgba(37,99,235,.25),transparent 30%),
+radial-gradient(circle at 80% 80%,rgba(0,184,255,.15),transparent 30%),
+linear-gradient(120deg,#020617,#0f172a);
+}
+
+body.dark .register-card{
+background:#0f172a;
+border-color:#1e293b;
+}
+
+body.dark .register-logo h1{
+color:#fff;
+}
+
+body.dark .register-title h2{
+color:#60a5fa;
+}
+
+body.dark .register-title p,
+body.dark label,
+body.dark .register-links p{
+color:#94a3b8;
+}
+
+body.dark .input-box input{
+background:#1e293b;
+border-color:#334155;
+color:#fff;
+}
+
+body.dark .input-box input:focus{
+background:#162033;
+}
+
+body.dark .turnstile-box{
+background:#1e293b;
+border-color:#334155;
+}
+
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+.register-card{
+padding:22px;
+border-radius:20px;
+}
+
+.register-title h2{
+font-size:21px;
+}
+
+.register-logo h1{
+font-size:24px;
+}
+
+}
