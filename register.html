@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Daftar - Click2Pay</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/footer.css">
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<link rel="stylesheet" href="css/register.css">
+
+</head>
+
+<body>
+
+<div id="navbar"></div>
+
+<div class="register-bg"></div>
+
+<div class="register-container">
+
+<div class="register-card">
+
+<div class="register-logo">
+
+<i class="fa-solid fa-bolt"></i>
+
+<h1>CLICK<span>2PAY</span></h1>
+
+</div>
+
+<div class="register-title">
+
+<h2>Selamat Datang di Click2Pay</h2>
+
+<p>
+Web penghasil saldo dan Sell Link dengan CPM tinggi dan pembayaran cepat.
+</p>
+
+</div>
+
+<form id="registerForm">
+
+<label>
+<i class="fa-solid fa-user"></i>
+Username
+</label>
+
+<div class="input-box">
+<i class="fa-solid fa-user"></i>
+<input
+type="text"
+id="username"
+placeholder="Masukkan username"
+required>
+</div>
+
+<label>
+<i class="fa-solid fa-envelope"></i>
+Gmail
+</label>
+
+<div class="input-box">
+<i class="fa-solid fa-envelope"></i>
+<input
+type="email"
+id="email"
+placeholder="email@gmail.com"
+required>
+</div>
+
+<label>
+<i class="fa-solid fa-lock"></i>
+Kata Sandi
+</label>
+
+<div class="input-box password-box">
+<i class="fa-solid fa-lock"></i>
+<input
+type="password"
+id="password"
+placeholder="Masukkan kata sandi"
+required>
+
+<button
+type="button"
+class="toggle-password"
+data-target="password">
+
+<i class="fa-solid fa-eye"></i>
+
+</button>
+
+</div>
+
+<label>
+<i class="fa-solid fa-lock"></i>
+Konfirmasi Kata Sandi
+</label>
+
+<div class="input-box password-box">
+<i class="fa-solid fa-lock"></i>
+
+<input
+type="password"
+id="confirmPassword"
+placeholder="Ulangi kata sandi"
+required>
+
+<button
+type="button"
+class="toggle-password"
+data-target="confirmPassword">
+
+<i class="fa-solid fa-eye"></i>
+
+</button>
+
+</div>
+
+<div class="turnstile-box">
+
+<p>
+
+<i class="fa-solid fa-shield-halved"></i>
+
+Verifikasi Cloudflare
+
+</p>
+
+<div
+class="cf-turnstile"
+data-sitekey="ISI_SITE_KEY_KAMU">
+</div>
+
+</div>
+
+<button
+type="submit"
+class="register-btn">
+
+<i class="fa-solid fa-user-plus"></i>
+
+Daftar
+
+</button>
+
+</form>
+
+<div class="register-links">
+
+<p>
+
+Sudah punya akun?
+
+<a href="login.html">
+
+<i class="fa-solid fa-right-to-bracket"></i>
+
+Masuk
+
+</a>
+
+</p>
+
+<p>
+
+<a href="index.html">
+
+<i class="fa-solid fa-house"></i>
+
+Beranda
+
+</a>
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/database.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/register.js"></script>
+
+<script>
+
+fetch("components/navbar.html")
+.then(r=>r.text())
+.then(html=>{
+
+document.getElementById("navbar").innerHTML=html;
+
+if(typeof c2pInit==="function"){
+c2pInit();
+}
+
+});
+
+fetch("components/footer.html")
+.then(r=>r.text())
+.then(html=>{
+
+document.getElementById("footer").innerHTML=html;
+
+if(typeof c2pFooterInit==="function"){
+c2pFooterInit();
+}
+
+});
+
+document.querySelectorAll(".toggle-password")
+.forEach(btn=>{
+
+btn.onclick=function(){
+
+const input=document.getElementById(
+this.dataset.target
+);
+
+const icon=this.querySelector("i");
+
+if(input.type==="password"){
+
+input.type="text";
+
+icon.className="fa-solid fa-eye-slash";
+
+}else{
+
+input.type="password";
+
+icon.className="fa-solid fa-eye";
+
+}
+
+};
+
+});
+
+</script>
+
+</body>
+</html>
