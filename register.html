@@ -11,8 +11,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="css/navbar.css">
 <link rel="stylesheet" href="css/footer.css">
 
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -22,8 +20,6 @@
 </head>
 
 <body>
-
-<div id="navbar"></div>
 
 <div class="register-bg"></div>
 
@@ -62,6 +58,7 @@ Username
 type="text"
 id="username"
 placeholder="Masukkan username"
+autocomplete="username"
 required>
 </div>
 
@@ -76,6 +73,7 @@ Gmail
 type="email"
 id="email"
 placeholder="email@gmail.com"
+autocomplete="email"
 required>
 </div>
 
@@ -90,6 +88,7 @@ Kata Sandi
 type="password"
 id="password"
 placeholder="Masukkan kata sandi"
+autocomplete="new-password"
 required>
 
 <button
@@ -115,6 +114,7 @@ Konfirmasi Kata Sandi
 type="password"
 id="confirmPassword"
 placeholder="Ulangi kata sandi"
+autocomplete="new-password"
 required>
 
 <button
@@ -143,16 +143,19 @@ class="cf-turnstile"
 data-sitekey="ISI_SITE_KEY_KAMU">
 </div>
 
+<p class="register-note">
+<i class="fa-solid fa-circle-info"></i>
+Dengan mendaftar, Anda menyetujui Syarat & Ketentuan serta Kebijakan Privasi Click2Pay.
+</p>
+
 </div>
 
 <button
 type="submit"
-class="register-btn">
-
+class="register-btn"
+id="registerBtn">
 <i class="fa-solid fa-user-plus"></i>
-
-Daftar
-
+<span>Daftar</span>
 </button>
 
 </form>
@@ -196,23 +199,10 @@ Beranda
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/database.js"></script>
-<script src="js/navbar.js"></script>
 <script src="js/footer.js"></script>
 <script src="js/register.js"></script>
 
 <script>
-
-fetch("components/navbar.html")
-.then(r=>r.text())
-.then(html=>{
-
-document.getElementById("navbar").innerHTML=html;
-
-if(typeof c2pInit==="function"){
-c2pInit();
-}
-
-});
 
 fetch("components/footer.html")
 .then(r=>r.text())
