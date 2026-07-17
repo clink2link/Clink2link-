@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Masuk - Click2Pay</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/login.css">
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+</head>
+
+<body>
+
+<div class="register-bg"></div>
+
+<div class="register-container">
+
+<div class="register-card">
+
+<div class="register-logo">
+
+<i class="fa-solid fa-bolt"></i>
+
+<h1>CLICK<span>2PAY</span></h1>
+
+</div>
+
+<div class="register-title">
+
+<h2>Selamat Datang Kembali</h2>
+
+<p>
+Masuk untuk mulai menghasilkan saldo dari Ads Link dan Sell Link.
+</p>
+
+</div>
+
+<form id="loginForm">
+
+<label>
+<i class="fa-solid fa-user"></i>
+Username atau Gmail
+</label>
+
+<div class="input-box">
+
+<i class="fa-solid fa-user"></i>
+
+<input
+type="text"
+id="login"
+placeholder="Username atau Gmail"
+autocomplete="username"
+required>
+
+</div>
+
+<label>
+
+<i class="fa-solid fa-lock"></i>
+
+Kata Sandi
+
+</label>
+
+<div class="input-box password-box">
+
+<i class="fa-solid fa-lock"></i>
+
+<input
+type="password"
+id="password"
+placeholder="Masukkan kata sandi"
+autocomplete="current-password"
+required>
+
+<button
+type="button"
+class="toggle-password"
+data-target="password">
+
+<i class="fa-solid fa-eye"></i>
+
+</button>
+
+</div>
+
+<div class="turnstile-box">
+
+<p>
+
+<i class="fa-solid fa-shield-halved"></i>
+
+Verifikasi Cloudflare
+
+</p>
+
+<div
+class="cf-turnstile"
+data-sitekey="ISI_SITE_KEY_KAMU">
+</div>
+
+</div>
+
+<button
+type="submit"
+class="register-btn"
+id="loginBtn">
+
+<i class="fa-solid fa-right-to-bracket"></i>
+
+<span>Masuk</span>
+
+</button>
+
+</form>
+
+<div class="register-links">
+
+<p>
+
+<a href="forgot-password.html">
+
+<i class="fa-solid fa-key"></i>
+
+Lupa Kata Sandi?
+
+</a>
+
+</p>
+
+<p>
+
+Belum punya akun?
+
+<a href="register.html">
+
+<i class="fa-solid fa-user-plus"></i>
+
+Daftar
+
+</a>
+
+</p>
+
+<p>
+
+<a href="index.html">
+
+<i class="fa-solid fa-house"></i>
+
+Beranda
+
+</a>
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/database.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/login.js"></script>
+
+<script>
+
+fetch("components/footer.html")
+.then(r=>r.text())
+.then(html=>{
+
+document.getElementById("footer").innerHTML=html;
+
+if(typeof c2pFooterInit==="function"){
+c2pFooterInit();
+}
+
+});
+
+document.querySelectorAll(".toggle-password").forEach(btn=>{
+
+btn.onclick=function(){
+
+const input=document.getElementById(this.dataset.target);
+
+const icon=this.querySelector("i");
+
+if(input.type==="password"){
+
+input.type="text";
+
+icon.className="fa-solid fa-eye-slash";
+
+}else{
+
+input.type="password";
+
+icon.className="fa-solid fa-eye";
+
+}
+
+};
+
+});
+
+</script>
+
+</body>
+</html>
