@@ -13,6 +13,14 @@ const supabaseClient = supabase.createClient(
 );
 
 
+async function verifyPassword(password, hash){
+
+return bcrypt.compareSync(
+password,
+hash
+);
+
+}
 // ===============================
 // USERS
 // ===============================
@@ -201,16 +209,22 @@ async function getDashboardReport() {
 // ===============================
 
 window.database = {
-    getUsers,
-    getProfiles,
-    getLinks,
-    updateLink,
-    deleteLink,
-    getShortlinks,
-    getClicks,
-    getTransactions,
-    getWithdrawals,
-    getWithdraws,
-    getAnnouncements,
-    getDashboardReport
+
+supabase: supabaseClient,
+
+verifyPassword,
+
+getUsers,
+getProfiles,
+getLinks,
+updateLink,
+deleteLink,
+getShortlinks,
+getClicks,
+getTransactions,
+getWithdrawals,
+getWithdraws,
+getAnnouncements,
+getDashboardReport
+
 };
