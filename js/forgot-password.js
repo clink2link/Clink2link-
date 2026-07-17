@@ -80,8 +80,8 @@ window.location.origin+
 
 
 
-console.log(
-"RESET LINK:",
+await sendResetEmail(
+email,
 resetLink
 );
 
