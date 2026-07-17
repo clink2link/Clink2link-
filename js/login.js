@@ -158,42 +158,36 @@ UPDATE AKTIVITAS
 await database.supabase
 .from("users")
 .update({
-
-updated_at:new Date()
-
+    updated_at: new Date()
 })
 .eq(
-"id",
-data.id
+    "id",
+    data.id
 );
 
 
-
-window.location.href="dashboard.html";
-
+window.location.href = "dashboard.html";
 
 
 }catch(err){
 
-console.error(
-"LOGIN ERROR DETAIL:",
-err.message,
-err
-);
+    console.error(
+        "LOGIN ERROR DETAIL:",
+        err.message,
+        err
+    );
 
-alert(
-err.message
-);
-
-}
+    alert(
+        err.message || "Terjadi kesalahan sistem"
+    );
 
 
 }finally{
 
-btn.disabled=false;
+    btn.disabled = false;
 
-btn.innerHTML=
-'<i class="fa-solid fa-right-to-bracket"></i> <span>Masuk</span>';
+    btn.innerHTML =
+    '<i class="fa-solid fa-right-to-bracket"></i> <span>Masuk</span>';
 
 }
 
@@ -202,3 +196,8 @@ btn.innerHTML=
 
 
 });
+
+console.log("DATABASE:", database);
+console.log("SUPABASE:", database.supabase);
+console.log("VERIFY:", database.verifyPassword);
+console.log("BCRYPT:", typeof bcrypt);
