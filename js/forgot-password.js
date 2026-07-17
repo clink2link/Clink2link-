@@ -1,12 +1,10 @@
 document
-.getElementById("forgotForm")
-.addEventListener("submit", async function(e){
-
-e.preventDefault();
-
+.getElementById("resetBtn")
+.addEventListener("click", async function(){
 
 const email =
-document.getElementById("email").value
+document.getElementById("email")
+.value
 .trim()
 .toLowerCase();
 
@@ -22,9 +20,12 @@ return;
 try{
 
 
-const {data:user,error:userError}=await supabase
+const {
+data:user,
+error:userError
+}=await supabase
 .from("users")
-.select("id,email")
+.select("id,email,username")
 .eq("email",email)
 .single();
 
@@ -46,12 +47,14 @@ crypto.randomUUID();
 
 const expired =
 new Date(
-Date.now()+30*60*1000
+Date.now()+60*60*1000
 );
 
 
 
-const {error}=await supabase
+const {
+error
+}=await supabase
 .from("password_resets")
 .insert({
 
@@ -67,7 +70,10 @@ if(error){
 
 console.log(error);
 
-alert("Gagal membuat reset password");
+alert(
+"Gagal membuat reset password"
+);
+
 return;
 
 }
@@ -80,15 +86,29 @@ window.location.origin+
 
 
 
+const sent =
 await sendResetEmail(
 email,
+user.username,
 resetLink
 );
 
 
 
+if(!sent){
+
 alert(
-"Link reset berhasil dibuat. Cek console untuk link."
+"Gagal mengirim email"
+);
+
+return;
+
+}
+
+
+
+alert(
+"Link reset password sudah dikirim ke email kamu."
 );
 
 
