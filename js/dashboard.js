@@ -374,13 +374,21 @@ const reports=await database.getReports(authId);
 
 let labels=[];
 let views=[];
+let earnings=[];
 
 if(Array.isArray(reports)&&reports.length){
 
 const chartData=reports.slice(-7);
 
 labels=chartData.map(item=>item.report_date);
-views=chartData.map(item=>Number(item.views||0));
+
+views=chartData.map(item=>
+Number(item.views||0)
+);
+
+earnings=chartData.map(item=>
+Number(item.link_earnings||item.penghasilan||0)
+);
 
 }else{
 
@@ -395,6 +403,7 @@ labels=[
 ];
 
 views=[0,0,0,0,0,0,0];
+earnings=[0,0,0,0,0,0,0];
 
 }
 
@@ -409,29 +418,51 @@ intersect:false
 },
 
 plugins:{
+
 legend:{
 display:false
 },
+
 tooltip:{
 backgroundColor:"#0f172a",
 padding:12,
 titleFont:{size:13},
-bodyFont:{size:14}
+bodyFont:{size:14},
+callbacks:{
+label(context){
+
+const value=context.parsed.y||0;
+
+return context.dataset.label==="Pendapatan"
+? " Rp "+value.toLocaleString("id-ID")
+: " "+value.toLocaleString("id-ID");
+
 }
+}
+}
+
 },
 
 scales:{
+
 x:{
 grid:{
 display:false
 }
 },
+
 y:{
 beginAtZero:true,
 grid:{
 color:"rgba(148,163,184,.15)"
+},
+ticks:{
+callback(value){
+return value.toLocaleString("id-ID");
 }
 }
+}
+
 }
 
 };
@@ -449,11 +480,14 @@ new Chart(adsCanvas,{
 type:"line",
 
 data:{
+
 labels,
+
 datasets:[{
 
-label:"Views",
-data:views,
+label:"Pendapatan",
+
+data:earnings,
 
 borderColor:"#2563eb",
 backgroundColor:"rgba(37,99,235,.12)",
@@ -465,9 +499,12 @@ tension:.45,
 pointRadius:5,
 pointHoverRadius:8,
 pointBackgroundColor:"#2563eb",
-pointBorderWidth:2
+pointBorderWidth:2,
+
+pointHoverBorderWidth:3
 
 }]
+
 },
 
 options:commonOptions
@@ -480,37 +517,36 @@ options:commonOptions
 // SELL CHART
 // ===========================
 
-const sellCanvas=document.getElementById("sellChart");
+const sellCanvas = document.getElementById("sellChart");
 
-if(sellCanvas){
+if (sellCanvas) {
 
-new Chart(sellCanvas,{
+new Chart(sellCanvas, {
 
-type:"line",
+type: "line",
 
-data:{
+data: {
 labels,
-datasets:[{
+datasets: [{
+label: "Views",
+data: sellActive ? views : Array(views.length).fill(0),
 
-label:"Views",
-data:sellActive?views:[0,0,0,0,0,0,0],
+borderColor: "#8b5cf6",
+backgroundColor: "rgba(139,92,246,.12)",
 
-borderColor:"#8b5cf6",
-backgroundColor:"rgba(139,92,246,.12)",
+borderWidth: 3,
+fill: true,
+tension: .45,
 
-borderWidth:3,
-fill:true,
-tension:.45,
-
-pointRadius:5,
-pointHoverRadius:8,
-pointBackgroundColor:"#8b5cf6",
-pointBorderWidth:2
+pointRadius: 5,
+pointHoverRadius: 8,
+pointBackgroundColor: "#8b5cf6",
+pointBorderWidth: 2
 
 }]
 },
 
-options:commonOptions
+options: commonOptions
 
 });
 
@@ -525,17 +561,15 @@ const sellCpm=document.getElementById("sellCpm");
 
 if(adsCpm){
 adsCpm.textContent=
-Array.isArray(reports)&&reports.length
-? Number(reports[0].daily_cpm||0).toLocaleString("id-ID")
+reports.length
+? Number(reports[reports.length-1].daily_cpm||0).toLocaleString("id-ID")
 : "0";
 }
 
 if(sellCpm){
 sellCpm.textContent=
-sellActive
-? (Array.isArray(reports)&&reports.length
-? Number(reports[0].daily_cpm||0).toLocaleString("id-ID")
-: "0")
+sellActive&&reports.length
+? Number(reports[reports.length-1].daily_cpm||0).toLocaleString("id-ID")
 : "0";
 }
 
@@ -547,10 +581,9 @@ const reportTable=document.getElementById("reportTable");
 
 if(reportTable){
 
-if(Array.isArray(reports)&&reports.length){
+if(reports.length){
 
 reportTable.innerHTML=reports.map(row=>`
-
 <tr>
 <td>${row.report_date||"-"}</td>
 <td>${Number(row.views||0).toLocaleString("id-ID")}</td>
@@ -562,7 +595,6 @@ Rp ${Number(row.link_earnings||0).toLocaleString("id-ID")}
 Rp ${Number(row.penghasilan||0).toLocaleString("id-ID")}
 </td>
 </tr>
-
 `).join("");
 
 }else{
