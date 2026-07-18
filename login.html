@@ -60,7 +60,7 @@ Username atau Gmail
 type="text"
 id="login"
 placeholder="Username atau Gmail"
-autocomplete="username"
+autocomplete="email"
 required>
 
 </div>
@@ -174,11 +174,22 @@ Beranda
 <div id="footer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+
 <script src="js/database.js"></script>
 <script src="js/theme.js"></script>
 <script src="js/footer.js"></script>
 <script src="js/login.js"></script>
+<script>
+(async()=>{
+
+const {data:{session}}=await database.supabase.auth.getSession();
+
+if(session){
+window.location.href="dashboard.html";
+}
+
+})();
+</script>
 
 <script>
 
