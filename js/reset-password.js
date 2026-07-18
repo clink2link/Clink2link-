@@ -91,27 +91,32 @@ btn.innerHTML='<i class="fa-solid fa-check"></i> <span>Simpan Password</span>';
 });
 
 
-document.querySelectorAll(".toggle-password").forEach(btn=>{
+document.addEventListener("DOMContentLoaded", () => {
 
-btn.onclick=function(){
+    document.querySelectorAll(".toggle-password").forEach(btn => {
 
-const input=document.getElementById(this.dataset.target);
-const icon=this.querySelector("i");
+        btn.addEventListener("click", function (e) {
 
-if(input.type==="password"){
+            e.preventDefault();
 
-input.type="text";
-icon.className="fa-solid fa-eye-slash";
+            const input = document.getElementById(this.dataset.target);
 
-}else{
+            if (!input) return;
 
-input.type="password";
-icon.className="fa-solid fa-eye";
+            const icon = this.querySelector("i");
 
-}
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
 
-};
+        });
 
-});
+    });
 
 });
