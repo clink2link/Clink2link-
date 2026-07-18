@@ -382,12 +382,12 @@ const chartData=reports.slice(-7);
 
 labels=chartData.map(item=>item.report_date);
 
-views=chartData.map(item=>
-Number(item.views||0)
+views = chartData.map(item =>
+Number(item.ads_views || 0)
 );
 
-earnings=chartData.map(item=>
-Number(item.link_earnings||item.penghasilan||0)
+earnings = chartData.map(item =>
+Number(item.ads_earnings || 0)
 );
 
 }else{
@@ -556,46 +556,70 @@ options: commonOptions
 // CPM REPORT
 // ===========================
 
-const adsCpm=document.getElementById("adsCpm");
-const sellCpm=document.getElementById("sellCpm");
+const adsCpm = document.getElementById("adsCpm");
+const sellCpm = document.getElementById("sellCpm");
 
-if(adsCpm){
-adsCpm.textContent=
-reports.length
-? Number(reports[reports.length-1].daily_cpm||0).toLocaleString("id-ID")
-: "0";
+let lastReport = reports.length ? reports[reports.length - 1] : null;
+
+// CPM Ads
+if (adsCpm) {
+
+    let cpm = 0;
+
+    if (lastReport && Number(lastReport.ads_views) > 0) {
+        cpm = Math.round(
+            (Number(lastReport.ads_earnings) * 1000) /
+            Number(lastReport.ads_views)
+        );
+    }
+
+    adsCpm.textContent = cpm.toLocaleString("id-ID");
 }
 
-if(sellCpm){
-sellCpm.textContent=
-sellActive&&reports.length
-? Number(reports[reports.length-1].daily_cpm||0).toLocaleString("id-ID")
-: "0";
+// CPM Sell
+if (sellCpm) {
+
+    let cpm = 0;
+
+    if (
+        sellActive &&
+        lastReport &&
+        Number(lastReport.sell_views) > 0
+    ) {
+        cpm = Math.round(
+            (Number(lastReport.sell_earnings) * 1000) /
+            Number(lastReport.sell_views)
+        );
+    }
+
+    sellCpm.textContent = cpm.toLocaleString("id-ID");
 }
 
 // ===========================
 // REPORT TABLE
 // ===========================
 
-const reportTable=document.getElementById("reportTable");
+reportTable.innerHTML = reports.map(row => {
 
-if(reportTable){
+const cpm = row.ads_views > 0
+? Math.round((Number(row.ads_earnings || 0) / Number(row.ads_views)) * 1000)
+: 0;
 
-if(reports.length){
-
-reportTable.innerHTML=reports.map(row=>`
+return `
 <tr>
-<td>${row.report_date||"-"}</td>
-<td>${Number(row.views||0).toLocaleString("id-ID")}</td>
+<td>${row.report_date}</td>
+<td>${Number(row.ads_views || 0).toLocaleString("id-ID")}</td>
 <td class="earning">
-Rp ${Number(row.link_earnings||0).toLocaleString("id-ID")}
+Rp ${Number(row.ads_earnings || 0).toLocaleString("id-ID")}
 </td>
-<td>${Number(row.daily_cpm||0).toLocaleString("id-ID")}</td>
+<td>${cpm.toLocaleString("id-ID")}</td>
 <td>
-Rp ${Number(row.penghasilan||0).toLocaleString("id-ID")}
+Rp ${Number(row.ads_earnings || 0).toLocaleString("id-ID")}
 </td>
 </tr>
-`).join("");
+`;
+
+}).join("");
 
 }else{
 
