@@ -30,19 +30,20 @@ hash
 // AUTH
 // ===============================
 
-async function getUser() {
+async function getProfile(userId) {
 
-    const {
-        data: { user },
-        error
-    } = await supabaseClient.auth.getUser();
+    const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .maybeSingle();
 
     if (error) {
-        console.error("Get User Error:", error);
+        console.error("Get Profile Error:", error);
         return null;
     }
 
-    return user;
+    return data || null;
 
 }
 
