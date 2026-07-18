@@ -169,7 +169,7 @@ const shortenBtn=document.getElementById("shortenBtn");
 
 if(shortenBtn){
 
-shortenBtn.onclick=()=>{
+shortenBtn.onclick=async()=>{
 
 const url=document.getElementById("urlInput").value.trim();
 const type=document.getElementById("linkType").value;
@@ -186,10 +186,58 @@ alert("URL tidak valid.");
 return;
 }
 
-localStorage.setItem("create_url",url);
-
 if(type==="ads"){
-window.location.href="task1.html";
+
+try{
+
+const shortCode =
+Math.random().toString(36).substring(2,8);
+
+const {data,error}=await database.supabase
+.from("links")
+.insert({
+
+user_id:authId,
+destination_url:url,
+destination:url,
+
+type:"ads",
+link_type:"ads",
+
+short_code:shortCode,
+
+status:"active",
+
+views:0,
+clicks:0,
+earnings:0,
+
+total_views:0,
+total_clicks:0,
+total_earnings:0
+
+})
+.select()
+.single();
+
+
+if(error){
+
+console.error(error);
+alert("Gagal membuat link.");
+return;
+
+}
+
+
+window.location.href=
+"task1.html?code="+shortCode;
+}catch(e){
+
+console.error(e);
+alert("Error membuat link.")
+}
+
 return;
 }
 
