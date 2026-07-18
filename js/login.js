@@ -1,160 +1,174 @@
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", () => {
 
-const form=document.getElementById("loginForm");
+    const form = document.getElementById("loginForm");
 
-if(!form) return;
+    if (!form) return;
 
-function showAlert(message,type="error"){
+    function showAlert(message, type = "error") {
 
-const box=document.getElementById("loginAlert");
+        const box = document.getElementById("loginAlert");
 
-if(!box){
-alert(message);
-return;
-}
+        if (!box) {
+            alert(message);
+            return;
+        }
 
-box.innerHTML=
-`<div class="alert-box alert-${type}">${message}</div>`;
+        box.innerHTML = `<div class="alert-box alert-${type}">${message}</div>`;
 
-}
+    }
 
-form.addEventListener("submit",async(e)=>{
+    form.addEventListener("submit", async (e) => {
 
-e.preventDefault();
+        e.preventDefault();
 
-const login=document.getElementById("login").value.trim();
-const password=document.getElementById("password").value;
+        const login = document.getElementById("login").value.trim();
+        const password = document.getElementById("password").value;
 
-const btn=document.getElementById("loginBtn");
+        const btn = document.getElementById("loginBtn");
 
-if(!login || !password){
+        if (!login || !password) {
 
-showAlert("❌ Username/Gmail dan password wajib diisi.");
+            showAlert("❌ Username/Gmail dan password wajib diisi.");
+            return;
 
-return;
+        }
 
-}
+        const token = document.querySelector('[name="cf-turnstile-response"]')?.value;
 
-const token=document.querySelector('[name="cf-turnstile-response"]')?.value;
+        if (!token) {
 
-if(!token){
+            showAlert("❌ Silakan selesaikan verifikasi Cloudflare.");
+            return;
 
-showAlert("❌ Silakan selesaikan verifikasi Cloudflare.");
+        }
 
-return;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
 
-}
+        try {
 
-btn.disabled=true;
+            let email = login;
 
-btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+            // =======================
+            // LOGIN DENGAN USERNAME
+            // =======================
 
-try{
+            if (!login.includes("@")) {
 
-let email=login;
+                const { data: user, error } = await database.supabase
+                    .from("users")
+                    .select("email")
+                    .eq("username", login)
+                    .maybeSingle();
 
-// =======================
-// LOGIN PAKAI USERNAME
-// =======================
+                if (error) throw error;
 
-if(!login.includes("@")){
+                if (!user) {
 
-const {data:user,error}=await database.supabase
-.from("users")
-.select("email")
-.eq("username",login)
-.maybeSingle();
+                    showAlert("❌ Username tidak ditemukan.");
+                    return;
 
-if(error) throw error;
+                }
 
-if(!user){
+                email = user.email;
 
-showAlert("❌ Username tidak ditemukan.");
+            }
 
-return;
+            // =======================
+            // LOGIN AUTH
+            // =======================
 
-}
+            const { data, error } = await database.supabase.auth.signInWithPassword({
 
-email=user.email;
+                email,
+                password
 
-}
+            });
 
-// =======================
-// LOGIN AUTH
-// =======================
+            if (error) throw error;
 
-const {data,error}=await database.supabase.auth.signInWithPassword({
+            if (!data.user) {
 
-email:email,
-password:password
+                throw new Error("Login gagal.");
 
-});
+            }
 
-if(error) throw error;
+            // =======================
+            // USERS
+            // =======================
 
-// =======================
-// AMBIL DATA USER
-// =======================
+            const { data: userData, error: userError } = await database.supabase
+                .from("users")
+                .select("*")
+                .eq("id", data.user.id)
+                .single();
 
-const {data:userData,error:userError}=await database.supabase
-.from("users")
-.select("*")
-.eq("id",data.user.id)
-.single();
+            if (userError) throw userError;
 
-if(userError) throw userError;
+            // =======================
+            // PROFILE
+            // =======================
 
-if(userData.is_banned){
+            const { data: profile, error: profileError } = await database.supabase
+                .from("profiles")
+                .select("*")
+                .eq("id", data.user.id)
+                .single();
 
-await database.supabase.auth.signOut();
+            if (profileError) throw profileError;
 
-showAlert("🚫 Akun kamu telah diblokir.");
+            // =======================
+            // STATUS AKUN
+            // =======================
 
-return;
+            if (profile.status !== "active") {
 
-}
+                await database.supabase.auth.signOut();
 
-// UPDATE TERAKHIR LOGIN
+                showAlert("🚫 Akun kamu tidak aktif.");
 
-await database.supabase
-.from("users")
-.update({
-updated_at:new Date().toISOString()
-})
-.eq("id",userData.id);
+                return;
 
-// LOCAL STORAGE (opsional)
+            }
 
-localStorage.setItem("user_id",userData.id);
-localStorage.setItem("username",userData.username);
+            // =======================
+            // LOCAL STORAGE
+            // =======================
 
-showAlert(
-"✅ Login berhasil.",
-"success"
-);
+            localStorage.setItem("user_id", userData.id);
+            localStorage.setItem("username", userData.username);
 
-setTimeout(()=>{
+            // =======================
+            // LOGIN BERHASIL
+            // =======================
 
-window.location.href="dashboard.html";
+            showAlert(
+                "✅ Login berhasil.",
+                "success"
+            );
 
-},1000);
+            setTimeout(() => {
 
-}catch(err){
+                window.location.href = "dashboard.html";
 
-console.error(err);
+            }, 1000);
 
-showAlert(
-"❌ "+err.message
-);
+        } catch (err) {
 
-}finally{
+            console.error(err);
 
-btn.disabled=false;
+            showAlert(
+                "❌ " + (err.message || "Terjadi kesalahan.")
+            );
 
-btn.innerHTML='<i class="fa-solid fa-right-to-bracket"></i><span> Masuk</span>';
+        } finally {
 
-}
+            btn.disabled = false;
 
-});
+            btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i><span> Masuk</span>';
+
+        }
+
+    });
 
 });
