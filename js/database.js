@@ -1,22 +1,60 @@
 // js/database.js
 
 // ===============================
-// SUPABASE DATABASE CONFIG
+// SUPABASE CONFIG
 // ===============================
 
-const SUPABASE_URL = "https://lwjtagxkqeprjpupmadf.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3anRhZ3hrcWVwcmpwdXBtYWRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMDExNzYsImV4cCI6MjA5OTg3NzE3Nn0.Cg8TIBtOE4PHmnSybJtMqEoCFx-Qm4Kkl8exSOanTes";
+const SUPABASE_URL="https://lwjtagxkqeprjpupmadf.supabase.co";
 
-const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3anRhZ3hrcWVwcmpwdXBtYWRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMDExNzYsImV4cCI6MjA5OTg3NzE3Nn0.Cg8TIBtOE4PHmnSybJtMqEoCFx-Qm4Kkl8exSOanTes";
+
+
+const supabaseClient=supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
 );
 
 
-// Password verification sementara untuk login lama
-async function verifyPassword(password, hash){
+// ===============================
+// AUTH
+// ===============================
 
-if(typeof bcrypt === "undefined"){
+async function getUser(){
+
+const {
+data:{user},
+error
+}=await supabaseClient.auth.getUser();
+
+
+if(error){
+console.error("Get User Error:",error);
+return null;
+}
+
+return user;
+
+}
+
+
+async function logout(){
+
+const {error}=await supabaseClient.auth.signOut();
+
+if(error){
+console.error("Logout Error:",error);
+}
+
+}
+
+
+// ===============================
+// PASSWORD
+// ===============================
+
+async function verifyPassword(password,hash){
+
+if(typeof bcrypt==="undefined"){
 throw new Error("bcrypt belum dimuat");
 }
 
@@ -26,96 +64,67 @@ hash
 );
 
 }
-// ===============================
-// AUTH
-// ===============================
-
-async function getProfile(userId) {
-
-    const { data, error } = await supabaseClient
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .maybeSingle();
-
-    if (error) {
-        console.error("Get Profile Error:", error);
-        return null;
-    }
-
-    return data || null;
-
-}
 
 
 // ===============================
 // USERS
 // ===============================
 
-async function getUsers() {
+async function getUsers(){
 
-    const { data, error } = await supabaseClient
-        .from("users")
-        .select("*")
-        .order("id", { ascending: false });
+const {data,error}=await supabaseClient
+.from("users")
+.select("*")
+.order("id",{ascending:false});
 
-    if (error) {
-        console.error("Get Users Error:", error);
-        return [];
-    }
 
-    return data;
+if(error){
+console.error("Get Users Error:",error);
+return [];
+}
+
+return data;
 
 }
 
 
 // ===============================
-// PROFILES
+// PROFILE
 // ===============================
 
-async function getProfile(userId) {
+async function getProfile(userId){
 
-    const { data, error } = await supabaseClient
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
+const {data,error}=await supabaseClient
+.from("profiles")
+.select("*")
+.eq("id",userId)
+.maybeSingle();
 
-    if (error) {
-        console.error("Get Profile Error:", error);
-        return null;
-    }
 
-    return data;
+if(error){
+console.error("Get Profile Error:",error);
+return null;
+}
+
+return data;
 
 }
 
-async function getProfiles() {
 
-    const { data, error } = await supabaseClient
-        .from("profiles")
-        .select("*");
 
-    if (error) {
-        console.error("Get Profiles Error:", error);
-        return [];
-    }
+async function getProfiles(){
 
-    return data;
+const {data,error}=await supabaseClient
+.from("profiles")
+.select("*");
 
+
+if(error){
+console.error("Get Profiles Error:",error);
+return [];
 }
 
-// ===============================
-// AUTH
-// ===============================
-
-async function logout() {
-
-    const { error } = await supabaseClient.auth.signOut();
-
-    if (error) {
-        console.error("Logout Error:", error);
-    }
+return data;
 
 }
 
@@ -141,6 +150,8 @@ return [];
 return data;
 
 }
+
+
 async function updateLink(id,data){
 
 return supabaseClient
@@ -149,6 +160,7 @@ return supabaseClient
 .eq("id",id);
 
 }
+
 
 async function deleteLink(id){
 
@@ -164,15 +176,18 @@ return supabaseClient
 // SHORTLINKS
 // ===============================
 
-async function getShortlinks() {
-    const { data, error } = await supabaseClient
-        .from("shortlinks")
-        .select("*")
-        .order("id", { ascending: false });
+async function getShortlinks(){
 
-    if (error) throw error;
+const {data,error}=await supabaseClient
+.from("shortlinks")
+.select("*")
+.order("id",{ascending:false});
 
-    return data;
+
+if(error) throw error;
+
+return data;
+
 }
 
 
@@ -180,15 +195,18 @@ async function getShortlinks() {
 // CLICKS
 // ===============================
 
-async function getClicks() {
-    const { data, error } = await supabaseClient
-        .from("clicks")
-        .select("*")
-        .order("id", { ascending: false });
+async function getClicks(){
 
-    if (error) throw error;
+const {data,error}=await supabaseClient
+.from("clicks")
+.select("*")
+.order("id",{ascending:false});
 
-    return data;
+
+if(error) throw error;
+
+return data;
+
 }
 
 
@@ -196,15 +214,18 @@ async function getClicks() {
 // TRANSACTIONS
 // ===============================
 
-async function getTransactions() {
-    const { data, error } = await supabaseClient
-        .from("transactions")
-        .select("*")
-        .order("id", { ascending: false });
+async function getTransactions(){
 
-    if (error) throw error;
+const {data,error}=await supabaseClient
+.from("transactions")
+.select("*")
+.order("id",{ascending:false});
 
-    return data;
+
+if(error) throw error;
+
+return data;
+
 }
 
 
@@ -212,31 +233,33 @@ async function getTransactions() {
 // WITHDRAWALS
 // ===============================
 
-async function getWithdrawals() {
-    const { data, error } = await supabaseClient
-        .from("withdrawals")
-        .select("*")
-        .order("id", { ascending: false });
+async function getWithdrawals(){
 
-    if (error) throw error;
+const {data,error}=await supabaseClient
+.from("withdrawals")
+.select("*")
+.order("id",{ascending:false});
 
-    return data;
+
+if(error) throw error;
+
+return data;
+
 }
 
 
-// ===============================
-// WITHDRAWS
-// ===============================
+async function getWithdraws(){
 
-async function getWithdraws() {
-    const { data, error } = await supabaseClient
-        .from("withdraws")
-        .select("*")
-        .order("id", { ascending: false });
+const {data,error}=await supabaseClient
+.from("withdraws")
+.select("*")
+.order("id",{ascending:false});
 
-    if (error) throw error;
 
-    return data;
+if(error) throw error;
+
+return data;
+
 }
 
 
@@ -244,49 +267,56 @@ async function getWithdraws() {
 // ANNOUNCEMENTS
 // ===============================
 
-async function getAnnouncements() {
-    const { data, error } = await supabaseClient
-        .from("announcements")
-        .select("*")
-        .order("id", { ascending: false });
+async function getAnnouncements(){
 
-    if (error) throw error;
+const {data,error}=await supabaseClient
+.from("announcements")
+.select("*")
+.order("id",{ascending:false});
 
-    return data;
+
+if(error) throw error;
+
+return data;
+
 }
 
 
 // ===============================
-// DASHBOARD REPORT
+// REPORT
 // ===============================
 
-async function getDashboardReport() {
+async function getDashboardReport(){
 
-    const { data, error } = await supabaseClient
-        .from("daily_reports")
-        .select("*")
-        .order("report_date", { ascending: false });
+const {data,error}=await supabaseClient
+.from("dashboard_daily_report")
+.select("*")
+.order("report_date",{ascending:false});
 
-    if (error) throw error;
 
-    return data;
+if(error) throw error;
+
+return data;
 
 }
+
+
 
 async function getReports(userId){
 
-    const { data, error } = await supabaseClient
-        .from("daily_reports")
-        .select("*")
-        .eq("user_id", userId)
-        .order("report_date", { ascending: true });
+const {data,error}=await supabaseClient
+.from("dashboard_daily_report")
+.select("*")
+.eq("user_id",userId)
+.order("report_date",{ascending:true});
 
-    if(error){
-        console.error(error);
-        return [];
-    }
 
-    return data;
+if(error){
+console.error("Report Error:",error);
+return [];
+}
+
+return data;
 
 }
 
@@ -295,46 +325,39 @@ async function getReports(userId){
 // EXPORT
 // ===============================
 
-window.database = {
+window.database={
 
-    supabase: supabaseClient,
+supabase:supabaseClient,
 
-    verifyPassword,
+verifyPassword,
 
-    // AUTH
-    getUser,
-    logout,
+getUser,
+logout,
 
-    // PROFILE
-    getProfile,
-    getProfiles,
+getUsers,
 
-    // USERS
-    getUsers,
+getProfile,
+getProfiles,
 
-    // LINKS
-    getLinks,
-    updateLink,
-    deleteLink,
+getLinks,
+updateLink,
+deleteLink,
 
-    // SHORTLINKS
-    getShortlinks,
+getShortlinks,
 
-    // CLICKS
-    getClicks,
+getClicks,
 
-    // TRANSACTIONS
-    getTransactions,
+getTransactions,
 
-    // WITHDRAWALS
-    getWithdrawals,
-    getWithdraws,
+getWithdrawals,
+getWithdraws,
 
-    // ANNOUNCEMENTS
-    getAnnouncements,
+getAnnouncements,
 
-    // REPORTS
-    getDashboardReport,
-    getReports
+getDashboardReport,
+getReports
 
 };
+
+
+console.log("DATABASE JS READY");
