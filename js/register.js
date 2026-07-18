@@ -106,11 +106,13 @@ form.addEventListener("submit", async (e) => {
         // CEK USERNAME
         // =====================
 
-        const { data: usernameExists } = await database.supabase
+        const { data: usernameExists, error: checkError } = await database.supabase
             .from("users")
             .select("id")
             .eq("username", userName)
             .maybeSingle();
+
+        if (checkError) throw checkError;
 
         if (usernameExists) {
             showRegisterAlert("❌ Username sudah digunakan.");
@@ -122,10 +124,8 @@ form.addEventListener("submit", async (e) => {
         // =====================
 
         const { data, error } = await database.supabase.auth.signUp({
-
             email: userEmail,
             password: userPassword
-
         });
 
         if (error) throw error;
@@ -140,32 +140,51 @@ form.addEventListener("submit", async (e) => {
         // INSERT USERS
         // =====================
 
-        const { error: insertError } = await database.supabase
+        const { error: userError } = await database.supabase
             .from("users")
+            .insert({
+                id: authUser.id,
+                username: userName,
+                email: userEmail
+            });
+
+        if (userError) throw userError;
+
+        // =====================
+        // INSERT PROFILES
+        // =====================
+
+        const { error: profileError } = await database.supabase
+            .from("profiles")
             .insert({
 
                 id: authUser.id,
 
                 username: userName,
-
-                email: userEmail,
+                full_name: userName,
+                photo_url: null,
 
                 balance: 0,
-                total_ads: 0,
-                total_sell: 0,
+
+                ads_earning_today: 0,
+                ads_earning_month: 0,
+                ads_earning_total: 0,
+
+                sell_earning_today: 0,
+                sell_earning_month: 0,
+                sell_earning_total: 0,
+
                 total_views: 0,
                 total_clicks: 0,
 
-                sell_unlocked: false,
                 withdraw_count: 0,
+                sell_link_enabled: false,
 
-                is_admin: false,
-                is_banned: false,
-                email_verified: false
+                status: "active"
 
             });
 
-        if (insertError) throw insertError;
+        if (profileError) throw profileError;
 
         showRegisterAlert(
             "✅ Registrasi berhasil. Silakan cek email untuk verifikasi.",
@@ -173,9 +192,7 @@ form.addEventListener("submit", async (e) => {
         );
 
         setTimeout(() => {
-
             window.location.href = "login.html";
-
         }, 2000);
 
     } catch (err) {
@@ -183,13 +200,12 @@ form.addEventListener("submit", async (e) => {
         console.error(err);
 
         showRegisterAlert(
-            "❌ " + err.message
+            "❌ " + (err.message || "Terjadi kesalahan.")
         );
 
     } finally {
 
         btn.disabled = false;
-
         btn.innerHTML = '<i class="fa-solid fa-user-plus"></i><span> Daftar</span>';
 
     }
