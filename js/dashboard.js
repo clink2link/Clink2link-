@@ -160,29 +160,46 @@ sellInfo.innerHTML=
 }
 
 }
+setupCreateLink(
+authId,
+sellActive
+);
 
 // ===========================
 // CREATE LINK
 // ===========================
 
+function setupCreateLink(authId,sellActive){
+
 const shortenBtn=document.getElementById("shortenBtn");
 
-if(shortenBtn){
+if(!shortenBtn){
+console.error("Tombol shortenBtn tidak ditemukan");
+return;
+}
 
-shortenBtn.onclick=async()=>{
+shortenBtn.addEventListener("click",async()=>{
 
-const url=document.getElementById("urlInput").value.trim();
-const type=document.getElementById("linkType").value;
+const urlInput=document.getElementById("urlInput");
+const linkType=document.getElementById("linkType");
+
+if(!urlInput||!linkType){
+alert("Form link tidak ditemukan");
+return;
+}
+
+const url=urlInput.value.trim();
+const type=linkType.value;
 
 if(!url){
-alert("Masukkan URL terlebih dahulu.");
+alert("Masukkan URL terlebih dahulu");
 return;
 }
 
 try{
 new URL(url);
 }catch{
-alert("URL tidak valid.");
+alert("URL tidak valid");
 return;
 }
 
@@ -190,52 +207,43 @@ if(type==="ads"){
 
 try{
 
-const shortCode =
-Math.random().toString(36).substring(2,8);
+const shortCode=crypto.randomUUID()
+.replace(/-/g,"")
+.substring(0,8);
 
 const {data,error}=await database.supabase
 .from("links")
 .insert({
-
 user_id:authId,
 destination_url:url,
 destination:url,
-
 type:"ads",
 link_type:"ads",
-
 short_code:shortCode,
-
 status:"active",
-
 views:0,
 clicks:0,
-earnings:0,
-
 total_views:0,
 total_clicks:0,
+earnings:0,
 total_earnings:0
-
 })
 .select()
 .single();
 
-
 if(error){
-
-console.error(error);
-alert("Gagal membuat link.");
+console.error("SUPABASE ERROR:",error);
+alert(error.message);
 return;
-
 }
 
+console.log("LINK BERHASIL:",data);
 
-window.location.href=
-"task1.html?code="+shortCode;
-}catch(e){
+window.location.href="task1.html?code="+shortCode;
 
-console.error(e);
-alert("Error membuat link.")
+}catch(err){
+console.error("CREATE LINK ERROR:",err);
+alert("Gagal membuat link");
 }
 
 return;
@@ -244,16 +252,15 @@ return;
 if(type==="sell"){
 
 if(!sellActive){
-alert("Sell Link belum tersedia. Selesaikan minimal 1x Withdraw yang berhasil.");
+alert("Sell Link belum aktif");
 return;
 }
 
 window.location.href="bayargg.html";
-return;
 
 }
 
-};
+});
 
 }
 
