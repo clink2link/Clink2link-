@@ -34,15 +34,10 @@ btn.innerHTML=
 try{
 
 
-const {error}=await supabase.auth
-.resetPasswordForEmail(
+const {error}=await supabase.auth.resetPasswordForEmail(
 email,
 {
-
-redirectTo:
-window.location.origin+
-"/reset-password.html"
-
+redirectTo:"https://click2pay.my.id/reset-password.html"
 }
 );
 
