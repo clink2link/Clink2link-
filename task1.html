@@ -1,435 +1,169 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Task 1 • Click2Pay</title>
 
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/theme.css">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Inter",sans-serif;}
+body{background:#f4f8ff;color:#111827;line-height:1.7;overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+img{max-width:100%;display:block;}
+.container{width:min(1180px,94%);margin:auto;}
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:"Inter",sans-serif;
+.navbar{position:sticky;top:0;z-index:999;background:rgba(255,255,255,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.06);}
+.nav-inner{display:flex;justify-content:space-between;align-items:center;padding:16px 0;gap:20px;}
+.logo{display:flex;align-items:center;gap:12px;font-size:25px;font-weight:800;color:#2563eb;}
+.logo i{font-size:28px;}
+.nav-right{display:flex;gap:12px;}
+.btn{padding:12px 24px;border:none;border-radius:14px;cursor:pointer;font-weight:700;transition:.25s;}
+.btn-login{background:#fff;color:#2563eb;border:1px solid #dbeafe;}
+.btn-register{background:#2563eb;color:#fff;box-shadow:0 15px 30px rgba(37,99,235,.25);}
+.btn:hover{transform:translateY(-2px);}
+
+.hero{padding:70px 0;}
+.hero-grid{display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:center;}
+.hero-box,.side-card{background:#fff;border-radius:28px;box-shadow:0 18px 45px rgba(15,23,42,.08);}
+.hero-box{padding:50px;}
+.side-card{padding:28px;}
+.hero h1{font-size:46px;font-weight:800;line-height:1.2;margin-bottom:20px;}
+.hero p{font-size:17px;color:#64748b;margin-bottom:30px;}
+.download-box{margin-top:25px;}
+
+#downloadBtn,#scrollBtn{width:100%;padding:18px;border:none;border-radius:18px;font-size:18px;font-weight:700;cursor:pointer;}
+#downloadBtn{background:#2563eb;color:#fff;box-shadow:0 15px 35px rgba(37,99,235,.25);}
+#downloadBtn:hover{background:#1d4ed8;}
+#scrollBtn{display:none;margin-top:20px;background:#22c55e;color:#fff;}
+
+.progress-area{display:none;margin-top:25px;}
+.progress-bar{height:18px;background:#dbeafe;border-radius:30px;overflow:hidden;}
+.progress-fill{width:0;height:100%;background:linear-gradient(90deg,#2563eb,#60a5fa);}
+.progress-text{text-align:center;margin-top:12px;font-size:18px;font-weight:700;}
+
+.side-card h3{font-size:22px;margin-bottom:18px;}
+.side-card ul{padding-left:18px;color:#64748b;}
+.side-card li{margin-bottom:10px;}
+
+.ad-box{margin-top:25px;height:250px;border:2px dashed #60a5fa;border-radius:18px;background:#eef5ff;display:flex;align-items:center;justify-content:center;color:#2563eb;font-weight:700;text-align:center;padding:20px;}
+
+@media(max-width:991px){
+.hero-grid{grid-template-columns:1fr;}
+.hero-box{padding:35px;}
+.hero h1{font-size:36px;}
+.side-card{order:-1;}
 }
 
-body{
-
-background:linear-gradient(
-135deg,
-#eef5ff,
-#f8fbff
-);
-
-color:#0f172a;
-
-min-height:100vh;
-
+@media(max-width:600px){
+.nav-inner{flex-direction:column;}
+.nav-right{width:100%;}
+.btn{flex:1;}
+.hero{padding:35px 0;}
+.hero-box{padding:24px;}
+.hero h1{font-size:30px;}
+.hero p{font-size:15px;}
 }
-
-a{
-
-text-decoration:none;
-
-}
-
-.container{
-
-width:min(1150px,95%);
-margin:auto;
-
-}
-
-/* ===========================
-NAVBAR
-=========================== */
-
-.navbar{
-
-position:sticky;
-top:0;
-z-index:999;
-
-backdrop-filter:blur(18px);
-
-background:rgba(255,255,255,.72);
-
-border-bottom:1px solid rgba(255,255,255,.5);
-
-}
-
-.nav-inner{
-
-display:flex;
-align-items:center;
-justify-content:space-between;
-
-padding:18px 0;
-
-}
-
-.logo{
-
-display:flex;
-align-items:center;
-gap:12px;
-
-font-size:24px;
-font-weight:800;
-
-color:#2563eb;
-
-}
-
-.logo i{
-
-font-size:28px;
-
-}
-
-.nav-right{
-
-display:flex;
-gap:12px;
-
-}
-
-.btn{
-
-padding:12px 22px;
-
-border:none;
-border-radius:14px;
-
-cursor:pointer;
-
-font-weight:700;
-
-transition:.25s;
-
-}
-
-.btn-login{
-
-background:#ffffff;
-
-color:#2563eb;
-
-border:1px solid rgba(37,99,235,.2);
-
-}
-
-.btn-login:hover{
-
-transform:translateY(-2px);
-
-}
-
-.btn-register{
-
-background:#2563eb;
-color:#fff;
-
-box-shadow:0 12px 30px rgba(37,99,235,.25);
-
-}
-
-.btn-register:hover{
-
-background:#1d4ed8;
-
-transform:translateY(-2px);
-
-}
-
-/* ===========================
-HERO
-=========================== */
-
-.hero{
-
-padding:70px 0 60px;
-
-text-align:center;
-
-}
-
-.hero-box{
-
-background:rgba(255,255,255,.75);
-
-backdrop-filter:blur(18px);
-
-border-radius:28px;
-
-padding:50px;
-
-box-shadow:
-0 15px 50px rgba(15,23,42,.08);
-
-}
-
-.hero h1{
-
-font-size:42px;
-
-font-weight:800;
-
-margin-bottom:18px;
-
-}
-
-.hero p{
-
-max-width:720px;
-
-margin:auto;
-
-line-height:1.8;
-
-font-size:16px;
-
-color:#64748b;
-
-}
-
-.download-box{
-
-margin-top:40px;
-
-}
-
-#downloadBtn{
-
-background:#2563eb;
-
-color:#fff;
-
-padding:18px 55px;
-
-font-size:18px;
-
-border:none;
-
-border-radius:18px;
-
-cursor:pointer;
-
-font-weight:700;
-
-transition:.3s;
-
-box-shadow:
-0 15px 35px rgba(37,99,235,.28);
-
-}
-
-#downloadBtn:hover{
-
-transform:translateY(-3px);
-
-background:#1d4ed8;
-
-}
-
-.progress-area{
-
-display:none;
-
-margin-top:35px;
-
-}
-
-.progress-bar{
-
-width:100%;
-
-height:18px;
-
-border-radius:30px;
-
-overflow:hidden;
-
-background:#dbeafe;
-
-}
-
-.progress-fill{
-
-width:0%;
-
-height:100%;
-
-background:linear-gradient(
-90deg,
-#2563eb,
-#3b82f6
-);
-
-transition:.1s;
-
-}
-
-.progress-text{
-
-margin-top:16px;
-
-font-weight:700;
-
-font-size:18px;
-
-}
-
-#scrollBtn{
-
-display:none;
-
-margin-top:35px;
-
-background:#22c55e;
-
-color:#fff;
-
-padding:16px 40px;
-
-border:none;
-
-border-radius:16px;
-
-font-weight:700;
-
-cursor:pointer;
-
-}
-
-#scrollBtn:hover{
-
-background:#16a34a;
-
-}
-
 </style>
-
 </head>
 
 <body>
 
-<!-- ===========================
-NAVBAR
-=========================== -->
-
 <header class="navbar">
-
 <div class="container nav-inner">
-
-<a href="/" class="logo">
-
-<i class="fa-solid fa-link"></i>
-
-<span>Click2Pay</span>
-
-</a>
-
+<a href="/" class="logo"><i class="fa-solid fa-link"></i><span>Click2Pay</span></a>
 <div class="nav-right">
-
-<button
-class="btn btn-login"
-onclick="location.href='login.html'">
-
-Login
-
-</button>
-
-<button
-class="btn btn-register"
-onclick="location.href='register.html'">
-
-Daftar
-
-</button>
-
+<button class="btn btn-login" onclick="location.href='login.html'">Login</button>
+<button class="btn btn-register" onclick="location.href='register.html'">Daftar</button>
 </div>
-
 </div>
-
 </header>
 
-<!-- ===========================
-HERO
-=========================== -->
-
 <section class="hero">
+<div class="container">
+<div class="hero-grid">
+
+<div class="hero-box">
+<h1>Download File Gratis</h1>
+<p>Silakan download file terlebih dahulu. Setelah proses selesai kamu dapat melanjutkan ke tahap berikutnya untuk mendapatkan link download.</p>
+
+<div class="download-box">
+<button id="downloadBtn"><i class="fa-solid fa-download"></i> Download Sekarang</button>
+
+<div class="progress-area" id="progressArea">
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="progress-text" id="progressText">0%</div>
+</div>
+
+<button id="scrollBtn"><i class="fa-solid fa-arrow-down"></i> Lanjut ke Bawah</button>
+</div>
+</div>
+
+<div class="side-card">
+<h3>Informasi</h3>
+<ul>
+<li>✔ Download aman tanpa virus.</li>
+<li>✔ File tersedia 24 jam.</li>
+<li>✔ Kecepatan tinggi.</li>
+<li>✔ Gratis tanpa biaya.</li>
+<li>✔ Klik tombol download untuk memulai.</li>
+</ul>
+
+<div class="ad-box">
+<!-- Script Banner Adsterra 300x250 di sini -->
+TEMPAT IKLAN ADSTERRA 300×250
+</div>
+
+</div>
+
+</div>
+</div>
+</section>
+
+<section id="linkSection" class="section">
 
 <div class="container">
 
 <div class="hero-box">
 
-<h1>
+<h2 style="font-size:34px;font-weight:800;text-align:center;margin-bottom:15px;">
+Generate Link
+</h2>
 
-Download File Gratis
-
-</h1>
-
-<p>
-
-Silakan tekan tombol download di bawah.
-Setelah proses selesai kamu akan mendapatkan akses menuju halaman berikutnya.
-
+<p style="text-align:center;color:#64748b;max-width:760px;margin:auto auto 35px;">
+Tekan tombol di bawah untuk memproses link. Mohon tunggu hingga proses selesai sebelum melanjutkan ke tahap berikutnya.
 </p>
 
-<div class="download-box">
+<div style="max-width:700px;margin:auto;">
 
-<button id="downloadBtn">
-
-<i class="fa-solid fa-download"></i>
-
-Download
-
+<button id="linkBtn" style="width:100%;padding:18px;border:none;border-radius:18px;background:#2563eb;color:#fff;font-size:19px;font-weight:700;cursor:pointer;">
+<i class="fa-solid fa-link"></i>
+Generate Link
 </button>
 
-<div class="progress-area" id="progressArea">
+<div id="loadingArea" style="display:none;text-align:center;padding:45px 0;">
 
-<div class="progress-bar">
+<i class="fa-solid fa-spinner fa-spin" style="font-size:48px;color:#2563eb;"></i>
 
-<div
-class="progress-fill"
-id="progressFill">
+<h3 style="margin-top:20px;">
+Memproses Link...
+</h3>
 
-</div>
-
-</div>
-
-<div
-class="progress-text"
-id="progressText">
-
-0%
+<p id="loadingSecond" style="margin-top:10px;color:#64748b;">
+7 Detik
+</p>
 
 </div>
 
-</div>
-
-<button id="scrollBtn">
-
-<i class="fa-solid fa-arrow-down"></i>
-
-Scroll Down
-
+<button id="nextBtn" style="display:none;width:100%;padding:18px;border:none;border-radius:18px;background:#22c55e;color:#fff;font-size:19px;font-weight:700;cursor:pointer;">
+<i class="fa-solid fa-download"></i>
+Lanjut Task 2
 </button>
 
 </div>
@@ -439,172 +173,93 @@ Scroll Down
 </div>
 
 </section>
-<!-- ===========================
-GET LINK SECTION
-=========================== -->
 
-<section
-id="linkSection"
-style="padding:90px 0;">
+<section class="section">
 
 <div class="container">
 
-<div
-style="
-background:rgba(255,255,255,.75);
-backdrop-filter:blur(18px);
-border-radius:28px;
-padding:55px;
-box-shadow:0 15px 45px rgba(15,23,42,.08);
-text-align:center;
-">
+<div class="hero-grid">
 
-<h2
-style="
-font-size:34px;
-font-weight:800;
-margin-bottom:18px;
-">
+<div class="hero-box">
 
-Generate Link
-
+<h2 style="margin-bottom:20px;">
+Artikel
 </h2>
 
-<p
-style="
-max-width:700px;
-margin:auto;
-line-height:1.8;
-color:#64748b;
-margin-bottom:40px;
-">
-
-Klik tombol di bawah untuk memproses link.
-Mohon tunggu hingga proses selesai sebelum melanjutkan.
-
+<p>
+Click2Pay menyediakan layanan shortlink modern dengan proses cepat, aman, dan mudah digunakan. Semua proses dibuat sederhana sehingga pengguna dapat membuat link hanya dalam beberapa langkah.
 </p>
 
-<button
-id="linkBtn"
-style="
-background:#2563eb;
-color:#fff;
-border:none;
-padding:18px 55px;
-border-radius:18px;
-font-size:18px;
-font-weight:700;
-cursor:pointer;
-box-shadow:0 15px 35px rgba(37,99,235,.25);
-">
+<br>
 
-<i class="fa-solid fa-link"></i>
-
-Link
-
-</button>
-
-<div
-id="loadingArea"
-style="
-display:none;
-margin-top:35px;
-">
-
-<i
-class="fa-solid fa-spinner fa-spin"
-style="
-font-size:45px;
-color:#2563eb;
-margin-bottom:15px;
-"></i>
-
-<div
-style="
-font-size:18px;
-font-weight:700;
-">
-
-Memproses Link...
+<p>
+Pastikan menggunakan URL yang valid dan jangan membagikan link yang melanggar kebijakan. Setelah proses selesai Anda dapat melanjutkan ke halaman berikutnya untuk menyelesaikan semua tahapan.
+</p>
 
 </div>
 
-<div
-id="loadingSecond"
-style="
-margin-top:10px;
-color:#64748b;
-">
+<div class="side-card">
 
-7 Detik
+<h3>
+Sponsor
+</h3>
+
+<div class="ad-box">
+
+<!-- Adsterra Banner 300x250 -->
+
+TEMPAT IKLAN ADSTERRA
+
+</div>
+
+<div class="ad-box" style="height:600px;margin-top:20px;">
+
+<!-- Adsterra Native / Social Bar -->
+
+TEMPAT IKLAN ADSTERRA 300x600
 
 </div>
 
 </div>
-
-<button
-id="nextBtn"
-style="
-display:none;
-margin-top:35px;
-background:#22c55e;
-color:white;
-border:none;
-padding:18px 55px;
-border-radius:18px;
-font-size:18px;
-font-weight:700;
-cursor:pointer;
-box-shadow:0 15px 35px rgba(34,197,94,.28);
-">
-
-<i class="fa-solid fa-download"></i>
-
-Download
-
-</button>
 
 </div>
 
 </div>
 
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/database.js"></script>
 
 <script>
 
 const code=new URLSearchParams(location.search).get("code")||"";
 
 const downloadBtn=document.getElementById("downloadBtn");
-
 const progressArea=document.getElementById("progressArea");
-
 const progressFill=document.getElementById("progressFill");
-
 const progressText=document.getElementById("progressText");
-
 const scrollBtn=document.getElementById("scrollBtn");
 
 downloadBtn.onclick=function(){
 
 downloadBtn.disabled=true;
-
 progressArea.style.display="block";
 
-let percent=0;
+let p=0;
 
 const timer=setInterval(()=>{
 
-percent++;
+p++;
 
-progressFill.style.width=percent+"%";
+progressFill.style.width=p+"%";
+progressText.textContent=p+"%";
 
-progressText.innerHTML=percent+"%";
-
-if(percent>=100){
+if(p>=100){
 
 clearInterval(timer);
 
-scrollBtn.style.display="inline-block";
+scrollBtn.style.display="block";
 
 }
 
@@ -614,50 +269,39 @@ scrollBtn.style.display="inline-block";
 
 scrollBtn.onclick=function(){
 
-document.getElementById("linkSection")
-.scrollIntoView({
-
+document.getElementById("linkSection").scrollIntoView({
 behavior:"smooth"
-
 });
 
 };
 
 const linkBtn=document.getElementById("linkBtn");
-
 const loadingArea=document.getElementById("loadingArea");
-
 const loadingSecond=document.getElementById("loadingSecond");
-
 const nextBtn=document.getElementById("nextBtn");
 
 linkBtn.onclick=function(){
 
 linkBtn.style.display="none";
-
 loadingArea.style.display="block";
 
-let second=7;
+let s=7;
 
-loadingSecond.innerHTML=
-
-second+" Detik";
+loadingSecond.textContent=s+" Detik";
 
 const timer=setInterval(()=>{
 
-second--;
+s--;
 
-loadingSecond.innerHTML=
+loadingSecond.textContent=s+" Detik";
 
-second+" Detik";
-
-if(second<=0){
+if(s<=0){
 
 clearInterval(timer);
 
 loadingArea.style.display="none";
 
-nextBtn.style.display="inline-block";
+nextBtn.style.display="block";
 
 }
 
@@ -665,11 +309,72 @@ nextBtn.style.display="inline-block";
 
 };
 
-nextBtn.onclick=function(){
+nextBtn.onclick=async function(){
 
-window.location.href=
+try{
 
-"task2.html?code="+encodeURIComponent(code);
+const user=await database.getUser();
+
+if(!user){
+alert("Silakan login.");
+return;
+}
+
+const url=localStorage.getItem("create_url");
+
+if(!url){
+alert("URL tidak ditemukan.");
+return;
+}
+
+const shortCode=Math.random().toString(36).substring(2,8);
+
+const advanced=JSON.parse(localStorage.getItem("advanced_settings")||"{}");
+
+const{error}=await database.supabase.from("links").insert({
+
+user_id:user.id,
+type:"ads",
+title:"",
+alias:advanced.alias||null,
+destination:url,
+destination_url:url,
+campaign:advanced.campaign||null,
+campaign_name:advanced.campaign||null,
+device:advanced.device||"all",
+target_device:advanced.device||"all",
+custom_alias:advanced.alias||null,
+expired_at:advanced.expired==="never"?null:advanced.expired,
+status:"active",
+views:0,
+clicks:0,
+earnings:0,
+total_views:0,
+total_clicks:0,
+total_earnings:0,
+short_code:shortCode,
+link_type:"ads"
+
+});
+
+if(error){
+
+alert(error.message);
+return;
+
+}
+
+localStorage.removeItem("create_url");
+
+window.location.href="task2.html?code="+shortCode;
+
+}catch(e){
+
+console.error(e);
+
+alert("Gagal membuat link.");
+
+}
 
 };
 
@@ -678,4 +383,3 @@ window.location.href=
 </body>
 
 </html>
-  
