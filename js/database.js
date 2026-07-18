@@ -357,6 +357,5 @@ window.database = {
     getReports
 };
 
-
 // TEST
-console.log("DATABASE JS READY", window.database);ASE JS READY");
+console.log("DATABASE JS READY", window.database);
