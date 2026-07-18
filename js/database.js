@@ -27,18 +27,44 @@ hash
 
 }
 // ===============================
+// AUTH
+// ===============================
+
+async function getUser() {
+
+    const {
+        data: { user },
+        error
+    } = await supabaseClient.auth.getUser();
+
+    if (error) {
+        console.error("Get User Error:", error);
+        return null;
+    }
+
+    return user;
+
+}
+
+
+// ===============================
 // USERS
 // ===============================
 
 async function getUsers() {
+
     const { data, error } = await supabaseClient
         .from("users")
         .select("*")
         .order("id", { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+        console.error("Get Users Error:", error);
+        return [];
+    }
 
     return data;
+
 }
 
 
@@ -46,14 +72,50 @@ async function getUsers() {
 // PROFILES
 // ===============================
 
+async function getProfile(userId) {
+
+    const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+    if (error) {
+        console.error("Get Profile Error:", error);
+        return null;
+    }
+
+    return data;
+
+}
+
 async function getProfiles() {
+
     const { data, error } = await supabaseClient
         .from("profiles")
         .select("*");
 
-    if (error) throw error;
+    if (error) {
+        console.error("Get Profiles Error:", error);
+        return [];
+    }
 
     return data;
+
+}
+
+// ===============================
+// AUTH
+// ===============================
+
+async function logout() {
+
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+        console.error("Logout Error:", error);
+    }
+
 }
 
 
@@ -234,22 +296,44 @@ async function getReports(userId){
 
 window.database = {
 
-supabase: supabaseClient,
+    supabase: supabaseClient,
 
-verifyPassword,
+    verifyPassword,
 
-getUsers,
-getProfiles,
-getLinks,
-updateLink,
-deleteLink,
-getShortlinks,
-getClicks,
-getTransactions,
-getWithdrawals,
-getWithdraws,
-getAnnouncements,
-getDashboardReport,
-getReports
+    // AUTH
+    getUser,
+    logout,
+
+    // PROFILE
+    getProfile,
+    getProfiles,
+
+    // USERS
+    getUsers,
+
+    // LINKS
+    getLinks,
+    updateLink,
+    deleteLink,
+
+    // SHORTLINKS
+    getShortlinks,
+
+    // CLICKS
+    getClicks,
+
+    // TRANSACTIONS
+    getTransactions,
+
+    // WITHDRAWALS
+    getWithdrawals,
+    getWithdraws,
+
+    // ANNOUNCEMENTS
+    getAnnouncements,
+
+    // REPORTS
+    getDashboardReport,
+    getReports
 
 };
