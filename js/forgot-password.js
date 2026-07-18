@@ -1,12 +1,19 @@
+// js/forgot-password.js
+
 console.log("FORGOT PASSWORD JS LOADED");
 
 
-const btn=document.getElementById("resetBtn");
+document.addEventListener("DOMContentLoaded",()=>{
+
+
+const btn =
+document.getElementById("resetBtn");
 
 
 if(!btn){
 
 console.error("resetBtn tidak ditemukan");
+return;
 
 }
 
@@ -15,8 +22,8 @@ console.error("resetBtn tidak ditemukan");
 btn.addEventListener("click",async()=>{
 
 
-const email=document
-.getElementById("email")
+const email =
+document.getElementById("email")
 .value
 .trim()
 .toLowerCase();
@@ -25,7 +32,10 @@ const email=document
 
 if(!email){
 
-alert("Masukkan email terlebih dahulu");
+alert(
+"❌ Masukkan email terlebih dahulu."
+);
+
 return;
 
 }
@@ -34,7 +44,8 @@ return;
 
 btn.disabled=true;
 
-btn.innerHTML=
+
+btn.innerHTML =
 '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
 
 
@@ -44,19 +55,71 @@ try{
 
 if(!window.database){
 
-throw new Error("Database belum dimuat");
+throw new Error(
+"Database belum dimuat."
+);
 
 }
 
 
 
-const {error}=await database.supabase.auth.resetPasswordForEmail(
+// ==========================
+// CEK EMAIL USERS
+// ==========================
+
+
+const {
+data:user,
+error:userError
+
+}=await database.supabase
+.from("users")
+.select("id,email")
+.eq("email",email)
+.maybeSingle();
+
+
+
+if(userError){
+
+throw userError;
+
+}
+
+
+
+if(!user){
+
+
+alert(
+"❌ Email belum terdaftar."
+);
+
+
+return;
+
+
+}
+
+
+
+// ==========================
+// KIRIM RESET EMAIL
+// ==========================
+
+
+const {
+error
+
+}=await database.supabase.auth
+.resetPasswordForEmail(
 
 email,
 
 {
 
 redirectTo:
+
 "https://click2pay.my.id/reset-password.html"
 
 }
@@ -67,26 +130,14 @@ redirectTo:
 
 if(error){
 
-console.error(
-"RESET PASSWORD ERROR:",
-error
-);
-
-
-alert(
-"Gagal mengirim link reset:\n"+
-error.message
-);
-
-
-return;
+throw error;
 
 }
 
 
 
 alert(
-"✅ Link reset password sudah dikirim ke email kamu."
+"✅ Link reset password sudah dikirim ke Gmail."
 );
 
 
@@ -95,14 +146,13 @@ alert(
 
 
 console.error(
-"SYSTEM ERROR:",
+"RESET PASSWORD ERROR:",
 err
 );
 
 
 alert(
-"Terjadi kesalahan sistem:\n"+
-err.message
+"❌ "+err.message
 );
 
 
@@ -113,12 +163,15 @@ err.message
 btn.disabled=false;
 
 
-btn.innerHTML=
+btn.innerHTML =
 '<i class="fa-solid fa-paper-plane"></i> <span>Kirim Link Reset</span>';
+
 
 
 }
 
+
+});
 
 
 });
