@@ -1,220 +1,514 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded",()=>{
 
-    const form = document.getElementById("loginForm");
-    if (!form) return;
+const form=document.getElementById("loginForm");
 
-    const btn = document.getElementById("loginBtn");
+if(!form) return;
 
-    function showAlert(message, type = "error") {
+const btn=document.getElementById("loginBtn");
 
-        const box = document.getElementById("loginAlert");
 
-        if (!box) {
-            alert(message);
-            return;
-        }
+function showAlert(message,type="error"){
 
-        box.innerHTML = `
-            <div class="alert-box alert-${type}">
-                ${message}
-            </div>
-        `;
+const box=document.getElementById("loginAlert");
 
-    }
+if(!box){
+alert(message);
+return;
+}
 
-    form.addEventListener("submit", async (e) => {
+box.innerHTML=`
+<div class="alert-box alert-${type}">
+${message}
+</div>
+`;
 
-        e.preventDefault();
+}
 
-        const login = document.getElementById("login").value.trim();
-        const password = document.getElementById("password").value;
 
-        if (!login || !password) {
-            showAlert("❌ Username / Email dan Password wajib diisi.");
-            return;
-        }
 
-        const token = document.querySelector('[name="cf-turnstile-response"]')?.value;
+// =========================
+// LOGIN
+// =========================
 
-        if (!token) {
-            showAlert("❌ Silakan selesaikan verifikasi Cloudflare.");
-            return;
-        }
+form.addEventListener("submit",async(e)=>{
 
-        btn.disabled = true;
-        btn.innerHTML =
-            '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+e.preventDefault();
 
-        try {
 
-            let email = login.trim().toLowerCase();
+const login=document
+.getElementById("login")
+.value
+.trim();
 
-            // ==========================
-            // LOGIN VIA USERNAME
-            // ==========================
 
-            if (!login.includes("@")) {
+const password=document
+.getElementById("password")
+.value;
 
-                const { data: user, error } = await database.supabase
-                    .from("users")
-                    .select("id,username,email")
-                    .ilike("username", login)
-                    .maybeSingle();
 
-                if (error) throw error;
 
-                if (!user) {
-                    showAlert("❌ Username belum terdaftar.");
-                    return;
-                }
+if(!login || !password){
 
-                email = user.email.trim().toLowerCase();
+showAlert(
+"❌ Username / Email dan password wajib diisi."
+);
 
-                console.log("Username :", user.username);
-                console.log("Email    :", email);
+return;
 
-            } else {
+}
 
-                const { data: user, error } = await database.supabase
-                    .from("users")
-                    .select("id,email")
-                    .eq("email", email)
-                    .maybeSingle();
 
-                if (error) throw error;
 
-                if (!user) {
-                    showAlert("❌ Email belum terdaftar.");
-                    return;
-                }
+const token=document
+.querySelector('[name="cf-turnstile-response"]')
+?.value;
 
-            }
 
-            console.log("Login Email :", email);
 
-            // ==========================
-            // LOGIN AUTH
-            // ==========================
+if(!token){
 
-            const {
-                data: authData,
-                error: authError
-            } = await database.supabase.auth.signInWithPassword({
+showAlert(
+"❌ Silakan selesaikan verifikasi Cloudflare."
+);
 
-                email: email,
-                password: password
+return;
 
-            });
+}
 
-            if (authError) {
 
-                if (authError.message.includes("Invalid login credentials")) {
-                    showAlert("❌ Username / Email atau Password salah.");
-                    return;
-                }
 
-                if (authError.message.includes("Email not confirmed")) {
-                    showAlert("📩 Email belum diverifikasi.");
-                    return;
-                }
+btn.disabled=true;
 
-                throw authError;
+btn.innerHTML=
+'<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
 
-            }
 
-            if (!authData.user) {
-                showAlert("❌ Login gagal.");
-                return;
-            }
 
-            // ==========================
-            // USERS
-            // ==========================
+try{
 
-            const {
-                data: userData,
-                error: userError
-            } = await database.supabase
-                .from("users")
-                .select("*")
-                .eq("id", authData.user.id)
-                .maybeSingle();
 
-            if (userError) throw userError;
+let email=login.toLowerCase();
 
-            if (!userData) {
-                showAlert("❌ Data user tidak ditemukan.");
-                return;
-            }
 
-            // ==========================
-            // PROFILE
-            // ==========================
 
-            const {
-                data: profile,
-                error: profileError
-            } = await database.supabase
-                .from("profiles")
-                .select("*")
-                .eq("id", authData.user.id)
-                .maybeSingle();
+// =========================
+// CEK USERNAME
+// =========================
 
-            if (profileError) throw profileError;
+if(!login.includes("@")){
 
-            if (!profile) {
-                showAlert("❌ Profile belum dibuat.");
-                return;
-            }
 
-            if (profile.status !== "active") {
+const {
+data:user,
+error
+}=await database.supabase
 
-                await database.supabase.auth.signOut();
+.from("users")
 
-                showAlert("🚫 Akun tidak aktif.");
-                return;
+.select("id,username,email")
 
-            }
+.ilike(
+"username",
+login
+)
 
-            // ==========================
-            // UPDATE LAST LOGIN
-            // ==========================
+.maybeSingle();
 
-            await database.supabase
-                .from("profiles")
-                .update({
-                    updated_at: new Date().toISOString()
-                })
-                .eq("id", profile.id);
 
-            // ==========================
-            // LOCAL STORAGE
-            // ==========================
 
-            localStorage.setItem("user_id", profile.id);
-            localStorage.setItem("username", profile.username);
+if(error)
+throw error;
 
-            showAlert("✅ Login berhasil.", "success");
 
-            setTimeout(() => {
-                window.location.href = "dashboard.html";
-            }, 1000);
 
-        } catch (err) {
+if(!user){
 
-            console.error(err);
+showAlert(
+"❌ Username belum terdaftar."
+);
 
-            showAlert("❌ " + (err.message || "Terjadi kesalahan."));
+return;
 
-        } finally {
+}
 
-            btn.disabled = false;
 
-            btn.innerHTML =
-                '<i class="fa-solid fa-right-to-bracket"></i><span> Masuk</span>';
 
-        }
+email=user.email.toLowerCase();
 
-    });
+
+}
+
+
+
+// =========================
+// CEK EMAIL
+// =========================
+
+else{
+
+
+const {
+data:user,
+error
+}=await database.supabase
+
+.from("users")
+
+.select("id,email")
+
+.eq(
+"email",
+email
+)
+
+.maybeSingle();
+
+
+
+if(error)
+throw error;
+
+
+
+if(!user){
+
+showAlert(
+"❌ Email belum terdaftar."
+);
+
+return;
+
+}
+
+
+}
+
+
+
+// =========================
+// AUTH LOGIN
+// =========================
+
+
+const {
+data:auth,
+error:authError
+
+}=await database.supabase.auth.signInWithPassword({
+
+email,
+
+password
+
+});
+
+
+
+if(authError){
+
+
+if(
+authError.message
+.toLowerCase()
+.includes("invalid login")
+){
+
+showAlert(
+"❌ Username / Email atau password salah."
+);
+
+return;
+
+}
+
+
+
+if(
+authError.message
+.includes("Email not confirmed")
+){
+
+showAlert(
+"📩 Email belum diverifikasi."
+);
+
+return;
+
+}
+
+
+
+throw authError;
+
+
+}
+
+
+
+if(!auth.user){
+
+showAlert(
+"❌ Login gagal."
+);
+
+return;
+
+}
+
+
+
+// =========================
+// AMBIL USERS
+// =========================
+
+
+const {
+data:userData,
+error:userError
+
+}=await database.supabase
+
+.from("users")
+
+.select("*")
+
+.eq(
+"id",
+auth.user.id
+)
+
+.maybeSingle();
+
+
+
+if(userError)
+throw userError;
+
+
+
+if(!userData){
+
+showAlert(
+"❌ Data user tidak ditemukan."
+);
+
+return;
+
+}
+
+
+
+// =========================
+// AMBIL PROFILE
+// =========================
+
+
+let {
+
+data:profile,
+error:profileError
+
+}=await database.supabase
+
+.from("profiles")
+
+.select("*")
+
+.eq(
+"id",
+auth.user.id
+)
+
+.maybeSingle();
+
+
+
+if(profileError)
+throw profileError;
+
+
+
+// =========================
+// BUAT PROFILE OTOMATIS
+// =========================
+
+
+if(!profile){
+
+
+const {
+data:newProfile,
+error:createError
+
+}=await database.supabase
+
+.from("profiles")
+
+.insert({
+
+id:auth.user.id,
+
+username:userData.username,
+
+full_name:userData.username,
+
+balance:0,
+
+
+ads_earning_today:0,
+ads_earning_month:0,
+ads_earning_total:0,
+
+
+sell_earning_today:0,
+sell_earning_month:0,
+sell_earning_total:0,
+
+
+total_views:0,
+total_clicks:0,
+
+
+withdraw_count:0,
+
+sell_link_enabled:false,
+
+status:"active"
+
+
+})
+
+.select()
+
+.maybeSingle();
+
+
+
+if(createError)
+throw createError;
+
+
+
+profile=newProfile;
+
+
+}
+
+
+
+// =========================
+// CEK STATUS
+// =========================
+
+
+if(
+profile.status !== "active"
+){
+
+
+await database.supabase.auth.signOut();
+
+
+showAlert(
+"🚫 Akun tidak aktif."
+);
+
+
+return;
+
+
+}
+
+
+
+// =========================
+// UPDATE LOGIN
+// =========================
+
+
+await database.supabase
+
+.from("profiles")
+
+.update({
+
+updated_at:
+new Date().toISOString()
+
+})
+
+.eq(
+"id",
+profile.id
+);
+
+
+
+// =========================
+// STORAGE
+// =========================
+
+
+localStorage.setItem(
+"user_id",
+profile.id
+);
+
+
+localStorage.setItem(
+"username",
+profile.username
+);
+
+
+
+// =========================
+// SUCCESS
+// =========================
+
+
+showAlert(
+"✅ Login berhasil.",
+"success"
+);
+
+
+
+setTimeout(()=>{
+
+window.location.href=
+"dashboard.html";
+
+},1000);
+
+
+
+}catch(err){
+
+
+console.error(err);
+
+
+showAlert(
+"❌ "+err.message
+);
+
+
+
+}finally{
+
+
+btn.disabled=false;
+
+
+btn.innerHTML=
+'<i class="fa-solid fa-right-to-bracket"></i><span> Masuk</span>';
+
+}
+
+
+
+});
+
 
 });
