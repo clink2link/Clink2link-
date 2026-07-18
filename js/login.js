@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("loginForm");
     if (!form) return;
 
+    const btn = document.getElementById("loginBtn");
+
     function showAlert(message, type = "error") {
 
         const box = document.getElementById("loginAlert");
@@ -26,10 +28,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const login = document.getElementById("login").value.trim();
         const password = document.getElementById("password").value;
-        const btn = document.getElementById("loginBtn");
 
         if (!login || !password) {
-            showAlert("❌ Username / Gmail dan Password wajib diisi.");
+            showAlert("❌ Username / Email dan Password wajib diisi.");
             return;
         }
 
@@ -46,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            let email = login;
+            let email = login.trim().toLowerCase();
 
             // ==========================
             // LOGIN VIA USERNAME
@@ -56,76 +57,74 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const { data: user, error } = await database.supabase
                     .from("users")
-                    .select("id,email,username")
-                    .eq("username", login)
+                    .select("id,username,email")
+                    .ilike("username", login)
                     .maybeSingle();
 
                 if (error) throw error;
 
                 if (!user) {
-
                     showAlert("❌ Username belum terdaftar.");
                     return;
-
                 }
 
-                email = user.email;
+                email = user.email.trim().toLowerCase();
+
+                console.log("Username :", user.username);
+                console.log("Email    :", email);
 
             } else {
-
-                // ==========================
-                // LOGIN VIA EMAIL
-                // ==========================
 
                 const { data: user, error } = await database.supabase
                     .from("users")
                     .select("id,email")
-                    .eq("email", login)
+                    .eq("email", email)
                     .maybeSingle();
 
                 if (error) throw error;
 
                 if (!user) {
-
                     showAlert("❌ Email belum terdaftar.");
                     return;
-
                 }
 
             }
+
+            console.log("Login Email :", email);
 
             // ==========================
             // LOGIN AUTH
             // ==========================
 
-            const { data, error } =
-                await database.supabase.auth.signInWithPassword({
+            const {
+                data: authData,
+                error: authError
+            } = await database.supabase.auth.signInWithPassword({
 
-                    email,
-                    password
+                email: email,
+                password: password
 
-                });
+            });
 
-            if (error) {
+            if (authError) {
 
-                if (
-                    error.message.toLowerCase().includes("invalid login credentials")
-                ) {
-
-                    showAlert("❌ Password yang kamu masukkan salah.");
+                if (authError.message.includes("Invalid login credentials")) {
+                    showAlert("❌ Username / Email atau Password salah.");
                     return;
-
                 }
 
-                throw error;
+                if (authError.message.includes("Email not confirmed")) {
+                    showAlert("📩 Email belum diverifikasi.");
+                    return;
+                }
+
+                throw authError;
 
             }
 
-            if (!data.user) {
-
+            if (!authData.user) {
                 showAlert("❌ Login gagal.");
                 return;
-
             }
 
             // ==========================
@@ -138,16 +137,14 @@ document.addEventListener("DOMContentLoaded", () => {
             } = await database.supabase
                 .from("users")
                 .select("*")
-                .eq("id", data.user.id)
+                .eq("id", authData.user.id)
                 .maybeSingle();
 
             if (userError) throw userError;
 
             if (!userData) {
-
-                showAlert("❌ Data akun tidak ditemukan.");
+                showAlert("❌ Data user tidak ditemukan.");
                 return;
-
             }
 
             // ==========================
@@ -160,33 +157,27 @@ document.addEventListener("DOMContentLoaded", () => {
             } = await database.supabase
                 .from("profiles")
                 .select("*")
-                .eq("id", data.user.id)
+                .eq("id", authData.user.id)
                 .maybeSingle();
 
             if (profileError) throw profileError;
 
             if (!profile) {
-
-                showAlert("❌ Profile pengguna belum dibuat.");
+                showAlert("❌ Profile belum dibuat.");
                 return;
-
             }
-
-            // ==========================
-            // STATUS
-            // ==========================
 
             if (profile.status !== "active") {
 
                 await database.supabase.auth.signOut();
 
-                showAlert("🚫 Akun kamu tidak aktif.");
+                showAlert("🚫 Akun tidak aktif.");
                 return;
 
             }
 
             // ==========================
-            // UPDATE LOGIN
+            // UPDATE LAST LOGIN
             // ==========================
 
             await database.supabase
@@ -194,43 +185,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 .update({
                     updated_at: new Date().toISOString()
                 })
-                .eq("id", data.user.id);
+                .eq("id", profile.id);
 
             // ==========================
             // LOCAL STORAGE
             // ==========================
 
-            localStorage.setItem("user_id", userData.id);
-            localStorage.setItem("username", userData.username);
-
-            // ==========================
-            // SUCCESS
-            // ==========================
+            localStorage.setItem("user_id", profile.id);
+            localStorage.setItem("username", profile.username);
 
             showAlert("✅ Login berhasil.", "success");
 
             setTimeout(() => {
-
                 window.location.href = "dashboard.html";
-
             }, 1000);
 
         } catch (err) {
 
             console.error(err);
 
-            if (
-                err.message &&
-                err.message.includes("Email not confirmed")
-            ) {
-
-                showAlert("📩 Email belum diverifikasi. Silakan cek Inbox atau Spam.");
-
-            } else {
-
-                showAlert("❌ " + err.message);
-
-            }
+            showAlert("❌ " + (err.message || "Terjadi kesalahan."));
 
         } finally {
 
