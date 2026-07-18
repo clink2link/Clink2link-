@@ -200,6 +200,8 @@ Beranda
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+
 <script src="js/database.js"></script>
 <script src="js/theme.js"></script>
 <script src="js/footer.js"></script>
@@ -216,35 +218,6 @@ document.getElementById("footer").innerHTML=html;
 if(typeof c2pFooterInit==="function"){
 c2pFooterInit();
 }
-
-});
-
-document.querySelectorAll(".toggle-password")
-.forEach(btn=>{
-
-btn.onclick=function(){
-
-const input=document.getElementById(
-this.dataset.target
-);
-
-const icon=this.querySelector("i");
-
-if(input.type==="password"){
-
-input.type="text";
-
-icon.className="fa-solid fa-eye-slash";
-
-}else{
-
-input.type="password";
-
-icon.className="fa-solid fa-eye";
-
-}
-
-};
 
 });
 
