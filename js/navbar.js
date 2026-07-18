@@ -1,57 +1,115 @@
-function c2pOpen(){
-
-document.getElementById("c2pSide")
-.classList.add("active");
+document.addEventListener("DOMContentLoaded",()=>{
 
 
-document.getElementById("c2pOverlay")
-.classList.add("active");
+// =========================
+// SIDEBAR OPEN
+// =========================
+
+window.c2pOpen=function(){
+
+const side=document.getElementById("c2pSide");
+const overlay=document.getElementById("c2pOverlay");
+
+
+if(side)
+side.classList.add("active");
+
+
+if(overlay)
+overlay.classList.add("active");
+
 
 }
 
 
 
-function c2pClose(){
+// =========================
+// SIDEBAR CLOSE
+// =========================
 
-document.getElementById("c2pSide")
-.classList.remove("active");
+window.c2pClose=function(){
+
+const side=document.getElementById("c2pSide");
+const overlay=document.getElementById("c2pOverlay");
 
 
-document.getElementById("c2pOverlay")
-.classList.remove("active");
+if(side)
+side.classList.remove("active");
+
+
+if(overlay)
+overlay.classList.remove("active");
+
 
 }
 
 
 
-function c2pUser(){
+// =========================
+// USER DROPDOWN
+// =========================
 
-document.getElementById("c2pDrop")
-.classList.toggle("active");
+window.c2pUser=function(){
+
+const drop=document.getElementById("c2pDrop");
+
+
+if(drop)
+drop.classList.toggle("active");
+
 
 }
 
 
-document.addEventListener("click",function(e){
 
-let drop=document.getElementById("c2pDrop");
+// =========================
+// CLOSE DROPDOWN OUTSIDE
+// =========================
 
-if(!e.target.closest(".c2p-user") &&
-!e.target.closest(".c2p-dropdown")){
+document.addEventListener("click",e=>{
+
+
+const drop=document.getElementById("c2pDrop");
+
+
+if(!drop)
+return;
+
+
+
+if(
+!e.target.closest(".c2p-user") &&
+!e.target.closest(".c2p-dropdown")
+){
 
 drop.classList.remove("active");
 
 }
 
+
 });
 
-function c2pToggle(id){
 
-let menu=document.getElementById(id);
 
-let all=document.querySelectorAll(".c2p-submenu");
+// =========================
+// SUB MENU
+// =========================
 
-all.forEach(item=>{
+window.c2pToggle=function(id){
+
+
+const menu=document.getElementById(id);
+
+
+if(!menu)
+return;
+
+
+
+document
+.querySelectorAll(".c2p-submenu")
+.forEach(item=>{
+
 
 if(item.id!==id){
 
@@ -59,20 +117,189 @@ item.classList.remove("active");
 
 }
 
+
 });
+
 
 
 menu.classList.toggle("active");
 
+
 }
 
-document.querySelectorAll(".c2p-submenu a")
+
+
+// =========================
+// CLOSE SIDEBAR WHEN CLICK LINK
+// =========================
+
+document
+.querySelectorAll(".c2p-submenu a")
 .forEach(link=>{
+
 
 link.addEventListener("click",()=>{
 
 c2pClose();
 
 });
+
+
+});
+
+
+
+// =========================
+// LOAD USERNAME
+// =========================
+
+const username=
+localStorage.getItem("username");
+
+
+const usernameBox=
+document.getElementById("navbarUsername");
+
+
+
+if(usernameBox && username){
+
+usernameBox.innerHTML=username;
+
+}
+
+
+
+// =========================
+// LOAD SALDO
+// =========================
+
+async function loadSaldo(){
+
+
+const saldoBox=
+document.getElementById("navbarSaldo");
+
+
+const userId=
+localStorage.getItem("user_id");
+
+
+
+if(!saldoBox || !userId)
+return;
+
+
+
+try{
+
+
+const {
+data,
+error
+
+}=await database.supabase
+
+.from("profiles")
+
+.select("balance")
+
+.eq("id",userId)
+
+.maybeSingle();
+
+
+
+if(error)
+throw error;
+
+
+
+if(data){
+
+
+saldoBox.innerHTML=
+
+"Rp "+
+Number(data.balance || 0)
+.toLocaleString("id-ID");
+
+
+}
+
+
+
+}catch(err){
+
+
+console.error(
+"Saldo Error:",
+err
+);
+
+
+}
+
+
+}
+
+
+
+loadSaldo();
+
+
+
+// =========================
+// LOGOUT
+// =========================
+
+const logoutBtn=
+document.getElementById("logoutBtn");
+
+
+
+if(logoutBtn){
+
+
+logoutBtn.addEventListener("click",async()=>{
+
+
+try{
+
+
+await database.supabase.auth.signOut();
+
+
+
+localStorage.removeItem("user_id");
+
+localStorage.removeItem("username");
+
+
+
+window.location.href="login.html";
+
+
+
+}catch(err){
+
+
+console.error(err);
+
+
+alert(
+"Gagal logout"
+);
+
+
+}
+
+
+});
+
+
+}
+
+
 
 });
