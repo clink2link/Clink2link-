@@ -198,30 +198,32 @@ async function getAnnouncements() {
 // ===============================
 
 async function getDashboardReport() {
+
     const { data, error } = await supabaseClient
-        .from("dashboard_daily_report")
+        .from("daily_reports")
         .select("*")
-        .order("id", { ascending: false });
+        .order("report_date", { ascending: false });
 
     if (error) throw error;
 
     return data;
+
 }
 
 async function getReports(userId){
 
-const { data, error } = await supabaseClient
-.from("dashboard_daily_report")
-.select("*")
-.eq("user_id", userId)
-.order("report_date", { ascending: true });
+    const { data, error } = await supabaseClient
+        .from("daily_reports")
+        .select("*")
+        .eq("user_id", userId)
+        .order("report_date", { ascending: true });
 
-if(error){
-console.error(error);
-return [];
-}
+    if(error){
+        console.error(error);
+        return [];
+    }
 
-return data;
+    return data;
 
 }
 
