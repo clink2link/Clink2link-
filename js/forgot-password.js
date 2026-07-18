@@ -1,36 +1,98 @@
-document.getElementById("resetBtn").addEventListener("click", async () => {
+console.log("FORGOT PASSWORD JS LOADED");
 
-    const email = document
-        .getElementById("email")
-        .value
-        .trim()
-        .toLowerCase();
 
-    if (!email) {
-        alert("Masukkan email terlebih dahulu.");
-        return;
-    }
+const btn=document.getElementById("resetBtn");
 
-    try {
 
-        const { error } = await database.supabase.auth.resetPasswordForEmail(
-            email,
-            {
-                redirectTo:
-                    window.location.origin + "/reset-password.html"
-            }
-        );
+btn.addEventListener("click",async()=>{
 
-        if (error) throw error;
 
-        alert("✅ Link reset password berhasil dikirim ke email.");
+const email=document
+.getElementById("email")
+.value
+.trim()
+.toLowerCase();
 
-    } catch (err) {
 
-        console.error(err);
 
-        alert("❌ " + err.message);
+if(!email){
 
-    }
+alert("Masukkan email terlebih dahulu");
+return;
+
+}
+
+
+
+btn.disabled=true;
+
+btn.innerHTML=
+'<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+
+
+
+try{
+
+
+const {error}=await supabase.auth
+.resetPasswordForEmail(
+email,
+{
+
+redirectTo:
+window.location.origin+
+"/reset-password.html"
+
+}
+);
+
+
+
+if(error){
+
+console.error(error);
+
+alert(
+"Gagal mengirim link reset: "+
+error.message
+);
+
+return;
+
+}
+
+
+
+alert(
+"Link reset password sudah dikirim ke email kamu."
+);
+
+
+
+}catch(err){
+
+
+console.error(err);
+
+
+alert(
+"Terjadi kesalahan sistem"
+);
+
+
+
+}finally{
+
+
+btn.disabled=false;
+
+
+btn.innerHTML=
+'<i class="fa-solid fa-key"></i> Kirim Link Reset';
+
+
+}
+
+
 
 });
