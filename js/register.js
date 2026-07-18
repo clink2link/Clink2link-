@@ -51,12 +51,12 @@ ${message}
 }
 
 
-
 // =======================
-// ELEMENT
+// FORM
 // =======================
 
 const form=document.getElementById("registerForm");
+
 
 if(form){
 
@@ -71,12 +71,10 @@ const confirmPassword=document.getElementById("confirmPassword");
 
 
 // =======================
-// SUBMIT
+// REGISTER
 // =======================
 
-
 form.addEventListener("submit",async e=>{
-
 
 e.preventDefault();
 
@@ -106,7 +104,7 @@ return;
 
 if(!/^[a-zA-Z0-9_]+$/.test(userName)){
 
-showRegisterAlert("❌ Username hanya huruf angka underscore.");
+showRegisterAlert("❌ Username hanya boleh huruf, angka dan underscore.");
 return;
 
 }
@@ -139,7 +137,9 @@ btn.innerHTML=
 try{
 
 
+// =======================
 // CEK USERNAME
+// =======================
 
 const {
 data:exist,
@@ -178,7 +178,6 @@ return;
 // CREATE AUTH USER
 // =======================
 
-
 const {
 
 data:authData,
@@ -189,7 +188,17 @@ error:authError
 
 email:userEmail,
 
-password:userPassword
+password:userPassword,
+
+options:{
+
+data:{
+
+username:userName
+
+}
+
+}
 
 });
 
@@ -200,11 +209,7 @@ throw authError;
 
 
 
-const authUser=authData.user;
-
-
-
-if(!authUser){
+if(!authData.user){
 
 throw new Error(
 "Gagal membuat akun."
@@ -218,8 +223,8 @@ throw new Error(
 // INSERT USERS
 // =======================
 
-
 const {
+
 error:userError
 
 }=await database.supabase
@@ -228,7 +233,7 @@ error:userError
 
 .insert({
 
-id:authUser.id,
+id:authData.user.id,
 
 username:userName,
 
@@ -249,57 +254,8 @@ throw userError;
 
 
 
-// =======================
-// INSERT PROFILE
-// =======================
-
-
-const {
-
-error:profileError
-
-}=await database.supabase
-
-.from("profiles")
-
-.insert({
-
-id:authUser.id,
-
-username:userName,
-
-full_name:userName,
-
-status:"active",
-
-balance:0,
-
-total_views:0,
-
-total_clicks:0,
-
-ads_earning_today:0,
-
-ads_earning_month:0,
-
-ads_earning_total:0,
-
-sell_earning_today:0,
-
-sell_earning_month:0,
-
-sell_earning_total:0,
-
-withdraw_count:0,
-
-sell_link_enabled:false
-
-});
-
-
-
-if(profileError)
-throw profileError;
+// PROFILE TIDAK INSERT LAGI
+// OTOMATIS DIBUAT TRIGGER SUPABASE
 
 
 
@@ -320,10 +276,14 @@ window.location.href="login.html";
 
 }
 
+
 catch(err){
 
 
-console.error(err);
+console.error(
+"REGISTER ERROR:",
+err
+);
 
 
 showRegisterAlert(
@@ -333,6 +293,7 @@ showRegisterAlert(
 
 
 }
+
 
 finally{
 
