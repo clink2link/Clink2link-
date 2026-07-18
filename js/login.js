@@ -1,142 +1,275 @@
 document.addEventListener("DOMContentLoaded",()=>{
 
 const form=document.getElementById("loginForm");
+
 if(!form)return;
+
 
 const btn=document.getElementById("loginBtn");
 
+
 function showAlert(message,type="error"){
+
 const box=document.getElementById("loginAlert");
 
 if(!box){
+
 alert(message);
 return;
+
 }
+
 
 box.innerHTML=`
+
 <div class="alert-box alert-${type}">
 ${message}
-</div>`;
+</div>
+
+`;
+
 }
 
+
+
+// =========================
+// LOGIN
+// =========================
 
 form.addEventListener("submit",async e=>{
 
+
 e.preventDefault();
 
-const login=document.getElementById("login").value.trim();
-const password=document.getElementById("password").value;
 
-if(!login||!password){
-showAlert("❌ Username / Email dan password wajib diisi.");
+
+const login=document
+.getElementById("login")
+.value
+.trim();
+
+
+const password=document
+.getElementById("password")
+.value;
+
+
+
+if(!login || !password){
+
+showAlert(
+"❌ Username / Email dan password wajib diisi."
+);
+
 return;
+
 }
+
 
 
 if(!window.database){
-showAlert("❌ Database belum dimuat.");
-console.error("database.js belum aktif");
+
+showAlert(
+"❌ Database belum dimuat."
+);
+
+console.error(
+"database.js belum aktif"
+);
+
 return;
+
 }
 
 
-const token=document.querySelector("[name='cf-turnstile-response']")?.value;
+
+const token=document
+.querySelector("[name='cf-turnstile-response']")
+?.value;
+
+
 
 if(!token){
-showAlert("❌ Silakan selesaikan verifikasi Cloudflare.");
+
+showAlert(
+"❌ Silakan selesaikan verifikasi Cloudflare."
+);
+
 return;
+
 }
+
 
 
 btn.disabled=true;
-btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+
+btn.innerHTML=
+'<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+
 
 
 try{
 
+
 let email=login.toLowerCase();
 
 
-// LOGIN USERNAME
+
+// =========================
+// USERNAME LOGIN
+// =========================
+
 
 if(!login.includes("@")){
 
-const {data:user,error}=await database.supabase
+
+const {
+
+data:user,
+error
+
+}=await database.supabase
+
 .from("users")
+
 .select("id,username,email")
-.ilike("username",login)
+
+.ilike(
+"username",
+login
+)
+
 .maybeSingle();
 
 
-if(error)throw error;
+
+if(error)
+throw error;
+
 
 
 if(!user){
-showAlert("❌ Username tidak ditemukan.");
+
+showAlert(
+"❌ Username tidak ditemukan."
+);
+
 return;
+
 }
+
 
 
 email=user.email.toLowerCase();
 
 
+
 }
 
 
-// LOGIN EMAIL
+
+// =========================
+// EMAIL LOGIN
+// =========================
+
 
 else{
 
-const {data:user,error}=await database.supabase
+
+const {
+
+data:user,
+error
+
+}=await database.supabase
+
 .from("users")
+
 .select("id,email")
-.eq("email",email)
+
+.eq(
+"email",
+email
+)
+
 .maybeSingle();
 
 
-if(error)throw error;
+
+if(error)
+throw error;
+
 
 
 if(!user){
-showAlert("❌ Email tidak terdaftar.");
+
+showAlert(
+"❌ Email tidak terdaftar."
+);
+
 return;
-}
 
 }
 
 
+}
 
+
+
+// =========================
 // AUTH LOGIN
+// =========================
+
 
 const {
+
 data:authData,
+
 error:authError
+
 }=await database.supabase.auth.signInWithPassword({
 
 email,
+
 password
 
 });
 
 
+
 if(authError){
 
-let msg=authError.message.toLowerCase();
+
+const msg=
+authError.message.toLowerCase();
+
 
 
 if(msg.includes("invalid login")){
-showAlert("❌ Username / Password salah.");
+
+showAlert(
+"❌ Username / Password salah."
+);
+
 return;
+
 }
 
 
+
 if(msg.includes("email not confirmed")){
-showAlert("📩 Email belum diverifikasi.");
+
+showAlert(
+"📩 Email belum diverifikasi."
+);
+
 return;
+
 }
 
 
 throw authError;
+
 
 }
 
@@ -144,92 +277,8 @@ throw authError;
 
 if(!authData.user){
 
-showAlert("❌ Login gagal.");
-return;
-
-}
-
-
-
-// AMBIL USER
-
-const {
-data:userData,
-error:userError
-}=await database.supabase
-.from("users")
-.select("*")
-.eq("id",authData.user.id)
-.maybeSingle();
-
-
-if(userError)throw userError;
-
-
-if(!userData){
-
-showAlert("❌ Data user tidak ditemukan.");
-return;
-
-}
-
-
-
-// AMBIL PROFILE
-
-let {
-data:profile,
-error:profileError
-}=await database.supabase
-.from("profiles")
-.select("*")
-.eq("id",authData.user.id)
-.maybeSingle();
-
-
-if(profileError)throw profileError;
-
-
-
-// JIKA PROFILE TIDAK ADA BUAT OTOMATIS
-
-if(!profile){
-
-const {error:createError}=await database.supabase
-.from("profiles")
-.insert({
-
-id:authData.user.id,
-username:userData.username,
-full_name:userData.username,
-
-balance:0,
-
-ads_earning_today:0,
-ads_earning_month:0,
-ads_earning_total:0,
-
-sell_earning_today:0,
-sell_earning_month:0,
-sell_earning_total:0,
-
-total_views:0,
-total_clicks:0,
-
-withdraw_count:0,
-sell_link_enabled:false,
-
-status:"active"
-
-});
-
-
-if(createError){
-
-console.error(createError);
-
 showAlert(
-"❌ Profile gagal dibuat. Cek RLS Supabase."
+"❌ Login gagal."
 );
 
 return;
@@ -237,56 +286,154 @@ return;
 }
 
 
-const result=await database.supabase
-.from("profiles")
+
+// =========================
+// AMBIL USER
+// =========================
+
+
+const {
+
+data:userData,
+
+error:userError
+
+}=await database.supabase
+
+.from("users")
+
 .select("*")
-.eq("id",authData.user.id)
+
+.eq(
+"id",
+authData.user.id
+)
+
 .maybeSingle();
 
 
-profile=result.data;
+
+if(userError)
+throw userError;
+
+
+
+if(!userData){
+
+showAlert(
+"❌ Data user tidak ditemukan."
+);
+
+return;
 
 }
 
+
+
+// =========================
+// AMBIL PROFILE
+// =========================
+
+
+const {
+
+data:profile,
+
+error:profileError
+
+}=await database.supabase
+
+.from("profiles")
+
+.select("*")
+
+.eq(
+"id",
+authData.user.id
+)
+
+.maybeSingle();
+
+
+
+if(profileError)
+throw profileError;
+
+
+
+// PROFILE WAJIB ADA
+// DIBUAT OLEH TRIGGER REGISTER
 
 
 if(!profile){
 
-showAlert("❌ Profile belum tersedia.");
+showAlert(
+"❌ Profile belum tersedia. Hubungi admin."
+);
+
+await database.supabase.auth.signOut();
+
 return;
 
 }
 
+
+
+// =========================
+// CEK STATUS
+// =========================
 
 
 if(profile.status!=="active"){
 
+
 await database.supabase.auth.signOut();
 
-showAlert("🚫 Akun tidak aktif.");
+
+showAlert(
+"🚫 Akun tidak aktif."
+);
+
+
 return;
+
 
 }
 
 
 
+// =========================
 // UPDATE LOGIN
+// =========================
+
 
 await database.supabase
+
 .from("profiles")
+
 .update({
+
 updated_at:new Date().toISOString()
+
 })
-.eq("id",profile.id);
+
+.eq(
+"id",
+profile.id
+);
 
 
 
+// =========================
 // LOCAL STORAGE
+// =========================
+
 
 localStorage.setItem(
 "user_id",
 profile.id
 );
+
 
 localStorage.setItem(
 "username",
@@ -294,7 +441,11 @@ profile.username
 );
 
 
-// BERHASIL
+
+// =========================
+// SUCCESS
+// =========================
+
 
 showAlert(
 "✅ Login berhasil.",
@@ -302,31 +453,48 @@ showAlert(
 );
 
 
+
 setTimeout(()=>{
 
-window.location.href="dashboard.html";
+window.location.href=
+"dashboard.html";
 
 },1000);
 
 
 
-}catch(err){
+}
 
-console.error(err);
+catch(err){
+
+
+console.error(
+"LOGIN ERROR:",
+err
+);
+
+
 
 showAlert(
 "❌ "+err.message
 );
 
 
-}finally{
+
+}
+
+
+finally{
+
 
 btn.disabled=false;
+
 
 btn.innerHTML=
 '<i class="fa-solid fa-right-to-bracket"></i><span> Masuk</span>';
 
 }
+
 
 
 });
