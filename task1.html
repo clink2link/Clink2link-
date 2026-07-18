@@ -258,10 +258,7 @@ TEMPAT IKLAN ADSTERRA 300x600
 
 <script>
 const code=new URLSearchParams(location.search).get("code")||"";
-
-if(code){
-localStorage.setItem("task_code",code);
-}
+if(code) localStorage.setItem("task_code",code);
 
 const downloadBtn=document.getElementById("downloadBtn");
 const progressArea=document.getElementById("progressArea");
@@ -274,48 +271,36 @@ const loadingArea=document.getElementById("loadingArea");
 const loadingSecond=document.getElementById("loadingSecond");
 const nextBtn=document.getElementById("nextBtn");
 
-
 downloadBtn.onclick=function(){
-
 downloadBtn.disabled=true;
 progressArea.style.display="block";
 
 let p=0;
 
 const timer=setInterval(()=>{
-
 p++;
 
 progressFill.style.width=p+"%";
 progressText.textContent=p+"%";
 
 if(p>=100){
-
 clearInterval(timer);
-
 progressText.textContent="Selesai";
 scrollBtn.style.display="block";
-
 }
-
 },100);
-
 };
 
 
 scrollBtn.onclick=function(){
-
 document.getElementById("linkSection").scrollIntoView({
 behavior:"smooth"
 });
-
 linkBtn.disabled=false;
-
 };
 
 
 linkBtn.onclick=function(){
-
 if(linkBtn.disabled)return;
 
 linkBtn.disabled=true;
@@ -351,30 +336,24 @@ nextBtn.onclick=async function(){
 try{
 
 if(!database||!database.supabase){
-
 alert("Database tidak tersedia");
 return;
-
 }
 
 
 const user=await database.getUser();
 
 if(!user){
-
 window.location.href="login.html";
 return;
-
 }
 
 
 const url=localStorage.getItem("create_url");
 
 if(!url){
-
-alert("URL tidak ditemukan.");
+alert("URL tidak ditemukan");
 return;
-
 }
 
 
@@ -384,15 +363,11 @@ const shortCode=Math.random().toString(36).substring(2,8);
 let advanced={};
 
 try{
-
 advanced=JSON.parse(
 localStorage.getItem("advanced_settings")||"{}"
 );
-
 }catch(e){
-
 advanced={};
-
 }
 
 
@@ -403,22 +378,35 @@ const {error}=await database.supabase
 user_id:user.id,
 type:"ads",
 title:"",
+
 alias:advanced.alias||null,
+
 destination:url,
 destination_url:url,
+
 campaign:advanced.campaign||null,
 campaign_name:advanced.campaign||null,
+
 device:advanced.device||"all",
 target_device:advanced.device||"all",
+
 custom_alias:advanced.alias||null,
-expired_at:advanced.expired==="never"?null:advanced.expired,
+
+expired_at:
+advanced.expired==="never"
+?null
+:advanced.expired,
+
 status:"active",
+
 views:0,
 clicks:0,
 earnings:0,
+
 total_views:0,
 total_clicks:0,
 total_earnings:0,
+
 short_code:shortCode,
 link_type:"ads"
 
@@ -426,10 +414,8 @@ link_type:"ads"
 
 
 if(error){
-
 alert(error.message);
 return;
-
 }
 
 
