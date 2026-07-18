@@ -208,6 +208,23 @@ async function getDashboardReport() {
     return data;
 }
 
+async function getReports(userId){
+
+const { data, error } = await supabaseClient
+.from("dashboard_daily_report")
+.select("*")
+.eq("user_id", userId)
+.order("report_date", { ascending: true });
+
+if(error){
+console.error(error);
+return [];
+}
+
+return data;
+
+}
+
 
 // ===============================
 // EXPORT
@@ -230,6 +247,7 @@ getTransactions,
 getWithdrawals,
 getWithdraws,
 getAnnouncements,
-getDashboardReport
+getDashboardReport,
+getReports
 
 };
