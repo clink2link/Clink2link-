@@ -1,3 +1,5 @@
+console.log("REGISTER JS LOADED");
+
 // =========================
 // PASSWORD TOGGLE
 // =========================
@@ -59,9 +61,9 @@ const confirmPassword=document.getElementById("confirmPassword");
 // =========================
 
 form.addEventListener("submit",async(e)=>{
-
+console.log("FORM:", form);
 e.preventDefault();
-
+console.log("SUBMIT BERJALAN");
 const userName=username.value.trim();
 const userEmail=email.value.trim().toLowerCase();
 const userPassword=password.value;
