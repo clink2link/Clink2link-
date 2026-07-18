@@ -149,7 +149,11 @@ return;
 // =========================
 
 const hash=bcrypt.hashSync(userPassword,10);
+if(typeof bcrypt==="undefined"){
+throw new Error("Library bcrypt belum dimuat.");
+}
 
+const hash=bcrypt.hashSync(userPassword,10);
 
 // =========================
 // INSERT USER
