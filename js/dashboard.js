@@ -84,7 +84,7 @@ adsMonth.textContent=
 
 if(adsViewsMonth){
 adsViewsMonth.textContent=
-Number(profile.ads_views_month||0).toLocaleString("id-ID");
+Number(profile.total_views||0).toLocaleString("id-ID");
 }
 
 // ===========================
