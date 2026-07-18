@@ -4,7 +4,9 @@ const form=document.getElementById("loginForm");
 
 if(!form) return;
 
+
 const btn=document.getElementById("loginBtn");
+
 
 
 function showAlert(message,type="error"){
@@ -12,14 +14,18 @@ function showAlert(message,type="error"){
 const box=document.getElementById("loginAlert");
 
 if(!box){
+
 alert(message);
 return;
+
 }
 
 box.innerHTML=`
+
 <div class="alert-box alert-${type}">
 ${message}
 </div>
+
 `;
 
 }
@@ -30,9 +36,11 @@ ${message}
 // LOGIN
 // =========================
 
-form.addEventListener("submit",async(e)=>{
+form.addEventListener("submit",async e=>{
+
 
 e.preventDefault();
+
 
 
 const login=document
@@ -92,8 +100,9 @@ let email=login.toLowerCase();
 
 
 // =========================
-// CEK USERNAME
+// CARI EMAIL DARI USERNAME
 // =========================
+
 
 if(!login.includes("@")){
 
@@ -112,6 +121,7 @@ error
 login
 )
 
+.limit(1)
 .maybeSingle();
 
 
@@ -132,7 +142,6 @@ return;
 }
 
 
-
 email=user.email.toLowerCase();
 
 
@@ -143,6 +152,7 @@ email=user.email.toLowerCase();
 // =========================
 // CEK EMAIL
 // =========================
+
 
 else{
 
@@ -161,6 +171,7 @@ error
 email
 )
 
+.limit(1)
 .maybeSingle();
 
 
@@ -191,14 +202,16 @@ return;
 
 
 const {
-data:auth,
+
+data:authData,
+
 error:authError
 
 }=await database.supabase.auth.signInWithPassword({
 
-email,
+email:email,
 
-password
+password:password
 
 });
 
@@ -207,10 +220,13 @@ password
 if(authError){
 
 
+let msg=
+authError.message.toLowerCase();
+
+
+
 if(
-authError.message
-.toLowerCase()
-.includes("invalid login")
+msg.includes("invalid login")
 ){
 
 showAlert(
@@ -224,8 +240,7 @@ return;
 
 
 if(
-authError.message
-.includes("Email not confirmed")
+msg.includes("email not confirmed")
 ){
 
 showAlert(
@@ -237,7 +252,6 @@ return;
 }
 
 
-
 throw authError;
 
 
@@ -245,7 +259,7 @@ throw authError;
 
 
 
-if(!auth.user){
+if(!authData.user){
 
 showAlert(
 "❌ Login gagal."
@@ -258,12 +272,14 @@ return;
 
 
 // =========================
-// AMBIL USERS
+// AMBIL USER
 // =========================
 
 
 const {
+
 data:userData,
+
 error:userError
 
 }=await database.supabase
@@ -274,9 +290,10 @@ error:userError
 
 .eq(
 "id",
-auth.user.id
+authData.user.id
 )
 
+.limit(1)
 .maybeSingle();
 
 
@@ -306,6 +323,7 @@ return;
 let {
 
 data:profile,
+
 error:profileError
 
 }=await database.supabase
@@ -316,9 +334,10 @@ error:profileError
 
 .eq(
 "id",
-auth.user.id
+authData.user.id
 )
 
+.limit(1)
 .maybeSingle();
 
 
@@ -329,7 +348,7 @@ throw profileError;
 
 
 // =========================
-// BUAT PROFILE OTOMATIS
+// JIKA PROFILE TIDAK ADA
 // =========================
 
 
@@ -337,7 +356,6 @@ if(!profile){
 
 
 const {
-data:newProfile,
 error:createError
 
 }=await database.supabase
@@ -346,7 +364,7 @@ error:createError
 
 .insert({
 
-id:auth.user.id,
+id:authData.user.id,
 
 username:userData.username,
 
@@ -376,16 +394,50 @@ sell_link_enabled:false,
 status:"active"
 
 
-})
+});
 
-.select()
 
+
+if(createError){
+
+console.error(
+"CREATE PROFILE ERROR:",
+createError
+);
+
+
+showAlert(
+"❌ Gagal membuat profile. Hubungi admin."
+);
+
+
+return;
+
+
+}
+
+
+
+// ambil ulang profile
+
+
+const {
+
+data:newProfile
+
+}=await database.supabase
+
+.from("profiles")
+
+.select("*")
+
+.eq(
+"id",
+authData.user.id
+)
+
+.limit(1)
 .maybeSingle();
-
-
-
-if(createError)
-throw createError;
 
 
 
@@ -397,13 +449,23 @@ profile=newProfile;
 
 
 // =========================
-// CEK STATUS
+// STATUS
 // =========================
 
 
-if(
-profile.status !== "active"
-){
+if(!profile){
+
+showAlert(
+"❌ Profile tidak ditemukan."
+);
+
+return;
+
+}
+
+
+
+if(profile.status!=="active"){
 
 
 await database.supabase.auth.signOut();
@@ -415,7 +477,6 @@ showAlert(
 
 
 return;
-
 
 }
 
@@ -483,19 +544,26 @@ window.location.href=
 
 
 
-}catch(err){
+}
+
+catch(err){
 
 
 console.error(err);
 
 
 showAlert(
-"❌ "+err.message
+"❌ "+(
+err.message ||
+"Terjadi kesalahan."
+)
 );
 
 
+}
 
-}finally{
+
+finally{
 
 
 btn.disabled=false;
