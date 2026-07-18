@@ -200,31 +200,29 @@ Beranda
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
-
 <script src="js/database.js"></script>
 <script src="js/theme.js"></script>
 <script src="js/footer.js"></script>
 <script src="js/register.js"></script>
+
 <script>
-console.log("REGISTER HTML SELESAI");
-console.log("bcrypt:", typeof bcrypt);
+console.log("REGISTER HTML LOADED");
 console.log("database:", window.database);
-</script>
-<script>
 
 fetch("components/footer.html")
-.then(r=>r.text())
-.then(html=>{
+.then(r => r.text())
+.then(html => {
 
-document.getElementById("footer").innerHTML=html;
+    document.getElementById("footer").innerHTML = html;
 
-if(typeof c2pFooterInit==="function"){
-c2pFooterInit();
-}
+    if(typeof c2pFooterInit === "function"){
+        c2pFooterInit();
+    }
 
+})
+.catch(err => {
+    console.error("Footer Error:", err);
 });
-
 </script>
 
 </body>
