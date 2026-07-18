@@ -23,7 +23,6 @@ icon.className="fa-solid fa-eye";
 
 });
 
-
 // =========================
 // ALERT
 // =========================
@@ -37,66 +36,73 @@ alert(message);
 return;
 }
 
-box.innerHTML=
-`<div class="alert-box alert-${type}">${message}</div>`;
+box.innerHTML=`<div class="alert-box alert-${type}">${message}</div>`;
 
 }
-
 
 // =========================
 // FORM
 // =========================
 
 const form=document.getElementById("registerForm");
-const btn=document.getElementById("registerBtn");
 
+if(!form){
+console.error("registerForm tidak ditemukan");
+throw new Error("registerForm tidak ditemukan");
+}
+
+const btn=document.getElementById("registerBtn");
 const username=document.getElementById("username");
 const email=document.getElementById("email");
 const password=document.getElementById("password");
 const confirmPassword=document.getElementById("confirmPassword");
-
 
 // =========================
 // REGISTER
 // =========================
 
 form.addEventListener("submit",async(e)=>{
-console.log("FORM:", form);
+
 e.preventDefault();
+
 console.log("SUBMIT BERJALAN");
+
 const userName=username.value.trim();
 const userEmail=email.value.trim().toLowerCase();
 const userPassword=password.value;
 const userConfirm=confirmPassword.value;
 
-
 // VALIDASI
 
 if(userName.length<4){
 showRegisterAlert("❌ Username minimal 4 karakter.");
+username.focus();
 return;
 }
 
 if(userName.length>7){
 showRegisterAlert("❌ Username maksimal 7 karakter.");
+username.focus();
 return;
 }
 
 if(!/^[a-zA-Z0-9_]+$/.test(userName)){
 showRegisterAlert("❌ Username hanya boleh huruf, angka dan underscore (_).");
+username.focus();
 return;
 }
 
 if(userPassword.length<6){
 showRegisterAlert("❌ Password minimal 6 karakter.");
+password.focus();
 return;
 }
 
 if(userPassword!==userConfirm){
 showRegisterAlert("❌ Konfirmasi password tidak sama.");
+confirmPassword.focus();
 return;
 }
-
 
 // TURNSTILE
 
@@ -107,59 +113,58 @@ showRegisterAlert("❌ Silakan selesaikan verifikasi Cloudflare.");
 return;
 }
 
-
 btn.disabled=true;
 btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Mendaftar...';
 
-
 try{
 
-// =========================
-// CEK USERNAME
-// =========================
+// DATABASE
 
-const {data:userExists}=await database.supabase
+if(!window.database || !database.supabase){
+throw new Error("Database belum dimuat.");
+}
+
+// BCRYPT
+
+if(typeof bcrypt==="undefined"){
+throw new Error("Library bcrypt belum dimuat.");
+}
+
+// CEK USERNAME
+
+const {data:userExists,error:userError}=await database.supabase
 .from("users")
 .select("id")
 .eq("username",userName)
 .maybeSingle();
+
+if(userError) throw userError;
 
 if(userExists){
 showRegisterAlert("❌ Username sudah digunakan.");
 return;
 }
 
-
-// =========================
 // CEK EMAIL
-// =========================
 
-const {data:emailExists}=await database.supabase
+const {data:emailExists,error:emailError}=await database.supabase
 .from("users")
 .select("id")
 .eq("email",userEmail)
 .maybeSingle();
+
+if(emailError) throw emailError;
 
 if(emailExists){
 showRegisterAlert("❌ Email sudah terdaftar.");
 return;
 }
 
-
-// =========================
 // HASH PASSWORD
-// =========================
-
-const hash=bcrypt.hashSync(userPassword,10);
-if(typeof bcrypt==="undefined"){
-throw new Error("Library bcrypt belum dimuat.");
-}
 
 const hash=bcrypt.hashSync(userPassword,10);
 
-// =========================
 // INSERT USER
-// =========================
 
 const {error}=await database.supabase
 .from("users")
@@ -184,13 +189,9 @@ email_verified:false
 
 });
 
-
 if(error) throw error;
 
-
-// =========================
 // SUCCESS
-// =========================
 
 showRegisterAlert(
 "✅ Pendaftaran berhasil. Mengalihkan ke login...",
@@ -203,13 +204,12 @@ window.location.href="login.html";
 
 },1500);
 
-
 }catch(err){
 
-console.error(err);
+console.error("REGISTER ERROR:",err);
 
 showRegisterAlert(
-"❌ "+err.message
+"❌ "+(err.message || "Terjadi kesalahan.")
 );
 
 }finally{
