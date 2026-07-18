@@ -14,13 +14,30 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:"Inter",sans-serif;}
-body{background:#f4f8ff;color:#111827;line-height:1.7;overflow-x:hidden;}
+body{
+background:var(--bg,#f4f8ff);
+color:var(--text,#111827);
+line-height:1.7;
+overflow-x:hidden;
+}
 a{text-decoration:none;color:inherit;}
 img{max-width:100%;display:block;}
 .container{width:min(1180px,94%);margin:auto;}
 
-.navbar{position:sticky;top:0;z-index:999;background:rgba(255,255,255,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.06);}
-.nav-inner{display:flex;justify-content:space-between;align-items:center;padding:16px 0;gap:20px;}
+.navbar{
+position:sticky;
+top:0;
+z-index:999;
+background:var(--nav,rgba(255,255,255,.88));
+}
+
+.nav-inner{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:16px 0;
+gap:20px;
+}
 .logo{display:flex;align-items:center;gap:12px;font-size:25px;font-weight:800;color:#2563eb;}
 .logo i{font-size:28px;}
 .nav-right{display:flex;gap:12px;}
@@ -31,7 +48,11 @@ img{max-width:100%;display:block;}
 
 .hero{padding:70px 0;}
 .hero-grid{display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:center;}
-.hero-box,.side-card{background:#fff;border-radius:28px;box-shadow:0 18px 45px rgba(15,23,42,.08);}
+.hero-box,.side-card{
+background:var(--card,#fff);
+border-radius:28px;
+box-shadow:0 18px 45px rgba(15,23,42,.08);
+}
 .hero-box{padding:50px;}
 .side-card{padding:28px;}
 .hero h1{font-size:46px;font-weight:800;line-height:1.2;margin-bottom:20px;}
@@ -42,6 +63,10 @@ img{max-width:100%;display:block;}
 #downloadBtn{background:#2563eb;color:#fff;box-shadow:0 15px 35px rgba(37,99,235,.25);}
 #downloadBtn:hover{background:#1d4ed8;}
 #scrollBtn{display:none;margin-top:20px;background:#22c55e;color:#fff;}
+#linkBtn:disabled{
+opacity:.5;
+cursor:not-allowed;
+}
 
 .progress-area{display:none;margin-top:25px;}
 .progress-bar{height:18px;background:#dbeafe;border-radius:30px;overflow:hidden;}
@@ -142,7 +167,7 @@ Tekan tombol di bawah untuk memproses link. Mohon tunggu hingga proses selesai s
 
 <div style="max-width:700px;margin:auto;">
 
-<button id="linkBtn" style="width:100%;padding:18px;border:none;border-radius:18px;background:#2563eb;color:#fff;font-size:19px;font-weight:700;cursor:pointer;">
+<button id="linkBtn" disabled style="width:100%;padding:18px;border:none;border-radius:18px;background:#2563eb;color:#fff;font-size:19px;font-weight:700;cursor:pointer;">
 <i class="fa-solid fa-link"></i>
 Generate Link
 </button>
@@ -232,14 +257,23 @@ TEMPAT IKLAN ADSTERRA 300x600
 <script src="js/database.js"></script>
 
 <script>
-
 const code=new URLSearchParams(location.search).get("code")||"";
+
+if(code){
+localStorage.setItem("task_code",code);
+}
 
 const downloadBtn=document.getElementById("downloadBtn");
 const progressArea=document.getElementById("progressArea");
 const progressFill=document.getElementById("progressFill");
 const progressText=document.getElementById("progressText");
 const scrollBtn=document.getElementById("scrollBtn");
+
+const linkBtn=document.getElementById("linkBtn");
+const loadingArea=document.getElementById("loadingArea");
+const loadingSecond=document.getElementById("loadingSecond");
+const nextBtn=document.getElementById("nextBtn");
+
 
 downloadBtn.onclick=function(){
 
@@ -259,6 +293,7 @@ if(p>=100){
 
 clearInterval(timer);
 
+progressText.textContent="Selesai";
 scrollBtn.style.display="block";
 
 }
@@ -267,21 +302,23 @@ scrollBtn.style.display="block";
 
 };
 
+
 scrollBtn.onclick=function(){
 
 document.getElementById("linkSection").scrollIntoView({
 behavior:"smooth"
 });
 
+linkBtn.disabled=false;
+
 };
 
-const linkBtn=document.getElementById("linkBtn");
-const loadingArea=document.getElementById("loadingArea");
-const loadingSecond=document.getElementById("loadingSecond");
-const nextBtn=document.getElementById("nextBtn");
 
 linkBtn.onclick=function(){
 
+if(linkBtn.disabled)return;
+
+linkBtn.disabled=true;
 linkBtn.style.display="none";
 loadingArea.style.display="block";
 
@@ -300,7 +337,6 @@ if(s<=0){
 clearInterval(timer);
 
 loadingArea.style.display="none";
-
 nextBtn.style.display="block";
 
 }
@@ -309,29 +345,60 @@ nextBtn.style.display="block";
 
 };
 
+
 nextBtn.onclick=async function(){
 
 try{
 
+if(!database||!database.supabase){
+
+alert("Database tidak tersedia");
+return;
+
+}
+
+
 const user=await database.getUser();
 
 if(!user){
-alert("Silakan login.");
+
+window.location.href="login.html";
 return;
+
 }
+
 
 const url=localStorage.getItem("create_url");
 
 if(!url){
+
 alert("URL tidak ditemukan.");
 return;
+
 }
+
 
 const shortCode=Math.random().toString(36).substring(2,8);
 
-const advanced=JSON.parse(localStorage.getItem("advanced_settings")||"{}");
 
-const{error}=await database.supabase.from("links").insert({
+let advanced={};
+
+try{
+
+advanced=JSON.parse(
+localStorage.getItem("advanced_settings")||"{}"
+);
+
+}catch(e){
+
+advanced={};
+
+}
+
+
+const {error}=await database.supabase
+.from("links")
+.insert({
 
 user_id:user.id,
 type:"ads",
@@ -357,6 +424,7 @@ link_type:"ads"
 
 });
 
+
 if(error){
 
 alert(error.message);
@@ -364,20 +432,20 @@ return;
 
 }
 
+
 localStorage.removeItem("create_url");
 
 window.location.href="task2.html?code="+shortCode;
 
+
 }catch(e){
 
 console.error(e);
-
 alert("Gagal membuat link.");
 
 }
 
 };
-
 </script>
 
 </body>
