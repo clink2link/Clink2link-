@@ -2,9 +2,47 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 const form=document.getElementById("resetForm");
 
+if(!form) return;
+
+// =========================
+// PASSWORD TOGGLE
+// =========================
+
+document.querySelectorAll(".toggle-password").forEach(btn=>{
+
+btn.addEventListener("click",function(e){
+
+e.preventDefault();
+
+const input=document.getElementById(this.dataset.target);
+
+if(!input) return;
+
+const icon=this.querySelector("i");
+
+if(input.type==="password"){
+
+input.type="text";
+icon.className="fa-solid fa-eye-slash";
+
+}else{
+
+input.type="password";
+icon.className="fa-solid fa-eye";
+
+}
+
+});
+
+});
+
+// =========================
+// CEK SESSION RESET
+// =========================
+
 try{
 
-const { data, error } = await database.supabase.auth.getSession();
+const {data,error}=await database.supabase.auth.getSession();
 
 if(error) throw error;
 
@@ -30,6 +68,9 @@ return;
 
 }
 
+// =========================
+// RESET PASSWORD
+// =========================
 
 form.addEventListener("submit",async(e)=>{
 
@@ -55,12 +96,11 @@ return;
 const btn=form.querySelector("button[type='submit']");
 
 btn.disabled=true;
-
 btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
 
 try{
 
-const { error }=await database.supabase.auth.updateUser({
+const {error}=await database.supabase.auth.updateUser({
 
 password:password
 
@@ -89,34 +129,5 @@ btn.innerHTML='<i class="fa-solid fa-check"></i> <span>Simpan Password</span>';
 }
 
 });
-
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    document.querySelectorAll(".toggle-password").forEach(btn => {
-
-        btn.addEventListener("click", function (e) {
-
-            e.preventDefault();
-
-            const input = document.getElementById(this.dataset.target);
-
-            if (!input) return;
-
-            const icon = this.querySelector("i");
-
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-            } else {
-                input.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-            }
-
-        });
-
-    });
 
 });
