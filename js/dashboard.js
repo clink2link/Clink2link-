@@ -599,13 +599,23 @@ if (sellCpm) {
 // REPORT TABLE
 // ===========================
 
-reportTable.innerHTML = reports.map(row => {
+const reportTable = document.getElementById("reportTable");
 
-const cpm = row.ads_views > 0
-? Math.round((Number(row.ads_earnings || 0) / Number(row.ads_views)) * 1000)
-: 0;
+if(reportTable){
 
-return `
+    if(reports.length){
+
+        reportTable.innerHTML = reports.map(row => {
+
+            const cpm =
+                Number(row.ads_views || 0) > 0
+                ? Math.round(
+                    (Number(row.ads_earnings || 0) /
+                    Number(row.ads_views || 0)) * 1000
+                )
+                : 0;
+
+            return `
 <tr>
 <td>${row.report_date}</td>
 <td>${Number(row.ads_views || 0).toLocaleString("id-ID")}</td>
@@ -619,11 +629,11 @@ Rp ${Number(row.ads_earnings || 0).toLocaleString("id-ID")}
 </tr>
 `;
 
-}).join("");
+        }).join("");
 
-}else{
+    }else{
 
-reportTable.innerHTML=`
+        reportTable.innerHTML = `
 <tr>
 <td colspan="5">
 Belum ada data report.
@@ -631,7 +641,7 @@ Belum ada data report.
 </tr>
 `;
 
-}
+    }
 
 }
 
