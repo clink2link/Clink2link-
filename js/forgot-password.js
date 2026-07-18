@@ -4,6 +4,14 @@ console.log("FORGOT PASSWORD JS LOADED");
 const btn=document.getElementById("resetBtn");
 
 
+if(!btn){
+
+console.error("resetBtn tidak ditemukan");
+
+}
+
+
+
 btn.addEventListener("click",async()=>{
 
 
@@ -34,23 +42,42 @@ btn.innerHTML=
 try{
 
 
-const {error}=await supabase.auth.resetPasswordForEmail(
-email,
-{
-redirectTo:"https://click2pay.my.id/reset-password.html"
+if(!window.database){
+
+throw new Error("Database belum dimuat");
+
 }
+
+
+
+const {error}=await database.supabase.auth.resetPasswordForEmail(
+
+email,
+
+{
+
+redirectTo:
+"https://click2pay.my.id/reset-password.html"
+
+}
+
 );
 
 
 
 if(error){
 
-console.error(error);
+console.error(
+"RESET PASSWORD ERROR:",
+error
+);
+
 
 alert(
-"Gagal mengirim link reset: "+
+"Gagal mengirim link reset:\n"+
 error.message
 );
+
 
 return;
 
@@ -59,7 +86,7 @@ return;
 
 
 alert(
-"Link reset password sudah dikirim ke email kamu."
+"✅ Link reset password sudah dikirim ke email kamu."
 );
 
 
@@ -67,11 +94,15 @@ alert(
 }catch(err){
 
 
-console.error(err);
+console.error(
+"SYSTEM ERROR:",
+err
+);
 
 
 alert(
-"Terjadi kesalahan sistem"
+"Terjadi kesalahan sistem:\n"+
+err.message
 );
 
 
@@ -83,7 +114,7 @@ btn.disabled=false;
 
 
 btn.innerHTML=
-'<i class="fa-solid fa-key"></i> Kirim Link Reset';
+'<i class="fa-solid fa-paper-plane"></i> <span>Kirim Link Reset</span>';
 
 
 }
