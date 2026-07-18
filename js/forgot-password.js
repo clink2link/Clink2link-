@@ -1,127 +1,36 @@
-document
-.getElementById("resetBtn")
-.addEventListener("click", async function(){
+document.getElementById("resetBtn").addEventListener("click", async () => {
 
-const email =
-document.getElementById("email")
-.value
-.trim()
-.toLowerCase();
+    const email = document
+        .getElementById("email")
+        .value
+        .trim()
+        .toLowerCase();
 
+    if (!email) {
+        alert("Masukkan email terlebih dahulu.");
+        return;
+    }
 
-if(!email){
+    try {
 
-alert("Masukkan email terlebih dahulu");
-return;
+        const { error } = await database.supabase.auth.resetPasswordForEmail(
+            email,
+            {
+                redirectTo:
+                    window.location.origin + "/reset-password.html"
+            }
+        );
 
-}
+        if (error) throw error;
 
+        alert("✅ Link reset password berhasil dikirim ke email.");
 
-try{
+    } catch (err) {
 
+        console.error(err);
 
-const {
-data:user,
-error:userError
-}=await supabase
-.from("users")
-.select("id,email,username")
-.eq("email",email)
-.single();
+        alert("❌ " + err.message);
 
-
-
-if(userError || !user){
-
-alert("Email tidak ditemukan");
-return;
-
-}
-
-
-
-const token =
-crypto.randomUUID();
-
-
-
-const expired =
-new Date(
-Date.now()+60*60*1000
-);
-
-
-
-const {
-error
-}=await supabase
-.from("password_resets")
-.insert({
-
-user_id:user.id,
-token:token,
-expired_at:expired
-
-});
-
-
-
-if(error){
-
-console.log(error);
-
-alert(
-"Gagal membuat reset password"
-);
-
-return;
-
-}
-
-
-
-const resetLink =
-window.location.origin+
-"/reset-password.html?token="+token;
-
-
-
-const sent =
-await sendResetEmail(
-email,
-user.username,
-resetLink
-);
-
-
-
-if(!sent){
-
-alert(
-"Gagal mengirim email"
-);
-
-return;
-
-}
-
-
-
-alert(
-"Link reset password sudah dikirim ke email kamu."
-);
-
-
-
-}catch(err){
-
-console.log(err);
-
-alert(
-"Terjadi kesalahan sistem"
-);
-
-}
-
+    }
 
 });
