@@ -28,14 +28,9 @@ return;
 // DATE
 // ===========================
 
-const now=new Date();
+const now = new Date();
 
-const todayDate=document.getElementById("todayDate");
-
-if(todayDate){
-
-todayDate.textContent=
-now.toLocaleString("id-ID",{
+const dateText = now.toLocaleString("id-ID",{
 day:"2-digit",
 month:"long",
 year:"numeric",
@@ -43,6 +38,29 @@ hour:"2-digit",
 minute:"2-digit"
 });
 
+const todayDate = document.getElementById("todayDate");
+if(todayDate){
+todayDate.textContent = dateText;
+}
+
+const todayDateSell = document.getElementById("todayDateSell");
+if(todayDateSell){
+todayDateSell.textContent = dateText;
+}
+
+const monthText = now.toLocaleString("id-ID",{
+month:"long",
+year:"numeric"
+});
+
+const adsMonthSelect = document.getElementById("adsMonthSelect");
+if(adsMonthSelect){
+adsMonthSelect.innerHTML = `<option>${monthText}</option>`;
+}
+
+const sellMonthSelect = document.getElementById("sellMonthSelect");
+if(sellMonthSelect){
+sellMonthSelect.innerHTML = `<option>${monthText}</option>`;
 }
 
 // ===========================
@@ -51,6 +69,8 @@ minute:"2-digit"
 
 const adsToday=document.getElementById("adsToday");
 const adsMonth=document.getElementById("adsMonth");
+const adsViewsMonth=document.getElementById("adsViewsMonth");
+const currentCpm=document.getElementById("currentCpm");
 
 if(adsToday){
 adsToday.textContent=
@@ -60,6 +80,11 @@ adsToday.textContent=
 if(adsMonth){
 adsMonth.textContent=
 "Rp "+Number(profile.ads_earning_month||0).toLocaleString("id-ID");
+}
+
+if(adsViewsMonth){
+adsViewsMonth.textContent=
+Number(profile.ads_views_month||0).toLocaleString("id-ID");
 }
 
 // ===========================
@@ -74,45 +99,64 @@ profile.sell_link_enabled===true||
 profile.sell_link_enabled===1||
 profile.sell_link_enabled==="1";
 
+const sellToday=document.getElementById("sellToday");
+const sellMonth=document.getElementById("sellMonth");
+const sellLastMonth=document.getElementById("sellLastMonth");
+const sellInfo=document.getElementById("sellInfo");
+
 if(sellActive){
 
-sellCards.forEach(el=>el.classList.remove("locked"));
+sellCards.forEach(card=>card.classList.remove("locked"));
 
 if(sellOption){
 sellOption.disabled=false;
 sellOption.textContent="🛒 Sell Link";
 }
 
-document.getElementById("sellToday").innerHTML=
+if(sellToday){
+sellToday.textContent=
 "Rp "+Number(profile.sell_earning_today||0).toLocaleString("id-ID");
+}
 
-document.getElementById("sellMonth").innerHTML=
+if(sellMonth){
+sellMonth.textContent=
 "Rp "+Number(profile.sell_earning_month||0).toLocaleString("id-ID");
+}
 
-const sellLastMonth=document.getElementById("sellLastMonth");
 if(sellLastMonth){
-sellLastMonth.innerHTML=
+sellLastMonth.textContent=
 "Rp "+Number(profile.sell_earning_last_month||0).toLocaleString("id-ID");
 }
 
-document.getElementById("sellInfo").innerHTML=
+if(sellInfo){
+sellInfo.innerHTML=
 '<i class="fa-solid fa-circle-check"></i> Sell Link sudah aktif.';
+}
 
 }else{
 
-sellCards.forEach(el=>el.classList.add("locked"));
+sellCards.forEach(card=>card.classList.add("locked"));
 
 if(sellOption){
 sellOption.disabled=true;
 sellOption.textContent="🛒 Sell Link 🔒";
 }
 
-document.getElementById("sellInfo").innerHTML=
-'<i class="fa-solid fa-lock"></i> Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.';
+if(sellToday){
+sellToday.textContent="Rp 0";
+}
 
-const sellLastMonth=document.getElementById("sellLastMonth");
+if(sellMonth){
+sellMonth.textContent="Rp 0";
+}
+
 if(sellLastMonth){
-sellLastMonth.innerHTML="Rp 0";
+sellLastMonth.textContent="Rp 0";
+}
+
+if(sellInfo){
+sellInfo.innerHTML=
+'<i class="fa-solid fa-lock"></i> Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.';
 }
 
 }
@@ -146,16 +190,18 @@ localStorage.setItem("create_url",url);
 
 if(type==="ads"){
 window.location.href="task1.html";
+return;
 }
 
 if(type==="sell"){
 
 if(!sellActive){
-alert("Sell Link belum tersedia. Selesaikan 1x Withdraw terlebih dahulu.");
+alert("Sell Link belum tersedia. Selesaikan minimal 1x Withdraw yang berhasil.");
 return;
 }
 
 window.location.href="bayargg.html";
+return;
 
 }
 
@@ -175,7 +221,7 @@ let sellViews=0;
 let sellClicks=0;
 let totalSell=0;
 
-if(links){
+if(Array.isArray(links)){
 
 links.forEach(link=>{
 
@@ -194,27 +240,39 @@ totalSell++;
 
 }
 
-document.getElementById("adsViews").innerHTML=
+const adsViewsEl=document.getElementById("adsViews");
+if(adsViewsEl){
+adsViewsEl.textContent=
 adsViews.toLocaleString("id-ID");
+}
 
-document.getElementById("adsClicks").innerHTML=
+const adsClicksEl=document.getElementById("adsClicks");
+if(adsClicksEl){
+adsClicksEl.textContent=
 adsClicks.toLocaleString("id-ID");
+}
+
+const adsViewsMonth=document.getElementById("adsViewsMonth");
+if(adsViewsMonth){
+adsViewsMonth.textContent=
+adsViews.toLocaleString("id-ID");
+}
 
 const sellViewsEl=document.getElementById("sellViews");
 if(sellViewsEl){
-sellViewsEl.innerHTML=
+sellViewsEl.textContent=
 sellViews.toLocaleString("id-ID");
 }
 
 const sellClicksEl=document.getElementById("sellClicks");
 if(sellClicksEl){
-sellClicksEl.innerHTML=
+sellClicksEl.textContent=
 sellClicks.toLocaleString("id-ID");
 }
 
 const sellTotalLink=document.getElementById("sellTotalLink");
 if(sellTotalLink){
-sellTotalLink.innerHTML=
+sellTotalLink.textContent=
 totalSell.toLocaleString("id-ID");
 }
 
@@ -245,7 +303,7 @@ return Math.floor(Math.random()*(max-min+1))+min;
 const currentCpm=document.getElementById("currentCpm");
 
 if(currentCpm){
-currentCpm.innerHTML=
+currentCpm.textContent=
 "Rp "+getTodayCPM().toLocaleString("id-ID");
 }
 
@@ -270,15 +328,29 @@ advancedModal.classList.remove("active");
 };
 }
 
+if(advancedModal){
+
+advancedModal.onclick=(e)=>{
+
+if(e.target===advancedModal){
+advancedModal.classList.remove("active");
+}
+
+};
+
+}
+
 if(saveAdvanced&&advancedModal){
 
 saveAdvanced.onclick=()=>{
 
 const advancedData={
+
 alias:document.getElementById("customAlias")?.value.trim()||"",
-expired:document.getElementById("expiredLink")?.value||"",
+expired:document.getElementById("expiredLink")?.value||"never",
 campaign:document.getElementById("campaignName")?.value.trim()||"",
-device:document.getElementById("targetDevice")?.value||""
+device:document.getElementById("targetDevice")?.value||"all"
+
 };
 
 localStorage.setItem(
@@ -288,14 +360,14 @@ JSON.stringify(advancedData)
 
 advancedModal.classList.remove("active");
 
-alert("Advanced Settings tersimpan.");
+alert("Advanced Settings berhasil disimpan.");
 
 };
 
 }
 
 // ===========================
-// CHART ADS
+// CHART ADS & SELL
 // ===========================
 
 const reports=await database.getReports(authId);
@@ -303,9 +375,9 @@ const reports=await database.getReports(authId);
 let labels=[];
 let views=[];
 
-if(reports&&reports.length){
+if(Array.isArray(reports)&&reports.length){
 
-const chartData=reports.slice(0,7).reverse();
+const chartData=reports.slice(-7);
 
 labels=chartData.map(item=>item.report_date);
 views=chartData.map(item=>Number(item.views||0));
@@ -326,35 +398,16 @@ views=[0,0,0,0,0,0,0];
 
 }
 
-const adsCanvas=document.getElementById("adsChart");
+const commonOptions={
 
-if(adsCanvas){
-
-new Chart(adsCanvas,{
-type:"line",
-data:{
-labels,
-datasets:[{
-label:"Views",
-data:views,
-borderColor:"#2563eb",
-backgroundColor:"rgba(37,99,235,.12)",
-borderWidth:3,
-fill:true,
-tension:.45,
-pointRadius:5,
-pointHoverRadius:8,
-pointBackgroundColor:"#2563eb",
-pointBorderWidth:2
-}]
-},
-options:{
 responsive:true,
 maintainAspectRatio:false,
+
 interaction:{
 mode:"index",
 intersect:false
 },
+
 plugins:{
 legend:{
 display:false
@@ -366,9 +419,12 @@ titleFont:{size:13},
 bodyFont:{size:14}
 }
 },
+
 scales:{
 x:{
-grid:{display:false}
+grid:{
+display:false
+}
 },
 y:{
 beginAtZero:true,
@@ -377,7 +433,85 @@ color:"rgba(148,163,184,.15)"
 }
 }
 }
+
+};
+
+// ===========================
+// ADS CHART
+// ===========================
+
+const adsCanvas=document.getElementById("adsChart");
+
+if(adsCanvas){
+
+new Chart(adsCanvas,{
+
+type:"line",
+
+data:{
+labels,
+datasets:[{
+
+label:"Views",
+data:views,
+
+borderColor:"#2563eb",
+backgroundColor:"rgba(37,99,235,.12)",
+
+borderWidth:3,
+fill:true,
+tension:.45,
+
+pointRadius:5,
+pointHoverRadius:8,
+pointBackgroundColor:"#2563eb",
+pointBorderWidth:2
+
+}]
+},
+
+options:commonOptions
+
+});
+
 }
+
+// ===========================
+// SELL CHART
+// ===========================
+
+const sellCanvas=document.getElementById("sellChart");
+
+if(sellCanvas){
+
+new Chart(sellCanvas,{
+
+type:"line",
+
+data:{
+labels,
+datasets:[{
+
+label:"Views",
+data:sellActive?views:[0,0,0,0,0,0,0],
+
+borderColor:"#8b5cf6",
+backgroundColor:"rgba(139,92,246,.12)",
+
+borderWidth:3,
+fill:true,
+tension:.45,
+
+pointRadius:5,
+pointHoverRadius:8,
+pointBackgroundColor:"#8b5cf6",
+pointBorderWidth:2
+
+}]
+},
+
+options:commonOptions
+
 });
 
 }
@@ -387,52 +521,62 @@ color:"rgba(148,163,184,.15)"
 // ===========================
 
 const adsCpm=document.getElementById("adsCpm");
+const sellCpm=document.getElementById("sellCpm");
 
 if(adsCpm){
-
-if(reports&&reports.length){
-adsCpm.innerHTML=
-Number(reports[0].daily_cpm||0).toLocaleString("id-ID");
-}else{
-adsCpm.innerHTML="0";
+adsCpm.textContent=
+Array.isArray(reports)&&reports.length
+? Number(reports[0].daily_cpm||0).toLocaleString("id-ID")
+: "0";
 }
 
+if(sellCpm){
+sellCpm.textContent=
+sellActive
+? (Array.isArray(reports)&&reports.length
+? Number(reports[0].daily_cpm||0).toLocaleString("id-ID")
+: "0")
+: "0";
 }
 
 // ===========================
 // REPORT TABLE
 // ===========================
 
-let reportHTML="";
-
-if(reports&&reports.length){
-
-reports.forEach(row=>{
-
-reportHTML+=`
-<tr>
-<td>${row.report_date}</td>
-<td>${Number(row.views||0).toLocaleString("id-ID")}</td>
-<td class="earning">Rp ${Number(row.link_earnings||0).toLocaleString("id-ID")}</td>
-<td>${Number(row.daily_cpm||0).toLocaleString("id-ID")}</td>
-<td>Rp ${Number(row.penghasilan||0).toLocaleString("id-ID")}</td>
-</tr>`;
-
-});
-
-}else{
-
-reportHTML=`
-<tr>
-<td colspan="5">Belum ada data report.</td>
-</tr>`;
-
-}
-
 const reportTable=document.getElementById("reportTable");
 
 if(reportTable){
-reportTable.innerHTML=reportHTML;
+
+if(Array.isArray(reports)&&reports.length){
+
+reportTable.innerHTML=reports.map(row=>`
+
+<tr>
+<td>${row.report_date||"-"}</td>
+<td>${Number(row.views||0).toLocaleString("id-ID")}</td>
+<td class="earning">
+Rp ${Number(row.link_earnings||0).toLocaleString("id-ID")}
+</td>
+<td>${Number(row.daily_cpm||0).toLocaleString("id-ID")}</td>
+<td>
+Rp ${Number(row.penghasilan||0).toLocaleString("id-ID")}
+</td>
+</tr>
+
+`).join("");
+
+}else{
+
+reportTable.innerHTML=`
+<tr>
+<td colspan="5">
+Belum ada data report.
+</td>
+</tr>
+`;
+
+}
+
 }
 
 // ===========================
@@ -441,30 +585,27 @@ reportTable.innerHTML=reportHTML;
 
 const news=await database.getAnnouncements();
 
-let newsHTML="";
-
-if(news&&news.length){
-
-news.forEach(item=>{
-
-newsHTML+=`
-<div style="margin-bottom:15px">
-<b>${item.title}</b>
-<p>${item.content}</p>
-</div>`;
-
-});
-
-}else{
-
-newsHTML="Belum ada pengumuman.";
-
-}
-
 const announcementBox=document.getElementById("announcementBox");
 
 if(announcementBox){
-announcementBox.innerHTML=newsHTML;
+
+if(Array.isArray(news)&&news.length){
+
+announcementBox.innerHTML=news.map(item=>`
+<div style="margin-bottom:18px">
+<b>${item.title||"Pengumuman"}</b>
+<p style="margin:8px 0 0">
+${item.content||""}
+</p>
+</div>
+`).join("");
+
+}else{
+
+announcementBox.innerHTML="Belum ada pengumuman.";
+
+}
+
 }
 
 }catch(error){
@@ -482,7 +623,7 @@ console.error("Dashboard Error:",error);
 document.addEventListener("DOMContentLoaded",()=>{
 
 const cards=document.querySelectorAll(
-".dash-card,.dash-box,.report-card,.stats-box"
+".dash-card,.dash-box,.report-card,.stats-box,.create-form"
 );
 
 cards.forEach((item,index)=>{
@@ -492,11 +633,11 @@ item.style.transform="translateY(30px)";
 
 setTimeout(()=>{
 
-item.style.transition=".6s";
+item.style.transition=".6s ease";
 item.style.opacity="1";
 item.style.transform="translateY(0)";
 
-},index*100);
+},index*80);
 
 });
 
@@ -507,6 +648,16 @@ item.style.transform="translateY(0)";
 // ===========================
 
 function autoTheme(){
+
+if(localStorage.getItem("theme")==="dark"){
+document.body.classList.add("dark");
+return;
+}
+
+if(localStorage.getItem("theme")==="light"){
+document.body.classList.remove("dark");
+return;
+}
 
 const jam=new Date().getHours();
 
@@ -526,4 +677,8 @@ setInterval(autoTheme,60000);
 // LOAD DASHBOARD
 // ===========================
 
+document.addEventListener("DOMContentLoaded",()=>{
+
 loadDashboard();
+
+});
