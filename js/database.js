@@ -13,7 +13,12 @@ const supabaseClient = supabase.createClient(
 );
 
 
+// Password verification sementara untuk login lama
 async function verifyPassword(password, hash){
+
+if(typeof bcrypt === "undefined"){
+throw new Error("bcrypt belum dimuat");
+}
 
 return bcrypt.compareSync(
 password,
