@@ -325,39 +325,38 @@ return data;
 // EXPORT
 // ===============================
 
-window.database={
+window.database = {
+    supabase: supabaseClient,
 
-supabase:supabaseClient,
+    verifyPassword,
 
-verifyPassword,
+    getUser,
+    logout,
 
-getUser,
-logout,
+    getUsers,
 
-getUsers,
+    getProfile,
+    getProfiles,
 
-getProfile,
-getProfiles,
+    getLinks,
+    updateLink,
+    deleteLink,
 
-getLinks,
-updateLink,
-deleteLink,
+    getShortlinks,
 
-getShortlinks,
+    getClicks,
 
-getClicks,
+    getTransactions,
 
-getTransactions,
+    getWithdrawals,
+    getWithdraws,
 
-getWithdrawals,
-getWithdraws,
+    getAnnouncements,
 
-getAnnouncements,
-
-getDashboardReport,
-getReports
-
+    getDashboardReport,
+    getReports
 };
 
 
-console.log("DATABASE JS READY");
+// TEST
+console.log("DATABASE JS READY", window.database);ASE JS READY");
