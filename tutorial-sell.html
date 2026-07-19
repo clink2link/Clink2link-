@@ -9,9 +9,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/theme.css">
-<link rel="stylesheet" href="../css/navbar.css">
-<link rel="stylesheet" href="../css/tutorial.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/tutorial.css">
+<link rel="stylesheet" href="css/footer.css">
 
 </head>
 
@@ -165,28 +165,30 @@ Pastikan produk atau akses yang dijual sesuai aturan Click2Pay agar akun tetap a
 
 
 
-<a href="../dashboard.html" class="tutorial-back">
-<i class="fa-solid fa-arrow-left"></i>
-Kembali Dashboard
+<div class="tutorial-buttons">
+
+<a href="../index.html" class="tutorial-btn btn-home">
+<i class="fa-solid fa-house"></i>
+Beranda
 </a>
 
+<a href="../dashboard.html" class="tutorial-btn btn-dashboard">
+<i class="fa-solid fa-gauge-high"></i>
+Dashboard
+</a>
+
+</div>
+
 
 </div>
 
 </div>
+<div>footer</div>
+
+<script src="js/theme.js"></script>
+<script src="js/footer.js"></script>
 
 
-<script src="../js/theme.js"></script>
-<script src="../js/navbar.js"></script>
-
-<script>
-fetch("../components/navbar.html")
-.then(res=>res.text())
-.then(data=>{
-document.getElementById("navbar").innerHTML=data;
-if(typeof c2pInit==="function") c2pInit();
-});
-</script>
 
 </body>
 </html>
