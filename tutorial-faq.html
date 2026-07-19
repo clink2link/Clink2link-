@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>FAQ Click2Pay</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/tutorial.css">
+
+
+<style>
+
+.faq-list{
+display:grid;
+gap:14px;
+margin-top:20px;
+}
+
+
+.faq-item{
+
+background:#f8fafc;
+border:1px solid #e2e8f0;
+border-radius:16px;
+overflow:hidden;
+}
+
+
+.faq-question{
+
+width:100%;
+padding:16px;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+
+border:none;
+background:none;
+
+font:600 14px Poppins,sans-serif;
+cursor:pointer;
+text-align:left;
+color:#0f172a;
+
+}
+
+
+.faq-question i:first-child{
+color:#2563eb;
+}
+
+
+.faq-answer{
+
+display:none;
+padding:0 16px 16px;
+
+font-size:13px;
+line-height:1.6;
+color:#64748b;
+
+}
+
+
+.faq-item.active .faq-answer{
+display:block;
+}
+
+
+.faq-item.active .fa-chevron-down{
+transform:rotate(180deg);
+}
+
+
+.faq-question .fa-chevron-down{
+transition:.25s;
+}
+
+
+
+.help-grid{
+
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:14px;
+margin-top:20px;
+
+}
+
+
+
+.help-card{
+
+padding:16px;
+border-radius:16px;
+background:#eff6ff;
+border:1px solid #dbeafe;
+
+}
+
+
+
+.help-card i{
+
+font-size:22px;
+color:#2563eb;
+margin-bottom:10px;
+
+}
+
+
+.help-card h3{
+
+margin:0;
+font-size:15px;
+
+}
+
+
+.help-card p{
+
+margin:6px 0 0;
+font-size:12px;
+color:#64748b;
+
+}
+
+
+
+
+.tutorial-buttons{
+
+display:flex;
+gap:12px;
+margin-top:25px;
+
+}
+
+
+
+.tutorial-btn{
+
+flex:1;
+
+height:45px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+gap:8px;
+
+border-radius:14px;
+
+text-decoration:none;
+
+font-size:14px;
+font-weight:600;
+
+}
+
+
+
+.btn-home{
+
+background:#eff6ff;
+color:#2563eb;
+
+}
+
+
+.btn-dashboard{
+
+background:#2563eb;
+color:white;
+
+}
+
+
+
+
+body.dark .faq-item{
+
+background:#1e293b;
+border-color:#334155;
+
+}
+
+
+body.dark .faq-question{
+
+color:#fff;
+
+}
+
+
+body.dark .faq-answer{
+
+color:#94a3b8;
+
+}
+
+
+body.dark .help-card{
+
+background:#1e293b;
+border-color:#334155;
+
+}
+
+
+body.dark .help-card p{
+
+color:#94a3b8;
+
+}
+
+
+
+
+@media(max-width:700px){
+
+.help-grid{
+
+grid-template-columns:1fr;
+
+}
+
+
+.tutorial-buttons{
+
+flex-direction:column;
+
+}
+
+}
+
+</style>
+
+
+</head>
+
+
+<body class="tutorial-body">
+
+
+<div id="navbar"></div>
+
+
+
+<div class="tutorial-container">
+
+
+
+<div class="tutorial-header">
+
+
+<h1>
+
+<i class="fa-solid fa-circle-question"></i>
+
+Pusat Bantuan Click2Pay
+
+</h1>
+
+
+<p>
+
+Pertanyaan yang sering ditanyakan pengguna.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="tutorial-box">
+
+
+
+
+
+<div class="faq-list">
+
+
+
+<div class="faq-item">
+
+
+<button class="faq-question">
+
+<span>
+<i class="fa-solid fa-link"></i>
+Bagaimana cara membuat Ads Link?
+</span>
+
+<i class="fa-solid fa-chevron-down"></i>
+
+</button>
+
+
+<div class="faq-answer">
+
+Masuk ke Dashboard, buka menu Create Link, masukkan URL tujuan, pilih Ads Link lalu tekan tombol Create.
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="faq-item">
+
+
+<button class="faq-question">
+
+<span>
+
+<i class="fa-solid fa-chart-line"></i>
+
+Kenapa statistik belum bertambah?
+
+</span>
+
+
+<i class="fa-solid fa-chevron-down"></i>
+
+</button>
+
+
+<div class="faq-answer">
+
+Pastikan pengunjung berasal dari traffic valid. Sistem membutuhkan waktu untuk memproses data klik dan view.
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="faq-item">
+
+
+<button class="faq-question">
+
+<span>
+
+<i class="fa-solid fa-wallet"></i>
+
+Kapan saldo bisa ditarik?
+
+</span>
+
+
+<i class="fa-solid fa-chevron-down"></i>
+
+</button>
+
+
+<div class="faq-answer">
+
+Saldo dapat ditarik setelah memenuhi batas minimum withdraw dan data pembayaran sudah lengkap.
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="faq-item">
+
+
+<button class="faq-question">
+
+<span>
+
+<i class="fa-solid fa-money-bill-transfer"></i>
+
+Berapa lama proses withdraw?
+
+</span>
+
+
+<i class="fa-solid fa-chevron-down"></i>
+
+</button>
+
+
+<div class="faq-answer">
+
+Waktu proses tergantung pemeriksaan sistem dan metode pembayaran yang digunakan.
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="faq-item">
+
+
+<button class="faq-question">
+
+<span>
+
+<i class="fa-solid fa-ban"></i>
+
+Kenapa akun bisa dibatasi?
+
+</span>
+
+
+<i class="fa-solid fa-chevron-down"></i>
+
+</button>
+
+
+<div class="faq-answer">
+
+Akun dapat dibatasi jika ditemukan bot traffic, spam, manipulasi klik, atau pelanggaran aturan.
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="faq-item">
+
+
+<button class="faq-question">
+
+<span>
+
+<i class="fa-solid fa-user-lock"></i>
+
+Apakah password aman?
+
+</span>
+
+
+<i class="fa-solid fa-chevron-down"></i>
+
+</button>
+
+
+<div class="faq-answer">
+
+Jangan pernah membagikan password kepada siapa pun. Gunakan password kuat untuk menjaga akun.
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="help-grid">
+
+
+
+<div class="help-card">
+
+<i class="fa-solid fa-book"></i>
+
+<h3>Panduan</h3>
+
+<p>
+
+Pelajari semua fitur Click2Pay.
+
+</p>
+
+</div>
+
+
+
+
+<div class="help-card">
+
+<i class="fa-solid fa-headset"></i>
+
+<h3>Support</h3>
+
+<p>
+
+Hubungi bantuan jika mengalami masalah.
+
+</p>
+
+</div>
+
+
+
+
+<div class="help-card">
+
+<i class="fa-solid fa-shield-halved"></i>
+
+<h3>Keamanan</h3>
+
+<p>
+
+Jaga akun dari aktivitas mencurigakan.
+
+</p>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="tutorial-buttons">
+
+
+<a href="index.html" class="tutorial-btn btn-home">
+
+<i class="fa-solid fa-house"></i>
+
+Beranda
+
+</a>
+
+
+
+
+<a href="dashboard.html" class="tutorial-btn btn-dashboard">
+
+<i class="fa-solid fa-gauge-high"></i>
+
+Dashboard
+
+</a>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+<div id="footer"></div>
+
+
+
+
+<script src="js/theme.js"></script>
+<script src="js/footer.js"></script>
+
+
+<script>
+
+document.querySelectorAll(".faq-question")
+.forEach(btn=>{
+
+btn.onclick=()=>{
+
+btn.parentElement.classList.toggle("active");
+
+}
+
+});
+
+</script>
+
+
+</body>
+
+</html>
