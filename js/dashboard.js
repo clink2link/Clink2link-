@@ -701,20 +701,28 @@ setInterval(autoTheme,60000);
 // LOAD DASHBOARD
 // ===========================
 
-document.addEventListener("DOMContentLoaded",async()=>{
+document.addEventListener("DOMContentLoaded",()=>{
 
-await loadDashboard();
+loadDashboard();
 
-if(location.hash==="#statistics"){
+const params=new URLSearchParams(location.search);
+
+if(params.get("tab")==="statistics"){
 
 setTimeout(()=>{
 
-document.getElementById("statistics")?.scrollIntoView({
+const section=document.getElementById("statistics");
+
+if(section){
+
+section.scrollIntoView({
 behavior:"smooth",
 block:"start"
 });
 
-},300);
+}
+
+},700);
 
 }
 
