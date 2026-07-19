@@ -686,16 +686,6 @@ Lanjut Task 2
 
 </section>
 
-<a
-    id="btnads"
-    href="https://nooseamazingbatch.com/tmbrfhmu?key=d8893e075aeb69f02ecfe4522c9334e7"
-    target="_blank"
-    rel="noopener noreferrer"
->
-    <i class="fa-solid fa-download"></i>
-    Download Sekarang
-</a>
-
 <script>
   atOptions = {
     'key' : '8752784473417077186151b735b9c11b',
@@ -882,22 +872,6 @@ generate link berjalan dengan baik.
 
 <script>
 
-downloadBtn.disabled = false;
-
-scrollBtn.style.display = "none";
-
-linkBtn.disabled = true;
-
-loadingArea.style.display = "none";
-
-nextBtn.style.display = "none";
-    
-const code = new URLSearchParams(location.search).get("code") || "";
-
-if (code) {
-    localStorage.setItem("task_code", code);
-}
-
 const downloadBtn = document.getElementById("downloadBtn");
 const progressArea = document.getElementById("progressArea");
 const progressFill = document.getElementById("progressFill");
@@ -909,25 +883,47 @@ const loadingArea = document.getElementById("loadingArea");
 const loadingSecond = document.getElementById("loadingSecond");
 const nextBtn = document.getElementById("nextBtn");
 
-
 const slideAd = document.getElementById("slideAd");
 const closeAd = document.getElementById("closeSlideAd");
+
+// ==========================
+// INISIALISASI
+// ==========================
+
+downloadBtn.disabled = false;
+scrollBtn.style.display = "none";
+linkBtn.disabled = true;
+loadingArea.style.display = "none";
+nextBtn.style.display = "none";
+
+// ==========================
+// SIMPAN CODE
+// ==========================
+
+const code = new URLSearchParams(location.search).get("code") || "";
+
+if (code) {
+    localStorage.setItem("task_code", code);
+}
+
+// ==========================
+// SLIDE ADS
+// ==========================
 
 let adOpened = false;
 
 document.addEventListener("pointerdown", () => {
 
-    if(adOpened) return;
+    if (adOpened) return;
 
     adOpened = true;
-
     slideAd.classList.add("show");
 
-}, { once:true });
+}, { once: true });
 
 closeAd.onclick = () => {
-
     slideAd.classList.remove("show");
+};
 
 };
 // ==========================
