@@ -1055,6 +1055,96 @@ body.dark .sell-card.locked::after{
 background:rgba(15,23,42,.78);
 color:#cbd5e1;
 }
+
+
+.guide-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:14px;
+margin-top:18px;
+}
+
+.guide-card{
+padding:16px;
+border:1px solid #e2e8f0;
+border-radius:16px;
+background:#fff;
+transition:.25s;
+display:flex;
+flex-direction:column;
+}
+
+.guide-card:hover{
+transform:translateY(-3px);
+box-shadow:0 10px 25px rgba(15,23,42,.08);
+}
+
+.guide-icon{
+width:42px;
+height:42px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+margin-bottom:12px;
+background:#2563eb;
+color:#fff;
+font-size:18px;
+}
+
+.guide-icon.green{background:#10b981;}
+.guide-icon.orange{background:#f97316;}
+.guide-icon.purple{background:#8b5cf6;}
+.guide-icon.red{background:#ef4444;}
+.guide-icon.cyan{background:#06b6d4;}
+.guide-icon.pink{background:#ec4899;}
+.guide-icon.yellow{background:#eab308;}
+
+.guide-card h3{
+margin:0;
+font-size:16px;
+}
+
+.guide-card p{
+margin:8px 0 14px;
+font-size:13px;
+color:#64748b;
+line-height:1.5;
+flex:1;
+}
+
+.guide-btn{
+height:40px;
+border:none;
+border-radius:10px;
+background:#2563eb;
+color:#fff;
+font:600 13px Poppins,sans-serif;
+cursor:pointer;
+transition:.2s;
+}
+
+.guide-btn:hover{
+background:#1d4ed8;
+}
+
+body.dark .guide-card{
+background:#0f172a;
+border-color:#1e293b;
+}
+
+body.dark .guide-card p{
+color:#94a3b8;
+}
+
+@media(max-width:600px){
+.guide-grid{
+grid-template-columns:1fr;
+}
+.guide-card{
+padding:14px;
+}
+}
 </style>
 
 </head>
@@ -1078,168 +1168,165 @@ Dashboard Click2Pay
 
 
 
-<!-- CREATE LINK -->
+<!-- ===========================
+     QUICK GUIDE
+=========================== -->
 
-<div class="create-form">
+<div class="dash-box">
 
-<div class="create-header">
-<div class="create-icon">
-<i class="fa-solid fa-bolt"></i>
-</div>
+<h2>
+<i class="fa-solid fa-book-open"></i>
+Panduan Click2Pay
+</h2>
 
-<div>
-<h2>Create Link</h2>
-<p>Buat Ads Link atau Sell Link dengan mudah.</p>
-</div>
-</div>
+<p style="margin:8px 0 18px;color:#64748b">
+Pelajari semua fitur Click2Pay sebelum mulai menghasilkan uang.
+</p>
 
-<label>Destination URL</label>
+<div class="guide-grid">
 
-<div class="input-box">
-<i class="fa-solid fa-globe"></i>
-<input
-type="url"
-id="urlInput"
-placeholder="https://example.com">
-</div>
-
-<label>Link Type</label>
-
-<div class="input-box">
+<div class="guide-card">
+<div class="guide-icon">
 <i class="fa-solid fa-link"></i>
-
-<select id="linkType">
-<option value="ads">Ads Link</option>
-<option value="sell" disabled>Sell Link 🔒</option>
-</select>
 </div>
 
-<div class="btn-group">
-<button class="btn-primary" id="shortenBtn">
-<i class="fa-solid fa-wand-magic-sparkles"></i>
-Create Link
-</button>
+<h3>Buat Ads Link</h3>
 
-<button class="btn-secondary" id="advanceBtn">
-<i class="fa-solid fa-sliders"></i>
-Advanced
-</button>
-</div>
+<p>
+Pelajari cara membuat Ads Link pertama dan membagikannya.
+</p>
 
-<div class="create-note">
-<i class="fa-solid fa-shield-check"></i>
-Sell Link akan aktif setelah 1× Withdraw.
-</div>
-
-<div id="sellInfo" class="create-note">
-<i class="fa-solid fa-lock"></i>
-Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.
-</div>
-
-<div id="resultBox" style="display:none;margin-top:18px;padding:15px;border:1px solid #dbeafe;border-radius:14px;background:#f8fbff">
-<b>✅ Link Berhasil Dibuat</b>
-
-<input
-id="resultLink"
-readonly
-style="width:100%;margin:10px 0;padding:12px;border:1px solid #dbeafe;border-radius:10px">
-
-<button
-id="copyLinkBtn"
-class="btn-primary"
-style="width:100%;margin-top:10px">
-<i class="fa-solid fa-copy"></i>
-Copy Link
-</button>
-</div>
-
-</div>
-
-<!-- ADVANCED MODAL -->
-
-<div id="advancedModal" class="advanced-modal">
-
-<div class="advanced-box">
-
-<div class="advanced-header">
-<h3>
-<i class="fa-solid fa-sliders"></i>
-Advanced Settings
-</h3>
-
-<button id="closeAdvanced">
-<i class="fa-solid fa-xmark"></i>
+<button class="guide-btn">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
 </button>
 </div>
 
 
-<label>Custom Alias</label>
-
-<div class="input-box">
-<i class="fa-solid fa-tag"></i>
-<input 
-id="customAlias"
-placeholder="contoh: promo-juli">
+<div class="guide-card">
+<div class="guide-icon purple">
+<i class="fa-solid fa-cart-shopping"></i>
 </div>
 
+<h3>Buat Sell Link</h3>
 
-<label>Expired Link</label>
+<p>
+Cara mengaktifkan Sell Link dan menjual akses premium.
+</p>
 
-<div class="input-box">
-<i class="fa-solid fa-clock"></i>
-
-<select id="expiredLink">
-<option value="never">Tidak Pernah</option>
-<option value="1">1 Hari</option>
-<option value="7">7 Hari</option>
-<option value="30">30 Hari</option>
-</select>
-
-</div>
-
-
-<label>Campaign Name</label>
-
-<div class="input-box">
-<i class="fa-solid fa-bullseye"></i>
-
-<input
-id="campaignName"
-placeholder="contoh: Promo Facebook">
-
-</div>
-
-
-<label>Target Device</label>
-
-<div class="input-box">
-
-<i class="fa-solid fa-mobile-screen"></i>
-
-<select id="targetDevice">
-
-<option value="all">
-Semua Device
-</option>
-
-<option value="android">
-Android
-</option>
-
-<option value="ios">
-iPhone / iOS
-</option>
-
-</select>
-
-</div>
-
-
-<button id="saveAdvanced" class="btn-primary">
-<i class="fa-solid fa-check"></i>
-Simpan
+<button class="guide-btn">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
 </button>
+</div>
 
+
+<div class="guide-card">
+<div class="guide-icon green">
+<i class="fa-solid fa-chart-line"></i>
+</div>
+
+<h3>Lihat Statistik</h3>
+
+<p>
+Pelajari arti Views, Click, CPM dan Pendapatan.
+</p>
+
+<button class="guide-btn">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
+</div>
+
+
+<div class="guide-card">
+<div class="guide-icon orange">
+<i class="fa-solid fa-wallet"></i>
+</div>
+
+<h3>Withdraw</h3>
+
+<p>
+Cara menarik saldo ke rekening atau e-wallet.
+</p>
+
+<button class="guide-btn">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
+</div>
+
+
+<div class="guide-card">
+<div class="guide-icon red">
+<i class="fa-solid fa-money-bill-trend-up"></i>
+</div>
+
+<h3>Mendapatkan Penghasilan</h3>
+
+<p>
+Tips meningkatkan traffic dan pendapatan harian.
+</p>
+
+<button class="guide-btn">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
+</div>
+
+
+<div class="guide-card">
+<div class="guide-icon cyan">
+<i class="fa-solid fa-user-gear"></i>
+</div>
+
+<h3>Pengaturan Akun</h3>
+
+<p>
+Mengubah profil, password, atau pengaturan akun.
+</p>
+
+<button class="guide-btn">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
+</div>
+
+
+<div class="guide-card">
+<div class="guide-icon pink">
+<i class="fa-solid fa-trash"></i>
+</div>
+
+<h3>Hapus Akun</h3>
+
+<p>
+Panduan menonaktifkan atau menghapus akun permanen.
+</p>
+
+<button class="guide-btn">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
+</div>
+
+
+<div class="guide-card">
+<div class="guide-icon yellow">
+<i class="fa-solid fa-circle-question"></i>
+</div>
+
+<h3>Pusat Bantuan</h3>
+
+<p>
+FAQ, pertanyaan yang sering ditanyakan pengguna.
+</p>
+
+<button class="guide-btn">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
+</div>
 
 </div>
 
