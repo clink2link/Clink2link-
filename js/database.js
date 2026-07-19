@@ -16,40 +16,103 @@ SUPABASE_ANON_KEY
 
 
 // ===============================
-// AUTH
+// AUTH USER TABLE
 // ===============================
 
 async function getUser(){
 
-const {
-data:{session},
-error
-}=await supabaseClient.auth.getSession();
+    try{
 
-console.log("SESSION:",session);
 
-if(error){
-console.error(error);
-return null;
+        const userId =
+        localStorage.getItem("user_id");
+
+
+
+        if(!userId){
+
+            console.log(
+                "USER ID TIDAK ADA"
+            );
+
+            return null;
+
+        }
+
+
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+
+        .from("users")
+
+        .select("*")
+
+        .eq(
+            "id",
+            userId
+        )
+
+        .single();
+
+
+
+        if(error){
+
+            console.error(
+                "GET USER ERROR:",
+                error
+            );
+
+            return null;
+
+        }
+
+
+
+        return data;
+
+
+
+    }catch(err){
+
+
+        console.error(
+            "AUTH ERROR:",
+            err
+        );
+
+
+        return null;
+
+
+    }
+
 }
 
-if(!session){
-console.log("TIDAK ADA SESSION SUPABASE");
-return null;
-}
 
-return session.user;
 
-}
 
 
 async function logout(){
 
-const {error}=await supabaseClient.auth.signOut();
 
-if(error){
-console.error("Logout Error:",error);
-}
+    localStorage.removeItem(
+        "user_id"
+    );
+
+
+    console.log(
+        "LOGOUT SUCCESS"
+    );
+
+
+    location.replace(
+        "index.html"
+    );
+
 
 }
 
@@ -139,55 +202,214 @@ return data;
 // LINKS
 // ===============================
 
+
 async function getLinks(userId){
 
-const {data,error}=await supabaseClient
+
+const {
+data,
+error
+}=await supabaseClient
+
 .from("links")
-.select("*")
-.eq("user_id",userId)
-.order("id",{ascending:false});
+
+.select(`
+
+id,
+user_id,
+type,
+title,
+short_code,
+destination,
+destination_url,
+status,
+total_views,
+total_clicks,
+total_earnings,
+created_at
+
+`)
+
+.eq(
+"user_id",
+userId
+)
+
+.order(
+"created_at",
+{
+ascending:false
+}
+);
+
 
 
 if(error){
-console.error("Get Links Error:",error);
-return [];
+
+console.error(
+"GET LINKS ERROR:",
+error
+);
+
+throw error;
+
 }
+
+
+return data || [];
+
+
+}
+
+
+
+
+async function createLink(payload){
+
+
+const {
+data,
+error
+}=await supabaseClient
+
+.from("links")
+
+.insert({
+
+user_id:payload.user_id,
+
+type:payload.type || "ads",
+
+title:payload.title,
+
+destination:payload.destination,
+
+destination_url:payload.destination_url,
+
+short_code:payload.short_code,
+
+status:"active",
+
+total_views:0,
+
+total_clicks:0,
+
+total_earnings:0,
+
+link_type:"ads"
+
+})
+
+.select()
+
+.single();
+
+
+
+if(error){
+
+console.error(
+"CREATE LINK ERROR:",
+error
+);
+
+throw error;
+
+}
+
 
 return data;
 
+
 }
 
 
-async function updateLink(id,data){
 
-return supabaseClient
+
+async function updateLink(id,payload){
+
+
+const {
+data,
+error
+}=await supabaseClient
+
 .from("links")
-.update(data)
-.eq("id",id);
+
+.update({
+
+title:payload.title,
+
+destination:payload.destination,
+
+destination_url:
+payload.destination_url || payload.destination
+
+})
+
+.eq(
+"id",
+id
+)
+
+.select()
+
+.single();
+
+
+
+if(error){
+
+console.error(
+"UPDATE LINK ERROR:",
+error
+);
+
+throw error;
 
 }
+
+
+return data;
+
+
+}
+
+
 
 
 async function deleteLink(id){
 
-return supabaseClient
+
+const {
+error
+}=await supabaseClient
+
 .from("links")
+
 .delete()
-.eq("id",id);
+
+.eq(
+"id",
+id
+);
+
+
+
+if(error){
+
+console.error(
+"DELETE LINK ERROR:",
+error
+);
+
+throw error;
 
 }
 
-async function createLink(data){
 
-const {data:result,error}=await supabaseClient
-.from("links")
-.insert(data)
-.select()
-.single();
+return true;
 
-if(error)throw error;
-
-return result;
 
 }
 
