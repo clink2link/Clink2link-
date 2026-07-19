@@ -941,91 +941,66 @@ color:white;
 
 
 /* =========================
- RESPONSIVE
+RESPONSIVE
 ========================= */
-
 
 @media(max-width:900px){
 
-
 .quick-stats{
-
-grid-template-columns:
-repeat(2,1fr);
-
+grid-template-columns:repeat(2,1fr);
 }
-
 
 .search-area{
-
 flex-direction:column;
-
 }
-
 
 .link-filter{
-
 overflow:auto;
-
 }
 
-
 }
-
-
 
 @media(max-width:600px){
 
-
 .container{
-
 padding:90px 15px 40px;
-
 }
-
 
 .page-title h1{
-
 font-size:25px;
-
 }
-
 
 .create-form{
-
 padding:22px;
-
 }
-
-
 
 .btn-group{
-
 flex-direction:column;
-
 }
-
 
 .btn-group button{
-
 justify-content:center;
-
 }
-
 
 .quick-stats{
-
-grid-template-columns:1fr;
-
+grid-template-columns:repeat(2,1fr);
+gap:12px;
 }
 
+.stat-card{
+padding:18px;
+}
 
+.stat-card h4{
+font-size:13px;
+}
+
+.stat-card h2{
+font-size:22px;
+}
 
 .advanced-box{
-
 width:90%;
-
 }
-
 
 }
