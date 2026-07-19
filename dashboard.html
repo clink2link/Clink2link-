@@ -1010,16 +1010,263 @@ margin:6px 0 10px;
 
 }
 
-
-
 .guide-btn{
-
 height:32px;
-
 font-size:10px;
+}
+}
+
+/* ==========================================
+   GLOBAL CPM MARKET
+========================================== */
+
+.cpm-market{
+
+margin-top:24px;
+
+background:#fff;
+
+border:1px solid #e5e7eb;
+
+border-radius:22px;
+
+padding:20px;
+
+box-shadow:0 10px 30px rgba(15,23,42,.06);
 
 }
 
+body.dark .cpm-market{
+
+background:#0f172a;
+
+border-color:#1e293b;
+
+}
+
+.cpm-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:flex-start;
+
+margin-bottom:18px;
+
+gap:20px;
+
+}
+
+.cpm-header h2{
+
+margin:0;
+
+font-size:22px;
+
+font-weight:700;
+
+color:#2563eb;
+
+}
+
+.cpm-header p{
+
+margin:6px 0 0;
+
+font-size:14px;
+
+color:#64748b;
+
+line-height:1.5;
+
+}
+
+body.dark .cpm-header p{
+
+color:#94a3b8;
+
+}
+
+.market-live{
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+font-size:13px;
+
+font-weight:700;
+
+color:#16a34a;
+
+}
+
+.live-dot{
+
+width:10px;
+
+height:10px;
+
+border-radius:50%;
+
+background:#16a34a;
+
+animation:livePulse 1.2s infinite;
+
+}
+
+@keyframes livePulse{
+
+0%{transform:scale(1);opacity:1;}
+
+50%{transform:scale(1.5);opacity:.35;}
+
+100%{transform:scale(1);opacity:1;}
+
+}
+
+.market-row{
+
+display:grid;
+
+grid-template-columns:40px 1fr auto;
+
+align-items:center;
+
+gap:15px;
+
+padding:14px 0;
+
+border-bottom:1px solid #eef2f7;
+
+}
+
+.market-row:last-child{
+
+border-bottom:none;
+
+}
+
+.flag{
+
+font-size:26px;
+
+}
+
+.country{
+
+font-size:15px;
+
+font-weight:600;
+
+}
+
+.spark{
+
+height:5px;
+
+margin-top:8px;
+
+background:#e5e7eb;
+
+border-radius:999px;
+
+overflow:hidden;
+
+}
+
+.spark span{
+
+display:block;
+
+height:100%;
+
+width:60%;
+
+background:linear-gradient(90deg,#2563eb,#22c55e);
+
+border-radius:999px;
+
+transition:.5s;
+
+}
+
+.market-price{
+
+text-align:right;
+
+}
+
+.market-price b{
+
+display:block;
+
+font-size:18px;
+
+}
+
+.market-change{
+
+margin-top:5px;
+
+font-size:13px;
+
+font-weight:700;
+
+}
+
+.up{
+
+color:#16a34a;
+
+}
+
+.down{
+
+color:#ef4444;
+
+}
+
+body.dark .market-row{
+
+border-color:#1e293b;
+
+}
+
+body.dark .spark{
+
+background:#1e293b;
+
+}
+
+body.dark .country,
+
+body.dark .market-price b{
+
+color:#fff;
+
+}
+
+@media(max-width:700px){
+
+.market-row{
+
+grid-template-columns:35px 1fr;
+
+}
+
+.market-price{
+
+grid-column:2;
+
+text-align:left;
+
+margin-top:8px;
+
+}
 
 }
 </style>
