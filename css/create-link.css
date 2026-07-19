@@ -445,7 +445,82 @@ background:#e2e8f0;
 }
 
 
+/* =========================
+LINK ACTION FIX
+========================= */
 
+.link-card{
+position:relative;
+}
+
+
+.link-actions,
+.link-buttons,
+.card-actions{
+display:flex;
+align-items:center;
+gap:8px;
+margin-top:15px;
+}
+
+
+.link-card button{
+height:36px;
+padding:0 12px;
+border:none;
+border-radius:12px;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:6px;
+cursor:pointer;
+font-size:13px;
+font-family:'Poppins',sans-serif;
+transition:.3s;
+}
+
+
+.link-card button:hover{
+transform:translateY(-2px);
+}
+
+
+.link-card .copy,
+.link-card .btn-copy{
+background:#eff6ff;
+color:#2563eb;
+}
+
+
+.link-card .edit,
+.link-card .btn-edit{
+background:#fef3c7;
+color:#d97706;
+}
+
+
+.link-card .delete,
+.link-card .btn-delete{
+background:#fee2e2;
+color:#dc2626;
+}
+
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+.link-actions,
+.link-buttons,
+.card-actions{
+width:100%;
+}
+
+.link-card button{
+flex:1;
+}
+
+}
 
 
 /* =========================
