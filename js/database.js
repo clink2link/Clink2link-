@@ -22,17 +22,23 @@ SUPABASE_ANON_KEY
 async function getUser(){
 
 const {
-data:{user},
+data:{session},
 error
-}=await supabaseClient.auth.getUser();
+}=await supabaseClient.auth.getSession();
 
+console.log("SESSION:",session);
 
 if(error){
-console.error("Get User Error:",error);
+console.error(error);
 return null;
 }
 
-return user;
+if(!session){
+console.log("TIDAK ADA SESSION SUPABASE");
+return null;
+}
+
+return session.user;
 
 }
 
