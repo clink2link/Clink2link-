@@ -165,105 +165,7 @@ authId,
 sellActive
 );
 
-// ===========================
-// CREATE LINK
-// ===========================
 
-function setupCreateLink(authId,sellActive){
-
-const shortenBtn=document.getElementById("shortenBtn");
-
-if(!shortenBtn)return;
-
-shortenBtn.addEventListener("click",async()=>{
-
-const urlInput=document.getElementById("urlInput");
-const linkType=document.getElementById("linkType");
-
-if(!urlInput||!linkType){
-alert("Form link tidak ditemukan");
-return;
-}
-
-const url=urlInput.value.trim();
-const type=linkType.value;
-
-if(!url){
-alert("Masukkan URL terlebih dahulu");
-return;
-}
-
-try{
-new URL(url);
-}catch{
-alert("URL tidak valid");
-return;
-}
-
-if(type==="ads"){
-
-try{
-
-const shortCode=crypto.randomUUID().replace(/-/g,"").substring(0,8);
-
-await database.createLink({
-
-user_id:authId,
-title:"",
-destination:url,
-destination_url:url,
-type:"ads",
-link_type:"ads",
-short_code:shortCode,
-status:"active",
-views:0,
-clicks:0,
-earnings:0,
-total_views:0,
-total_clicks:0,
-total_earnings:0
-
-});
-
-const shortLink=location.origin+"/s/"+shortCode;
-
-document.getElementById("resultBox").style.display="block";
-
-const resultLink=document.getElementById("resultLink");
-resultLink.value=shortLink;
-
-resultLink.onclick=()=>window.open(shortLink,"_blank");
-
-document.getElementById("copyLinkBtn").onclick=async()=>{
-await navigator.clipboard.writeText(shortLink);
-alert("Link berhasil disalin");
-};
-
-}catch(err){
-
-console.error(err);
-alert("Gagal membuat link");
-
-}
-
-return;
-
-}
-
-if(type==="sell"){
-
-if(!sellActive){
-alert("Sell Link belum aktif");
-return;
-}
-
-location.href="bayargg.html";
-
-}
-
-});
-
-}
 
 // ===========================
 // LINK STATISTICS
@@ -799,8 +701,21 @@ setInterval(autoTheme,60000);
 // LOAD DASHBOARD
 // ===========================
 
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded",async()=>{
 
-loadDashboard();
+await loadDashboard();
+
+if(location.hash==="#statistics"){
+
+setTimeout(()=>{
+
+document.getElementById("statistics")?.scrollIntoView({
+behavior:"smooth",
+block:"start"
+});
+
+},300);
+
+}
 
 });
