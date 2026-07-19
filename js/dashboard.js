@@ -131,11 +131,13 @@ adsClicksEl.textContent=
 adsClicks.toLocaleString("id-ID");
 }
 
-const adsViewsMonth=document.getElementById("adsViewsMonth");
-if(adsViewsMonth){
-adsViewsMonth.textContent=
+const adsViewsMonthEl=document.getElementById("adsViewsMonth");
+
+if(adsViewsMonthEl){
+adsViewsMonthEl.textContent =
 adsViews.toLocaleString("id-ID");
 }
+
 
 const sellViewsEl=document.getElementById("sellViews");
 if(sellViewsEl){
@@ -156,92 +158,28 @@ totalSell.toLocaleString("id-ID");
 }
 
 // ===========================
-// CPM SAAT INI
+// CPM SAAT INI (REAL)
 // ===========================
-
-function getTodayCPM(){
-
-const day=new Date().getDay();
-
-const range={
-0:[5000,6200], // Minggu
-1:[3000,3600], // Senin
-2:[3100,3700], // Selasa
-3:[3200,3800], // Rabu
-4:[4000,4700], // Kamis
-5:[4500,5300], // Jumat
-6:[3900,4500]  // Sabtu
-};
-
-const [min,max]=range[day];
-
-return Math.floor(Math.random()*(max-min+1))+min;
-
-}
 
 const currentCpm=document.getElementById("currentCpm");
 
 if(currentCpm){
-currentCpm.textContent=
-"Rp "+getTodayCPM().toLocaleString("id-ID");
-}
 
-// ===========================
-// ADVANCED MODAL
-// ===========================
+let cpm=0;
 
-const advanceBtn=document.getElementById("advanceBtn");
-const advancedModal=document.getElementById("advancedModal");
-const closeAdvanced=document.getElementById("closeAdvanced");
-const saveAdvanced=document.getElementById("saveAdvanced");
+const views=Number(profile.total_views || 0);
+const earning=Number(profile.ads_earning_month || 0);
 
-if(advanceBtn&&advancedModal){
-advanceBtn.onclick=()=>{
-advancedModal.classList.add("active");
-};
-}
+if(views>0){
 
-if(closeAdvanced&&advancedModal){
-closeAdvanced.onclick=()=>{
-advancedModal.classList.remove("active");
-};
-}
-
-if(advancedModal){
-
-advancedModal.onclick=(e)=>{
-
-if(e.target===advancedModal){
-advancedModal.classList.remove("active");
-}
-
-};
-
-}
-
-if(saveAdvanced&&advancedModal){
-
-saveAdvanced.onclick=()=>{
-
-const advancedData={
-
-alias:document.getElementById("customAlias")?.value.trim()||"",
-expired:document.getElementById("expiredLink")?.value||"never",
-campaign:document.getElementById("campaignName")?.value.trim()||"",
-device:document.getElementById("targetDevice")?.value||"all"
-
-};
-
-localStorage.setItem(
-"advanced_settings",
-JSON.stringify(advancedData)
+cpm=Math.round(
+(earning/views)*1000
 );
 
-advancedModal.classList.remove("active");
+}
 
-alert("Advanced Settings berhasil disimpan.");
-
-};
+currentCpm.textContent=
+"Rp "+cpm.toLocaleString("id-ID");
 
 }
 
@@ -392,127 +330,79 @@ options:commonOptions
 
 }
 
-const CPM_DATA=[
+// ===========================
+// CPM MARKET REAL DATA
+// ===========================
 
-{country:"Indonesia",flag:"🇮🇩",base:5200},
-{country:"Malaysia",flag:"🇲🇾",base:10500},
-{country:"Thailand",flag:"🇹🇭",base:9100},
-{country:"Vietnam",flag:"🇻🇳",base:7200},
-{country:"India",flag:"🇮🇳",base:4800},
-{country:"Cambodia",flag:"🇰🇭",base:6500},
-{country:"Singapore",flag:"🇸🇬",base:22000},
-{country:"Australia",flag:"🇦🇺",base:39500},
-{country:"United Kingdom",flag:"🇬🇧",base:46200},
-{country:"Switzerland",flag:"🇨🇭",base:51000},
-{country:"United States",flag:"🇺🇸",base:54000}
+const marketList = document.getElementById("cpmMarketList");
 
-];
+if(marketList){
 
-function updateCPMMarket(userCountry="Indonesia"){
+    const market = await database.getCPMMarket();
 
-const day=new Date().getDay();
 
-const hotDays={
+    if(Array.isArray(market) && market.length){
 
-0:["Switzerland","India"],
 
-1:["United States","Australia"],
+        marketList.innerHTML = market.map(item=>`
 
-2:["Indonesia","Malaysia"],
+        <div class="market-row">
 
-3:["Singapore","Thailand"],
+            <div class="flag">
+                ${item.flag || "🌍"}
+            </div>
 
-4:["United Kingdom","Cambodia"],
 
-5:["Indonesia","Vietnam"],
+            <div>
 
-6:["Malaysia","United States"]
+                <div class="country">
+                    ${item.country || "Unknown"}
+                </div>
 
-};
 
-const hot=hotDays[day];
+                <div class="spark">
+                    <span style="width:${item.trend || 50}%"></span>
+                </div>
 
-const list=document.getElementById("cpmMarketList");
+            </div>
 
-list.innerHTML="";
 
-CPM_DATA.forEach(item=>{
+            <div class="market-price">
 
-let value=item.base;
+                <b>
+                    Rp ${Number(item.cpm || 0).toLocaleString("id-ID")}
+                </b>
 
-let percent=(Math.random()*4+1);
 
-let up=Math.random()>.35;
+                <div class="market-change ${Number(item.change) >= 0 ? "up":"down"}">
 
-if(hot.includes(item.country)){
+                    ${Number(item.change) >= 0 ? "▲":"▼"}
 
-value*=1.25;
+                    ${Math.abs(Number(item.change || 0)).toFixed(1)}%
 
-percent+=6;
+                </div>
 
-up=true;
+            </div>
 
-}
 
-value=Math.round(value+(Math.random()*400-200));
+        </div>
 
-const row=document.createElement("div");
+        `).join("");
 
-row.className="market-row";
 
-row.innerHTML=`
+    }else{
 
-<div class="flag">${item.flag}</div>
 
-<div>
+        marketList.innerHTML = `
+        <div class="empty-market">
+            Belum ada data CPM Market.
+        </div>
+        `;
 
-<div class="country">${item.country}</div>
 
-<div class="spark">
-
-<span style="width:${40+Math.random()*60}%"></span>
-
-</div>
-
-</div>
-
-<div class="market-price">
-
-<b>Rp ${value.toLocaleString("id-ID")}</b>
-
-<div class="market-change ${up?"up":"down"}">
-
-${up?"▲":"▼"}
-
-${percent.toFixed(1)}%
-
-</div>
-
-</div>
-
-`;
-
-list.appendChild(row);
-
-});
-
-const notice=document.getElementById("countryNotice");
-
-const todayHot=hot.includes(userCountry);
-
-notice.innerHTML=todayHot
-
-?`🔥 CPM <b>${userCountry}</b> sedang naik hari ini. Saat yang tepat membagikan Ads Link.`
-
-:`📈 Pantau CPM setiap hari. Negara Anda (${userCountry}) berpotensi naik pada hari berikutnya.`;
+    }
 
 }
-
-updateCPMMarket(window.currentUserCountry || "Indonesia");
-
-setInterval(() => {
-    updateCPMMarket(window.currentUserCountry || "Indonesia");
-}, 8000);
 
 // ===========================
 // SELL CHART
@@ -530,7 +420,7 @@ data: {
 labels,
 datasets: [{
 label: "Views",
-data: sellActive ? views : Array(views.length).fill(0),
+data: views,
 
 borderColor: "#8b5cf6",
 backgroundColor: "rgba(139,92,246,.12)",
@@ -583,9 +473,8 @@ if (sellCpm) {
     let cpm = 0;
 
     if (
-        sellActive &&
         lastReport &&
-        Number(lastReport.sell_views) > 0
+        Number(lastReport.sell_views || 0) > 0
     ) {
         cpm = Math.round(
             (Number(lastReport.sell_earnings) * 1000) /
