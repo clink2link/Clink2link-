@@ -194,14 +194,10 @@ Buat Ads Link
 
 
 <button
-type="button"
-class="btn-secondary"
-onclick="resetCreateForm()">
-
+type="reset"
+class="btn-secondary">
 <i class="fa-solid fa-rotate-right"></i>
-
 Reset
-
 </button>
 
 
@@ -645,180 +641,29 @@ Batal
 
 
 
-
-
-
-
 <script>
-
-
-/* LOAD NAVBAR */
-
 fetch("components/navbar.html")
 .then(res=>{
-if(!res.ok){
-throw new Error("Navbar tidak ditemukan");
-}
+if(!res.ok)throw new Error("Navbar tidak ditemukan");
 return res.text();
 })
 .then(html=>{
-
 document.getElementById("navbar").innerHTML=html;
-
-if(typeof c2pInit==="function"){
-c2pInit();
-}
-
+if(typeof c2pInit==="function")c2pInit();
 })
-.catch(err=>{
-console.error("NAVBAR ERROR:",err);
-});
-
-/* LOAD FOOTER */
-
+.catch(err=>console.error("NAVBAR ERROR:",err));
 
 fetch("components/footer.html")
-
-.then(res=>res.text())
-
+.then(res=>{
+if(!res.ok)throw new Error("Footer tidak ditemukan");
+return res.text();
+})
 .then(html=>{
-
-
 document.getElementById("footer").innerHTML=html;
-
-
-
-if(typeof c2pFooterInit==="function"){
-
-c2pFooterInit();
-
-}
-
-
-
-});
-
-
-
-
-
-
-
-
-
-/* LOAD DATA */
-
-
-window.addEventListener("load",()=>{
-
-
-if(typeof loadLinks==="function"){
-
-loadLinks();
-
-}
-
-
-
-});
-
-
-
-
-
-
-
-
-
-
-/* SEARCH */
-
-
-const searchInput=document.getElementById("searchInput");
-
-
-
-if(searchInput){
-
-
-
-searchInput.addEventListener("input",()=>{
-
-
-if(typeof searchLinks==="function"){
-
-
-searchLinks(searchInput.value);
-
-
-}
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* FILTER */
-
-
-document.querySelectorAll(".link-filter button")
-
-.forEach(btn=>{
-
-
-btn.onclick=()=>{
-
-
-
-document
-
-.querySelectorAll(".link-filter button")
-
-.forEach(b=>{
-
-b.classList.remove("active");
-
-});
-
-
-
-btn.classList.add("active");
-
-
-
-if(typeof filterLinks==="function"){
-
-
-filterLinks(btn.dataset.filter);
-
-
-}
-
-
-
-};
-
-
-
-});
-
-
-
+if(typeof c2pFooterInit==="function")c2pFooterInit();
+})
+.catch(err=>console.error("FOOTER ERROR:",err));
 </script>
 
-
-
 </body>
-
 </html>
