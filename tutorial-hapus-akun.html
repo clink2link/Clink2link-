@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Tutorial Hapus Akun - Click2Pay</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/tutorial.css">
+
+
+<style>
+
+.tutorial-tip{
+margin-top:20px;
+padding:18px;
+border-radius:18px;
+background:#eff6ff;
+border:1px solid #dbeafe;
+}
+
+.tutorial-tip h3{
+margin:0 0 8px;
+font-size:16px;
+color:#2563eb;
+}
+
+.tutorial-tip p{
+margin:0;
+font-size:13px;
+line-height:1.6;
+color:#64748b;
+}
+
+
+.delete-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:14px;
+margin-top:20px;
+}
+
+
+.delete-card{
+padding:16px;
+border-radius:16px;
+background:#f8fafc;
+border:1px solid #e2e8f0;
+}
+
+
+.delete-card i{
+font-size:22px;
+color:#ef4444;
+margin-bottom:10px;
+}
+
+
+.delete-card h3{
+margin:0;
+font-size:15px;
+}
+
+
+.delete-card p{
+margin:6px 0 0;
+font-size:12px;
+line-height:1.5;
+color:#64748b;
+}
+
+
+
+.tutorial-buttons{
+display:flex;
+gap:12px;
+margin-top:25px;
+}
+
+
+.tutorial-btn{
+flex:1;
+height:45px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+border-radius:14px;
+text-decoration:none;
+font-size:14px;
+font-weight:600;
+}
+
+
+.btn-home{
+background:#eff6ff;
+color:#2563eb;
+}
+
+
+.btn-dashboard{
+background:#2563eb;
+color:#fff;
+}
+
+
+
+body.dark .tutorial-tip{
+background:#1e293b;
+border-color:#334155;
+}
+
+
+body.dark .tutorial-tip p{
+color:#94a3b8;
+}
+
+
+body.dark .delete-card{
+background:#1e293b;
+border-color:#334155;
+}
+
+
+body.dark .delete-card p{
+color:#94a3b8;
+}
+
+
+
+@media(max-width:700px){
+
+.delete-grid{
+grid-template-columns:1fr;
+}
+
+
+.tutorial-buttons{
+flex-direction:column;
+}
+
+}
+
+</style>
+
+</head>
+
+
+<body class="tutorial-body">
+
+
+<div id="navbar"></div>
+
+
+
+<div class="tutorial-container">
+
+
+<div class="tutorial-header">
+
+
+<h1>
+
+<i class="fa-solid fa-user-slash"></i>
+
+Cara Menghapus Akun
+
+</h1>
+
+
+<p>
+
+Panduan menonaktifkan atau menghapus akun Click2Pay secara permanen.
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="tutorial-box">
+
+
+
+<div class="tutorial-step">
+
+
+<div class="tutorial-icon">
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+</div>
+
+
+<div>
+
+<h3>1. Pastikan Keputusan Kamu</h3>
+
+<p>
+Menghapus akun akan membuat akses akun tidak dapat digunakan kembali.
+</p>
+
+</div>
+
+</div>
+
+
+
+
+<div class="tutorial-step">
+
+
+<div class="tutorial-icon">
+
+<i class="fa-solid fa-wallet"></i>
+
+</div>
+
+
+<div>
+
+<h3>2. Selesaikan Withdraw</h3>
+
+<p>
+Sebelum menghapus akun, pastikan saldo sudah ditarik agar tidak kehilangan pendapatan.
+</p>
+
+</div>
+
+</div>
+
+
+
+
+<div class="tutorial-step">
+
+
+<div class="tutorial-icon">
+
+<i class="fa-solid fa-gear"></i>
+
+</div>
+
+
+<div>
+
+<h3>3. Buka Pengaturan Akun</h3>
+
+<p>
+Masuk ke Dashboard kemudian buka menu Setting Account.
+</p>
+
+</div>
+
+</div>
+
+
+
+
+<div class="tutorial-step">
+
+
+<div class="tutorial-icon">
+
+<i class="fa-solid fa-trash"></i>
+
+</div>
+
+
+<div>
+
+<h3>4. Pilih Hapus Akun</h3>
+
+<p>
+Tekan tombol Delete Account lalu ikuti proses verifikasi yang tersedia.
+</p>
+
+</div>
+
+</div>
+
+
+
+
+<div class="tutorial-step">
+
+
+<div class="tutorial-icon">
+
+<i class="fa-solid fa-circle-check"></i>
+
+</div>
+
+
+<div>
+
+<h3>5. Konfirmasi Penghapusan</h3>
+
+<p>
+Setelah konfirmasi berhasil, akun akan diproses untuk dihapus.
+</p>
+
+</div>
+
+</div>
+
+
+
+
+
+<div class="delete-grid">
+
+
+
+<div class="delete-card">
+
+<i class="fa-solid fa-download"></i>
+
+<h3>Backup Data</h3>
+
+<p>
+Simpan informasi penting sebelum akun dihapus.
+</p>
+
+</div>
+
+
+
+
+<div class="delete-card">
+
+<i class="fa-solid fa-money-check-dollar"></i>
+
+<h3>Cek Saldo</h3>
+
+<p>
+Pastikan tidak ada saldo yang tertinggal.
+</p>
+
+</div>
+
+
+
+
+<div class="delete-card">
+
+<i class="fa-solid fa-lock"></i>
+
+<h3>Keamanan</h3>
+
+<p>
+Pastikan permintaan dilakukan oleh pemilik akun.
+</p>
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+<div class="tutorial-tip">
+
+<h3>
+
+<i class="fa-solid fa-lightbulb"></i>
+
+Sebelum Menghapus Akun
+
+</h3>
+
+
+<p>
+
+Pastikan semua link, statistik, saldo, dan data penting sudah diperiksa karena akun yang telah dihapus mungkin tidak dapat dipulihkan.
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="tutorial-tip">
+
+<h3>
+
+<i class="fa-solid fa-shield-halved"></i>
+
+Perlindungan Akun
+
+</h3>
+
+
+<p>
+
+Jangan memberikan password atau kode keamanan kepada siapa pun saat proses penghapusan akun.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="tutorial-buttons">
+
+
+<a href="index.html" class="tutorial-btn btn-home">
+
+<i class="fa-solid fa-house"></i>
+
+Beranda
+
+</a>
+
+
+
+<a href="dashboard.html" class="tutorial-btn btn-dashboard">
+
+<i class="fa-solid fa-gauge-high"></i>
+
+Dashboard
+
+</a>
+
+
+</div>
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+<div id="footer"></div>
+
+
+
+<script src="js/theme.js"></script>
+<script src="js/footer.js"></script>
+
+
+</body>
+
+</html>
