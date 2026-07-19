@@ -4,243 +4,553 @@ padding-top:90px;
 font-family:'Poppins',sans-serif;
 background:#f8fbff;
 color:#0f172a;
+min-height:100vh;
 }
 
+
+/* CONTAINER */
+
 .tutorial-container{
-max-width:850px;
+max-width:900px;
 margin:auto;
 padding:20px;
 }
 
 
+/* HEADER */
+
 .tutorial-header{
-padding:30px;
-border-radius:25px;
-background:linear-gradient(135deg,#2563eb,#38bdf8);
-color:white;
-box-shadow:0 20px 45px rgba(37,99,235,.25);
+padding:32px;
+border-radius:28px;
+background:
+linear-gradient(135deg,#2563eb,#06b6d4);
+color:#fff;
+box-shadow:
+0 20px 50px rgba(37,99,235,.25);
 position:relative;
 overflow:hidden;
 }
 
+
 .tutorial-header:after{
 content:"";
 position:absolute;
-width:200px;
-height:200px;
-right:-50px;
-top:-50px;
+width:240px;
+height:240px;
+right:-80px;
+top:-80px;
 background:rgba(255,255,255,.15);
 border-radius:50%;
 }
 
 
 .tutorial-header h1{
-margin:0;
-font-size:28px;
 position:relative;
 z-index:2;
+margin:0;
+font-size:30px;
+font-weight:800;
+display:flex;
+align-items:center;
+gap:12px;
 }
+
 
 .tutorial-header p{
-margin:10px 0 0;
-font-size:14px;
-opacity:.9;
 position:relative;
 z-index:2;
+margin:12px 0 0;
+font-size:14px;
+opacity:.9;
 }
 
+
+
+/* MAIN BOX */
 
 .tutorial-box{
-margin-top:20px;
-padding:22px;
+
+margin-top:22px;
+padding:25px;
+
 background:#fff;
-border-radius:24px;
+
+border-radius:26px;
+
 border:1px solid #e2e8f0;
-box-shadow:0 15px 35px rgba(15,23,42,.06);
+
+box-shadow:
+0 15px 40px rgba(15,23,42,.07);
+
 }
 
 
+
+/* STEP */
+
 .tutorial-step{
+
 display:flex;
-gap:15px;
+
+gap:16px;
+
 align-items:flex-start;
-padding:16px;
+
+padding:17px;
+
 margin-bottom:14px;
-border-radius:18px;
+
 background:#f8fafc;
+
 border:1px solid #e2e8f0;
+
+border-radius:18px;
+
 transition:.25s;
+
 }
 
 
 .tutorial-step:hover{
+
 transform:translateY(-3px);
-box-shadow:0 10px 25px rgba(15,23,42,.08);
+
+box-shadow:
+0 12px 30px rgba(15,23,42,.08);
+
 }
+
 
 
 .tutorial-icon{
-width:45px;
-height:45px;
+
+width:48px;
+height:48px;
+
 border-radius:15px;
-background:linear-gradient(135deg,#2563eb,#38bdf8);
+
+background:
+linear-gradient(135deg,#2563eb,#38bdf8);
+
 color:#fff;
+
 display:flex;
+
 align-items:center;
+
 justify-content:center;
-font-size:18px;
+
+font-size:19px;
+
 flex-shrink:0;
+
+box-shadow:
+0 8px 18px rgba(37,99,235,.25);
+
 }
+
 
 
 .tutorial-step h3{
+
 margin:0;
+
 font-size:16px;
+
 font-weight:700;
+
+color:#0f172a;
+
 }
+
 
 
 .tutorial-step p{
-margin:6px 0 0;
+
+margin:7px 0 0;
+
 font-size:13px;
+
 line-height:1.6;
+
 color:#64748b;
+
 }
 
 
+
+
+/* INFO BOX */
+
 .tutorial-tip{
+
 margin-top:18px;
+
 padding:18px;
+
 border-radius:18px;
+
 background:#eff6ff;
+
 border:1px solid #dbeafe;
+
 }
 
 
 .tutorial-tip h3{
+
 margin:0 0 8px;
+
 font-size:15px;
+
 color:#2563eb;
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
 }
 
 
 .tutorial-tip p{
+
 margin:0;
+
 font-size:13px;
-color:#64748b;
+
 line-height:1.6;
+
+color:#64748b;
+
 }
 
 
-/* BUTTON */
+
+/* BUTTON AREA */
 
 .tutorial-buttons{
+
 display:flex;
-gap:12px;
-margin-top:25px;
+
+justify-content:center;
+
+gap:14px;
+
+margin-top:28px;
+
 }
+
 
 
 .tutorial-btn{
-flex:1;
-height:45px;
+
+height:46px;
+
+padding:0 28px;
+
 border-radius:14px;
-display:flex;
+
+display:inline-flex;
+
 align-items:center;
+
 justify-content:center;
-gap:8px;
+
+gap:9px;
+
 text-decoration:none;
+
 font-size:13px;
+
 font-weight:700;
+
 transition:.25s;
+
+min-width:150px;
+
 }
 
 
 .btn-home{
+
 background:#2563eb;
+
 color:#fff;
+
+box-shadow:
+0 10px 25px rgba(37,99,235,.25);
+
 }
 
 
 .btn-dashboard{
+
 background:#eff6ff;
+
 color:#2563eb;
+
+border:1px solid #dbeafe;
+
 }
+
 
 
 .tutorial-btn:hover{
+
 transform:translateY(-3px);
+
 }
 
 
-/* DARK */
+
+
+/* DARK MODE */
+
+body.dark .tutorial-body{
+
+background:#020617;
+
+color:#fff;
+
+}
+
+
 
 body.dark .tutorial-box{
+
 background:#0f172a;
+
 border-color:#1e293b;
+
 }
+
 
 
 body.dark .tutorial-step{
-background:#1e293b;
-border-color:#334155;
+
+background:#111827;
+
+border-color:#1e293b;
+
 }
+
+
+
+body.dark .tutorial-step h3{
+
+color:#f8fafc;
+
+}
+
 
 
 body.dark .tutorial-step p,
+
 body.dark .tutorial-tip p{
+
 color:#94a3b8;
+
 }
+
 
 
 body.dark .tutorial-tip{
+
 background:#162033;
+
 border-color:#334155;
+
 }
 
 
-/* MOBILE */
 
-@media(max-width:600px){
+body.dark .btn-dashboard{
+
+background:#1e293b;
+
+border-color:#334155;
+
+color:#60a5fa;
+
+}
+
+
+
+/* TABLET */
+
+@media(max-width:900px){
 
 .tutorial-container{
-padding:15px;
-}
 
+padding:18px;
 
-.tutorial-header{
-padding:22px;
-border-radius:20px;
 }
 
 
 .tutorial-header h1{
-font-size:22px;
+
+font-size:26px;
+
 }
+
+
+}
+
+
+
+/* ANDROID */
+
+@media(max-width:600px){
+
+
+.tutorial-body{
+
+padding-top:80px;
+
+}
+
+
+.tutorial-container{
+
+padding:14px;
+
+}
+
+
+
+.tutorial-header{
+
+padding:22px;
+
+border-radius:22px;
+
+}
+
+
+
+.tutorial-header h1{
+
+font-size:21px;
+
+gap:8px;
+
+}
+
+
+
+.tutorial-header p{
+
+font-size:12px;
+
+}
+
 
 
 .tutorial-box{
-padding:15px;
+
+padding:14px;
+
 border-radius:20px;
+
 }
+
 
 
 .tutorial-step{
-padding:13px;
+
+gap:12px;
+
+padding:12px;
+
+border-radius:15px;
+
 }
+
 
 
 .tutorial-icon{
+
 width:38px;
+
 height:38px;
+
 border-radius:12px;
-font-size:15px;
+
+font-size:14px;
+
 }
 
+
+
+.tutorial-step h3{
+
+font-size:13px;
+
+}
+
+
+
+.tutorial-step p{
+
+font-size:11px;
+
+}
+
+
+
+.tutorial-tip{
+
+padding:14px;
+
+}
+
+
+
+.tutorial-tip h3{
+
+font-size:13px;
+
+}
+
+
+
+.tutorial-tip p{
+
+font-size:11px;
+
+}
+
+
+
+/* tombol android */
 
 .tutorial-buttons{
-flex-direction:column;
+
+flex-direction:row;
+
+justify-content:center;
+
+gap:10px;
+
 }
+
+
+
+.tutorial-btn{
+
+height:40px;
+
+min-width:120px;
+
+padding:0 16px;
+
+font-size:11px;
+
+border-radius:12px;
+
+}
+
 
 }
