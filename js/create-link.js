@@ -101,10 +101,12 @@ return`
 
 <div class="link-meta">
 
-<button class="btn-blue" onclick="openStatistics('${link.id}')">
-<i class="fa-solid fa-chart-column"></i>
-Stats
-</button>
+<a href="javascript:void(0)"
+   onclick="openStatistics('${link.id}')"
+   class="btn-blue">
+    <i class="fa-solid fa-chart-column"></i>
+    Stats
+</a>
 
 <span>
 <i class="fa-regular fa-calendar"></i>
