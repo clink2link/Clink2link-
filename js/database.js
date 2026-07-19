@@ -561,6 +561,44 @@ return data;
 
 }
 
+// ===============================
+// CPM MARKET
+// ===============================
+
+async function getCPMMarket(){
+
+const {
+data,
+error
+}=await supabaseClient
+
+.from("cpm_market")
+
+.select("*")
+
+.order(
+"cpm",
+{
+ascending:false
+}
+);
+
+
+if(error){
+
+console.error(
+"GET CPM MARKET ERROR:",
+error
+);
+
+return [];
+
+}
+
+
+return data || [];
+
+}
 
 // ===============================
 // EXPORT
@@ -597,8 +635,11 @@ getWithdraws,
 getAnnouncements,
 
 getDashboardReport,
-getReports
+getReports,
+
+getCPMMarket
 
 };
+
 
 console.log("DATABASE JS READY",window.database);
