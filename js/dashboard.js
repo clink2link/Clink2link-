@@ -239,7 +239,17 @@ return;
 
 console.log("LINK BERHASIL:",data);
 
-window.location.href="task1.html?code="+shortCode;
+const shortLink=location.origin+"/s/"+shortCode;
+
+document.getElementById("resultBox").style.display="block";
+document.getElementById("resultLink").value=shortLink;
+
+document.getElementById("copyLinkBtn").onclick=async()=>{
+
+await navigator.clipboard.writeText(shortLink);
+
+alert("Link berhasil disalin");
+};
 
 }catch(err){
 console.error("CREATE LINK ERROR:",err);
