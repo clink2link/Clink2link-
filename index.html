@@ -627,7 +627,113 @@ margin:15px 0;
 
 }
 
+/* =========================
+   WD LIVE NOTIFICATION
+========================= */
 
+
+#wdNotification{
+
+position:fixed;
+
+left:25px;
+bottom:30px;
+
+max-width:360px;
+
+background:white;
+
+border-radius:18px;
+
+padding:16px 20px;
+
+display:flex;
+
+gap:12px;
+
+align-items:center;
+
+box-shadow:
+0 15px 40px rgba(0,0,0,.18);
+
+border-left:5px solid #2196f3;
+
+z-index:99999;
+
+opacity:0;
+
+transform:translateY(40px);
+
+pointer-events:none;
+
+transition:.5s ease;
+
+font-size:14px;
+
+}
+
+
+#wdNotification.show{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+
+
+.wd-icon{
+
+width:42px;
+height:42px;
+
+border-radius:50%;
+
+background:#2196f3;
+
+color:white;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:20px;
+
+}
+
+
+
+.wd-text{
+
+line-height:1.5;
+
+font-weight:600;
+
+color:#222;
+
+}
+
+
+
+@media(max-width:600px){
+
+#wdNotification{
+
+left:15px;
+right:15px;
+
+max-width:none;
+
+bottom:20px;
+
+font-size:13px;
+
+}
+
+}
 
 /* ================= FOOTER ================= */
 
@@ -1929,9 +2035,141 @@ Best CPM Performance
 
 </footer>
 </div>
+<div id="wdNotification">
+    <div class="wd-icon">
+        <i class="fa-solid fa-wallet"></i>
+    </div>
 
+    <div class="wd-text">
+        <span id="wdMessage"></span>
+    </div>
+</div>
 <script>
+// =============================
+// LIVE WITHDRAW NOTIFICATION
+// =============================
 
+
+const wdMessages=[
+
+
+"Username Ag****ji Request WD Rp 240.780 Via BRI 875****776",
+
+
+"WD Success Rp 375.097 Via Dana 081******085 Username Ha****im",
+
+
+"Username Ais***ri Request WD Rp 108.649 Via LinkAja",
+
+
+"WD Pending Rp 192.078 Via BluBCA 008******421 Username Ki****an",
+
+
+"Username Ro***fah Request WD Rp 560.765 Via Gopay",
+
+
+"WD Success Rp 148.890 Via Shopee Pay 088******654 Username It***ati",
+
+
+"Username No****fa Request WD Rp 143.088 Via Mandiri",
+
+
+"WD Pending Rp 278.034 Via LinkAja 085******676 Username Re******ndi",
+
+
+"Username Su***ik Request WD Rp 221.008 Via Dana 081****897",
+
+
+"WD Success Rp 730.877 Via Dana 085******726 Username Sr******ra",
+
+
+"Username Ye****ati Request WD Rp 362.090 Via Bank Jago",
+
+
+"WD Pending Rp 315.724 Via BluBCA 008******633 Username Na***ra",
+
+
+"Username Ki***ki Request WD Rp 218.907 Via Gopay",
+
+
+"WD Success Rp 537.835 Via Gopay 081******753 Username Li***na",
+
+
+"Username Fi***an Request WD Rp 310.758 Via Dana",
+
+
+"WD Pending Rp 240.678 Via Dana 085******735 Username Re***na"
+
+
+
+];
+
+
+
+let wdPosition=0;
+
+
+
+function showWDNotification(){
+
+
+const box=
+document.getElementById("wdNotification");
+
+
+const text=
+document.getElementById("wdMessage");
+
+
+
+text.innerHTML=
+wdMessages[wdPosition];
+
+
+
+box.classList.add("show");
+
+
+
+// tampil 7 detik
+
+setTimeout(()=>{
+
+box.classList.remove("show");
+
+
+},7000);
+
+
+
+// pindah urutan
+
+wdPosition++;
+
+
+
+if(wdPosition>=wdMessages.length){
+
+wdPosition=0;
+
+}
+
+
+}
+
+
+
+// pertama muncul
+
+showWDNotification();
+
+
+// ulang setiap 9 detik
+
+setInterval(
+showWDNotification,
+9000
+);
 /* ================= SCROLL REVEAL ================= */
 
 function revealElements(){
