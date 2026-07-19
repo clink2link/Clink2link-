@@ -1059,7 +1059,7 @@ color:#cbd5e1;
 
 .guide-grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+grid-template-columns:repeat(4,minmax(0,1fr));
 gap:14px;
 margin-top:18px;
 }
@@ -1072,6 +1072,7 @@ background:#fff;
 transition:.25s;
 display:flex;
 flex-direction:column;
+height:100%;
 }
 
 .guide-card:hover{
@@ -1090,6 +1091,7 @@ margin-bottom:12px;
 background:#2563eb;
 color:#fff;
 font-size:18px;
+flex-shrink:0;
 }
 
 .guide-icon.green{background:#10b981;}
@@ -1103,6 +1105,7 @@ font-size:18px;
 .guide-card h3{
 margin:0;
 font-size:16px;
+font-weight:700;
 }
 
 .guide-card p{
@@ -1128,6 +1131,9 @@ transition:.2s;
 background:#1d4ed8;
 }
 
+
+/* DARK MODE */
+
 body.dark .guide-card{
 background:#0f172a;
 border-color:#1e293b;
@@ -1137,13 +1143,56 @@ body.dark .guide-card p{
 color:#94a3b8;
 }
 
-@media(max-width:600px){
+
+/* TABLET */
+
+@media(max-width:992px){
+
 .guide-grid{
-grid-template-columns:1fr;
+grid-template-columns:repeat(2,1fr);
 }
+
+}
+
+
+/* ANDROID */
+
+@media(max-width:600px){
+
+.guide-grid{
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
 .guide-card{
-padding:14px;
+padding:12px;
+border-radius:14px;
 }
+
+.guide-icon{
+width:36px;
+height:36px;
+font-size:15px;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+.guide-card h3{
+font-size:13px;
+}
+
+.guide-card p{
+font-size:11px;
+line-height:1.4;
+margin:7px 0 10px;
+}
+
+.guide-btn{
+height:34px;
+font-size:11px;
+border-radius:9px;
+}
+
 }
 </style>
 
