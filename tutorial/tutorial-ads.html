@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Tutorial Ads Link - Click2Pay</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/navbar.css">
+<link rel="stylesheet" href="../css/tutorial.css">
+
+<style>
+.tutorial-tip{
+margin-top:20px;
+padding:16px;
+border-radius:16px;
+background:#eff6ff;
+border:1px solid #dbeafe;
+}
+
+.tutorial-tip h3{
+margin:0 0 8px;
+font-size:16px;
+color:#2563eb;
+}
+
+.tutorial-tip p{
+margin:0;
+font-size:13px;
+color:#64748b;
+line-height:1.6;
+}
+
+body.dark .tutorial-tip{
+background:#1e293b;
+border-color:#334155;
+}
+
+body.dark .tutorial-tip p{
+color:#94a3b8;
+}
+</style>
+
+</head>
+
+<body class="tutorial-body">
+
+<div id="navbar"></div>
+
+<div class="tutorial-container">
+
+<div class="tutorial-header">
+<h1>
+<i class="fa-solid fa-link"></i>
+Cara Membuat Ads Link
+</h1>
+
+<p>
+Panduan lengkap membuat shortlink Ads dan mulai mendapatkan penghasilan.
+</p>
+</div>
+
+
+<div class="tutorial-box">
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-gauge-high"></i>
+</div>
+
+<div>
+<h3>1. Masuk Dashboard</h3>
+<p>
+Login ke akun Click2Pay kemudian buka halaman Dashboard untuk membuat link baru.
+</p>
+</div>
+</div>
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-globe"></i>
+</div>
+
+<div>
+<h3>2. Masukkan URL Tujuan</h3>
+<p>
+Masukkan link website, halaman produk, file, atau konten yang ingin diarahkan kepada pengunjung.
+</p>
+</div>
+</div>
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-wand-magic-sparkles"></i>
+</div>
+
+<div>
+<h3>3. Pilih Ads Link</h3>
+<p>
+Pada pilihan Link Type pilih <b>Ads Link</b>, kemudian tekan tombol Create Link.
+</p>
+</div>
+</div>
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-sliders"></i>
+</div>
+
+<div>
+<h3>4. Gunakan Advanced Setting</h3>
+<p>
+Kamu dapat mengatur Custom Alias, Expired Link, Campaign Name, dan Target Device.
+</p>
+</div>
+</div>
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-copy"></i>
+</div>
+
+<div>
+<h3>5. Salin Shortlink</h3>
+<p>
+Setelah link berhasil dibuat, tekan tombol Copy Link untuk menyalin link kamu.
+</p>
+</div>
+</div>
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-share-nodes"></i>
+</div>
+
+<div>
+<h3>6. Bagikan Link</h3>
+<p>
+Bagikan shortlink melalui WhatsApp, Telegram, Facebook, website, atau media lainnya.
+</p>
+</div>
+</div>
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-chart-line"></i>
+</div>
+
+<div>
+<h3>7. Pantau Penghasilan</h3>
+<p>
+Cek statistik Views, Click, CPM, dan Earnings melalui menu Statistik Dashboard.
+</p>
+</div>
+</div>
+
+
+
+<div class="tutorial-tip">
+
+<h3>
+<i class="fa-solid fa-lightbulb"></i>
+Tips Mendapatkan Hasil Lebih Baik
+</h3>
+
+<p>
+Gunakan konten yang menarik, targetkan pengunjung yang sesuai, dan hindari traffic tidak valid agar pendapatan tetap aman.
+</p>
+
+</div>
+
+
+
+<div class="tutorial-tip">
+
+<h3>
+<i class="fa-solid fa-shield-halved"></i>
+Peraturan Penting
+</h3>
+
+<p>
+Jangan melakukan spam, bot traffic, atau aktivitas yang melanggar aturan karena dapat menyebabkan akun dibatasi.
+</p>
+
+</div>
+
+
+
+<a href="../dashboard.html" class="tutorial-back">
+<i class="fa-solid fa-arrow-left"></i>
+Kembali Dashboard
+</a>
+
+
+</div>
+
+</div>
+
+
+<script src="../js/theme.js"></script>
+<script src="../js/navbar.js"></script>
+
+<script>
+fetch("../components/navbar.html")
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("navbar").innerHTML=data;
+if(typeof c2pInit==="function") c2pInit();
+});
+</script>
+
+</body>
+</html>
