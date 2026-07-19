@@ -143,14 +143,11 @@ renderLinks();
 const createForm=document.getElementById("createForm");
 
 if(createForm){
-
 createForm.addEventListener("submit",async e=>{
-
 e.preventDefault();
 
 const title=document.getElementById("linkName").value.trim();
 const destination=document.getElementById("linkUrl").value.trim();
-const type=document.getElementById("linkType").value;
 
 if(!title||!destination){
 alert("Lengkapi semua data.");
@@ -158,31 +155,25 @@ return;
 }
 
 try{
-
 new URL(destination);
-
 }catch{
-
 alert("URL tidak valid.");
 return;
-
 }
 
 try{
-
 const user=await getCurrentUser();
-
 if(!user)return;
 
 const short_code=Math.random().toString(36).substring(2,10);
 
 await database.createLink({
-
 user_id:user.id,
-title,
-destination,
-type,
-short_code,
+title:title,
+destination:destination,
+url:destination,
+short_code:short_code,
+type:"ads",
 status:"active",
 views:0,
 clicks:0,
@@ -191,25 +182,19 @@ total_views:0,
 total_clicks:0,
 total_earnings:0,
 created_at:new Date().toISOString()
-
 });
 
 createForm.reset();
-
 await loadLinks();
 
-alert("Link berhasil dibuat.");
+alert("Ads Link berhasil dibuat.");
 
 }catch(err){
-
-console.error(err);
-
+console.error("CREATE ERROR:",err);
 alert("Gagal membuat link.");
-
 }
 
 });
-
 }
 
 async function copyLink(url){
