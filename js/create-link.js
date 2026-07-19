@@ -121,6 +121,15 @@ ${new URL(link.destination_url||link.destination).hostname}
 Created on : <b>Website</b>
 </div>
 
+<div class="destination-link">
+<i class="fa-solid fa-globe"></i>
+<a href="${link.destination_url||link.destination}"
+target="_blank"
+rel="noopener noreferrer">
+${link.destination_url||link.destination}
+</a>
+</div>
+
 <div class="badge-group">
 
 <span class="badge pink">
