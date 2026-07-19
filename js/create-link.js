@@ -93,63 +93,80 @@ const shortCode=link.short_code||link.shortcode||link.code||link.slug||"";
 const url=`${location.origin}/s/${shortCode}`;
 const status=link.status==="active";
 
-return `
+return`
+
 <div class="link-card">
 
-<div class="link-top">
-<div class="link-left">
-<div class="link-title">${link.title||"Tanpa Judul"}</div>
-<div class="link-url">${url}</div>
-</div>
-<div class="link-type ads">ADS</div>
-</div>
+<h3>${link.title||"Tanpa Judul"}</h3>
 
-<div class="link-stats">
+<div class="link-meta">
 
-<div class="link-stat">
-<h5>View</h5>
-<span>${getValue(link,"total_views","views").toLocaleString("id-ID")}</span>
-</div>
+<a href="#">
+<i class="fa-solid fa-chart-column"></i>
+Stats
+</a>
 
-<div class="link-stat">
-<h5>Click</h5>
-<span>${getValue(link,"total_clicks","clicks").toLocaleString("id-ID")}</span>
-</div>
+<span>
+<i class="fa-regular fa-calendar"></i>
+${new Date(link.created_at).toLocaleDateString("id-ID")}
+</span>
 
-<div class="link-stat">
-<h5>Earning</h5>
-<span>Rp ${getValue(link,"total_earnings","earnings").toLocaleString("id-ID")}</span>
+<span>
+${new URL(link.destination_url||link.destination).hostname}
+</span>
+
 </div>
 
-<div class="link-stat">
-<h5>Status</h5>
-<span class="${status?"status-success":"status-danger"}">
+<div class="created">
+Created on : <b>Website</b>
+</div>
+
+<div class="badge-group">
+
+<span class="badge pink">
+Ads Link
+</span>
+
+<span class="badge ${status?"green":"pink"}">
 ${status?"Aktif":"Nonaktif"}
 </span>
-</div>
 
 </div>
 
-<div class="link-actions">
+<div class="copy-box">
 
-<button class="copy-btn" onclick="copyLink('${url}')">
-<i class="fa-solid fa-copy"></i>
-Copy
+<input
+readonly
+value="${url}">
+
+<button onclick="copyLink('${url}')">
+
+<i class="fa-regular fa-copy"></i>
+
 </button>
 
-<button class="edit-btn" onclick="editLink('${link.id}')">
-<i class="fa-solid fa-pen"></i>
+</div>
+
+<div class="action-btn">
+
+<button class="btn-blue"
+onclick="editLink('${link.id}')">
+
 Edit
+
 </button>
 
-<button class="delete-btn" onclick="deleteLink('${link.id}')">
-<i class="fa-solid fa-trash"></i>
-Hapus
+<button class="btn-orange"
+onclick="deleteLink('${link.id}')">
+
+Hide
+
 </button>
 
 </div>
 
 </div>
+
 `;
 
 }).join("");
