@@ -522,6 +522,40 @@ flex:1;
 
 }
 
+/* =========================
+LINK ACTION DARK MODE
+========================= */
+
+body.dark .link-card button{
+border:1px solid #334155;
+}
+
+
+body.dark .link-card .copy,
+body.dark .link-card .btn-copy{
+background:#1e3a8a;
+color:#bfdbfe;
+}
+
+
+body.dark .link-card .edit,
+body.dark .link-card .btn-edit{
+background:#78350f;
+color:#fde68a;
+}
+
+
+body.dark .link-card .delete,
+body.dark .link-card .btn-delete{
+background:#7f1d1d;
+color:#fecaca;
+}
+
+
+body.dark .link-card button:hover{
+filter:brightness(1.15);
+}
+
 
 /* =========================
  RESULT
