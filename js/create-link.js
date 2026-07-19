@@ -169,11 +169,11 @@ const short_code=Math.random().toString(36).substring(2,10);
 
 await database.createLink({
 user_id:user.id,
+type:"ads",
 title:title,
 destination:destination,
-url:destination,
+destination_url:destination,
 short_code:short_code,
-type:"ads",
 status:"active",
 views:0,
 clicks:0,
@@ -181,7 +181,7 @@ earnings:0,
 total_views:0,
 total_clicks:0,
 total_earnings:0,
-created_at:new Date().toISOString()
+link_type:"ads"
 });
 
 createForm.reset();
@@ -191,7 +191,7 @@ alert("Ads Link berhasil dibuat.");
 
 }catch(err){
 console.error("CREATE ERROR:",err);
-alert("Gagal membuat link.");
+alert(err.message);
 }
 
 });
