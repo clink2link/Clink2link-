@@ -953,3 +953,129 @@ background:#94a3b8;
 background:#2563eb;
 color:#fff;
 }
+
+/*==========================
+DARK MODE
+==========================*/
+
+body.dark{
+background:#0f172a;
+color:#f8fafc;
+}
+
+body.dark .page-title h1,
+body.dark .create-header h2,
+body.dark .info-header h3,
+body.dark .section-title h2,
+body.dark .link-title,
+body.dark .stat-card h2,
+body.dark .advanced-header h3{
+color:#f8fafc;
+}
+
+body.dark .page-title p,
+body.dark .info-box li,
+body.dark .create-header p,
+body.dark .create-note,
+body.dark .info-note p,
+body.dark .link-url,
+body.dark .link-stat h5,
+body.dark .stat-card h4,
+body.dark .empty p{
+color:#94a3b8;
+}
+
+body.dark .info-box,
+body.dark .create-form,
+body.dark .stat-card,
+body.dark .link-card,
+body.dark .advanced-box,
+body.dark .empty{
+background:#1e293b;
+border-color:#334155;
+box-shadow:none;
+}
+
+body.dark .input-box input,
+body.dark .search-box input{
+background:#0f172a;
+border-color:#334155;
+color:#fff;
+}
+
+body.dark .input-box input::placeholder,
+body.dark .search-box input::placeholder{
+color:#64748b;
+}
+
+body.dark .input-box i,
+body.dark .search-box i{
+color:#94a3b8;
+}
+
+body.dark .link-stat{
+background:#0f172a;
+}
+
+body.dark .create-success .link-url{
+background:#0f172a;
+color:#fff;
+}
+
+body.dark .create-note,
+body.dark .info-note{
+background:#162033;
+border-color:#334155;
+}
+
+body.dark .btn-secondary,
+body.dark .copy-btn,
+body.dark .section-title a,
+body.dark .link-filter button,
+body.dark .advanced-header button{
+background:#334155;
+color:#fff;
+}
+
+body.dark .btn-secondary:hover,
+body.dark .copy-btn:hover,
+body.dark .section-title a:hover,
+body.dark .link-filter button:hover,
+body.dark .link-filter button.active,
+body.dark .advanced-header button:hover{
+background:#2563eb;
+color:#fff;
+}
+
+body.dark .edit-btn{
+background:#14532d;
+color:#86efac;
+}
+
+body.dark .edit-btn:hover{
+background:#16a34a;
+color:#fff;
+}
+
+body.dark .delete-btn{
+background:#7f1d1d;
+color:#fca5a5;
+}
+
+body.dark .delete-btn:hover{
+background:#ef4444;
+color:#fff;
+}
+
+body.dark .link-type.ads{
+background:#1e40af;
+color:#bfdbfe;
+}
+
+body.dark ::-webkit-scrollbar-thumb{
+background:#475569;
+}
+
+body.dark ::-webkit-scrollbar-thumb:hover{
+background:#64748b;
+}
