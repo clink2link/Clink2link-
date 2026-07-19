@@ -654,64 +654,24 @@ Batal
 /* LOAD NAVBAR */
 
 fetch("components/navbar.html")
-
-.then(res=>res.text())
-
+.then(res=>{
+if(!res.ok){
+throw new Error("Navbar tidak ditemukan");
+}
+return res.text();
+})
 .then(html=>{
-
 
 document.getElementById("navbar").innerHTML=html;
 
-
-
 if(typeof c2pInit==="function"){
-
 c2pInit();
-
 }
 
-
-
-const logoutBtn=document.getElementById("logoutBtn");
-
-
-
-if(logoutBtn){
-
-
-logoutBtn.onclick=async()=>{
-
-
-try{
-
-await database.logout();
-
-}catch(e){}
-
-
-
-localStorage.clear();
-
-sessionStorage.clear();
-
-
-location.replace("index.html");
-
-};
-
-
-}
-
-
-
+})
+.catch(err=>{
+console.error("NAVBAR ERROR:",err);
 });
-
-
-
-
-
-
-
 
 /* LOAD FOOTER */
 
