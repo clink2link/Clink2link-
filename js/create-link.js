@@ -101,10 +101,10 @@ return`
 
 <div class="link-meta">
 
-<a href="dashboard.html#statistics" class="btn-blue">
+<button class="btn-blue" onclick="openStatistics('${link.id}')">
 <i class="fa-solid fa-chart-column"></i>
 Stats
-</a>
+</button>
 
 <span>
 <i class="fa-regular fa-calendar"></i>
@@ -180,6 +180,10 @@ Hide
 
 }).join("");
 
+}
+
+function openStatistics(id){
+location.href=`dashboard.html?tab=statistics&id=${id}`;
 }
 
 // SEARCH
