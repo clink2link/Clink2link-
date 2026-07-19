@@ -173,10 +173,7 @@ function setupCreateLink(authId,sellActive){
 
 const shortenBtn=document.getElementById("shortenBtn");
 
-if(!shortenBtn){
-console.error("Tombol shortenBtn tidak ditemukan");
-return;
-}
+if(!shortenBtn)return;
 
 shortenBtn.addEventListener("click",async()=>{
 
@@ -207,37 +204,26 @@ if(type==="ads"){
 
 try{
 
-const shortCode=crypto.randomUUID()
-.replace(/-/g,"")
-.substring(0,8);
+const shortCode=crypto.randomUUID().replace(/-/g,"").substring(0,8);
 
-const {data,error}=await database.supabase
-.from("links")
-.insert({
+await database.createLink({
+
 user_id:authId,
-destination_url:url,
+title:"",
 destination:url,
+destination_url:url,
 type:"ads",
 link_type:"ads",
 short_code:shortCode,
 status:"active",
 views:0,
 clicks:0,
+earnings:0,
 total_views:0,
 total_clicks:0,
-earnings:0,
 total_earnings:0
-})
-.select()
-.single();
 
-if(error){
-console.error("SUPABASE ERROR:",error);
-alert(error.message);
-return;
-}
-
-console.log("LINK BERHASIL:",data);
+});
 
 const shortLink=location.origin+"/s/"+shortCode;
 
@@ -246,9 +232,7 @@ document.getElementById("resultBox").style.display="block";
 const resultLink=document.getElementById("resultLink");
 resultLink.value=shortLink;
 
-resultLink.onclick=()=>{
-window.open(shortLink,"_blank");
-};
+resultLink.onclick=()=>window.open(shortLink,"_blank");
 
 document.getElementById("copyLinkBtn").onclick=async()=>{
 await navigator.clipboard.writeText(shortLink);
@@ -256,11 +240,14 @@ alert("Link berhasil disalin");
 };
 
 }catch(err){
-console.error("CREATE LINK ERROR:",err);
+
+console.error(err);
 alert("Gagal membuat link");
+
 }
 
 return;
+
 }
 
 if(type==="sell"){
@@ -270,7 +257,7 @@ alert("Sell Link belum aktif");
 return;
 }
 
-window.location.href="bayargg.html";
+location.href="bayargg.html";
 
 }
 
