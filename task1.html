@@ -192,6 +192,16 @@ img{
     cursor:not-allowed;
 }
 
+#nextBtn{
+    display:none;
+}
+
+#linkBtn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+    pointer-events:none;
+}
+
 /* ===========================
    PROGRESS
 =========================== */
@@ -327,18 +337,50 @@ img{
 </div>
 </header>
 
-<!-- Banner Atas -->
+<script>
+  atOptions = {
+    'key' : '9d9ce6aad2e47325c319034c41eefa5a',
+    'format' : 'iframe',
+    'height' : 600,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
+<script src="https://nooseamazingbatch.com/9d9ce6aad2e47325c319034c41eefa5a/invoke.js"></script>
 <section class="section">
 <div class="container">
 <div class="ad-box ad-top">
 
-<!-- Banner 728x90 / 320x50 -->
+<script>
+  atOptions = {
+    'key' : 'd1b9600e1a7e7eac4c9dcd0964e3b6e6',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+</script>
+<script src="https://nooseamazingbatch.com/d1b9600e1a7e7eac4c9dcd0964e3b6e6/invoke.js"></script>
 
 </div>
 </div>
 </section>
 
 <!-- Download -->
+
+<h2><i class="fa-solid fa-link"></i> Apa Itu Click2Pay?</h2>
+<p>
+<i class="fa-solid fa-circle-info"></i>
+<strong>Click2Pay</strong> adalah platform shortlink modern yang dirancang untuk mempermudah pengguna dalam mengakses tautan melalui proses yang cepat, sederhana, dan mudah dipahami. Dengan tampilan yang responsif, Click2Pay dapat digunakan melalui berbagai perangkat seperti smartphone Android, iPhone, tablet, laptop, maupun komputer desktop tanpa memerlukan instalasi aplikasi tambahan.
+</p>
+<p>
+<i class="fa-solid fa-bolt"></i>
+Setiap halaman pada Click2Pay dioptimalkan agar memiliki waktu muat yang cepat sehingga pengguna dapat menyelesaikan setiap langkah dengan nyaman. Antarmuka yang sederhana juga membantu pengguna baru memahami proses penggunaan tanpa kesulitan.
+</p>
+<p>
+<i class="fa-solid fa-shield-halved"></i>
+Click2Pay terus dikembangkan untuk memberikan pengalaman penggunaan yang aman, stabil, dan nyaman. Oleh karena itu, pengguna disarankan selalu menggunakan tautan yang valid serta mengikuti setiap langkah yang tersedia hingga proses selesai.
+</p>
 <section class="hero">
 
 <div class="container">
@@ -368,6 +410,17 @@ Download Sekarang
 </div>
 
 </div>
+
+<script>
+  atOptions = {
+    'key' : '6687305d1fd108d5507612e35fb40365',
+    'format' : 'iframe',
+    'height' : 250,
+    'width' : 300,
+    'params' : {}
+  };
+</script>
+<script src="https://nooseamazingbatch.com/6687305d1fd108d5507612e35fb40365/invoke.js"></script>
 
 <button id="scrollBtn">
 <i class="fa-solid fa-arrow-down"></i>
@@ -418,16 +471,12 @@ Generate Link
 
 </button>
 
-<div id="loadingArea">
+<div id="loadingArea" style="display:none;text-align:center;padding:40px 0;">
+    <i class="fa-solid fa-spinner fa-spin"></i>
 
-<i class="fa-solid fa-spinner fa-spin"></i>
+    <h3>Memproses Link...</h3>
 
-<h3>Memproses Link...</h3>
-
-<p id="loadingSecond">
-7 Detik
-</p>
-
+    <p id="loadingSecond">7 Detik</p>
 </div>
 
 <button id="nextBtn">
@@ -542,6 +591,17 @@ generate link berjalan dengan baik.
 <script src="js/footer.js"></script>
 
 <script>
+
+downloadBtn.disabled = false;
+
+scrollBtn.style.display = "none";
+
+linkBtn.disabled = true;
+
+loadingArea.style.display = "none";
+
+nextBtn.style.display = "none";
+    
 const code = new URLSearchParams(location.search).get("code") || "";
 
 if (code) {
