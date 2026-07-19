@@ -1082,64 +1082,76 @@ Dashboard Click2Pay
 
 <div class="create-form">
 
-    <div class="create-header">
+<div class="create-header">
+<div class="create-icon">
+<i class="fa-solid fa-bolt"></i>
+</div>
 
-        <div class="create-icon">
-            <i class="fa-solid fa-bolt"></i>
-        </div>
+<div>
+<h2>Create Link</h2>
+<p>Buat Ads Link atau Sell Link dengan mudah.</p>
+</div>
+</div>
 
-        <div>
-            <h2>Create Link</h2>
-            <p>Buat Ads Link atau Sell Link dengan mudah.</p>
-        </div>
+<label>Destination URL</label>
 
-    </div>
+<div class="input-box">
+<i class="fa-solid fa-globe"></i>
+<input
+type="url"
+id="urlInput"
+placeholder="https://example.com">
+</div>
 
-    <label>Destination URL</label>
+<label>Link Type</label>
 
-    <div class="input-box">
-        <i class="fa-solid fa-globe"></i>
+<div class="input-box">
+<i class="fa-solid fa-link"></i>
 
-        <input
-            type="url"
-            id="urlInput"
-            placeholder="https://example.com">
-    </div>
+<select id="linkType">
+<option value="ads">Ads Link</option>
+<option value="sell" disabled>Sell Link 🔒</option>
+</select>
+</div>
 
-    <label>Link Type</label>
+<div class="btn-group">
+<button class="btn-primary" id="shortenBtn">
+<i class="fa-solid fa-wand-magic-sparkles"></i>
+Create Link
+</button>
 
-    <div class="input-box">
-        <i class="fa-solid fa-link"></i>
+<button class="btn-secondary" id="advanceBtn">
+<i class="fa-solid fa-sliders"></i>
+Advanced
+</button>
+</div>
 
-        <select id="linkType">
-            <option value="ads">Ads Link</option>
-            <option value="sell" disabled>Sell Link 🔒</option>
-        </select>
-    </div>
+<div class="create-note">
+<i class="fa-solid fa-shield-check"></i>
+Sell Link akan aktif setelah 1× Withdraw.
+</div>
 
-    <div class="btn-group">
+<div id="sellInfo" class="create-note">
+<i class="fa-solid fa-lock"></i>
+Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.
+</div>
 
-        <button class="btn-primary" id="shortenBtn">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-            Create Link
-        </button>
+<div id="resultBox" style="display:none;margin-top:18px;padding:15px;border:1px solid #dbeafe;border-radius:14px;background:#f8fbff">
+<b>✅ Link Berhasil Dibuat</b>
 
-        <button class="btn-secondary" id="advanceBtn">
-            <i class="fa-solid fa-sliders"></i>
-            Advanced
-        </button>
+<input
+id="resultLink"
+readonly
+style="width:100%;margin:10px 0;padding:12px;border:1px solid #dbeafe;border-radius:10px">
 
-    </div>
-
-    <div class="create-note">
-        <i class="fa-solid fa-shield-check"></i>
-        Sell Link akan aktif setelah 1× Withdraw.
-    </div>
-
-    <div id="sellInfo" class="create-note">
-        <i class="fa-solid fa-lock"></i>
-        Sell Link akan aktif setelah Withdraw berhasil minimal 1 kali.
-    </div>
+<button
+id="copyLinkBtn"
+class="btn-primary"
+style="width:100%;margin-top:10px">
+<i class="fa-solid fa-copy"></i>
+Copy Link
+</button>
+</div>
 
 </div>
 
