@@ -405,16 +405,18 @@ box-shadow:
 
 
 
-/* BUTTON */
+/* =========================
+BUTTON
+========================= */
 
 
 .btn-group{
 
 display:flex;
 
-gap:12px;
+gap:14px;
 
-margin-top:20px;
+margin-top:25px;
 
 }
 
@@ -422,13 +424,15 @@ margin-top:20px;
 .btn-primary,
 .btn-secondary{
 
-height:48px;
+height:56px;
 
-flex:1;
+padding:0 25px;
 
 border:none;
 
-border-radius:14px;
+border-radius:16px;
+
+font-size:15px;
 
 font-weight:700;
 
@@ -440,16 +444,18 @@ align-items:center;
 
 justify-content:center;
 
-gap:8px;
+gap:10px;
+
+transition:.25s;
 
 }
 
 
-
 .btn-primary{
 
-background:
+flex:2;
 
+background:
 linear-gradient(
 135deg,
 #2563eb,
@@ -458,10 +464,16 @@ linear-gradient(
 
 color:white;
 
+box-shadow:
+0 10px 25px rgba(37,99,235,.25);
+
 }
 
 
+
 .btn-secondary{
+
+flex:1;
 
 background:#eff6ff;
 
@@ -474,11 +486,9 @@ color:#2563eb;
 .btn-primary:hover,
 .btn-secondary:hover{
 
-transform:translateY(-2px);
+transform:translateY(-3px);
 
 }
-
-
 
 /* =========================
 CREATE RESULT
@@ -875,83 +885,54 @@ font-weight:700;
 MOBILE
 ========================= */
 
-
 @media(max-width:900px){
 
+.quick-stats{grid-template-columns:repeat(2,1fr);}
 
-.quick-stats{
-
-grid-template-columns:repeat(2,1fr);
-
-}
-
-
-.link-stats{
-
-grid-template-columns:repeat(2,1fr);
+.link-stats{grid-template-columns:repeat(2,1fr);}
 
 }
-
-
-}
-
-
 
 @media(max-width:600px){
 
+.container{padding:90px 14px 40px;}
 
-.container{
+.page-title h1{font-size:22px;}
 
-padding:90px 14px 40px;
-
-}
-
-
-.page-title h1{
-
-font-size:22px;
-
-}
-
-
-.create-form{
-
-padding:20px;
-
-}
-
+.create-form{padding:20px;}
 
 .create-header{
-
 align-items:flex-start;
-
+flex-direction:column;
+gap:12px;
 }
-
 
 .btn-group{
-
 flex-direction:column;
-
+gap:12px;
 }
 
+.btn-primary,
+.btn-secondary{
+width:100%;
+height:56px;
+}
 
 .quick-stats,
 .link-stats{
-
 grid-template-columns:1fr;
-
 }
-
 
 .section-title{
-
 flex-direction:column;
-
 align-items:flex-start;
-
 gap:12px;
-
 }
 
+.section-title a{
+width:100%;
+display:flex;
+justify-content:center;
+}
 
 }
