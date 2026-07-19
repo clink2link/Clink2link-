@@ -4,7 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>Create Link Ads • Click2Pay</title>
 
@@ -19,68 +19,83 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
 </head>
 
+
 <body>
 
+
 <div id="navbar"></div>
+
+
 
 <main class="container">
 
 
-<!-- =========================
-     PAGE TITLE
-========================= -->
 
-<div class="page-title">
+<section class="page-title">
 
-    <i class="fa-solid fa-link"></i>
+<i class="fa-solid fa-link"></i>
 
-    <span>Create Link Ads</span>
+<div>
+<h1>Create Link Ads</h1>
+<p>Buat shortlink iklan dan dapatkan penghasilan dari traffic valid.</p>
+</div>
+
+</section>
+
+
+
+
+
+<section class="info-box">
+
+
+<div class="info-header">
+
+<i class="fa-solid fa-circle-info"></i>
+
+<h3>Informasi Ads Link</h3>
 
 </div>
 
 
 
-<!-- =========================
-     INFO BOX
-========================= -->
+<ul>
 
-<div class="info-box">
-
-    <div class="info-header">
-
-        <i class="fa-solid fa-circle-info"></i>
-
-        <h3>Informasi</h3>
-
-    </div>
+<li>
+<i class="fa-solid fa-check"></i>
+Gunakan URL tujuan yang valid.
+</li>
 
 
-    <ul>
-
-        <li>Gunakan URL tujuan yang valid.</li>
-
-        <li>Nama link hanya sebagai identitas link.</li>
-
-        <li>Short Link Ads dibuat otomatis.</li>
-
-        <li>Link dapat dicopy, diedit dan dihapus kapan saja.</li>
-
-        <li>Statistik View, Click dan Earnings diperbarui otomatis.</li>
-
-    </ul>
-
-</div>
+<li>
+<i class="fa-solid fa-check"></i>
+Shortlink dibuat otomatis oleh sistem.
+</li>
 
 
+<li>
+<i class="fa-solid fa-check"></i>
+Link dapat dicopy, edit, dan hapus kapan saja.
+</li>
 
 
-<!-- =========================
-     CREATE FORM
-========================= -->
+<li>
+<i class="fa-solid fa-check"></i>
+Statistik View, Click dan Earnings diperbarui otomatis.
+</li>
 
-<form 
-id="createForm"
-class="create-form">
+
+</ul>
+
+
+</section>
+
+
+
+
+
+
+<section class="create-form">
 
 
 <div class="create-header">
@@ -96,12 +111,12 @@ class="create-form">
 <div>
 
 <h2>
-Buat Link Ads Baru
+Buat Ads Link Baru
 </h2>
 
 
 <p>
-Buat link iklan dan pantau performanya.
+Masukkan tujuan link yang ingin dimonetisasi.
 </p>
 
 
@@ -110,6 +125,11 @@ Buat link iklan dan pantau performanya.
 
 </div>
 
+
+
+
+
+<form id="createForm">
 
 
 
@@ -122,13 +142,15 @@ Nama Link
 
 <i class="fa-solid fa-tag"></i>
 
-
 <input
-type="text"
 id="linkName"
-placeholder="Contoh : Promo Shopee">
+type="text"
+placeholder="Contoh : Promo Produk">
+
 
 </div>
+
+
 
 
 
@@ -142,13 +164,15 @@ Destination URL
 
 <i class="fa-solid fa-globe"></i>
 
-
 <input
-type="url"
 id="linkUrl"
+type="url"
 placeholder="https://example.com">
 
+
 </div>
+
+
 
 
 
@@ -161,12 +185,9 @@ placeholder="https://example.com">
 type="submit"
 class="btn-primary">
 
+<i class="fa-solid fa-link"></i>
 
-<i class="fa-solid fa-plus"></i>
-
-
-Create Ads Link
-
+Buat Ads Link
 
 </button>
 
@@ -176,12 +197,9 @@ Create Ads Link
 type="reset"
 class="btn-secondary">
 
-
-<i class="fa-solid fa-rotate"></i>
-
+<i class="fa-solid fa-rotate-right"></i>
 
 Reset
-
 
 </button>
 
@@ -193,18 +211,12 @@ Reset
 
 
 
-<div class="create-note">
 
+<div class="create-note">
 
 <i class="fa-solid fa-shield-halved"></i>
 
-
-<span>
-
-Pastikan URL tujuan benar sebelum membuat Ads Link.
-
-</span>
-
+Pastikan URL tujuan aman dan benar.
 
 </div>
 
@@ -214,56 +226,39 @@ Pastikan URL tujuan benar sebelum membuat Ads Link.
 
 
 
+</section>
 
-
-
-
-<!-- =========================
-     QUICK STATS
-========================= -->
-
-
-<div class="quick-stats">
-
+<section class="quick-stats">
 
 
 <div class="stat-card">
 
-
 <i class="fa-solid fa-link"></i>
-
 
 <h4>
 Total Ads Link
 </h4>
 
-
 <h2 id="totalLink">
 0
 </h2>
-
 
 </div>
 
 
 
 
-
 <div class="stat-card">
 
-
 <i class="fa-solid fa-eye"></i>
-
 
 <h4>
 Total View
 </h4>
 
-
 <h2 id="totalView">
 0
 </h2>
-
 
 </div>
 
@@ -273,19 +268,15 @@ Total View
 
 <div class="stat-card">
 
-
 <i class="fa-solid fa-hand-pointer"></i>
-
 
 <h4>
 Total Click
 </h4>
 
-
 <h2 id="totalClick">
 0
 </h2>
-
 
 </div>
 
@@ -295,50 +286,41 @@ Total Click
 
 <div class="stat-card">
 
-
 <i class="fa-solid fa-wallet"></i>
-
 
 <h4>
 Total Earnings
 </h4>
 
-
 <h2 id="totalEarning">
 Rp0
 </h2>
 
-
 </div>
 
 
 
-</div>
+</section>
 
 
 
 
 
 
-
-
-
-<!-- =========================
-     SEARCH
-========================= -->
+<section class="search-area">
 
 
 <div class="search-box">
 
 
-<i class="fa-solid fa-search"></i>
+<i class="fa-solid fa-magnifying-glass"></i>
 
 
 <input
 
-type="text"
-
 id="searchInput"
+
+type="text"
 
 placeholder="Cari nama link atau URL..."
 
@@ -349,30 +331,107 @@ placeholder="Cari nama link atau URL..."
 
 
 
+<div class="link-filter">
+
+
+<button 
+class="active"
+data-filter="all">
+
+<i class="fa-solid fa-layer-group"></i>
+
+Semua
+
+</button>
+
+
+
+<button
+data-filter="active">
+
+<i class="fa-solid fa-circle-check"></i>
+
+Aktif
+
+</button>
+
+
+
+<button
+data-filter="expired">
+
+<i class="fa-solid fa-clock"></i>
+
+Expired
+
+</button>
+
+
+</div>
+
+
+
+</section>
 
 
 
 
 
-<!-- =========================
-     NOTE
-========================= -->
 
-
-<div class="info-note">
+<section class="info-note">
 
 
 <i class="fa-solid fa-lightbulb"></i>
 
 
+<div>
+
+<h4>
+Tips
+</h4>
+
+
 <p>
 
-
-Gunakan tombol Copy untuk membagikan Ads Link.
-Semua statistik View, Click dan Earnings akan diperbarui otomatis.
-
+Bagikan Ads Link melalui media sosial, website, atau komunitas.
+Gunakan traffic berkualitas agar CPM tetap optimal.
 
 </p>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<section class="link-section">
+
+
+<div class="section-title">
+
+
+<h2>
+
+<i class="fa-solid fa-list"></i>
+
+Daftar Ads Link
+
+</h2>
+
+
+<a href="dashboard.html">
+
+<i class="fa-solid fa-arrow-left"></i>
+
+Dashboard
+
+</a>
 
 
 </div>
@@ -381,15 +440,8 @@ Semua statistik View, Click dan Earnings akan diperbarui otomatis.
 
 
 
-
-
-
-<!-- =========================
-     LINK LIST
-========================= -->
-
-
 <div id="linkList">
+
 
 
 <div class="empty">
@@ -399,39 +451,26 @@ Semua statistik View, Click dan Earnings akan diperbarui otomatis.
 
 
 <h3>
-
 Belum Ada Ads Link
-
 </h3>
 
 
 <p>
-
-Ads Link yang dibuat akan muncul di sini.
-
+Link yang kamu buat akan tampil di sini.
 </p>
 
 
 </div>
 
 
+
 </div>
 
 
 
+</section>
 
-
-
-
-
-
-
-<!-- =========================
-     EDIT MODAL
-========================= -->
-
-
-<div
+<section 
 id="editModal"
 class="advanced-modal">
 
@@ -439,12 +478,13 @@ class="advanced-modal">
 <div class="advanced-box">
 
 
+
 <div class="advanced-header">
 
 
 <h3>
 
-<i class="fa-solid fa-pen"></i>
+<i class="fa-solid fa-pen-to-square"></i>
 
 Edit Ads Link
 
@@ -452,15 +492,14 @@ Edit Ads Link
 
 
 
-<button
+<button 
 type="button"
 onclick="closeEdit()">
 
-
 <i class="fa-solid fa-xmark"></i>
 
-
 </button>
+
 
 
 </div>
@@ -469,9 +508,10 @@ onclick="closeEdit()">
 
 
 
-<input
+<input 
 type="hidden"
 id="editId">
+
 
 
 
@@ -491,10 +531,12 @@ Nama Link
 <input
 type="text"
 id="editTitle"
->
+placeholder="Nama Link">
 
 
 </div>
+
+
 
 
 
@@ -514,7 +556,7 @@ Destination URL
 <input
 type="url"
 id="editUrl"
->
+placeholder="https://example.com">
 
 
 </div>
@@ -524,8 +566,8 @@ id="editUrl"
 
 
 
-<div class="btn-group">
 
+<div class="btn-group">
 
 
 <button
@@ -552,7 +594,7 @@ class="btn-secondary"
 onclick="closeEdit()">
 
 
-<i class="fa-solid fa-xmark"></i>
+<i class="fa-solid fa-ban"></i>
 
 
 Batal
@@ -566,138 +608,255 @@ Batal
 
 
 
-
 </div>
 
 
-</div>
-
+</section>
 
 
 
 </main>
 
+
+
+
+
 <div id="footer"></div>
+
+
+
+
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
 <script src="js/database.js"></script>
+
 <script src="js/theme.js"></script>
+
 <script src="js/navbar.js"></script>
+
 <script src="js/footer.js"></script>
+
 <script src="js/create-link.js"></script>
+
+
+
+
+
+
 
 <script>
 
-/* ==========================
-   LOAD NAVBAR
-========================== */
+
+/* LOAD NAVBAR */
 
 fetch("components/navbar.html")
-.then(res => res.text())
-.then(html => {
 
-    document.getElementById("navbar").innerHTML = html;
+.then(res=>res.text())
 
-    if(typeof c2pInit === "function"){
-        c2pInit();
-    }
+.then(html=>{
 
-    const logoutBtn = document.getElementById("logoutBtn");
 
-    if(logoutBtn){
+document.getElementById("navbar").innerHTML=html;
 
-        logoutBtn.onclick = async()=>{
 
-            try{
-                await database.logout();
-            }catch(e){}
 
-            localStorage.clear();
-            sessionStorage.clear();
+if(typeof c2pInit==="function"){
 
-            location.replace("index.html");
-
-        };
-
-    }
-
-});
-
-/* ==========================
-   LOAD FOOTER
-========================== */
-
-fetch("components/footer.html")
-.then(res => res.text())
-.then(html => {
-
-    document.getElementById("footer").innerHTML = html;
-
-    if(typeof c2pFooterInit === "function"){
-        c2pFooterInit();
-    }
-
-});
-
-/* ==========================
-   LOAD CREATE LINK
-========================== */
-
-window.addEventListener("load",()=>{
-
-    if(typeof loadLinks==="function"){
-        loadLinks();
-    }
-
-});
-
-/* ==========================
-   SEARCH
-========================== */
-
-const searchInput=document.getElementById("searchInput");
-
-if(searchInput){
-
-searchInput.addEventListener("input",()=>{
-
-if(typeof searchLinks==="function"){
-
-searchLinks(searchInput.value);
+c2pInit();
 
 }
 
-});
 
-}
 
-/* ==========================
-   FILTER
-========================== */
+const logoutBtn=document.getElementById("logoutBtn");
 
-document.querySelectorAll(".link-filter button")
-.forEach(btn=>{
 
-btn.onclick=()=>{
 
-document
-.querySelectorAll(".link-filter button")
-.forEach(b=>b.classList.remove("active"));
+if(logoutBtn){
 
-btn.classList.add("active");
 
-if(typeof filterLinks==="function"){
+logoutBtn.onclick=async()=>{
 
-filterLinks(btn.dataset.filter);
 
-}
+try{
+
+await database.logout();
+
+}catch(e){}
+
+
+
+localStorage.clear();
+
+sessionStorage.clear();
+
+
+location.replace("index.html");
 
 };
 
+
+}
+
+
+
 });
 
+
+
+
+
+
+
+
+/* LOAD FOOTER */
+
+
+fetch("components/footer.html")
+
+.then(res=>res.text())
+
+.then(html=>{
+
+
+document.getElementById("footer").innerHTML=html;
+
+
+
+if(typeof c2pFooterInit==="function"){
+
+c2pFooterInit();
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+
+
+/* LOAD DATA */
+
+
+window.addEventListener("load",()=>{
+
+
+if(typeof loadLinks==="function"){
+
+loadLinks();
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+/* SEARCH */
+
+
+const searchInput=document.getElementById("searchInput");
+
+
+
+if(searchInput){
+
+
+
+searchInput.addEventListener("input",()=>{
+
+
+if(typeof searchLinks==="function"){
+
+
+searchLinks(searchInput.value);
+
+
+}
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* FILTER */
+
+
+document.querySelectorAll(".link-filter button")
+
+.forEach(btn=>{
+
+
+btn.onclick=()=>{
+
+
+
+document
+
+.querySelectorAll(".link-filter button")
+
+.forEach(b=>{
+
+b.classList.remove("active");
+
+});
+
+
+
+btn.classList.add("active");
+
+
+
+if(typeof filterLinks==="function"){
+
+
+filterLinks(btn.dataset.filter);
+
+
+}
+
+
+
+};
+
+
+
+});
+
+
+
 </script>
+
+
 
 </body>
 
