@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Tutorial Sell Link - Click2Pay</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/navbar.css">
+<link rel="stylesheet" href="../css/tutorial.css">
+
+</head>
+
+<body class="tutorial-body">
+
+<div id="navbar"></div>
+
+<div class="tutorial-container">
+
+<div class="tutorial-header">
+<h1>
+<i class="fa-solid fa-cart-shopping"></i>
+Cara Membuat Sell Link
+</h1>
+
+<p>
+Panduan menggunakan fitur Sell Link untuk menjual akses premium.
+</p>
+</div>
+
+
+<div class="tutorial-box">
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-lock-open"></i>
+</div>
+
+<div>
+<h3>1. Aktifkan Sell Link</h3>
+<p>
+Sell Link akan terbuka setelah akun memenuhi syarat aktivasi yang ditentukan oleh Click2Pay.
+</p>
+</div>
+</div>
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-link"></i>
+</div>
+
+<div>
+<h3>2. Buat Link Baru</h3>
+<p>
+Masuk Dashboard lalu tekan tombol Create Link untuk membuat link baru.
+</p>
+</div>
+</div>
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-cart-plus"></i>
+</div>
+
+<div>
+<h3>3. Pilih Sell Link</h3>
+<p>
+Pada bagian Link Type pilih Sell Link untuk membuat link penjualan.
+</p>
+</div>
+</div>
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-money-bill-wave"></i>
+</div>
+
+<div>
+<h3>4. Atur Harga Produk</h3>
+<p>
+Masukkan harga atau nilai akses yang ingin dijual kepada pengguna.
+</p>
+</div>
+</div>
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-file-lines"></i>
+</div>
+
+<div>
+<h3>5. Tambahkan Informasi</h3>
+<p>
+Berikan deskripsi yang jelas agar pembeli memahami produk atau akses yang ditawarkan.
+</p>
+</div>
+</div>
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-share-nodes"></i>
+</div>
+
+<div>
+<h3>6. Bagikan Sell Link</h3>
+<p>
+Promosikan link melalui sosial media, komunitas, atau platform yang sesuai.
+</p>
+</div>
+</div>
+
+
+<div class="tutorial-step">
+<div class="tutorial-icon">
+<i class="fa-solid fa-chart-column"></i>
+</div>
+
+<div>
+<h3>7. Pantau Penjualan</h3>
+<p>
+Lihat jumlah transaksi, pendapatan, dan performa Sell Link melalui dashboard.
+</p>
+</div>
+</div>
+
+
+
+<div class="tutorial-tip">
+
+<h3>
+<i class="fa-solid fa-lightbulb"></i>
+Tips Sell Link
+</h3>
+
+<p>
+Gunakan judul menarik, deskripsi lengkap, dan targetkan pengguna yang benar agar peluang penjualan meningkat.
+</p>
+
+</div>
+
+
+
+<div class="tutorial-tip">
+
+<h3>
+<i class="fa-solid fa-triangle-exclamation"></i>
+Perhatian
+</h3>
+
+<p>
+Pastikan produk atau akses yang dijual sesuai aturan Click2Pay agar akun tetap aman.
+</p>
+
+</div>
+
+
+
+<a href="../dashboard.html" class="tutorial-back">
+<i class="fa-solid fa-arrow-left"></i>
+Kembali Dashboard
+</a>
+
+
+</div>
+
+</div>
+
+
+<script src="../js/theme.js"></script>
+<script src="../js/navbar.js"></script>
+
+<script>
+fetch("../components/navbar.html")
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("navbar").innerHTML=data;
+if(typeof c2pInit==="function") c2pInit();
+});
+</script>
+
+</body>
+</html>
