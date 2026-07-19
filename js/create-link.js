@@ -101,7 +101,7 @@ return`
 
 <div class="link-meta">
 
-<a href="#">
+<a href="dashboard.html?tab=statistics&id=${link.id}">
 <i class="fa-solid fa-chart-column"></i>
 Stats
 </a>
