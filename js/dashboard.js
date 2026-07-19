@@ -24,6 +24,8 @@ console.error("Profile tidak ditemukan.");
 return;
 }
 
+window.currentUserCountry = profile.country || "Indonesia";
+
 // ===========================
 // DATE
 // ===========================
@@ -70,7 +72,6 @@ sellMonthSelect.innerHTML = `<option>${monthText}</option>`;
 const adsToday=document.getElementById("adsToday");
 const adsMonth=document.getElementById("adsMonth");
 const adsViewsMonth=document.getElementById("adsViewsMonth");
-const currentCpm=document.getElementById("currentCpm");
 
 if(adsToday){
 adsToday.textContent=
@@ -470,6 +471,128 @@ options:commonOptions
 });
 
 }
+
+const CPM_DATA=[
+
+{country:"Indonesia",flag:"🇮🇩",base:5200},
+{country:"Malaysia",flag:"🇲🇾",base:10500},
+{country:"Thailand",flag:"🇹🇭",base:9100},
+{country:"Vietnam",flag:"🇻🇳",base:7200},
+{country:"India",flag:"🇮🇳",base:4800},
+{country:"Cambodia",flag:"🇰🇭",base:6500},
+{country:"Singapore",flag:"🇸🇬",base:22000},
+{country:"Australia",flag:"🇦🇺",base:39500},
+{country:"United Kingdom",flag:"🇬🇧",base:46200},
+{country:"Switzerland",flag:"🇨🇭",base:51000},
+{country:"United States",flag:"🇺🇸",base:54000}
+
+];
+
+function updateCPMMarket(userCountry="Indonesia"){
+
+const day=new Date().getDay();
+
+const hotDays={
+
+0:["Switzerland","India"],
+
+1:["United States","Australia"],
+
+2:["Indonesia","Malaysia"],
+
+3:["Singapore","Thailand"],
+
+4:["United Kingdom","Cambodia"],
+
+5:["Indonesia","Vietnam"],
+
+6:["Malaysia","United States"]
+
+};
+
+const hot=hotDays[day];
+
+const list=document.getElementById("cpmMarketList");
+
+list.innerHTML="";
+
+CPM_DATA.forEach(item=>{
+
+let value=item.base;
+
+let percent=(Math.random()*4+1);
+
+let up=Math.random()>.35;
+
+if(hot.includes(item.country)){
+
+value*=1.25;
+
+percent+=6;
+
+up=true;
+
+}
+
+value=Math.round(value+(Math.random()*400-200));
+
+const row=document.createElement("div");
+
+row.className="market-row";
+
+row.innerHTML=`
+
+<div class="flag">${item.flag}</div>
+
+<div>
+
+<div class="country">${item.country}</div>
+
+<div class="spark">
+
+<span style="width:${40+Math.random()*60}%"></span>
+
+</div>
+
+</div>
+
+<div class="market-price">
+
+<b>Rp ${value.toLocaleString("id-ID")}</b>
+
+<div class="market-change ${up?"up":"down"}">
+
+${up?"▲":"▼"}
+
+${percent.toFixed(1)}%
+
+</div>
+
+</div>
+
+`;
+
+list.appendChild(row);
+
+});
+
+const notice=document.getElementById("countryNotice");
+
+const todayHot=hot.includes(userCountry);
+
+notice.innerHTML=todayHot
+
+?`🔥 CPM <b>${userCountry}</b> sedang naik hari ini. Saat yang tepat membagikan Ads Link.`
+
+:`📈 Pantau CPM setiap hari. Negara Anda (${userCountry}) berpotensi naik pada hari berikutnya.`;
+
+}
+
+updateCPMMarket(window.currentUserCountry || "Indonesia");
+
+setInterval(() => {
+    updateCPMMarket(window.currentUserCountry || "Indonesia");
+}, 8000);
 
 // ===========================
 // SELL CHART
