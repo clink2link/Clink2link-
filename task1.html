@@ -257,179 +257,123 @@ TEMPAT IKLAN ADSTERRA 300x600
 <script src="js/database.js"></script>
 
 <script>
-const code=new URLSearchParams(location.search).get("code")||"";
-if(code) localStorage.setItem("task_code",code);
+const code = new URLSearchParams(location.search).get("code") || "";
 
-const downloadBtn=document.getElementById("downloadBtn");
-const progressArea=document.getElementById("progressArea");
-const progressFill=document.getElementById("progressFill");
-const progressText=document.getElementById("progressText");
-const scrollBtn=document.getElementById("scrollBtn");
-
-const linkBtn=document.getElementById("linkBtn");
-const loadingArea=document.getElementById("loadingArea");
-const loadingSecond=document.getElementById("loadingSecond");
-const nextBtn=document.getElementById("nextBtn");
-
-downloadBtn.onclick=function(){
-downloadBtn.disabled=true;
-progressArea.style.display="block";
-
-let p=0;
-
-const timer=setInterval(()=>{
-p++;
-
-progressFill.style.width=p+"%";
-progressText.textContent=p+"%";
-
-if(p>=100){
-clearInterval(timer);
-progressText.textContent="Selesai";
-scrollBtn.style.display="block";
-}
-},100);
-};
-
-
-scrollBtn.onclick=function(){
-document.getElementById("linkSection").scrollIntoView({
-behavior:"smooth"
-});
-linkBtn.disabled=false;
-};
-
-
-linkBtn.onclick=function(){
-if(linkBtn.disabled)return;
-
-linkBtn.disabled=true;
-linkBtn.style.display="none";
-loadingArea.style.display="block";
-
-let s=7;
-
-loadingSecond.textContent=s+" Detik";
-
-const timer=setInterval(()=>{
-
-s--;
-
-loadingSecond.textContent=s+" Detik";
-
-if(s<=0){
-
-clearInterval(timer);
-
-loadingArea.style.display="none";
-nextBtn.style.display="block";
-
+if (code) {
+    localStorage.setItem("task_code", code);
 }
 
-},1000);
+const downloadBtn = document.getElementById("downloadBtn");
+const progressArea = document.getElementById("progressArea");
+const progressFill = document.getElementById("progressFill");
+const progressText = document.getElementById("progressText");
+const scrollBtn = document.getElementById("scrollBtn");
+
+const linkBtn = document.getElementById("linkBtn");
+const loadingArea = document.getElementById("loadingArea");
+const loadingSecond = document.getElementById("loadingSecond");
+const nextBtn = document.getElementById("nextBtn");
+
+// ==========================
+// DOWNLOAD
+// ==========================
+
+downloadBtn.onclick = function () {
+
+    downloadBtn.disabled = true;
+    progressArea.style.display = "block";
+
+    let p = 0;
+
+    const timer = setInterval(() => {
+
+        p++;
+
+        progressFill.style.width = p + "%";
+        progressText.textContent = p + "%";
+
+        if (p >= 100) {
+
+            clearInterval(timer);
+
+            progressText.textContent = "Selesai";
+
+            scrollBtn.style.display = "block";
+
+        }
+
+    }, 100);
 
 };
 
+// ==========================
+// SCROLL
+// ==========================
 
-nextBtn.onclick=async function(){
+scrollBtn.onclick = function () {
 
-try{
+    document.getElementById("linkSection").scrollIntoView({
+        behavior: "smooth"
+    });
 
-if(!database||!database.supabase){
-alert("Database tidak tersedia");
-return;
-}
+    linkBtn.disabled = false;
 
+};
 
-const user=await database.getUser();
+// ==========================
+// GENERATE
+// ==========================
 
-if(!user){
-window.location.href="login.html";
-return;
-}
+linkBtn.onclick = function () {
 
+    if (linkBtn.disabled) return;
 
-const url=localStorage.getItem("create_url");
+    linkBtn.disabled = true;
+    linkBtn.style.display = "none";
 
-if(!url){
-alert("URL tidak ditemukan");
-return;
-}
+    loadingArea.style.display = "block";
 
+    let s = 7;
 
-const shortCode=Math.random().toString(36).substring(2,8);
+    loadingSecond.textContent = s + " Detik";
 
+    const timer = setInterval(() => {
 
-let advanced={};
+        s--;
 
-try{
-advanced=JSON.parse(
-localStorage.getItem("advanced_settings")||"{}"
-);
-}catch(e){
-advanced={};
-}
+        loadingSecond.textContent = s + " Detik";
 
+        if (s <= 0) {
 
-const {error}=await database.supabase
-.from("links")
-.insert({
+            clearInterval(timer);
 
-user_id:user.id,
-type:"ads",
-title:"",
+            loadingArea.style.display = "none";
 
-alias:advanced.alias||null,
+            nextBtn.style.display = "block";
 
-destination:url,
-destination_url:url,
+        }
 
-campaign:advanced.campaign||null,
-campaign_name:advanced.campaign||null,
+    }, 1000);
 
-device:advanced.device||"all",
-target_device:advanced.device||"all",
+};
 
-custom_alias:advanced.alias||null,
+// ==========================
+// NEXT
+// ==========================
 
-expired_at:
-advanced.expired==="never"
-?null
-:advanced.expired,
+nextBtn.onclick = function () {
 
-status:"active",
+    const code = localStorage.getItem("task_code");
 
-views:0,
-clicks:0,
-earnings:0,
+    if (!code) {
 
-total_views:0,
-total_clicks:0,
-total_earnings:0,
+        alert("Kode link tidak ditemukan");
 
-short_code:shortCode,
-link_type:"ads"
+        return;
 
-});
+    }
 
-
-if(error){
-alert(error.message);
-return;
-}
-
-
-localStorage.removeItem("create_url");
-
-window.location.href="task2.html?code="+shortCode;
-
-
-}catch(e){
-
-console.error(e);
-alert("Gagal membuat link.");
-
-}
+    window.location.href = "task2.html?code=" + code;
 
 };
 </script>
