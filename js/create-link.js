@@ -181,8 +181,15 @@ return;
 linkList.innerHTML = filteredLinks.map(link=>{
 
 
-let url =
-`${location.origin}/s/${link.short_code}`;
+const shortCode =
+link.short_code ??
+link.shortcode ??
+link.code ??
+link.slug ??
+"";
+
+const url =
+`${location.origin}/s/${shortCode}`;
 
 
 return `
