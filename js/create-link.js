@@ -185,9 +185,34 @@ link_type:"ads"
 });
 
 createForm.reset();
-await loadLinks();
 
-alert("Ads Link berhasil dibuat.");
+document.getElementById("createResult").innerHTML=`
+
+<div class="link-card create-success">
+
+<div class="link-title">
+<i class="fa-solid fa-circle-check"></i>
+Link Berhasil Dibuat
+</div>
+
+<div class="link-url">
+${location.origin}/s/${short_code}
+</div>
+
+<div class="link-actions">
+
+<button class="copy-btn" onclick="copyLink('${location.origin}/s/${short_code}')">
+<i class="fa-solid fa-copy"></i>
+Copy Link
+</button>
+
+</div>
+
+</div>
+
+`;
+
+await loadLinks();
 
 }catch(err){
 console.error("CREATE ERROR:",err);
