@@ -171,6 +171,19 @@ return supabaseClient
 
 }
 
+async function createLink(data){
+
+const {data:result,error}=await supabaseClient
+.from("links")
+.insert(data)
+.select()
+.single();
+
+if(error)throw error;
+
+return result;
+
+}
 
 // ===============================
 // SHORTLINKS
@@ -325,37 +338,39 @@ return data;
 // EXPORT
 // ===============================
 
-window.database = {
-    supabase: supabaseClient,
+window.database={
 
-    verifyPassword,
+supabase:supabaseClient,
 
-    getUser,
-    logout,
+verifyPassword,
 
-    getUsers,
+getUser,
+logout,
 
-    getProfile,
-    getProfiles,
+getUsers,
 
-    getLinks,
-    updateLink,
-    deleteLink,
+getProfile,
+getProfiles,
 
-    getShortlinks,
+getLinks,
+createLink,
+updateLink,
+deleteLink,
 
-    getClicks,
+getShortlinks,
 
-    getTransactions,
+getClicks,
 
-    getWithdrawals,
-    getWithdraws,
+getTransactions,
 
-    getAnnouncements,
+getWithdrawals,
+getWithdraws,
 
-    getDashboardReport,
-    getReports
+getAnnouncements,
+
+getDashboardReport,
+getReports
+
 };
 
-// TEST
-console.log("DATABASE JS READY", window.database);
+console.log("DATABASE JS READY",window.database);
