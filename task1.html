@@ -151,7 +151,7 @@ img{
 =========================== */
 
 #downloadBtn,
-#btnads,
+.btnads,
 #scrollBtn,
 #linkBtn,
 #nextBtn{
@@ -169,14 +169,14 @@ img{
 }
 
 #downloadBtn,
-#btnads,
+.btnads,
 #linkBtn{
     background:#2563eb;
     color:#fff;
 }
 
 #downloadBtn:hover,
-#btnads:hover,
+.btnads:hover,
 #linkBtn:hover{
     background:#1d4ed8;
     transform:translateY(-2px);
@@ -427,6 +427,13 @@ img{
     }
 
 }
+.slide-ad.show{
+    bottom:0;
+}
+
+.slide-ad.hidden{
+    bottom:calc(-100% + 40px);
+}
 </style>
 </head>
 
@@ -499,7 +506,7 @@ Click2Pay terus dikembangkan untuk menghadirkan layanan yang stabil, aman, dan m
 <h1>Download File Gratis</h1>
 
 <a
-    id="btnads"
+    class="btnads"
     href="https://nooseamazingbatch.com/tmbrfhmu?key=d8893e075aeb69f02ecfe4522c9334e7"
     target="_blank"
     rel="noopener noreferrer"
@@ -786,7 +793,7 @@ aman, dan mudah digunakan.
 </article>
 
 <a
-    id="btnads"
+    class="btnads"
     href="https://nooseamazingbatch.com/tmbrfhmu?key=d8893e075aeb69f02ecfe4522c9334e7"
     target="_blank"
     rel="noopener noreferrer"
@@ -884,7 +891,10 @@ generate link berjalan dengan baik.
 
 </div>
 
-<button id="showSlideAd" class="show-ad-btn">
+<button
+    id="showSlideAd"
+    class="show-ad-btn"
+    style="display:none;">
     <i class="fa-solid fa-chevron-up"></i>
 </button>
 
@@ -920,6 +930,7 @@ const loadingSecond = document.getElementById("loadingSecond");
 const nextBtn = document.getElementById("nextBtn");
 
 const slideAd = document.getElementById("slideAd");
+const closeAd = document.getElementById("closeSlideAd");
 const showBtn = document.getElementById("showSlideAd");
 
 // Inisialisasi
@@ -1028,7 +1039,9 @@ nextBtn.onclick = () => {
         return;
     }
 
-    location.href = "task2.html?code=" + code;
+    location.href =
+    "task2.html?code=" +
+    encodeURIComponent(code);
 
 };
 </script>
