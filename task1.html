@@ -945,9 +945,12 @@ nextBtn.style.display = "none";
 // Simpan Code
 // ===========================
 const code = new URLSearchParams(location.search).get("code") || "";
+console.log("URL:", location.href);
+console.log("CODE:", code);
 
 if (code) {
     localStorage.setItem("task_code", code);
+    console.log("TERSIMPAN:", localStorage.getItem("task_code"));
 }
 
 // ===========================
