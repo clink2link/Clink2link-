@@ -379,8 +379,24 @@ img{
     border-radius:20px 20px 0 0;
 }
 
-.slide-ad.show{
-    bottom:0;
+.slide-ad.hidden{
+    transform:translateY(calc(100% - 40px));
+}
+
+.show-ad-btn{
+    position:fixed;
+    left:50%;
+    bottom:8px;
+    transform:translateX(-50%);
+    width:46px;
+    height:32px;
+    border:none;
+    border-radius:20px;
+    background:#2563eb;
+    color:#fff;
+    cursor:pointer;
+    display:none;
+    z-index:100000;
 }
 
 .close-ad{
@@ -862,6 +878,10 @@ generate link berjalan dengan baik.
 
 </div>
 
+<button id="showSlideAd" class="show-ad-btn">
+    <i class="fa-solid fa-chevron-up"></i>
+</button>
+
 <footer id="footer"></footer>
 
 <script src="https://nooseamazingbatch.com/f7/27/48/f727480d7c099bf5d614e11be3252ac5.js"></script>
@@ -884,7 +904,7 @@ const loadingSecond = document.getElementById("loadingSecond");
 const nextBtn = document.getElementById("nextBtn");
 
 const slideAd = document.getElementById("slideAd");
-const closeAd = document.getElementById("closeSlideAd");
+const showBtn = document.getElementById("showSlideAd");
 
 // Inisialisasi
 downloadBtn.disabled = false;
@@ -909,7 +929,13 @@ document.addEventListener("pointerdown", () => {
 }, { once: true });
 
 closeAd.onclick = () => {
-    slideAd.classList.remove("show");
+    slideAd.classList.add("hidden");
+    showBtn.style.display = "block";
+};
+
+showBtn.onclick = () => {
+    slideAd.classList.remove("hidden");
+    showBtn.style.display = "none";
 };
 
 // Download
