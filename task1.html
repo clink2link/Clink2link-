@@ -941,18 +941,24 @@ linkBtn.disabled = true;
 loadingArea.style.display = "none";
 nextBtn.style.display = "none";
 
-// ===========================
-// Simpan Code
-// ===========================
-alert(location.href);
+let code = new URLSearchParams(location.search).get("code");
 
-const code = new URLSearchParams(location.search).get("code") || "";
+if(!code){
 
-alert("CODE = " + code);
+    const path = location.pathname;
 
-if (code) {
+    if(path.startsWith("/s/")){
+        code = decodeURIComponent(path.split("/s/")[1]);
+    }
+
+}
+
+if(code){
+
     localStorage.setItem("task_code", code);
-    alert("TERSIMPAN = " + localStorage.getItem("task_code"));
+
+    console.log("Task Code:", code);
+
 }
 
 // ===========================
@@ -1087,7 +1093,7 @@ nextBtn.addEventListener("click", () => {
 
     }
 
-    location.href = "task2.html?code=" + encodeURIComponent(code);
+    location.href = "/task2.html?code=" + encodeURIComponent(code);
 
 });
 </script>
