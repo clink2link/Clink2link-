@@ -899,7 +899,7 @@ generate link berjalan dengan baik.
 </button>
 
 <a
-    id="btnads"
+    class="btnads"
     href="https://nooseamazingbatch.com/tmbrfhmu?key=d8893e075aeb69f02ecfe4522c9334e7"
     target="_blank"
     rel="noopener noreferrer"
@@ -917,7 +917,6 @@ generate link berjalan dengan baik.
 <script src="js/footer.js"></script>
 
 <script>
-
 const downloadBtn = document.getElementById("downloadBtn");
 const progressArea = document.getElementById("progressArea");
 const progressFill = document.getElementById("progressFill");
@@ -933,40 +932,60 @@ const slideAd = document.getElementById("slideAd");
 const closeAd = document.getElementById("closeSlideAd");
 const showBtn = document.getElementById("showSlideAd");
 
+// ===========================
 // Inisialisasi
+// ===========================
 downloadBtn.disabled = false;
 scrollBtn.style.display = "none";
 linkBtn.disabled = true;
 loadingArea.style.display = "none";
 nextBtn.style.display = "none";
 
-// Simpan code
+// ===========================
+// Simpan Code
+// ===========================
 const code = new URLSearchParams(location.search).get("code") || "";
+
 if (code) {
     localStorage.setItem("task_code", code);
 }
 
+// ===========================
 // Slide Ads
+// ===========================
 let adOpened = false;
 
-document.addEventListener("pointerdown", () => {
-    if (adOpened) return;
-    adOpened = true;
-    slideAd.classList.add("show");
-}, { once: true });
+window.addEventListener("scroll", () => {
 
-closeAd.onclick = () => {
+    if (adOpened) return;
+
+    if (window.scrollY > 300) {
+        adOpened = true;
+        slideAd.classList.add("show");
+    }
+
+});
+
+closeAd.addEventListener("click", () => {
+
+    slideAd.classList.remove("show");
     slideAd.classList.add("hidden");
     showBtn.style.display = "block";
-};
 
-showBtn.onclick = () => {
+});
+
+showBtn.addEventListener("click", () => {
+
     slideAd.classList.remove("hidden");
+    slideAd.classList.add("show");
     showBtn.style.display = "none";
-};
 
+});
+
+// ===========================
 // Download
-downloadBtn.onclick = () => {
+// ===========================
+downloadBtn.addEventListener("click", () => {
 
     downloadBtn.disabled = true;
     progressArea.style.display = "block";
@@ -974,37 +993,50 @@ downloadBtn.onclick = () => {
     let p = 0;
 
     const timer = setInterval(() => {
+
         p++;
+
         progressFill.style.width = p + "%";
         progressText.textContent = p + "%";
 
         if (p >= 100) {
+
             clearInterval(timer);
+
             progressText.textContent = "Selesai";
+
             scrollBtn.style.display = "block";
+
         }
-    }, 100);
 
-};
+    }, 70);
 
-// Scroll
-scrollBtn.onclick = () => {
+});
 
-    const footer = document.getElementById("footer");
+// ===========================
+// Scroll ke Footer
+// ===========================
+scrollBtn.addEventListener("click", () => {
 
-    if (footer) {
-        footer.scrollIntoView({
-            behavior: "smooth",
-            block: "end"
-        });
-    }
+    window.scrollTo({
 
-    linkBtn.disabled = false;
+        top: document.body.scrollHeight,
+        behavior: "smooth"
 
-};
+    });
 
-// Generate
-linkBtn.onclick = () => {
+    setTimeout(() => {
+
+        linkBtn.disabled = false;
+
+    }, 900);
+
+});
+
+// ===========================
+// Generate Link
+// ===========================
+linkBtn.addEventListener("click", () => {
 
     if (linkBtn.disabled) return;
 
@@ -1012,38 +1044,47 @@ linkBtn.onclick = () => {
     loadingArea.style.display = "block";
 
     let s = 7;
+
     loadingSecond.textContent = s + " Detik";
 
     const timer = setInterval(() => {
 
         s--;
+
         loadingSecond.textContent = s + " Detik";
 
         if (s <= 0) {
+
             clearInterval(timer);
+
             loadingArea.style.display = "none";
+
             nextBtn.style.display = "block";
+
         }
 
     }, 1000);
 
-};
+});
 
-// Next
-nextBtn.onclick = () => {
+// ===========================
+// Task 2
+// ===========================
+nextBtn.addEventListener("click", () => {
 
     const code = localStorage.getItem("task_code");
 
     if (!code) {
+
         alert("Kode link tidak ditemukan");
+
         return;
+
     }
 
-    location.href =
-    "task2.html?code=" +
-    encodeURIComponent(code);
+    location.href = "task2.html?code=" + encodeURIComponent(code);
 
-};
+});
 </script>
 <script src="https://nooseamazingbatch.com/6f/c8/7e/6fc87e284a7f4093a97af695fd172d44.js"></script>
 
