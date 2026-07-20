@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Task 2 • Click2Pay</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Inter",sans-serif;
+}
+
+body{
+    background:var(--bg,#f4f8ff);
+    color:var(--text,#111827);
+    line-height:1.7;
+    overflow-x:hidden;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+img{
+    max-width:100%;
+    display:block;
+}
+
+.container{
+    width:min(1400px,96%);
+    margin:auto;
+}
+
+/* ===========================
+   NAVBAR
+=========================== */
+
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:999;
+    background:rgba(255,255,255,.9);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(0,0,0,.05);
+}
+
+.nav-inner{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    padding:16px 0;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:26px;
+    font-weight:800;
+    color:#2563eb;
+}
+
+.logo i{
+    font-size:28px;
+}
+
+.nav-right{
+    display:flex;
+    gap:12px;
+}
+
+.btn{
+    padding:12px 24px;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+    font-weight:700;
+    transition:.25s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+.btn-login{
+    background:#fff;
+    color:#2563eb;
+    border:1px solid #dbeafe;
+}
+
+.btn-register{
+    background:#2563eb;
+    color:#fff;
+}
+
+/* ===========================
+   HERO
+=========================== */
+
+.hero{
+    padding:40px 0;
+}
+
+.hero-grid{
+    display:block;
+}
+
+.hero-box,
+.side-card{
+    background:transparent;
+    box-shadow:none;
+    border:none;
+    border-radius:0;
+    padding:0;
+}
+
+.hero h1{
+    font-size:48px;
+    font-weight:800;
+    line-height:1.2;
+    margin-bottom:18px;
+}
+
+.hero p{
+    font-size:18px;
+    color:#64748b;
+    margin-bottom:25px;
+}
+
+.download-box{
+    width:100%;
+    max-width:850px;
+    margin:auto;
+}
+
+/* ===========================
+   BUTTON
+=========================== */
+
+#downloadBtn,
+.btnads,
+#scrollBtn,
+#linkBtn,
+#nextBtn{
+    width:auto;
+    min-width:180px;
+    padding:12px 22px;
+    font-size:15px;
+    border-radius:12px;
+    display:block;
+    margin:20px auto;
+    font-weight:600;
+    text-align:center;
+    text-decoration:none;
+    transition:.25s;
+}
+
+#downloadBtn,
+.btnads,
+#linkBtn{
+    background:#2563eb;
+    color:#fff;
+}
+
+#downloadBtn:hover,
+.btnads:hover,
+#linkBtn:hover{
+    background:#1d4ed8;
+    transform:translateY(-2px);
+}
+
+#scrollBtn{
+    display:none;
+    margin-top:20px;
+    background:#22c55e;
+    color:#fff;
+}
+
+#nextBtn{
+    background:#22c55e;
+    color:#fff;
+}
+
+#linkBtn:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+#nextBtn{
+    display:none;
+}
+
+#linkBtn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+    pointer-events:none;
+}
+
+/* ===========================
+   PROGRESS
+=========================== */
+
+.progress-area{
+    display:none;
+    margin-top:25px;
+}
+
+.progress-bar{
+    width:100%;
+    height:18px;
+    background:#dbeafe;
+    border-radius:30px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    width:0;
+    height:100%;
+    background:linear-gradient(90deg,#2563eb,#60a5fa);
+    transition:.2s;
+}
+
+.progress-text{
+    text-align:center;
+    margin-top:12px;
+    font-size:18px;
+    font-weight:700;
+}
+
+/* ===========================
+   ADS
+=========================== */
+
+.ad-box{
+    width:100%;
+    margin:30px auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    background:transparent;
+    border:none;
+    padding:0;
+}
+
+/* ===========================
+   SECTION
+=========================== */
+
+.section{
+    padding:40px 0;
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media(max-width:991px){
+
+    .hero h1{
+        font-size:38px;
+    }
+
+    .hero p{
+        font-size:16px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .nav-inner{
+        flex-direction:column;
+    }
+
+    .nav-right{
+        width:100%;
+    }
+
+    .btn{
+        flex:1;
+    }
+
+    .hero{
+        padding:25px 0;
+    }
+
+    .hero h1{
+        font-size:30px;
+    }
+
+    .hero p{
+        font-size:15px;
+    }
+
+    #downloadBtn,
+    #scrollBtn,
+    #linkBtn,
+    #nextBtn{
+        font-size:16px;
+        padding:16px;
+    }
+
+}
+
+@media(min-width:1200px){
+
+    .container{
+        width:min(1600px,94%);
+    }
+
+}
+
+.article{
+    padding:50px 0;
+}
+
+.article h2{
+    font-size:34px;
+    font-weight:800;
+    color:#2563eb;
+    margin-bottom:24px;
+    line-height:1.3;
+}
+
+.article p{
+    font-size:17px;
+    line-height:1.9;
+    margin-bottom:18px;
+    color:#475569;
+}
+
+.article i{
+    font-size:18px;
+    margin-right:8px;
+}
+
+@media (max-width:768px){
+
+    .article h2{
+        font-size:28px;
+    }
+
+    .article p{
+        font-size:15px;
+        line-height:1.8;
+    }
+
+    .article i{
+        font-size:16px;
+    }
+
+}
+
+.slide-ad{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:-450px;
+    width:100%;
+    background:#fff;
+    box-shadow:0 -10px 30px rgba(0,0,0,.15);
+    transition:.35s ease;
+    z-index:99999;
+    padding:18px;
+    border-radius:20px 20px 0 0;
+}
+
+.slide-ad.hidden{
+    transform:translateY(calc(100% - 40px));
+}
+
+.show-ad-btn{
+    position:fixed;
+    left:50%;
+    bottom:8px;
+    transform:translateX(-50%);
+    width:46px;
+    height:32px;
+    border:none;
+    border-radius:20px;
+    background:#2563eb;
+    color:#fff;
+    cursor:pointer;
+    display:none;
+    z-index:100000;
+}
+
+.close-ad{
+    position:absolute;
+    right:12px;
+    top:12px;
+    width:34px;
+    height:34px;
+    border:none;
+    border-radius:50%;
+    background:#ef4444;
+    color:#fff;
+    cursor:pointer;
+}
+
+#adContainer{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:260px;
+    margin-top:15px;
+}
+
+@media(max-width:768px){
+
+    .slide-ad{
+        padding:12px;
+    }
+
+}
+.slide-ad.show{
+    bottom:0;
+}
+
+.slide-ad.hidden{
+    bottom:calc(-100% + 40px);
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+<div class="container nav-inner">
+
+<a href="/" class="logo">
+<i class="fa-solid fa-link"></i>
+<span>Click2Pay</span>
+</a>
+
+<div class="nav-right">
+<button class="btn btn-login" onclick="location.href='login.html'">Login</button>
+<button class="btn btn-register" onclick="location.href='register.html'">Daftar</button>
+</div>
+
+</div>
+</header>
+
+<section class="section">
+<div class="container">
+<div class="ad-box ad-top">
+
+<script>
+  atOptions = {
+    'key' : '29e6c8d1c9fe68c5c32daba646fa6bfa',
+    'format' : 'iframe',
+    'height' : 300,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
+<script src="https://nooseamazingbatch.com/29e6c8d1c9fe68c5c32daba646fa6bfa/invoke.js"></script>
+
+</div>
+</div>
+</section>
+
+<!-- Download -->
+
+<h2 style="font-size:42px;font-weight:800;color:#2563eb;margin-bottom:30px;">
+<i class="fa-solid fa-money-bill-trend-up" style="font-size:40px;margin-right:12px;"></i>
+CPM Click2Pay
+</h2>
+
+<p style="font-size:20px;line-height:2;margin-bottom:24px;">
+<i class="fa-solid fa-chart-line" style="font-size:24px;color:#2563eb;margin-right:10px;"></i>
+
+CPM (Cost Per Mille) di Click2Pay merupakan sistem perhitungan pendapatan berdasarkan setiap 1.000 tayangan yang memenuhi syarat. Nilai CPM dapat berbeda tergantung negara pengunjung, kualitas trafik, perangkat yang digunakan, dan pengiklan yang sedang aktif.
+
+</p>
+
+<p style="font-size:20px;line-height:2;margin-bottom:24px;">
+<i class="fa-solid fa-globe" style="font-size:24px;color:#f59e0b;margin-right:10px;"></i>
+
+Negara dengan permintaan iklan yang tinggi umumnya memiliki nilai CPM yang lebih besar. Oleh karena itu, pendapatan yang diperoleh dapat bervariasi meskipun jumlah pengunjung yang diterima sama.
+
+</p>
+
+<p style="font-size:20px;line-height:2;">
+<i class="fa-solid fa-coins" style="font-size:24px;color:#22c55e;margin-right:10px;"></i>
+
+Click2Pay secara otomatis mengoptimalkan penayangan iklan untuk membantu meningkatkan potensi pendapatan. Seluruh statistik CPM dapat dipantau melalui dashboard sehingga pengguna dapat melihat performa trafik dan estimasi penghasilan secara lebih mudah.
+
+</p>
+
+<section class="hero">
+
+<div class="container">
+
+<div class="download-box">
+
+<button id="downloadBtn">
+<i class="fa-solid fa-download"></i>
+Download Sekarang
+</button>
+
+<div class="progress-area" id="progressArea">
+
+<div class="progress-bar">
+<div class="progress-fill" id="progressFill"></div>
+</div>
+
+<div class="progress-text" id="progressText">
+0%
+</div>
+
+</div>
+
+<a
+    class="btnads"
+    href="https://nooseamazingbatch.com/tmbrfhmu?key=d8893e075aeb69f02ecfe4522c9334e7"
+    target="_blank"
+    rel="noopener noreferrer"
+>
+    <i class="fa-solid fa-download"></i>
+    Download Now
+</a>
+
+<script>
+  atOptions = {
+    'key' : '6687305d1fd108d5507612e35fb40365',
+    'format' : 'iframe',
+    'height' : 250,
+    'width' : 300,
+    'params' : {}
+  };
+</script>
+<script src="https://nooseamazingbatch.com/6687305d1fd108d5507612e35fb40365/invoke.js"></script>
+
+<button id="scrollBtn">
+<i class="fa-solid fa-arrow-down"></i>
+Lanjut
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<h2 style="font-size:42px;font-weight:800;color:#2563eb;margin:50px 0 30px;">
+<i class="fa-solid fa-star" style="font-size:40px;margin-right:12px;color:#f59e0b;"></i>
+Keunggulan Click2Pay
+</h2>
+<p style="font-size:20px;line-height:2;margin-bottom:20px;">
+<i class="fa-solid fa-bolt" style="font-size:24px;color:#f59e0b;margin-right:10px;"></i>
+
+Click2Pay dibangun dengan teknologi web modern sehingga mampu memberikan pengalaman yang cepat, stabil, dan nyaman digunakan oleh berbagai jenis perangkat.
+
+</p>
+<p style="font-size:20px;line-height:2;margin-bottom:20px;">
+<i class="fa-solid fa-gauge-high" style="font-size:24px;color:#2563eb;margin-right:10px;"></i>
+
+Performa halaman dioptimalkan agar waktu pemuatan tetap cepat, sehingga pengguna dapat menyelesaikan setiap tahapan tanpa harus menunggu terlalu lama.
+
+</p>
+<p style="font-size:20px;line-height:2;margin-bottom:20px;">
+<i class="fa-solid fa-mobile-screen-button" style="font-size:24px;color:#22c55e;margin-right:10px;"></i>
+
+Tampilan responsif memastikan seluruh fitur dapat digunakan dengan nyaman pada smartphone Android, iPhone, tablet, laptop, maupun komputer desktop.
+
+</p>
+<p style="font-size:20px;line-height:2;margin-bottom:20px;">
+<i class="fa-solid fa-shield-halved" style="font-size:24px;color:#22c55e;margin-right:10px;"></i>
+
+Click2Pay terus dikembangkan untuk memberikan pengalaman penggunaan yang aman dan stabil, sehingga setiap proses dapat berjalan dengan baik.
+
+</p>
+<p style="font-size:20px;line-height:2;margin-bottom:20px;">
+<i class="fa-solid fa-wand-magic-sparkles" style="font-size:24px;color:#a855f7;margin-right:10px;"></i>
+
+Antarmuka yang sederhana membuat pengguna baru dapat memahami setiap langkah tanpa memerlukan panduan yang rumit.
+
+</p>
+<p style="font-size:20px;line-height:2;">
+<i class="fa-solid fa-circle-check" style="font-size:24px;color:#16a34a;margin-right:10px;"></i>
+
+Dengan kombinasi kecepatan, kemudahan, dan desain modern, Click2Pay menjadi solusi praktis bagi pengguna yang ingin mengakses tautan melalui proses yang efisien dan nyaman.
+
+</p>
+
+<script>
+  atOptions = {
+    'key' : '9d9ce6aad2e47325c319034c41eefa5a',
+    'format' : 'iframe',
+    'height' : 600,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
+<script src="https://nooseamazingbatch.com/9d9ce6aad2e47325c319034c41eefa5a/invoke.js"></script>
+<section class="section">
+
+<div class="container">
+
+<div class="ad-box">
+
+<script>
+  atOptions = {
+    'key' : '6687305d1fd108d5507612e35fb40365',
+    'format' : 'iframe',
+    'height' : 250,
+    'width' : 300,
+    'params' : {}
+  };
+</script>
+<script src="https://nooseamazingbatch.com/6687305d1fd108d5507612e35fb40365/invoke.js"></script>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- Generate -->
+<section id="linkSection" class="section">
+
+<div class="container">
+
+<div class="download-box">
+
+<button id="linkBtn" disabled>
+
+<i class="fa-solid fa-link"></i>
+
+Get Link
+
+</button>
+
+<script async="async" data-cfasync="false" src="https://nooseamazingbatch.com/5cb9dcea0fc7603945da652bfcf580e4/invoke.js"></script>
+<div id="container-5cb9dcea0fc7603945da652bfcf580e4"></div>
+
+
+<h2>
+<i class="fa-solid fa-lock"></i>
+Keamanan dan Privasi
+</h2>
+
+<p>
+<i class="fa-solid fa-shield-halved"></i>
+Click2Pay mengutamakan keamanan serta kenyamanan pengguna dalam setiap proses yang dilakukan di dalam platform. Seluruh halaman dirancang agar dapat diakses dengan cepat, stabil, dan responsif di berbagai perangkat.
+</p>
+
+<p>
+<i class="fa-solid fa-user-shield"></i>
+Privasi pengguna menjadi salah satu fokus utama. Informasi yang diperlukan hanya digunakan untuk mendukung layanan sehingga pengguna dapat menggunakan Click2Pay dengan lebih nyaman.
+</p>
+
+<p>
+<i class="fa-solid fa-server"></i>
+Dengan dukungan teknologi web modern, Click2Pay mampu memberikan performa yang ringan, waktu muat yang cepat, serta pengalaman penggunaan yang konsisten pada Android, iPhone, tablet, laptop, maupun komputer desktop.
+</p>
+
+<p>
+<i class="fa-solid fa-rotate"></i>
+Sistem terus diperbarui secara berkala untuk meningkatkan stabilitas, kompatibilitas browser, serta kualitas layanan agar pengguna memperoleh pengalaman terbaik setiap saat.
+</p>
+
+<p>
+<i class="fa-solid fa-circle-check"></i>
+Komitmen Click2Pay adalah menghadirkan platform yang aman, cepat, mudah digunakan, dan terus berkembang mengikuti kebutuhan pengguna dengan teknologi yang semakin modern.
+</p>
+
+<script async="async" data-cfasync="false" src="https://nooseamazingbatch.com/5cb9dcea0fc7603945da652bfcf580e4/invoke.js"></script>
+<div id="container-5cb9dcea0fc7603945da652bfcf580e4"></div>
+
+
+<div id="loadingArea" style="display:none;text-align:center;padding:40px 0;">
+    <i class="fa-solid fa-spinner fa-spin"></i>
+
+    <h3>Memproses Link...</h3>
+
+    <p id="loadingSecond">7 Detik</p>
+</div>
+
+<button id="nextBtn">
+
+<i class="fa-solid fa-arrow-right"></i>
+
+Link
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<script>
+  atOptions = {
+    'key' : '8752784473417077186151b735b9c11b',
+    'format' : 'iframe',
+    'height' : 60,
+    'width' : 468,
+    'params' : {}
+  };
+</script>
+<script src="https://nooseamazingbatch.com/8752784473417077186151b735b9c11b/invoke.js"></script>
+<section class="section">
+
+<div class="container">
+
+<div class="ad-box">
+
+<script>
+  atOptions = {
+    'key' : '79eb5508ec021b0f28b504233e7b31db',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://nooseamazingbatch.com/79eb5508ec021b0f28b504233e7b31db/invoke.js"></script>
+
+</div>
+
+</div>
+
+</section>
+
+<h2>
+<i class="fa-solid fa-rocket"></i>
+Performa dan Kemudahan Penggunaan
+</h2>
+
+<p>
+<i class="fa-solid fa-gauge-high"></i>
+Click2Pay dikembangkan dengan fokus pada performa tinggi sehingga setiap halaman dapat dimuat dengan cepat. Pengguna dapat mengakses seluruh fitur tanpa harus menunggu proses yang lama.
+</p>
+
+<p>
+<i class="fa-solid fa-mobile-screen-button"></i>
+Desain responsif memastikan tampilan tetap rapi dan nyaman digunakan pada smartphone Android, iPhone, tablet, laptop, maupun komputer desktop tanpa kehilangan fungsi utama.
+</p>
+
+<p>
+<i class="fa-solid fa-wand-magic-sparkles"></i>
+Antarmuka yang sederhana membuat setiap langkah mudah dipahami, bahkan bagi pengguna yang baru pertama kali menggunakan layanan Click2Pay.
+</p>
+
+<p>
+<i class="fa-solid fa-globe"></i>
+Karena berbasis web, Click2Pay dapat diakses langsung melalui browser tanpa perlu mengunduh atau memasang aplikasi tambahan. Hal ini membuat penggunaan menjadi lebih praktis dan fleksibel.
+</p>
+
+<p>
+<i class="fa-solid fa-arrows-rotate"></i>
+Platform terus dikembangkan dengan berbagai peningkatan performa dan kompatibilitas agar tetap memberikan pengalaman terbaik di berbagai jenis perangkat dan browser modern.
+</p>
+
+<section class="section">
+
+<div class="container">
+
+<h2>
+Artikel
+</h2>
+
+<div class="article-grid">
+
+<article>
+
+<h3>
+Apa itu Click2Pay?
+</h3>
+
+<p>
+Click2Pay merupakan layanan shortlink modern yang memungkinkan
+pengguna membuat tautan pendek dengan proses yang cepat,
+aman, dan mudah digunakan.
+</p>
+
+</article>
+
+<a
+    class="btnads"
+    href="https://nooseamazingbatch.com/tmbrfhmu?key=d8893e075aeb69f02ecfe4522c9334e7"
+    target="_blank"
+    rel="noopener noreferrer"
+>
+    <i class="fa-solid fa-save"></i>
+    Download Disini
+</a>
+
+<article>
+
+<h3>
+Keamanan Link
+</h3>
+
+<p>
+Pastikan URL yang dibagikan tidak mengandung malware,
+phishing maupun konten yang melanggar kebijakan.
+</p>
+
+</article>
+
+<article>
+
+<h3>
+Tips Menggunakan
+</h3>
+
+<p>
+Selesaikan seluruh task secara berurutan agar proses
+generate link berjalan dengan baik.
+</p>
+
+</article>
+
+</div>
+
+</div>
+
+</section>
+
+<script>
+  atOptions = {
+    'key' : '6687305d1fd108d5507612e35fb40365',
+    'format' : 'iframe',
+    'height' : 250,
+    'width' : 300,
+    'params' : {}
+  };
+</script>
+<script src="https://nooseamazingbatch.com/6687305d1fd108d5507612e35fb40365/invoke.js"></script>
+
+<section class="section">
+
+<div class="container">
+
+<div class="ad-box">
+
+<script>
+  atOptions = {
+    'key' : '29e6c8d1c9fe68c5c32daba646fa6bfa',
+    'format' : 'iframe',
+    'height' : 300,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
+<script src="https://nooseamazingbatch.com/29e6c8d1c9fe68c5c32daba646fa6bfa/invoke.js"></script>
+
+</div>
+
+</div>
+
+</section>
+
+<div id="slideAd" class="slide-ad">
+
+    <button id="closeSlideAd" class="close-ad">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div id="adContainer">
+
+<script>
+  atOptions = {
+    'key' : 'd1b9600e1a7e7eac4c9dcd0964e3b6e6',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+</script>
+<script src="https://nooseamazingbatch.com/d1b9600e1a7e7eac4c9dcd0964e3b6e6/invoke.js"></script>
+
+    </div>
+
+</div>
+
+<button
+    id="showSlideAd"
+    class="show-ad-btn"
+    style="display:none;">
+    <i class="fa-solid fa-chevron-up"></i>
+</button>
+
+<a
+    class="btnads"
+    href="https://nooseamazingbatch.com/tmbrfhmu?key=d8893e075aeb69f02ecfe4522c9334e7"
+    target="_blank"
+    rel="noopener noreferrer"
+>
+    <i class="fa-solid fa-download"></i>
+    Download
+</a>
+
+<footer id="footer"></footer>
+
+<script src="https://nooseamazingbatch.com/f7/27/48/f727480d7c099bf5d614e11be3252ac5.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/database.js"></script>
+<script src="js/footer.js"></script>
+
+<script>
+const downloadBtn = document.getElementById("downloadBtn");
+const progressArea = document.getElementById("progressArea");
+const progressFill = document.getElementById("progressFill");
+const progressText = document.getElementById("progressText");
+const scrollBtn = document.getElementById("scrollBtn");
+
+const linkBtn = document.getElementById("linkBtn");
+const loadingArea = document.getElementById("loadingArea");
+const loadingSecond = document.getElementById("loadingSecond");
+const nextBtn = document.getElementById("nextBtn");
+
+const slideAd = document.getElementById("slideAd");
+const closeAd = document.getElementById("closeSlideAd");
+const showBtn = document.getElementById("showSlideAd");
+
+// ===========================
+// Inisialisasi
+// ===========================
+downloadBtn.disabled = false;
+scrollBtn.style.display = "none";
+linkBtn.disabled = true;
+loadingArea.style.display = "none";
+nextBtn.style.display = "none";
+
+// ===========================
+// Simpan Code
+// ===========================
+const code = new URLSearchParams(location.search).get("code") || "";
+
+if (code) {
+    localStorage.setItem("task_code", code);
+}
+
+// ===========================
+// Slide Ads
+// ===========================
+let adOpened = false;
+
+window.addEventListener("scroll", () => {
+
+    if (adOpened) return;
+
+    if (window.scrollY > 300) {
+        adOpened = true;
+        slideAd.classList.add("show");
+    }
+
+});
+
+closeAd.addEventListener("click", () => {
+
+    slideAd.classList.remove("show");
+    slideAd.classList.add("hidden");
+    showBtn.style.display = "block";
+
+});
+
+showBtn.addEventListener("click", () => {
+
+    slideAd.classList.remove("hidden");
+    slideAd.classList.add("show");
+    showBtn.style.display = "none";
+
+});
+
+// ===========================
+// Download
+// ===========================
+downloadBtn.addEventListener("click", () => {
+
+    downloadBtn.disabled = true;
+    progressArea.style.display = "block";
+
+    let p = 0;
+
+    const timer = setInterval(() => {
+
+        p++;
+
+        progressFill.style.width = p + "%";
+        progressText.textContent = p + "%";
+
+        if (p >= 100) {
+
+            clearInterval(timer);
+
+            progressText.textContent = "Selesai";
+
+            scrollBtn.style.display = "block";
+
+        }
+
+    }, 70);
+
+});
+
+// ===========================
+// Scroll ke Footer
+// ===========================
+scrollBtn.addEventListener("click", () => {
+
+    window.scrollTo({
+
+        top: document.body.scrollHeight,
+        behavior: "smooth"
+
+    });
+
+    setTimeout(() => {
+
+        linkBtn.disabled = false;
+
+    }, 900);
+
+});
+
+// ===========================
+// Generate Link
+// ===========================
+linkBtn.addEventListener("click", () => {
+
+    if (linkBtn.disabled) return;
+
+    linkBtn.style.display = "none";
+    loadingArea.style.display = "block";
+
+    let s = 7;
+
+    loadingSecond.textContent = s + " Detik";
+
+    const timer = setInterval(() => {
+
+        s--;
+
+        loadingSecond.textContent = s + " Detik";
+
+        if (s <= 0) {
+
+            clearInterval(timer);
+
+            loadingArea.style.display = "none";
+
+            nextBtn.style.display = "block";
+
+        }
+
+    }, 1000);
+
+});
+
+// ===========================
+// Task 3
+// ===========================
+nextBtn.addEventListener("click", () => {
+
+    const code = localStorage.getItem("task_code");
+
+    if (!code) {
+        alert("Kode link tidak ditemukan");
+        return;
+    }
+
+    location.href = "task3.html?code=" + encodeURIComponent(code);
+
+});
+</script>
+<script src="https://nooseamazingbatch.com/6f/c8/7e/6fc87e284a7f4093a97af695fd172d44.js"></script>
+
+</body>
+
+</html>
