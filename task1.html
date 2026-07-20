@@ -886,51 +886,34 @@ const nextBtn = document.getElementById("nextBtn");
 const slideAd = document.getElementById("slideAd");
 const closeAd = document.getElementById("closeSlideAd");
 
-// ==========================
-// INISIALISASI
-// ==========================
-
+// Inisialisasi
 downloadBtn.disabled = false;
 scrollBtn.style.display = "none";
 linkBtn.disabled = true;
 loadingArea.style.display = "none";
 nextBtn.style.display = "none";
 
-// ==========================
-// SIMPAN CODE
-// ==========================
-
+// Simpan code
 const code = new URLSearchParams(location.search).get("code") || "";
-
 if (code) {
     localStorage.setItem("task_code", code);
 }
 
-// ==========================
-// SLIDE ADS
-// ==========================
-
+// Slide Ads
 let adOpened = false;
 
 document.addEventListener("pointerdown", () => {
-
     if (adOpened) return;
-
     adOpened = true;
     slideAd.classList.add("show");
-
 }, { once: true });
 
 closeAd.onclick = () => {
     slideAd.classList.remove("show");
 };
 
-};
-// ==========================
-// DOWNLOAD
-// ==========================
-
-downloadBtn.onclick = function () {
+// Download
+downloadBtn.onclick = () => {
 
     downloadBtn.disabled = true;
     progressArea.style.display = "block";
@@ -938,94 +921,64 @@ downloadBtn.onclick = function () {
     let p = 0;
 
     const timer = setInterval(() => {
-
         p++;
-
         progressFill.style.width = p + "%";
         progressText.textContent = p + "%";
 
         if (p >= 100) {
-
             clearInterval(timer);
-
             progressText.textContent = "Selesai";
-
             scrollBtn.style.display = "block";
-
         }
-
     }, 100);
 
 };
 
-// ==========================
-// SCROLL
-// ==========================
-
-scrollBtn.onclick = function () {
-
+// Scroll
+scrollBtn.onclick = () => {
     document.getElementById("linkSection").scrollIntoView({
         behavior: "smooth"
     });
-
     linkBtn.disabled = false;
-
 };
 
-// ==========================
-// GENERATE
-// ==========================
-
-linkBtn.onclick = function () {
+// Generate
+linkBtn.onclick = () => {
 
     if (linkBtn.disabled) return;
 
-    linkBtn.disabled = true;
     linkBtn.style.display = "none";
-
     loadingArea.style.display = "block";
 
     let s = 7;
-
     loadingSecond.textContent = s + " Detik";
 
     const timer = setInterval(() => {
 
         s--;
-
         loadingSecond.textContent = s + " Detik";
 
         if (s <= 0) {
-
             clearInterval(timer);
-
             loadingArea.style.display = "none";
-
             nextBtn.style.display = "block";
-
         }
 
     }, 1000);
 
 };
 
-// ==========================
-// NEXT
-// ==========================
-
-nextBtn.onclick = function () {
+// Next
+nextBtn.onclick = () => {
 
     const code = localStorage.getItem("task_code");
 
     if (!code) {
-
         alert("Kode link tidak ditemukan");
-
         return;
-
     }
 
-    window.location.href = "task2.html?code=" + code;
+    location.href = "task2.html?code=" + code;
 
 };
 </script>
