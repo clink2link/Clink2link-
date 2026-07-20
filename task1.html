@@ -936,10 +936,18 @@ downloadBtn.onclick = () => {
 
 // Scroll
 scrollBtn.onclick = () => {
-    document.getElementById("linkSection").scrollIntoView({
-        behavior: "smooth"
-    });
+
+    const footer = document.getElementById("footer");
+
+    if (footer) {
+        footer.scrollIntoView({
+            behavior: "smooth",
+            block: "end"
+        });
+    }
+
     linkBtn.disabled = false;
+
 };
 
 // Generate
