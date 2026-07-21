@@ -329,8 +329,8 @@ Masukkan nominal withdraw yang ingin dicairkan ke rekening atau e-wallet yang te
 <input
 type="number"
 id="withdrawAmount"
-placeholder="Contoh : 50000"
-min="10000">
+placeholder="Contoh : 100000"
+min="100000">
 
 </div>
 
@@ -340,7 +340,7 @@ min="10000">
 
 <ul>
 
-<li>Minimal withdraw Rp10.000.</li>
+<li>Minimal withdraw Rp100.000.</li>
 
 <li>Maksimal sesuai saldo yang tersedia.</li>
 
@@ -370,6 +370,210 @@ style="width:100%;margin-top:20px;">
 Request Withdraw
 
 </button>
+
+</div>
+
+<!-- WITHDRAW INSTAN -->
+
+<div class="payment-box instant-box">
+
+<h2>
+<i class="fa-solid fa-bolt"></i>
+Withdraw Instan
+</h2>
+
+<p>
+Tarik saldo secara instan dengan batas maksimal Rp500.000 per hari.
+</p>
+
+
+<div class="instant-limit">
+
+<div>
+<b>Batas Instan Hari Ini</b>
+<span id="instantLimitText">Rp500.000</span>
+</div>
+
+<div class="progress">
+<div id="instantProgress"></div>
+</div>
+
+<small>
+Sisa penarikan instan hari ini
+</small>
+
+</div>
+
+
+<label>Nama Rekening</label>
+
+<div class="input-box">
+
+<i class="fa-solid fa-user"></i>
+
+<input
+id="instantName"
+type="text"
+placeholder="Nama pemilik rekening">
+
+</div>
+
+
+
+<label>Tipe Bank / E-Wallet</label>
+
+<div class="input-box">
+
+<i class="fa-solid fa-wallet"></i>
+
+<select id="instantMethod">
+
+<option value="BCA">BCA</option>
+<option value="BRI">BRI</option>
+<option value="BNI">BNI</option>
+<option value="Mandiri">Mandiri</option>
+<option value="BTN">BTN</option>
+<option value="BSI">BSI</option>
+<option value="CIMB Niaga">CIMB Niaga</option>
+<option value="Permata Bank">Permata Bank</option>
+
+<option value="DANA">DANA</option>
+<option value="OVO">OVO</option>
+<option value="GoPay">GoPay</option>
+<option value="ShopeePay">ShopeePay</option>
+<option value="LinkAja">LinkAja</option>
+
+<option value="Lainnya">
+Bank / E-Wallet Lainnya
+</option>
+
+</select>
+
+</div>
+
+
+<div id="instantOtherBox" style="display:none;">
+
+<label>Nama Bank / E-Wallet</label>
+
+<div class="input-box">
+
+<i class="fa-solid fa-building-columns"></i>
+
+<input
+id="instantOtherMethod"
+type="text"
+placeholder="Contoh: Bank Jago, SeaBank, AstraPay">
+
+</div>
+
+</div>
+
+
+
+<label>No Rekening / E-Wallet</label>
+
+<div class="input-box">
+
+<i class="fa-solid fa-credit-card"></i>
+
+<input
+id="instantNumber"
+type="text"
+placeholder="Nomor rekening atau e-wallet">
+
+</div>
+
+
+
+<label>Pilih Nominal Penarikan</label>
+
+<div class="instant-options">
+
+<button type="button" data-value="50000">
+Rp50.000
+</button>
+
+<button type="button" data-value="100000">
+Rp100.000
+</button>
+
+<button type="button" data-value="150000">
+Rp150.000
+</button>
+
+<button type="button" data-value="200000">
+Rp200.000
+</button>
+
+<button type="button" data-value="250000">
+Rp250.000
+</button>
+
+</div>
+
+
+<input
+type="hidden"
+id="instantAmount">
+
+
+
+<div class="withdraw-note">
+
+<b>Ketentuan Withdraw Instan</b>
+
+<ul>
+
+<li>
+Batas maksimal penarikan instan Rp500.000 per hari.
+</li>
+
+<li>
+Biaya layanan instan Rp15.000 setiap transaksi.
+</li>
+
+<li>
+Saldo harus mencukupi nominal withdraw + biaya layanan.
+</li>
+
+<li>
+Contoh: Withdraw Rp50.000 membutuhkan saldo Rp65.000.
+</li>
+
+<li>
+Contoh: Withdraw Rp250.000 membutuhkan saldo Rp265.000.
+</li>
+
+<li>
+Jika bank atau e-wallet tidak tersedia, pilih <b>Bank / E-Wallet Lainnya</b> dan isi secara manual.
+</li>
+
+<li>
+Pastikan data rekening benar karena kesalahan pembayaran menjadi tanggung jawab pengguna.
+</li>
+
+<li>
+Withdraw instan diproses otomatis oleh sistem setelah request berhasil.
+</li>
+
+</ul>
+
+</div>
+
+
+
+<button
+id="instantWithdrawBtn"
+class="btn-primary"
+style="width:100%;">
+
+<i class="fa-solid fa-bolt"></i>
+
+Withdraw Instan
+
+</button>
+
 
 </div>
 
