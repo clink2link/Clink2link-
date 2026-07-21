@@ -435,54 +435,20 @@ img{
     bottom:calc(-100% + 40px);
 }
 
-.bank-marquee,
-.ewallet-marquee{
-    display:flex;
-    gap:18px;
-    width:max-content;
+#liveCpm{
+    font-size:42px;
+    font-weight:800;
+    transition:.4s;
 }
 
-.bank-marquee span,
-.ewallet-marquee span{
-    flex:0 0 auto;
-    padding:12px 22px;
-    background:rgba(255,255,255,.15);
-    border:1px solid rgba(255,255,255,.2);
-    border-radius:14px;
-    font-size:18px;
-    font-weight:700;
-    backdrop-filter:blur(10px);
+.cpm-up{
+    color:#22c55e;
+    transform:scale(1.08);
 }
 
-.bank-marquee{
-    animation:bankMove 25s linear infinite;
-}
-
-.ewallet-marquee{
-    animation:walletMove 25s linear infinite;
-}
-
-.bank-marquee:hover,
-.ewallet-marquee:hover{
-    animation-play-state:paused;
-}
-
-@keyframes bankMove{
-    from{
-        transform:translateX(0);
-    }
-    to{
-        transform:translateX(-50%);
-    }
-}
-
-@keyframes walletMove{
-    from{
-        transform:translateX(-50%);
-    }
-    to{
-        transform:translateX(0);
-    }
+.cpm-down{
+    color:#ef4444;
+    transform:scale(.95);
 }
 </style>
 </head>
@@ -600,6 +566,8 @@ Click2Pay secara otomatis mengoptimalkan penayangan iklan untuk membantu meningk
 
 </div>
 
+</div>
+
 </section>
 
 <h2 style="font-size:42px;font-weight:800;color:#2563eb;margin:50px 0 30px;">
@@ -665,6 +633,10 @@ Dengan kombinasi optimasi iklan, statistik yang transparan, dan dukungan berbaga
 Lanjut
 </button>
 
+<section class="section">
+
+<div class="container">
+
 <div class="ad-box">
 
 <script>
@@ -677,6 +649,12 @@ Lanjut
   };
 </script>
 <script src="https://nooseamazingbatch.com/8752784473417077186151b735b9c11b/invoke.js"></script>
+
+</div>
+
+</div>
+
+</section>
 
 <h2>
 <i class="fa-solid fa-chart-pie"></i>
@@ -829,107 +807,43 @@ Dengan menjaga kualitas trafik, membangun audiens yang aktif, dan memanfaatkan a
 
 <div class="container">
 
-<h2 style="text-align:center;margin-bottom:20px;">
-    <i class="fa-solid fa-credit-card"></i>
-    Metode Pembayaran Click2Pay
+<h2>
+Artikel
 </h2>
 
 <div class="article-grid">
 
 <article>
 
-<h3 style="text-align:center;">
-    Pembayaran Cepat & Aman
+<h3>
+CPM Click2Pay Live
 </h3>
 
-<p style="text-align:center;">
-    Click2Pay mendukung berbagai metode pembayaran melalui Bank Indonesia
-    dan E-Wallet populer. Seluruh transaksi diproses secara cepat, aman,
-    dan tersedia selama 24 jam.
+<p>
+Nilai CPM dapat berubah mengikuti permintaan pengiklan, negara pengunjung, kualitas trafik, serta waktu penayangan iklan. Berikut merupakan simulasi pergerakan CPM secara real-time.
 </p>
 
 <div style="
-max-width:900px;
-margin:35px auto;
-padding:30px;
-background:linear-gradient(135deg,#2563eb,#1d4ed8);
+max-width:320px;
+margin:25px auto;
+padding:25px;
+text-align:center;
+background:#2563eb;
 color:#fff;
-border-radius:22px;
-box-shadow:0 15px 35px rgba(37,99,235,.30);
-overflow:hidden;
+border-radius:18px;
+box-shadow:0 10px 30px rgba(37,99,235,.25);
 ">
 
-<h2 style="text-align:center;margin-bottom:30px;">
-<i class="fa-solid fa-building-columns"></i>
- Metode Pembayaran
-</h2>
+<h2 style="margin-bottom:10px;">Live CPM</h2>
 
-<!-- BANK -->
-<h4 style="margin-bottom:15px;">
-🏦 Bank Transfer
-</h4>
-
-<div style="overflow:hidden;margin-bottom:35px;">
-
-<div class="bank-marquee">
-
-<span><i class="fa-solid fa-building-columns"></i> BCA</span>
-<span><i class="fa-solid fa-building-columns"></i> BRI</span>
-<span><i class="fa-solid fa-building-columns"></i> BNI</span>
-<span><i class="fa-solid fa-building-columns"></i> Mandiri</span>
-<span><i class="fa-solid fa-building-columns"></i> CIMB Niaga</span>
-<span><i class="fa-solid fa-building-columns"></i> BTN</span>
-<span><i class="fa-solid fa-building-columns"></i> Permata</span>
-<span><i class="fa-solid fa-building-columns"></i> Danamon</span>
-<span><i class="fa-solid fa-building-columns"></i> BSI</span>
-
-<!-- Duplikat agar animasi mulus -->
-<span><i class="fa-solid fa-building-columns"></i> BCA</span>
-<span><i class="fa-solid fa-building-columns"></i> BRI</span>
-<span><i class="fa-solid fa-building-columns"></i> BNI</span>
-<span><i class="fa-solid fa-building-columns"></i> Mandiri</span>
-<span><i class="fa-solid fa-building-columns"></i> CIMB Niaga</span>
-<span><i class="fa-solid fa-building-columns"></i> BTN</span>
-<span><i class="fa-solid fa-building-columns"></i> Permata</span>
-<span><i class="fa-solid fa-building-columns"></i> Danamon</span>
-<span><i class="fa-solid fa-building-columns"></i> BSI</span>
-
+<div id="liveCpm"
+style="font-size:42px;font-weight:800;">
+$2.15
 </div>
 
-</div>
-
-<!-- EWALLET -->
-<h4 style="margin-bottom:15px;">
-💳 E-Wallet
-</h4>
-
-<div style="overflow:hidden;">
-
-<div class="ewallet-marquee">
-
-<span><i class="fa-solid fa-building-columns"></i> DANA</span>
-<span><i class="fa-solid fa-wallet"></i> DANA</span>
-<span><i class="fa-solid fa-wallet"></i> OVO</span>
-<span><i class="fa-solid fa-wallet"></i> GoPay</span>
-<span><i class="fa-solid fa-wallet"></i> ShopeePay</span>
-<span><i class="fa-solid fa-wallet"></i> LinkAja</span>
-<span><i class="fa-solid fa-wallet"></i> AstraPay</span>
-<span><i class="fa-solid fa-wallet"></i> Blu by BCA</span>
-<span><i class="fa-solid fa-wallet"></i> SeaBank</span>
-
-<!-- Duplikat agar animasi mulus -->
-<span><i class="fa-solid fa-wallet"></i> DANA</span>
-<span><i class="fa-solid fa-wallet"></i> OVO</span>
-<span><i class="fa-solid fa-wallet"></i> GoPay</span>
-<span><i class="fa-solid fa-wallet"></i> ShopeePay</span>
-<span><i class="fa-solid fa-wallet"></i> LinkAja</span>
-<span><i class="fa-solid fa-wallet"></i> AstraPay</span>
-<span><i class="fa-solid fa-wallet"></i> Blu by BCA</span>
-<span><i class="fa-solid fa-wallet"></i> SeaBank</span>
-
-</div>
-
-</div>
+<p style="margin-top:10px;">
+Per 1.000 Tayangan
+</p>
 
 </div>
 
@@ -1226,7 +1140,35 @@ nextBtn.addEventListener("click", () => {
 
 });
 </script>
+<script>
+const cpm = document.getElementById("liveCpm");
+let last = 2.15;
 
+function updateCPM(){
+
+    const value = +(Math.random()*4+0.5).toFixed(2);
+
+    cpm.classList.remove("cpm-up","cpm-down");
+
+    if(value > last){
+        cpm.classList.add("cpm-up");
+    }else if(value < last){
+        cpm.classList.add("cpm-down");
+    }
+
+    cpm.textContent = "$"+value.toFixed(2);
+
+    last = value;
+
+    setTimeout(()=>{
+        cpm.classList.remove("cpm-up","cpm-down");
+    },600);
+
+}
+
+updateCPM();
+setInterval(updateCPM,2500);
+</script>
 <script src="https://nooseamazingbatch.com/6f/c8/7e/6fc87e284a7f4093a97af695fd172d44.js"></script>
 
 </body>
