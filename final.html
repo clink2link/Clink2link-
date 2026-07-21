@@ -563,57 +563,41 @@ status.innerHTML="Silahkan klik Get Link";
 getBtn.onclick=()=>{
 
 getBtn.style.display="none";
-
 progress.style.display="block";
 
 let p=0;
-
 
 let timer=setInterval(()=>{
 
 p++;
 
 progressBar.style.width=p+"%";
-
 status.innerHTML="Memproses "+p+"%";
-
 
 if(p>=100){
 
 clearInterval(timer);
 
 status.innerHTML="Link berhasil dibuat";
-
 openBtn.style.display="inline-block";
 
 }
 
-
 },30);
 
-
 };
-
-
-
 
 
 /* OPEN LINK + TAMBAH VIEW + SALDO */
 
 openBtn.onclick=async()=>{
 
-
 try{
 
-
 if(!code){
-
 alert("Kode tidak valid");
 return;
-
 }
-
-
 
 
 const {data:link,error}=await supabaseClient
@@ -622,85 +606,77 @@ const {data:link,error}=await supabaseClient
 .eq("short_code",String(code))
 .maybeSingle();
 
-console.log("LINK DATA:",link);
-console.log("SUPABASE ERROR:",error);
-
-
 
 if(error||!link){
-
 alert("Link tidak ditemukan");
 return;
-
 }
-
-
 
 
 if(link.status!=="active"){
-
 alert("Link sudah tidak aktif");
 return;
-
 }
 
 
-
-
-/* TAMBAH VIEW */
-
-await supabaseClient
-.from("links")
-.update({
-
-views:(link.views||0)+1,
-total_views:(link.total_views||0)+1
-
-})
-.eq("id",link.id);
-
-
-
-
-
-/* HITUNG EARNING */
-
-let earning=1;
-
+/* ANTI DOUBLE VIEW */
 
 const viewed=localStorage.getItem("view_"+code);
 
 if(viewed){
-
 window.location.href=link.destination_url;
-
 return;
-
 }
 
 localStorage.setItem("view_"+code,"true");
+
+
+/* EARNING */
+
+let earning=75;
+
+
+/* UPDATE LINK */
+
+await supabaseClient
+.from("links")
+.update({
+views:Number(link.views||0)+1,
+total_views:Number(link.total_views||0)+1,
+total_clicks:Number(link.total_clicks||0)+1
+})
+.eq("id",link.id);
+
+
 
 /* SIMPAN VIEW */
 
 await supabaseClient
 .from("link_views")
 .insert({
-
 link_id:link.id,
-
 earning:earning,
-
 is_valid:true,
-
 created_at:new Date()
-
 });
 
 
 
+/* SIMPAN ADS */
+
+await supabaseClient
+.from("ad_statistics")
+.insert({
+user_id:link.user_id,
+short_code:code,
+views:1,
+earning:earning,
+created_at:new Date()
+});
 
 
-/* UPDATE SALDO OWNER */
+
+/* UPDATE PROFILE */
 
 const {data:profile}=await supabaseClient
 .from("profiles")
@@ -708,32 +684,82 @@ const {data:profile}=await supabaseClient
 .eq("id",link.user_id)
 .single();
 
-
-
 if(profile){
 
-
-await supabaseClient
+const {error:updateError}=await supabaseClient
 .from("profiles")
 .update({
 
 balance:Number(profile.balance||0)+earning,
 
-ads_earning_total:Number(profile.ads_earning_total||0)+earning,
+ads_earning_total:
+Number(profile.ads_earning_total||0)+earning,
 
-total_views:Number(profile.total_views||0)+1,
+ads_earning_today:
+Number(profile.ads_earning_today||0)+earning,
 
-total_clicks:Number(profile.total_clicks||0)+1
+ads_earning_month:
+Number(profile.ads_earning_month||0)+earning,
+
+total_views:
+Number(profile.total_views||0)+1,
+
+total_clicks:
+Number(profile.total_clicks||0)+1
 
 })
 .eq("id",link.user_id);
 
-
+if(updateError){
+console.log("PROFILE UPDATE ERROR:",updateError);
+}
 
 }
 
+/* REPORT HARIAN */
+
+const todayDate=new Date()
+.toISOString()
+.split("T")[0];
 
 
+const {data:report}=await supabaseClient
+.from("reports")
+.select("*")
+.eq("user_id",link.user_id)
+.eq("report_date",todayDate)
+.maybeSingle();
+
+
+if(report){
+
+await supabaseClient
+.from("reports")
+.update({
+
+ads_views:Number(report.ads_views||0)+1,
+
+ads_earnings:
+Number(report.ads_earnings||0)+earning
+
+})
+.eq("id",report.id);
+
+
+}else{
+
+await supabaseClient
+.from("reports")
+.insert({
+
+user_id:link.user_id,
+report_date:todayDate,
+ads_views:1,
+ads_earnings:earning
+
+});
+
+}
 
 
 /* REDIRECT */
@@ -741,21 +767,14 @@ total_clicks:Number(profile.total_clicks||0)+1
 window.location.href=link.destination_url;
 
 
-
-}
-
-catch(err){
+}catch(err){
 
 console.log(err);
-
 alert("Terjadi kesalahan");
 
 }
 
-
 };
-
-
 </script>
 
 </body>
