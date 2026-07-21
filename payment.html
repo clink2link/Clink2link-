@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Payment • Click2Pay</title>
 
+<link rel="icon" href="favicon.ico">
 
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/theme.css">
@@ -17,144 +13,119 @@ content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/payment.css">
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 </head>
 
-
 <body>
-
 
 <div id="navbar"></div>
 
-
 <main class="container">
-
 
 <div class="page-title">
 
+<div>
+
+<h1>
+
 <i class="fa-solid fa-wallet"></i>
 
-<span>Payment</span>
+Payment
+
+</h1>
+
+<p>
+
+Kelola saldo, rekening pembayaran, dan seluruh proses withdraw Anda melalui halaman ini.
+
+</p>
 
 </div>
 
+</div>
 
-
-<!-- SALDO -->
+<!-- =========================
+STATISTIK PAYMENT
+========================= -->
 
 <div class="payment-grid">
 
-
 <div class="pay-card">
-
+<div class="card-icon blue">
 <i class="fa-solid fa-wallet"></i>
-
-<p>Saldo Saat Ini</p>
-
-<h2 id="balance">
-Rp0
-</h2>
-
+</div>
+<span>Saldo Saat Ini</span>
+<h2 id="currentBalance">Rp0</h2>
+<small>Saldo yang dapat digunakan</small>
 </div>
 
-
-
 <div class="pay-card">
-
-<i class="fa-solid fa-clock"></i>
-
-<p>Request Withdraw</p>
-
-<h2 id="request">
-Rp0
-</h2>
-
+<div class="card-icon orange">
+<i class="fa-solid fa-hourglass-half"></i>
+</div>
+<span>Request Withdraw</span>
+<h2 id="requestWithdraw">Rp0</h2>
+<small>Total request dikirim</small>
 </div>
 
-
-
 <div class="pay-card">
-
+<div class="card-icon cyan">
 <i class="fa-solid fa-spinner"></i>
-
-<p>Pending Withdraw</p>
-
-<h2 id="pending">
-Rp0
-</h2>
-
+</div>
+<span>Pending Withdraw</span>
+<h2 id="pendingWithdraw">Rp0</h2>
+<small>Sedang diproses</small>
 </div>
 
-
-
 <div class="pay-card">
-
+<div class="card-icon red">
 <i class="fa-solid fa-circle-xmark"></i>
-
-<p>Failed Withdraw</p>
-
-<h2 id="failed">
-Rp0
-</h2>
-
 </div>
-
-
+<span>Failed Withdraw</span>
+<h2 id="failedWithdraw">Rp0</h2>
+<small>Withdraw gagal</small>
+</div>
 
 <div class="pay-card">
-
+<div class="card-icon green">
 <i class="fa-solid fa-circle-check"></i>
-
-<p>Success Withdraw</p>
-
-<h2 id="success">
-Rp0
-</h2>
+</div>
+<span>Success Withdraw</span>
+<h2 id="successWithdraw">Rp0</h2>
+<small>Withdraw berhasil</small>
+</div>
 
 </div>
 
+<!-- STATUS -->
 
+<div id="withdrawStatus" class="payment-status">
 
-</div>
-
-
-
-
-
-<!-- STATUS PAYMENT -->
-
-
-<div class="payment-status"
-id="paymentStatus">
+Loading status pembayaran...
 
 </div>
 
+<div class="payment-action">
 
-
-
-<button 
-id="withdrawBtn"
-class="btn-primary">
+<button id="withdrawBtn" class="btn-primary">
 
 <i class="fa-solid fa-money-bill-transfer"></i>
 
-Withdraw
+Request Withdraw
 
 </button>
 
+</div>
 
-
-
-
-
-<!-- NOTE -->
-
+<!-- INFORMASI PEMBAYARAN -->
 
 <div class="info-box">
-
 
 <div class="info-header">
 
@@ -164,227 +135,140 @@ Withdraw
 
 </div>
 
-
 <ul>
 
-<li>
-Pembayaran diproses setiap hari Senin sampai Kamis.
-</li>
+<li>Withdraw diproses setiap <b>Senin - Kamis</b> pada jam operasional Click2Pay.</li>
 
+<li>Pada <b>Jumat - Minggu</b> layanan withdraw ditutup sementara untuk proses settlement, maintenance, dan rekonsiliasi sistem.</li>
 
-<li>
-Jumat sampai Minggu sistem pembayaran ditutup sementara.
-</li>
+<li>Request withdraw yang dibuat saat layanan tutup akan otomatis masuk ke dalam antrean dan diproses pada hari operasional berikutnya.</li>
 
+<li>Pastikan nama penerima sama dengan nama pemilik rekening atau akun e-wallet.</li>
 
-<li>
-Withdraw yang masuk saat jadwal tutup akan diproses pada hari kerja berikutnya.
-</li>
+<li>Nomor rekening atau nomor e-wallet yang salah dapat menyebabkan pembayaran gagal dan menjadi tanggung jawab pengguna.</li>
 
+<li>Saldo hanya dapat ditarik apabila memenuhi minimal withdraw yang berlaku pada platform.</li>
 
-<li>
-Pastikan data rekening atau e-wallet benar sebelum melakukan withdraw.
-</li>
+<li>Setelah request withdraw berhasil dibuat, saldo akan dikurangi dan status berubah menjadi <b>Pending</b> hingga diproses oleh sistem atau admin.</li>
 
+<li>Status withdraw dapat berubah menjadi <b>Pending</b>, <b>Success</b>, atau <b>Failed</b> dan dapat dipantau melalui halaman ini.</li>
 
-<li>
-Kesalahan nomor rekening bukan tanggung jawab Click2Pay.
-</li>
-
-
-<li>
-Minimal withdraw mengikuti kebijakan platform.
-</li>
-
+<li>Click2Pay berhak menolak, menunda, atau melakukan verifikasi tambahan terhadap request withdraw yang terindikasi melanggar syarat dan ketentuan platform.</li>
 
 </ul>
 
-
 </div>
 
+<!-- PENGATURAN PEMBAYARAN -->
 
-
-
-
-
-<!-- PAYMENT SETTING -->
-
-
-<div class="payment-box"
-id="paymentSetting">
-
+<div id="paymentForm" class="payment-box">
 
 <h2>
 
-<i class="fa-solid fa-credit-card"></i>
+<i class="fa-solid fa-building-columns"></i>
 
-Setting Pembayaran
+Pengaturan Pembayaran
 
 </h2>
 
-
 <p>
 
-Tambahkan rekening atau e-wallet untuk menerima pembayaran.
+Tambahkan rekening bank atau akun e-wallet yang akan digunakan untuk menerima hasil withdraw.
 
 </p>
 
-
-
-<label>
-Nama Sesuai Rekening
-</label>
-
+<label>Nama Sesuai Rekening</label>
 
 <div class="input-box">
 
 <i class="fa-solid fa-user"></i>
 
 <input
-id="payName"
-placeholder="Nama lengkap">
+id="paymentName"
+type="text"
+placeholder="Nama sesuai rekening atau e-wallet">
 
 </div>
 
-
-
-
-
-<label>
-Nomor Rekening / E-wallet
-</label>
-
+<label>Nomor Rekening / E-Wallet</label>
 
 <div class="input-box">
 
-<i class="fa-solid fa-hashtag"></i>
+<i class="fa-solid fa-credit-card"></i>
 
 <input
-id="payNumber"
-placeholder="Nomor rekening">
+id="paymentNumber"
+type="text"
+placeholder="Masukkan nomor rekening atau e-wallet">
 
 </div>
 
-
-
-
-
-<label>
-Jenis Pembayaran
-</label>
-
+<label>Metode Pembayaran</label>
 
 <div class="input-box">
-
-<i class="fa-solid fa-building-columns"></i>
-
-
-<select id="payType">
-
-
-<option value="bank">
-Bank
-</option>
-
-
-<option value="ewallet">
-E-wallet
-</option>
-
-
-</select>
-
-
-</div>
-
-
-
-
-
-<label>
-Bank / E-wallet
-</label>
-
-
-<div class="input-box">
-
 
 <i class="fa-solid fa-wallet"></i>
 
-
-<select id="payProvider">
-
+<select id="paymentMethod">
 
 <optgroup label="Bank">
 
-<option>BCA</option>
-<option>BRI</option>
-<option>BNI</option>
-<option>Mandiri</option>
-<option>Permata Bank</option>
-<option>Bank Indonesia</option>
-<option>Danamon</option>
-<option>CIMB Niaga</option>
-<option>BTN</option>
-<option>BSI</option>
-<option>Bank Jago</option>
-<option>Bank Digital Lainnya</option>
+<option value="BCA">BCA</option>
+<option value="BRI">BRI</option>
+<option value="BNI">BNI</option>
+<option value="Mandiri">Mandiri</option>
+<option value="BTN">BTN</option>
+<option value="BSI">BSI</option>
+<option value="CIMB Niaga">CIMB Niaga</option>
+<option value="Permata Bank">Permata Bank</option>
+<option value="Danamon">Danamon</option>
+<option value="OCBC NISP">OCBC NISP</option>
+<option value="Maybank">Maybank</option>
+<option value="Panin Bank">Panin Bank</option>
+<option value="Bank Mega">Bank Mega</option>
+<option value="Bank Jago">Bank Jago</option>
+<option value="SeaBank">SeaBank</option>
+<option value="Neo Bank">Neo Bank</option>
+<option value="Allo Bank">Allo Bank</option>
+<option value="blu by BCA">blu by BCA</option>
+<option value="Bank Lainnya">Bank Lainnya</option>
 
 </optgroup>
 
+<optgroup label="E-Wallet">
 
-
-<optgroup label="E-wallet">
-
-<option>DANA</option>
-<option>GoPay</option>
-<option>LinkAja</option>
-<option>ShopeePay</option>
-<option>OVO</option>
-<option>iSaku</option>
-<option>JakartaPay</option>
-<option>E-wallet lainnya</option>
+<option value="DANA">DANA</option>
+<option value="GoPay">GoPay</option>
+<option value="OVO">OVO</option>
+<option value="ShopeePay">ShopeePay</option>
+<option value="LinkAja">LinkAja</option>
+<option value="iSaku">iSaku</option>
+<option value="AstraPay">AstraPay</option>
+<option value="MotionPay">MotionPay</option>
+<option value="Flip">Flip</option>
+<option value="E-Wallet Lainnya">E-Wallet Lainnya</option>
 
 </optgroup>
-
-
 
 </select>
 
-
 </div>
-
-
-
 
 <button
 id="savePayment"
 class="btn-primary">
 
-
 <i class="fa-solid fa-floppy-disk"></i>
 
-Save Pembayaran
-
+Simpan Pembayaran
 
 </button>
 
-
-
 </div>
 
+<!-- AKUN PEMBAYARAN -->
 
-
-
-
-
-<!-- DETAIL -->
-
-<div
-class="payment-box"
-id="paymentDetail"
-style="display:none">
-
+<div id="paymentDetail" class="payment-box" style="display:none;">
 
 <h2>
 
@@ -394,79 +278,165 @@ Akun Pembayaran
 
 </h2>
 
+<p>
 
+Data pembayaran di bawah ini akan digunakan untuk seluruh proses withdraw.
 
-<div id="detailContent">
+</p>
 
-</div>
+<div id="detailContent"></div>
 
+<div class="btn-group">
 
 <button
 id="editPayment"
 class="btn-secondary">
 
-Edit
+<i class="fa-solid fa-pen"></i>
+
+Ubah Pembayaran
 
 </button>
 
-
+</div>
 
 </div>
 
+<!-- REQUEST WITHDRAW -->
 
+<div class="payment-box">
 
+<h2>
 
+<i class="fa-solid fa-money-bill-transfer"></i>
+
+Request Withdraw
+
+</h2>
+
+<p>
+
+Masukkan nominal withdraw yang ingin dicairkan ke rekening atau e-wallet yang telah disimpan.
+
+</p>
+
+<label>Nominal Withdraw</label>
+
+<div class="input-box">
+
+<i class="fa-solid fa-rupiah-sign"></i>
+
+<input
+type="number"
+id="withdrawAmount"
+placeholder="Contoh : 50000"
+min="10000">
+
+</div>
+
+<div class="withdraw-note">
+
+<b>Ketentuan Withdraw</b>
+
+<ul>
+
+<li>Minimal withdraw Rp10.000.</li>
+
+<li>Maksimal sesuai saldo yang tersedia.</li>
+
+<li>Withdraw hanya dapat dilakukan saat layanan pembayaran sedang dibuka.</li>
+
+<li>Saldo akan dipotong setelah request berhasil dibuat.</li>
+
+<li>Status withdraw akan berubah menjadi <b>Pending</b> hingga diproses admin.</li>
+
+<li>Apabila pembayaran berhasil maka status berubah menjadi <b>Success</b>.</li>
+
+<li>Apabila terjadi kesalahan rekening atau kendala lain maka status berubah menjadi <b>Failed</b>.</li>
+
+<li>Pastikan seluruh data pembayaran telah benar sebelum melakukan request withdraw.</li>
+
+</ul>
+
+</div>
+
+<button
+id="withdrawBtn"
+class="btn-primary"
+style="width:100%;margin-top:20px;">
+
+<i class="fa-solid fa-paper-plane"></i>
+
+Request Withdraw
+
+</button>
+
+</div>
 
 </main>
 
-
-
 <div id="footer"></div>
-
-
-
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/database.js"></script>
-
+<script src="js/theme.js"></script>
 <script src="js/navbar.js"></script>
-
 <script src="js/footer.js"></script>
-
-
 <script src="js/payment.js"></script>
-
 
 <script>
 
+// LOAD NAVBAR
+
 fetch("components/navbar.html")
-.then(r=>r.text())
+.then(res=>res.text())
 .then(html=>{
 
 document.getElementById("navbar").innerHTML=html;
 
-if(typeof c2pInit==="function")
+if(typeof c2pInit==="function"){
 c2pInit();
+}
+
+const logoutBtn=document.getElementById("logoutBtn");
+
+if(logoutBtn){
+
+logoutBtn.onclick=async()=>{
+
+try{
+
+await database.logout();
+
+}catch(e){}
+
+localStorage.clear();
+sessionStorage.clear();
+
+window.location.replace("login.html");
+
+};
+
+}
 
 });
 
-
+// LOAD FOOTER
 
 fetch("components/footer.html")
-.then(r=>r.text())
+.then(res=>res.text())
 .then(html=>{
 
 document.getElementById("footer").innerHTML=html;
+
+if(typeof c2pFooterInit==="function"){
+c2pFooterInit();
+}
 
 });
 
 </script>
 
-
-
 </body>
-
 </html>
