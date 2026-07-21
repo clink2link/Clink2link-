@@ -1,59 +1,46 @@
-/* ==========================================
-CLICK2PAY PAYMENT JS
-========================================== */
+// js/payment.js
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-loadPayment();
+const db=window.database;
+const supabase=db.supabase;
 
-const saveBtn=document.getElementById("savePayment");
-if(saveBtn) saveBtn.onclick=savePayment;
-
-const withdrawBtn=document.getElementById("withdrawBtn");
-if(withdrawBtn) withdrawBtn.onclick=requestWithdraw;
-
-});
+let user=null;
 
 
-/* LOAD PAYMENT */
+const rupiah=(v)=>new Intl.NumberFormat("id-ID",{
+style:"currency",
+currency:"IDR",
+maximumFractionDigits:0
+}).format(Number(v)||0);
 
-async function loadPayment(){
 
-try{
+async function init(){
 
-const user=await database.getUser();
+user=await db.getUser();
 
 if(!user){
-window.location.href="login.html";
+
+location.href="login.html";
 return;
+
 }
 
-const {data:profile,error}=await database.supabase
-.from("profiles")
-.select("*")
-.eq("id",user.id)
-.single();
+await loadBalance();
+await loadWithdraw();
+await loadPayment();
 
-if(error) throw error;
+}
 
+
+
+async function loadBalance(){
+
+const profile=await db.getProfile(user.id);
 
 if(profile){
 
-setText("currentBalance",profile.balance);
-setText("pendingWithdraw",profile.pending_withdraw);
-setText("successWithdraw",profile.total_withdraw);
-setText("failedWithdraw",profile.failed_withdraw);
-
-}
-
-
-loadWithdrawStatus();
-loadPaymentAccount(user.id);
-
-
-}catch(err){
-
-console.error("Payment Error:",err);
+currentBalance.innerText=rupiah(profile.balance);
 
 }
 
@@ -61,283 +48,258 @@ console.error("Payment Error:",err);
 
 
 
-/* FORMAT */
+async function loadWithdraw(){
 
-function formatMoney(value){
-
-return "Rp "+Number(value||0)
-.toLocaleString("id-ID");
-
-}
+const {data,error}=await supabase
+.from("withdraws")
+.select("*")
+.eq("user_id",user.id);
 
 
-function setText(id,value){
+if(error){
 
-const el=document.getElementById(id);
-
-if(el){
-el.innerHTML=formatMoney(value);
-}
-
-}
-
-
-
-/* WITHDRAW STATUS */
-
-function loadWithdrawStatus(){
-
-const btn=document.getElementById("withdrawBtn");
-const status=document.getElementById("withdrawStatus");
-
-const day=new Date().getDay();
-
-
-if(day===0 || day===5 || day===6){
-
-if(btn){
-
-btn.disabled=true;
-
-btn.innerHTML=
-'<i class="fa-solid fa-lock"></i> Pembayaran Sedang Tutup';
-
-}
-
-
-if(status){
-
-status.innerHTML=
-"Pembayaran buka Senin - Kamis. Jumat sampai Minggu sedang tutup.";
-
-}
-
-
-}else{
-
-
-if(btn){
-
-btn.disabled=false;
-
-btn.innerHTML=
-'<i class="fa-solid fa-money-bill-transfer"></i> Withdraw';
-
-}
-
-
-if(status){
-
-status.innerHTML=
-"Withdraw sedang dibuka.";
-
-}
-
-
-}
-
-}
-
-
-
-/* SAVE PAYMENT */
-
-async function savePayment(){
-
-try{
-
-const user=await database.getUser();
-
-if(!user)return;
-
-
-const name=document
-.getElementById("paymentName")
-.value.trim();
-
-
-const number=document
-.getElementById("paymentNumber")
-.value.trim();
-
-
-const method=document
-.getElementById("paymentMethod")
-.value;
-
-
-
-if(!name||!number||!method){
-
-alert("Lengkapi data pembayaran.");
+console.error(error);
 return;
 
 }
 
 
+let request=0;
+let pending=0;
+let success=0;
+let failed=0;
 
-const {error}=await database.supabase
-.from("payment_methods")
-.upsert({
 
-user_id:user.id,
-name:name,
-number:number,
-method:method,
-created_at:new Date()
+(data||[]).forEach(w=>{
+
+let amount=Number(w.amount)||0;
+
+request+=amount;
+
+
+if(w.status==="pending"){
+pending+=amount;
+}
+
+if(w.status==="success"){
+success+=amount;
+}
+
+if(w.status==="failed"){
+failed+=amount;
+}
+
 
 });
 
 
-if(error)throw error;
+
+requestWithdraw.innerText=rupiah(request);
+pendingWithdraw.innerText=rupiah(pending);
+successWithdraw.innerText=rupiah(success);
+failedWithdraw.innerText=rupiah(failed);
 
 
-alert("Akun pembayaran berhasil disimpan.");
 
-loadPaymentAccount(user.id);
-
-
-}catch(err){
-
-console.error(err);
-
-alert("Gagal menyimpan pembayaran.");
-
-}
+withdrawStatus.innerHTML=`
+<i class="fa-solid fa-circle-check"></i>
+Status pembayaran berhasil dimuat.
+`;
 
 }
 
 
 
-/* LOAD ACCOUNT */
 
-async function loadPaymentAccount(userId){
-
-try{
+async function loadPayment(){
 
 
-const form=document.getElementById("paymentForm");
-const detail=document.getElementById("paymentDetail");
-
-
-const {data}=await database.supabase
+const {data,error}=await supabase
 .from("payment_methods")
 .select("*")
-.eq("user_id",userId)
+.eq("user_id",user.id)
 .maybeSingle();
 
 
 
-if(data){
+if(error){
+
+console.log(error);
+return;
+
+}
 
 
-if(form)
-form.style.display="none";
+
+if(!data)return;
 
 
-if(detail){
 
-detail.style.display="block";
+paymentName.value=data.account_name||"";
+paymentNumber.value=data.account_number||"";
+paymentMethod.value=data.method||"";
 
 
-detail.innerHTML=`
+showPayment(data);
+
+
+}
+
+
+
+
+function showPayment(data){
+
+
+paymentDetail.style.display="block";
+
+
+detailContent.innerHTML=`
 
 <div class="detail-row">
-<span class="detail-label">Nama Rekening</span>
-<span class="detail-value">${data.name}</span>
-</div>
-
-<div class="detail-row">
-<span class="detail-label">Nomor</span>
-<span class="detail-value">${data.number}</span>
+<span class="detail-label">Nama</span>
+<span class="detail-value">${data.account_name||"-"}</span>
 </div>
 
 <div class="detail-row">
 <span class="detail-label">Metode</span>
-<span class="detail-value">${data.method}</span>
+<span class="detail-value">${data.method||"-"}</span>
 </div>
 
-<button class="btn-secondary" onclick="changePayment()">
-<i class="fa-solid fa-pen"></i>
-Ganti Pembayaran
-</button>
+<div class="detail-row">
+<span class="detail-label">Nomor</span>
+<span class="detail-value">${data.account_number||"-"}</span>
+</div>
 
 `;
 
 }
 
 
-}
 
 
-}catch(err){
-
-console.error(err);
-
-}
-
-}
+savePayment.onclick=async()=>{
 
 
-
-/* CHANGE PAYMENT */
-
-window.changePayment=function(){
-
-const form=document.getElementById("paymentForm");
-const detail=document.getElementById("paymentDetail");
-
-
-if(form)
-form.style.display="block";
-
-
-if(detail)
-detail.style.display="none";
-
-
-}
+let name=paymentName.value.trim();
+let number=paymentNumber.value.trim();
+let method=paymentMethod.value;
 
 
 
-/* REQUEST WITHDRAW */
+if(!name||!number){
 
-async function requestWithdraw(){
-
-try{
-
-
-const user=await database.getUser();
-
-if(!user)return;
-
-
-const amount=Number(
-document.getElementById("withdrawAmount")?.value||0
-);
-
-
-
-if(amount<=0){
-
-alert("Masukkan nominal withdraw.");
+alert("Lengkapi data pembayaran");
 return;
 
 }
 
 
 
-const {data:profile}=await database.supabase
-.from("profiles")
-.select("username,balance")
-.eq("id",user.id)
-.single();
+const payload={
+
+user_id:user.id,
+bank_name:method,
+account_name:name,
+account_number:number,
+method:method
+
+};
+
+
+
+const {data:old}=await supabase
+.from("payment_methods")
+.select("id")
+.eq("user_id",user.id)
+.maybeSingle();
+
+
+
+let result;
+
+
+
+if(old){
+
+
+result=await supabase
+.from("payment_methods")
+.update(payload)
+.eq("user_id",user.id);
+
+
+
+}else{
+
+
+result=await supabase
+.from("payment_methods")
+.insert(payload);
+
+
+}
+
+
+
+if(result.error){
+
+alert(result.error.message);
+return;
+
+}
+
+
+alert("Pembayaran berhasil disimpan");
+
+loadPayment();
+
+
+};
+
+
+
+
+
+editPayment.onclick=()=>{
+
+paymentForm.scrollIntoView({
+behavior:"smooth"
+});
+
+};
+
+
+
+
+
+document.querySelectorAll("#withdrawBtn")
+.forEach(btn=>{
+
+
+btn.onclick=async()=>{
+
+
+let amount=Number(withdrawAmount.value);
+
+
+
+if(!amount||amount<100000){
+
+alert("Minimal withdraw Rp100.000");
+return;
+
+}
+
+
+
+const profile=await db.getProfile(user.id);
 
 
 
 if(!profile){
 
-alert("Profile tidak ditemukan.");
+alert("Profile tidak ditemukan");
 return;
 
 }
@@ -346,92 +308,95 @@ return;
 
 if(Number(profile.balance)<amount){
 
-alert("Saldo tidak cukup.");
+alert("Saldo tidak mencukupi");
 return;
 
 }
 
 
 
-/* INSERT WITHDRAW */
+const {data:method}=await supabase
+.from("payment_methods")
+.select("*")
+.eq("user_id",user.id)
+.maybeSingle();
 
-const {data:withdraw,error}=await database.supabase
+
+
+if(!method){
+
+alert("Simpan rekening pembayaran terlebih dahulu");
+return;
+
+}
+
+
+
+
+const {error}=await supabase
 .from("withdraws")
 .insert({
 
 user_id:user.id,
+method:method.method,
+account_number:method.account_number,
 amount:amount,
-status:"pending",
-created_at:new Date()
+status:"pending"
 
-})
-.select()
-.single();
+});
 
 
 
-if(error)throw error;
+if(error){
+
+alert(error.message);
+return;
+
+}
 
 
 
-/* UPDATE PROFILE */
-
-await database.supabase
+const {error:updateError}=await supabase
 .from("profiles")
 .update({
 
-balance:
-Number(profile.balance)-amount,
-
-pending_withdraw:
-amount
+balance:Number(profile.balance)-amount
 
 })
 .eq("id",user.id);
 
 
 
+if(updateError){
 
-/* NOTIF ADMIN */
+alert(updateError.message);
+return;
 
-await database.supabase
-.from("admin_notifications")
-.insert({
+}
 
-type:"withdraw",
 
-title:"Request Withdraw Baru",
 
-message:
-`${profile.username||"User"} request withdraw Rp ${amount.toLocaleString("id-ID")}`,
+alert("Request withdraw berhasil dibuat");
 
-withdraw_id:withdraw.id,
 
-is_read:false,
+withdrawAmount.value="";
 
-created_at:new Date()
+
+await loadBalance();
+await loadWithdraw();
+
+
+};
+
+
 
 });
 
 
 
-alert(
-"Request withdraw berhasil dikirim."
-);
 
 
-loadPayment();
+init();
 
 
-
-}catch(err){
-
-console.error("WD ERROR:",err);
-
-alert(
-"Withdraw gagal."
-);
-
-}
-
-}
+});
