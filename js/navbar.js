@@ -150,103 +150,69 @@ c2pClose();
 
 
 // =========================
-// LOAD USERNAME
+// LOAD PROFILE NAVBAR
 // =========================
 
-const username=
-localStorage.getItem("username");
+async function loadNavbarProfile(){
 
+const usernameBox=document.getElementById("navbarUsername");
+const saldoBox=document.getElementById("navbarSaldo");
 
-const usernameBox=
-document.getElementById("navbarUsername");
+const userId=localStorage.getItem("user_id");
 
-
-
-if(usernameBox && username){
-
-usernameBox.innerHTML=username;
-
-}
-
-
-
-// =========================
-// LOAD SALDO
-// =========================
-
-async function loadSaldo(){
-
-
-const saldoBox=
-document.getElementById("navbarSaldo");
-
-
-const userId=
-localStorage.getItem("user_id");
-
-
-
-if(!saldoBox || !userId)
-return;
-
+if(!userId)return;
 
 
 try{
 
-
-const {
-data,
-error
-
-}=await database.supabase
-
+const {data,error}=await database.supabase
 .from("profiles")
-
-.select("balance")
-
+.select("username,balance")
 .eq("id",userId)
-
-.maybeSingle();
-
+.single();
 
 
-if(error)
-throw error;
-
+if(error) throw error;
 
 
 if(data){
 
 
-saldoBox.innerHTML=
+if(usernameBox){
 
-"Rp "+
-Number(data.balance || 0)
-.toLocaleString("id-ID");
-
+usernameBox.innerHTML=
+data.username || "User";
 
 }
 
+
+if(saldoBox){
+
+saldoBox.innerHTML=
+"Rp "+
+Number(data.balance||0)
+.toLocaleString("id-ID");
+
+}
+
+
+}
 
 
 }catch(err){
 
-
 console.error(
-"Saldo Error:",
+"Navbar Profile Error:",
 err
 );
 
-
 }
 
 
 }
 
 
-
-loadSaldo();
-
+loadNavbarProfile();
 
 
 // =========================
