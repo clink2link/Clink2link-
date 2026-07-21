@@ -454,3 +454,206 @@ font-size:24px;
 }
 
 }
+
+/* ==========================
+WITHDRAW INSTAN
+========================== */
+
+.instant-box{
+position:relative;
+overflow:hidden;
+}
+
+
+.instant-box h2 i{
+color:#f59e0b;
+}
+
+
+.instant-limit{
+margin-top:20px;
+padding:20px;
+background:#fffbeb;
+border:1px solid #fde68a;
+border-radius:18px;
+}
+
+
+.instant-limit>div:first-child{
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-size:14px;
+color:#92400e;
+}
+
+
+#instantLimitText{
+font-weight:800;
+color:#d97706;
+}
+
+
+.progress{
+width:100%;
+height:12px;
+margin-top:15px;
+background:#fde7c3;
+border-radius:20px;
+overflow:hidden;
+}
+
+
+#instantProgress{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#f59e0b,#ea580c);
+border-radius:20px;
+transition:.3s;
+}
+
+
+.instant-limit small{
+display:block;
+margin-top:10px;
+color:#92400e;
+font-size:13px;
+}
+
+
+
+/* OTHER BANK */
+
+#instantOtherBox{
+margin-top:5px;
+}
+
+
+
+/* NOMINAL BUTTON */
+
+.instant-options{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:12px;
+margin-top:12px;
+}
+
+
+.instant-options button{
+
+height:45px;
+
+border-radius:14px;
+
+border:1px solid #dbeafe;
+
+background:#fff;
+
+color:#2563eb;
+
+font-weight:700;
+
+cursor:pointer;
+
+transition:.25s;
+
+}
+
+
+.instant-options button:hover{
+
+transform:translateY(-2px);
+
+border-color:#2563eb;
+
+}
+
+
+
+.instant-options button.active{
+
+background:#2563eb;
+
+color:white;
+
+box-shadow:0 8px 20px rgba(37,99,235,.25);
+
+}
+
+
+
+/* DARK MODE */
+
+body.dark .instant-limit{
+
+background:#451a03;
+
+border-color:#78350f;
+
+}
+
+
+body.dark .instant-limit>div:first-child,
+body.dark #instantLimitText,
+body.dark .instant-limit small{
+
+color:#fbbf24;
+
+}
+
+
+body.dark .instant-options button{
+
+background:#0f172a;
+
+border-color:#334155;
+
+color:#60a5fa;
+
+}
+
+
+body.dark .instant-options button.active{
+
+background:#2563eb;
+
+color:white;
+
+}
+
+
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+.instant-options{
+
+grid-template-columns:repeat(3,1fr);
+
+}
+
+
+.instant-limit>div:first-child{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:8px;
+
+}
+
+}
+
+
+@media(max-width:420px){
+
+.instant-options{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
