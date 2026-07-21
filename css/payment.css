@@ -1,358 +1,437 @@
 /* ==========================================
-   CLICK2PAY PAYMENT CSS
+CLICK2PAY PAYMENT JS
 ========================================== */
 
-.payment-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:18px;
-margin-bottom:25px;
+document.addEventListener("DOMContentLoaded",()=>{
+
+loadPayment();
+
+const saveBtn=document.getElementById("savePayment");
+if(saveBtn) saveBtn.onclick=savePayment;
+
+const withdrawBtn=document.getElementById("withdrawBtn");
+if(withdrawBtn) withdrawBtn.onclick=requestWithdraw;
+
+});
+
+
+/* LOAD PAYMENT */
+
+async function loadPayment(){
+
+try{
+
+const user=await database.getUser();
+
+if(!user){
+window.location.href="login.html";
+return;
 }
 
-/* SALDO CARD */
+const {data:profile,error}=await database.supabase
+.from("profiles")
+.select("*")
+.eq("id",user.id)
+.single();
 
-.pay-card{
-background:#fff;
-border-radius:22px;
-padding:22px;
-box-shadow:0 15px 40px rgba(37,99,235,.10);
-border:1px solid #e5e7eb;
-transition:.25s;
-}
-
-.pay-card:hover{
-transform:translateY(-4px);
-box-shadow:0 20px 50px rgba(37,99,235,.18);
-}
-
-.pay-card i{
-font-size:28px;
-color:#2563eb;
-margin-bottom:12px;
-}
-
-.pay-card p{
-color:#64748b;
-font-size:14px;
-font-weight:600;
-}
-
-.pay-card h2{
-margin-top:8px;
-font-size:24px;
-font-weight:800;
-color:#111827;
-}
+if(error) throw error;
 
 
-/* STATUS */
+if(profile){
 
-.payment-status{
-margin:20px 0;
-padding:18px;
-border-radius:18px;
-background:#eff6ff;
-border:1px solid #dbeafe;
-color:#2563eb;
-font-weight:700;
-text-align:center;
+setText("currentBalance",profile.balance);
+setText("pendingWithdraw",profile.pending_withdraw);
+setText("successWithdraw",profile.total_withdraw);
+setText("failedWithdraw",profile.failed_withdraw);
+
 }
 
 
-/* BUTTON */
-
-.btn-primary,
-.btn-secondary{
-border:none;
-cursor:pointer;
-padding:14px 24px;
-border-radius:14px;
-font-size:15px;
-font-weight:700;
-display:inline-flex;
-align-items:center;
-justify-content:center;
-gap:10px;
-transition:.25s;
-}
-
-.btn-primary{
-background:#2563eb;
-color:#fff;
-}
-
-.btn-primary:hover{
-background:#1d4ed8;
-transform:translateY(-2px);
-}
-
-.btn-secondary{
-background:#e5e7eb;
-color:#111827;
-}
+loadWithdrawStatus();
+loadPaymentAccount(user.id);
 
 
-/* INFO */
+}catch(err){
 
-.info-box{
-margin-top:25px;
-background:#fff;
-border-radius:22px;
-padding:24px;
-box-shadow:0 15px 40px rgba(15,23,42,.08);
-border:1px solid #e5e7eb;
-}
+console.error("Payment Error:",err);
 
-.info-header{
-display:flex;
-align-items:center;
-gap:12px;
-margin-bottom:15px;
-}
-
-.info-header i{
-font-size:22px;
-color:#2563eb;
-}
-
-.info-header h3{
-font-size:20px;
-font-weight:800;
-}
-
-.info-box ul{
-padding-left:20px;
-color:#475569;
-line-height:1.8;
-}
-
-
-/* PAYMENT FORM */
-
-.payment-box{
-margin-top:25px;
-background:#fff;
-padding:28px;
-border-radius:24px;
-box-shadow:0 15px 45px rgba(37,99,235,.10);
-border:1px solid #e5e7eb;
-}
-
-.payment-box h2{
-font-size:24px;
-font-weight:800;
-color:#2563eb;
-margin-bottom:8px;
-}
-
-.payment-box>p{
-color:#647slb;
-margin-bottom:20px;
-}
-
-.payment-box label{
-display:block;
-font-weight:700;
-margin:16px 0 8px;
-color:#334155;
-}
-
-
-/* INPUT */
-
-.input-box{
-display:flex;
-align-items:center;
-gap:12px;
-background:#f8fafc;
-border:1px solid #dbeafe;
-border-radius:14px;
-padding:0 14px;
-}
-
-.input-box i{
-color:#2563eb;
-}
-
-.input-box input,
-.input-box select{
-width:100%;
-padding:14px 0;
-border:none;
-outline:none;
-background:transparent;
-font-size:15px;
-}
-
-
-/* DETAIL */
-
-#detailContent{
-background:#f8fafc;
-border-radius:18px;
-padding:20px;
-margin:20px 0;
-border:1px solid #e5e7eb;
-}
-
-.detail-row{
-display:flex;
-justify-content:space-between;
-gap:15px;
-padding:12px 0;
-border-bottom:1px solid #e5e7eb;
-}
-
-.detail-row:last-child{
-border:none;
-}
-
-.detail-label{
-color:#64748b;
-font-weight:600;
-}
-
-.detail-value{
-font-weight:800;
-color:#111827;
-}
-
-
-/* WITHDRAW NOTE */
-
-.withdraw-note{
-margin-top:20px;
-padding:18px;
-border-radius:18px;
-background:#fff7ed;
-border:1px solid #fed7aa;
-color:#9a3412;
-font-weight:600;
-line-height:1.6;
-}
-
-
-/* SYSTEM DARK MODE */
-
-@media(prefers-color-scheme:dark){
-
-body{
-background:#020617;
-color:#e5e7eb;
-}
-
-.pay-card,
-.info-box,
-.payment-box{
-background:#111827;
-border-color:#1e293b;
-}
-
-.pay-card h2,
-.payment-box h2,
-.info-header h3{
-color:#fff;
-}
-
-.pay-card p,
-.payment-box p,
-.info-box li,
-.detail-label{
-color:#cbd5e1;
-}
-
-.input-box{
-background:#0f172a;
-border-color:#334155;
-}
-
-.input-box input,
-.input-box select{
-color:#fff;
-}
-
-#detailContent{
-background:#0f172a;
-border-color:#334155;
-}
-
-.detail-value{
-color:#fff;
-}
-
-.btn-secondary{
-background:#334155;
-color:#fff;
-}
-
-.withdraw-note{
-background:#451a03;
-border-color:#78350f;
-color:#fed7aa;
 }
 
 }
 
 
-/* MANUAL DARK CLASS */
 
-body.dark .pay-card,
-body.dark .info-box,
-body.dark .payment-box{
-background:#111827;
-border-color:#1e293b;
-}
+/* FORMAT */
 
-body.dark{
-background:#020617;
-color:#fff;
-}
+function formatMoney(value){
 
-body.dark .pay-card h2,
-body.dark .payment-box h2{
-color:#fff;
+return "Rp "+Number(value||0)
+.toLocaleString("id-ID");
+
 }
 
 
-/* MOBILE */
+function setText(id,value){
 
-@media(max-width:700px){
+const el=document.getElementById(id);
 
-.payment-grid{
-grid-template-columns:1fr;
-}
-
-.payment-box{
-padding:22px;
-}
-
-.pay-card h2{
-font-size:21px;
-}
-
-.btn-primary,
-.btn-secondary{
-width:100%;
-}
-
-.detail-row{
-flex-direction:column;
-gap:6px;
+if(el){
+el.innerHTML=formatMoney(value);
 }
 
 }
 
 
-/* DESKTOP */
 
-@media(min-width:1200px){
+/* WITHDRAW STATUS */
 
-.payment-grid{
-grid-template-columns:repeat(5,1fr);
+function loadWithdrawStatus(){
+
+const btn=document.getElementById("withdrawBtn");
+const status=document.getElementById("withdrawStatus");
+
+const day=new Date().getDay();
+
+
+if(day===0 || day===5 || day===6){
+
+if(btn){
+
+btn.disabled=true;
+
+btn.innerHTML=
+'<i class="fa-solid fa-lock"></i> Pembayaran Sedang Tutup';
+
 }
 
-.payment-box{
-max-width:900px;
+
+if(status){
+
+status.innerHTML=
+"Pembayaran buka Senin - Kamis. Jumat sampai Minggu sedang tutup.";
+
+}
+
+
+}else{
+
+
+if(btn){
+
+btn.disabled=false;
+
+btn.innerHTML=
+'<i class="fa-solid fa-money-bill-transfer"></i> Withdraw';
+
+}
+
+
+if(status){
+
+status.innerHTML=
+"Withdraw sedang dibuka.";
+
+}
+
+
+}
+
+}
+
+
+
+/* SAVE PAYMENT */
+
+async function savePayment(){
+
+try{
+
+const user=await database.getUser();
+
+if(!user)return;
+
+
+const name=document
+.getElementById("paymentName")
+.value.trim();
+
+
+const number=document
+.getElementById("paymentNumber")
+.value.trim();
+
+
+const method=document
+.getElementById("paymentMethod")
+.value;
+
+
+
+if(!name||!number||!method){
+
+alert("Lengkapi data pembayaran.");
+return;
+
+}
+
+
+
+const {error}=await database.supabase
+.from("payment_methods")
+.upsert({
+
+user_id:user.id,
+name:name,
+number:number,
+method:method,
+created_at:new Date()
+
+});
+
+
+if(error)throw error;
+
+
+alert("Akun pembayaran berhasil disimpan.");
+
+loadPaymentAccount(user.id);
+
+
+}catch(err){
+
+console.error(err);
+
+alert("Gagal menyimpan pembayaran.");
+
+}
+
+}
+
+
+
+/* LOAD ACCOUNT */
+
+async function loadPaymentAccount(userId){
+
+try{
+
+
+const form=document.getElementById("paymentForm");
+const detail=document.getElementById("paymentDetail");
+
+
+const {data}=await database.supabase
+.from("payment_methods")
+.select("*")
+.eq("user_id",userId)
+.maybeSingle();
+
+
+
+if(data){
+
+
+if(form)
+form.style.display="none";
+
+
+if(detail){
+
+detail.style.display="block";
+
+
+detail.innerHTML=`
+
+<div class="detail-row">
+<span class="detail-label">Nama Rekening</span>
+<span class="detail-value">${data.name}</span>
+</div>
+
+<div class="detail-row">
+<span class="detail-label">Nomor</span>
+<span class="detail-value">${data.number}</span>
+</div>
+
+<div class="detail-row">
+<span class="detail-label">Metode</span>
+<span class="detail-value">${data.method}</span>
+</div>
+
+<button class="btn-secondary" onclick="changePayment()">
+<i class="fa-solid fa-pen"></i>
+Ganti Pembayaran
+</button>
+
+`;
+
+}
+
+
+}
+
+
+}catch(err){
+
+console.error(err);
+
+}
+
+}
+
+
+
+/* CHANGE PAYMENT */
+
+window.changePayment=function(){
+
+const form=document.getElementById("paymentForm");
+const detail=document.getElementById("paymentDetail");
+
+
+if(form)
+form.style.display="block";
+
+
+if(detail)
+detail.style.display="none";
+
+
+}
+
+
+
+/* REQUEST WITHDRAW */
+
+async function requestWithdraw(){
+
+try{
+
+
+const user=await database.getUser();
+
+if(!user)return;
+
+
+const amount=Number(
+document.getElementById("withdrawAmount")?.value||0
+);
+
+
+
+if(amount<=0){
+
+alert("Masukkan nominal withdraw.");
+return;
+
+}
+
+
+
+const {data:profile}=await database.supabase
+.from("profiles")
+.select("username,balance")
+.eq("id",user.id)
+.single();
+
+
+
+if(!profile){
+
+alert("Profile tidak ditemukan.");
+return;
+
+}
+
+
+
+if(Number(profile.balance)<amount){
+
+alert("Saldo tidak cukup.");
+return;
+
+}
+
+
+
+/* INSERT WITHDRAW */
+
+const {data:withdraw,error}=await database.supabase
+.from("withdraws")
+.insert({
+
+user_id:user.id,
+amount:amount,
+status:"pending",
+created_at:new Date()
+
+})
+.select()
+.single();
+
+
+
+if(error)throw error;
+
+
+
+/* UPDATE PROFILE */
+
+await database.supabase
+.from("profiles")
+.update({
+
+balance:
+Number(profile.balance)-amount,
+
+pending_withdraw:
+amount
+
+})
+.eq("id",user.id);
+
+
+
+
+/* NOTIF ADMIN */
+
+await database.supabase
+.from("admin_notifications")
+.insert({
+
+type:"withdraw",
+
+title:"Request Withdraw Baru",
+
+message:
+`${profile.username||"User"} request withdraw Rp ${amount.toLocaleString("id-ID")}`,
+
+withdraw_id:withdraw.id,
+
+is_read:false,
+
+created_at:new Date()
+
+});
+
+
+
+alert(
+"Request withdraw berhasil dikirim."
+);
+
+
+loadPayment();
+
+
+
+}catch(err){
+
+console.error("WD ERROR:",err);
+
+alert(
+"Withdraw gagal."
+);
+
 }
 
 }
