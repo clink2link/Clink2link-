@@ -493,7 +493,13 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
-const code=new URLSearchParams(location.search).get("code");
+let code=new URLSearchParams(location.search).get("code");
+
+if(!code){
+    code=localStorage.getItem("task_code");
+}
+
+console.log("FINAL CODE:",code);
 
 const downloadBtn=document.getElementById("downloadBtn");
 const loading=document.getElementById("loading");
@@ -613,8 +619,11 @@ return;
 const {data:link,error}=await supabaseClient
 .from("links")
 .select("*")
-.eq("short_code",code)
-.single();
+.eq("short_code",String(code))
+.maybeSingle();
+
+console.log("LINK DATA:",link);
+console.log("SUPABASE ERROR:",error);
 
 
 
