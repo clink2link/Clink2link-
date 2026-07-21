@@ -2,7 +2,9 @@
 CLICK2PAY PAYMENT
 MATCH DASHBOARD STYLE
 ================================= */
-
+main.container{
+padding-top:90px;
+}
 
 .payment-grid{
 display:grid;
