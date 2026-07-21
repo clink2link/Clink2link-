@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Click2Pay - Get Link</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Inter",sans-serif;
+}
+
+
+body{
+
+    background:#f4f8ff;
+    color:#111827;
+    min-height:100vh;
+
+}
+
+
+.container{
+
+    width:min(900px,92%);
+    margin:auto;
+
+}
+
+
+/* HEADER */
+
+header{
+
+    padding:20px 0;
+    background:white;
+    border-bottom:1px solid #e5e7eb;
+
+}
+
+
+.logo{
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+
+    font-size:26px;
+    font-weight:800;
+    color:#2563eb;
+
+}
+
+
+
+/* MAIN */
+
+.main{
+
+    padding:50px 0;
+
+}
+
+
+.card{
+
+    background:white;
+    border-radius:24px;
+    padding:35px;
+
+    box-shadow:
+    0 20px 50px rgba(37,99,235,.12);
+
+    text-align:center;
+
+}
+
+
+
+.title{
+
+    font-size:32px;
+    font-weight:800;
+    color:#2563eb;
+    margin-bottom:15px;
+
+}
+
+
+.desc{
+
+    color:#64748b;
+    margin-bottom:30px;
+
+}
+
+
+
+/* BUTTON */
+
+
+.btn{
+
+    border:none;
+    cursor:pointer;
+
+    padding:15px 30px;
+
+    border-radius:14px;
+
+    font-size:16px;
+    font-weight:700;
+
+    transition:.25s;
+
+}
+
+
+.btn-primary{
+
+    background:#2563eb;
+    color:white;
+
+}
+
+
+.btn-primary:hover{
+
+    background:#1d4ed8;
+    transform:translateY(-2px);
+
+}
+
+
+
+.btn-success{
+
+    background:#22c55e;
+    color:white;
+
+}
+
+
+/* LOADING */
+
+
+.loading{
+
+    display:none;
+
+    margin-top:30px;
+
+}
+
+
+.spinner{
+
+    width:45px;
+    height:45px;
+
+    border-radius:50%;
+
+    border:5px solid #dbeafe;
+    border-top-color:#2563eb;
+
+    animation:spin 1s linear infinite;
+
+    margin:auto;
+
+}
+
+
+
+@keyframes spin{
+
+    from{
+        transform:rotate(0deg);
+    }
+
+    to{
+        transform:rotate(360deg);
+    }
+
+}
+
+
+
+/* LINK PANEL */
+
+
+.link-panel{
+
+    display:none;
+
+    margin-top:35px;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    background:#f8fafc;
+
+    border:1px solid #dbeafe;
+
+}
+
+
+
+.ad-box{
+
+    min-height:120px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#fff;
+
+    border-radius:15px;
+
+    margin:15px 0;
+
+}
+
+
+
+/* GET LINK */
+
+
+.get-area{
+
+    margin:25px 0;
+
+}
+
+
+
+.progress{
+
+    display:none;
+
+    height:18px;
+
+    width:100%;
+
+    background:#dbeafe;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+
+
+.progress-bar{
+
+    width:0%;
+
+    height:100%;
+
+    background:linear-gradient(
+    90deg,
+    #2563eb,
+    #60a5fa
+    );
+
+    transition:.2s;
+
+}
+
+
+
+.status{
+
+    margin-top:15px;
+
+    font-weight:700;
+
+    color:#2563eb;
+
+}
+
+
+
+/* OPEN LINK */
+
+
+.open-btn{
+
+    display:none;
+
+}
+
+
+
+@media(max-width:600px){
+
+.card{
+
+    padding:25px;
+
+}
+
+
+.title{
+
+    font-size:26px;
+
+}
+
+
+.btn{
+
+    width:100%;
+
+}
+
+}
+
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<div class="logo">
+
+<i class="fa-solid fa-link"></i>
+
+<span>Click2Pay</span>
+
+</div>
+
+</header>
+
+
+
+<section class="main">
+
+
+<div class="container">
+
+
+<div class="card">
+
+
+<h1 class="title">
+
+Download Link
+
+</h1>
+
+
+<p class="desc">
+
+Selesaikan proses untuk mendapatkan link tujuan.
+
+</p>
+
+
+
+<button id="downloadBtn" class="btn btn-primary">
+
+<i class="fa-solid fa-download"></i>
+
+Download Link
+
+</button>
+
+
+
+<div id="loading" class="loading">
+
+
+<div class="spinner"></div>
+
+
+<p id="loadingText">
+
+Memproses...
+
+</p>
+
+
+</div>
+
+
+
+<div id="linkPanel" class="link-panel">
+
+
+<div class="ad-box">
+
+<!-- ADSTERRA ATAS -->
+
+</div>
+
+
+
+<div class="get-area">
+
+
+<button id="getBtn" class="btn btn-primary">
+
+<i class="fa-solid fa-link"></i>
+
+Get Link
+
+</button>
+
+
+<div id="progress" class="progress">
+
+
+<div id="progressBar" class="progress-bar"></div>
+
+
+</div>
+
+
+<p id="status" class="status"></p>
+
+
+</div>
+
+
+
+<div class="ad-box">
+
+<!-- ADSTERRA BAWAH -->
+
+</div>
+
+
+
+<button id="openBtn" class="btn btn-success open-btn">
+
+<i class="fa-solid fa-arrow-right"></i>
+
+Open Link
+
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL="YOUR_PROJECT.supabase.co";
+const SUPABASE_KEY="YOUR_ANON_KEY";
+
+const supabaseClient=supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+const code=new URLSearchParams(location.search).get("code");
+
+const downloadBtn=document.getElementById("downloadBtn");
+const loading=document.getElementById("loading");
+const loadingText=document.getElementById("loadingText");
+
+const linkPanel=document.getElementById("linkPanel");
+
+const getBtn=document.getElementById("getBtn");
+const progress=document.getElementById("progress");
+const progressBar=document.getElementById("progressBar");
+
+const status=document.getElementById("status");
+const openBtn=document.getElementById("openBtn");
+
+
+if(!code){
+alert("Kode link tidak ditemukan");
+}
+
+
+
+/* DOWNLOAD 5 DETIK */
+
+downloadBtn.onclick=()=>{
+
+downloadBtn.style.display="none";
+loading.style.display="block";
+
+let s=5;
+
+loadingText.innerHTML="Menyiapkan link "+s+" detik";
+
+let timer=setInterval(()=>{
+
+s--;
+
+loadingText.innerHTML="Menyiapkan link "+s+" detik";
+
+
+if(s<=0){
+
+clearInterval(timer);
+
+loading.style.display="none";
+
+linkPanel.style.display="block";
+
+status.innerHTML="Silahkan klik Get Link";
+
+}
+
+},1000);
+
+};
+
+
+
+
+/* GET LINK 3 DETIK */
+
+getBtn.onclick=()=>{
+
+getBtn.style.display="none";
+
+progress.style.display="block";
+
+let p=0;
+
+
+let timer=setInterval(()=>{
+
+p++;
+
+progressBar.style.width=p+"%";
+
+status.innerHTML="Memproses "+p+"%";
+
+
+if(p>=100){
+
+clearInterval(timer);
+
+status.innerHTML="Link berhasil dibuat";
+
+openBtn.style.display="inline-block";
+
+}
+
+
+},30);
+
+
+};
+
+
+
+
+
+/* OPEN LINK + TAMBAH VIEW + SALDO */
+
+openBtn.onclick=async()=>{
+
+
+try{
+
+
+if(!code){
+
+alert("Kode tidak valid");
+return;
+
+}
+
+
+
+
+const {data:link,error}=await supabaseClient
+.from("links")
+.select("*")
+.eq("short_code",code)
+.single();
+
+
+
+if(error||!link){
+
+alert("Link tidak ditemukan");
+return;
+
+}
+
+
+
+
+if(link.status!=="active"){
+
+alert("Link sudah tidak aktif");
+return;
+
+}
+
+
+
+
+/* TAMBAH VIEW */
+
+await supabaseClient
+.from("links")
+.update({
+
+views:(link.views||0)+1,
+total_views:(link.total_views||0)+1
+
+})
+.eq("id",link.id);
+
+
+
+
+
+/* HITUNG EARNING */
+
+let earning=1;
+
+
+const viewed=localStorage.getItem("view_"+code);
+
+if(viewed){
+
+window.location.href=link.destination_url;
+
+return;
+
+}
+
+localStorage.setItem("view_"+code,"true");
+
+/* SIMPAN VIEW */
+
+await supabaseClient
+.from("link_views")
+.insert({
+
+link_id:link.id,
+
+earning:earning,
+
+is_valid:true,
+
+created_at:new Date()
+
+});
+
+
+
+
+
+/* UPDATE SALDO OWNER */
+
+const {data:profile}=await supabaseClient
+.from("profiles")
+.select("*")
+.eq("id",link.user_id)
+.single();
+
+
+
+if(profile){
+
+
+await supabaseClient
+.from("profiles")
+.update({
+
+balance:Number(profile.balance||0)+earning,
+
+ads_earning_total:Number(profile.ads_earning_total||0)+earning,
+
+total_views:Number(profile.total_views||0)+1,
+
+total_clicks:Number(profile.total_clicks||0)+1
+
+})
+.eq("id",link.user_id);
+
+
+
+}
+
+
+
+
+
+/* REDIRECT */
+
+window.location.href=link.destination_url;
+
+
+
+}
+
+catch(err){
+
+console.log(err);
+
+alert("Terjadi kesalahan");
+
+}
+
+
+};
+
+
+</script>
+
+</body>
+</html>
+
