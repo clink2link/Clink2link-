@@ -635,6 +635,16 @@ localStorage.setItem("view_"+code,"true");
 
 let earning=75;
 
+const {data:cpmData}=await supabaseClient
+.from("cpm_rates")
+.select("cpm")
+.eq("country","Indonesia")
+.single();
+
+if(cpmData){
+earning=Number(cpmData.cpm);
+}
+
 
 /* UPDATE LINK */
 
