@@ -168,7 +168,7 @@ if(currentCpm){
 let cpm=0;
 
 const views=Number(profile.total_views || 0);
-const earning=Number(profile.ads_earning_month || 0);
+const earning=Number(profile.ads_earning_total || 0);
 
 if(views>0){
 
