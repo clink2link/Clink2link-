@@ -95,25 +95,23 @@ instantWithdrawBtn.onclick=submitInstantWithdraw;
 
 async function init(){
 
-user=await db.getCurrentProfile();
+    const userId = localStorage.getItem("user_id");
 
-console.log("PAYMENT USER:",user);
+    if(!userId){
+        location.href="login.html";
+        return;
+    }
 
-if(!user){
-location.href="login.html";
-return;
-}
+    user = await db.getProfile(userId);
 
-await refreshPage();
+    console.log("PAYMENT USER:", user);
 
-}
+    if(!user){
+        location.href="login.html";
+        return;
+    }
 
-if(!user){
-location.href="login.html";
-return;
-}
-
-await refreshPage();
+    await refreshPage();
 
 }
 
@@ -232,8 +230,13 @@ return;
 
 }
 
+if(paymentName)
 paymentName.value=data.account_name||"";
+
+if(paymentNumber)
 paymentNumber.value=data.account_number||"";
+
+if(paymentMethod)
 paymentMethod.value=data.method||"";
 
 showPayment(data);
@@ -241,6 +244,10 @@ showPayment(data);
 }
 
 function showPayment(data){
+
+if(!paymentDetail || !detailContent){
+    return;
+}
 
 paymentDetail.style.display="block";
 
