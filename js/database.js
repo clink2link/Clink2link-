@@ -657,6 +657,7 @@ getUsers,
 getProfile,
 getCurrentProfile,
 getProfiles,
+updateProfile,
 
 getLinks,
 createLink,
