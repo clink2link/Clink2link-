@@ -1,13 +1,47 @@
 // js/payment.js
 
-const db=window.database;
-const supabase=db.supabase;
+const db = window.database;
+const supabase = db.supabase;
 
-let user=null;
-let instantSelected=0;
+const currentBalance = document.getElementById("currentBalance");
+const adsBalance = document.getElementById("adsBalance");
+const sellLinkBalance = document.getElementById("sellLinkBalance");
 
-const instantFee=15000;
-const instantDailyLimit=500000;
+const requestWithdraw = document.getElementById("requestWithdraw");
+const pendingWithdraw = document.getElementById("pendingWithdraw");
+const successWithdraw = document.getElementById("successWithdraw");
+const failedWithdraw = document.getElementById("failedWithdraw");
+const totalWithdraw = document.getElementById("totalWithdraw");
+
+const withdrawStatus = document.getElementById("withdrawStatus");
+
+const instantLimitText = document.getElementById("instantLimitText");
+const instantProgress = document.getElementById("instantProgress");
+
+const paymentName = document.getElementById("paymentName");
+const paymentNumber = document.getElementById("paymentNumber");
+const paymentMethod = document.getElementById("paymentMethod");
+const paymentDetail = document.getElementById("paymentDetail");
+const detailContent = document.getElementById("detailContent");
+const paymentForm = document.getElementById("paymentForm");
+const savePayment = document.getElementById("savePayment");
+const editPayment = document.getElementById("editPayment");
+
+const withdrawAmount = document.getElementById("withdrawAmount");
+
+const instantAmount = document.getElementById("instantAmount");
+const instantName = document.getElementById("instantName");
+const instantMethod = document.getElementById("instantMethod");
+const instantOtherMethod = document.getElementById("instantOtherMethod");
+const instantOtherBox = document.getElementById("instantOtherBox");
+const instantNumber = document.getElementById("instantNumber");
+const instantWithdrawBtn = document.getElementById("instantWithdrawBtn");
+
+let user = null;
+let instantSelected = 0;
+
+const instantFee = 15000;
+const instantDailyLimit = 500000;
 
 const rupiah=v=>new Intl.NumberFormat("id-ID",{
 style:"currency",
@@ -17,7 +51,7 @@ maximumFractionDigits:0
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-init();
+await init();
 
 const withdrawBtn=document.getElementById("withdrawBtn");
 const withdrawTopBtn=document.getElementById("withdrawTopBtn");
@@ -108,29 +142,28 @@ let total=0;
 
 (data||[]).forEach(w=>{
 
-const amount=Number(w.amount)||0;
+    const amount = Number(w.amount)||0;
 
-total+=amount;
+    total += amount;
 
-switch(w.status){
+    switch(w.status){
 
-case "pending":
-pending+=amount;
-break;
+        case "pending":
+            pending += amount;
+            break;
 
-case "process":
-process+=amount;
-break;
+        case "process":
+            process += amount;
+            break;
 
-case "success":
-success+=amount;
-break;
+        case "success":
+            success += amount;
+            break;
 
-case "failed":
-failed+=amount;
-break;
-
-}
+        case "failed":
+            failed += amount;
+            break;
+    }
 
 });
 
@@ -139,8 +172,8 @@ pendingWithdraw.innerText=rupiah(process);
 successWithdraw.innerText=rupiah(success);
 failedWithdraw.innerText=rupiah(failed);
 
-if(typeof totalWithdraw!=="undefined"){
-totalWithdraw.innerText=rupiah(total);
+if (totalWithdraw) {
+    totalWithdraw.innerText = rupiah(total);
 }
 
 withdrawStatus.innerHTML=`
@@ -210,9 +243,14 @@ const name=paymentName.value.trim();
 const number=paymentNumber.value.trim();
 const method=paymentMethod.value;
 
+if(!method){
+    alert("Pilih metode pembayaran");
+    return;
+}
+
 if(!name||!number){
-alert("Lengkapi data pembayaran");
-return;
+    alert("Lengkapi data pembayaran");
+    return;
 }
 
 const payload={
@@ -337,6 +375,7 @@ return;
 alert("Request withdraw berhasil dibuat");
 
 withdrawAmount.value="";
+withdrawAmount.blur();
 
 await refreshPage();
 
@@ -492,12 +531,11 @@ instantNumber.value="";
 instantAmount.value="";
 instantOtherMethod.value="";
 instantMethod.selectedIndex=0;
+instantMethod.dispatchEvent(new Event("change"));
 instantSelected=0;
 
 document.querySelectorAll(".instant-options button")
 .forEach(btn=>btn.classList.remove("active"));
-
-instantOtherBox.style.display="none";
 
 await refreshPage();
 
