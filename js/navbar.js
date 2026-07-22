@@ -167,7 +167,7 @@ try{
 
 const {data,error}=await database.supabase
 .from("profiles")
-.select("username,balance")
+.select("id,username,balance")
 .eq("id",userId)
 .single();
 
@@ -177,24 +177,23 @@ if(error) throw error;
 
 if(data){
 
+    if(usernameBox){
 
-if(usernameBox){
+        usernameBox.innerHTML = `
+            <div class="nav-user-name">${data.username || "User"}</div>
+            <div class="nav-user-id">ID: ${data.id}</div>
+        `;
 
-usernameBox.innerHTML=
-data.username || "User";
+    }
 
-}
+    if(saldoBox){
 
+        saldoBox.innerHTML =
+        "Rp " +
+        Number(data.balance || 0)
+        .toLocaleString("id-ID");
 
-if(saldoBox){
-
-saldoBox.innerHTML=
-"Rp "+
-Number(data.balance||0)
-.toLocaleString("id-ID");
-
-}
-
+    }
 
 }
 
