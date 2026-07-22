@@ -528,37 +528,33 @@ return data;
 // ===============================
 
 async function getDashboardReport(){
-
 const {data,error}=await supabaseClient
-.from("dashboard_daily_report")
+.from("daily_reports")
 .select("*")
 .order("report_date",{ascending:false});
 
+if(error){
+console.error("Dashboard Report Error:",error);
+return [];
+}
 
-if(error) throw error;
-
-return data;
-
+return data || [];
 }
 
 
-
 async function getReports(userId){
-
 const {data,error}=await supabaseClient
-.from("dashboard_daily_report")
+.from("daily_reports")
 .select("*")
 .eq("user_id",userId)
 .order("report_date",{ascending:true});
-
 
 if(error){
 console.error("Report Error:",error);
 return [];
 }
 
-return data;
-
+return data || [];
 }
 
 // ===============================
