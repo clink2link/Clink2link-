@@ -19,9 +19,16 @@ document.addEventListener("DOMContentLoaded",()=>{
 
 init();
 
-document.querySelectorAll("#withdrawBtn").forEach(btn=>{
-btn.onclick=submitWithdraw;
-});
+const withdrawBtn=document.getElementById("withdrawBtn");
+const withdrawTopBtn=document.getElementById("withdrawTopBtn");
+
+if(withdrawBtn){
+withdrawBtn.onclick=submitWithdraw;
+}
+
+if(withdrawTopBtn){
+withdrawTopBtn.onclick=submitWithdraw;
+}
 
 document.querySelectorAll(".instant-options button").forEach(btn=>{
 btn.onclick=()=>{
@@ -48,27 +55,36 @@ instantWithdrawBtn.onclick=submitInstantWithdraw;
 
 async function init(){
 
-user=await db.getUser();
+    user=await db.getUser();
 
-if(!user){
-location.href="login.html";
-return;
+    if(!user){
+        location.href="login.html";
+        return;
+    }
+
+    await refreshPage();
+
 }
 
-await loadBalance();
-await loadWithdraw();
-await loadPayment();
-await loadInstantLimit();
+// TAMBAHKAN DI SINI
+async function refreshPage(){
+
+    await loadBalance();
+    await loadWithdraw();
+    await loadPayment();
+    await loadInstantLimit();
 
 }
 
 async function loadBalance(){
 
-const profile=await db.getProfile(user.id);
+    const profile=await db.getProfile(user.id);
 
-if(profile){
-currentBalance.innerText=rupiah(profile.balance);
-}
+    if(!profile)return;
+
+    adsBalance.innerText=rupiah(profile.ads_earning_total||0);
+    sellLinkBalance.innerText=rupiah(profile.sell_earning_total||0);
+    currentBalance.innerText=rupiah(profile.balance||0);
 
 }
 
@@ -84,7 +100,7 @@ console.error(error);
 return;
 }
 
-let request=0;
+let pending=0;
 let process=0;
 let success=0;
 let failed=0;
@@ -94,21 +110,31 @@ let total=0;
 
 const amount=Number(w.amount)||0;
 
-if(w.status==="request")request+=amount;
-if(w.status==="process")process+=amount;
-
-if(w.status==="success"){
-success+=amount;
 total+=amount;
-}
 
-if(w.status==="failed"){
+switch(w.status){
+
+case "pending":
+pending+=amount;
+break;
+
+case "process":
+process+=amount;
+break;
+
+case "success":
+success+=amount;
+break;
+
+case "failed":
 failed+=amount;
+break;
+
 }
 
 });
 
-requestWithdraw.innerText=rupiah(request);
+requestWithdraw.innerText=rupiah(pending);
 pendingWithdraw.innerText=rupiah(process);
 successWithdraw.innerText=rupiah(success);
 failedWithdraw.innerText=rupiah(failed);
@@ -137,7 +163,13 @@ console.log(error);
 return;
 }
 
-if(!data)return;
+if(!data){
+
+paymentDetail.style.display="none";
+
+return;
+
+}
 
 paymentName.value=data.account_name||"";
 paymentNumber.value=data.account_number||"";
@@ -221,9 +253,13 @@ return;
 
 alert("Pembayaran berhasil disimpan");
 
-await loadPayment();
+paymentName.value="";
+paymentNumber.value="";
+paymentMethod.selectedIndex=0;
 
-};
+await refreshPage();
+
+}; // <-- ini penutup savePayment
 
 editPayment.onclick=()=>{
 
@@ -238,8 +274,13 @@ async function submitWithdraw(){
 const amount=Number(withdrawAmount.value);
 
 if(!amount||amount<100000){
+
 alert("Minimal withdraw Rp100.000");
+
+withdrawAmount.focus();
+
 return;
+
 }
 
 const profile=await db.getProfile(user.id);
@@ -273,7 +314,7 @@ method:method.method,
 account_number:method.account_number,
 amount:amount,
 type:"manual",
-status:"request"
+status:"pending"
 });
 
 if(error){
@@ -297,10 +338,7 @@ alert("Request withdraw berhasil dibuat");
 
 withdrawAmount.value="";
 
-await loadBalance();
-await loadWithdraw();
-await loadPayment();
-await loadInstantLimit();
+await refreshPage();
 
 }
 
@@ -356,6 +394,15 @@ if(method==="Lainnya"){
 method=instantOtherMethod.value.trim();
 }
 
+if(name.length<3){
+alert("Nama rekening tidak valid");
+return;
+}
+
+if(number.length<6){
+alert("Nomor rekening tidak valid");
+return;
+}
 if(!name||!method||!number){
 alert("Lengkapi data withdraw instan");
 return;
@@ -411,7 +458,6 @@ const {error}=await supabase
 user_id:user.id,
 method:method,
 account_number:number,
-account_name:name,
 amount:instantSelected,
 fee:instantFee,
 type:"instant",
@@ -453,8 +499,6 @@ document.querySelectorAll(".instant-options button")
 
 instantOtherBox.style.display="none";
 
-await loadBalance();
-await loadWithdraw();
-await loadInstantLimit();
+await refreshPage();
 
 }
