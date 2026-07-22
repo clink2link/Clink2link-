@@ -204,7 +204,7 @@ console.error("Navbar Profile Error:",err);
 
 }
 
-
+loadNavbarProfile();
 // =========================
 // LOGOUT
 // =========================
