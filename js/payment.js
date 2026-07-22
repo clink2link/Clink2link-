@@ -1,5 +1,5 @@
 // js/payment.js
-
+console.log("PAYMENT JS AKTIF");
 const db = window.database;
 const supabase = db.supabase;
 
