@@ -8,9 +8,6 @@ margin-bottom:25px;
 }
 
 .page-title h1{
-display:flex;
-align-items:center;
-gap:12px;
 font-size:32px;
 font-weight:800;
 color:#2563eb;
@@ -358,4 +355,36 @@ margin-left:auto;
 margin-right:auto;
 }
 
+}
+
+
+.page-title>i{
+font-size:32px;
+color:#2563eb;
+}
+
+.member-note{
+margin-top:20px;
+}
+
+.member-note i{
+color:#f59e0b;
+}
+
+.member-note h3{
+color:#d97706;
+}
+
+body.dark .member-note{
+background:#451a03;
+border-color:#78350f;
+color:#fbbf24;
+}
+
+body.dark .member-note h3{
+color:#fbbf24;
+}
+
+body.dark .member-note p{
+color:#fde68a;
 }
