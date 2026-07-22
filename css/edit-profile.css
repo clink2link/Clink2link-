@@ -3,6 +3,19 @@ padding-top:100px;
 padding-bottom:40px;
 }
 
+body.dark .info-note{
+background:#172554;
+color:#93c5fd;
+}
+
+body.dark .info-note h3{
+color:#60a5fa;
+}
+
+body.dark .info-note p{
+color:#cbd5e1;
+}
+
 .page-title{
 margin-bottom:25px;
 }
