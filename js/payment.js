@@ -103,33 +103,55 @@ instantWithdrawBtn.onclick=submitInstantWithdraw;
 
 async function init(){
 
-    const userId = localStorage.getItem("user_id");
+    try{
 
-    if(!userId){
-        location.href="login.html";
-        return;
+        user = await db.getCurrentProfile();
+
+        console.log("PAYMENT USER:", user);
+
+
+        if(!user){
+
+            console.log("USER NULL");
+
+            location.href="login.html";
+            return;
+
+        }
+
+
+        await refreshPage();
+
+
+    }catch(e){
+
+        console.error("PAYMENT INIT ERROR:",e);
+
     }
-
-    user = await db.getProfile(userId);
-
-    console.log("PAYMENT USER:", user);
-
-    if(!user){
-        location.href="login.html";
-        return;
-    }
-
-    await refreshPage();
 
 }
 
 // TAMBAHKAN DI SINI
 async function refreshPage(){
 
-    await loadBalance();
-    await loadWithdraw();
-    await loadPayment();
-    await loadInstantLimit();
+console.log("REFRESH START");
+
+
+await loadBalance();
+console.log("BALANCE OK");
+
+
+await loadWithdraw();
+console.log("WITHDRAW OK");
+
+
+await loadPayment();
+console.log("PAYMENT METHOD OK");
+
+
+await loadInstantLimit();
+console.log("INSTANT OK");
+
 
 }
 
