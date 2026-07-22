@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Admin Dashboard • Click2Pay</title>
+
+<link rel="stylesheet" href="css/admin.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+
+<h2>Click2Pay</h2>
+
+<p>Admin Panel</p>
+
+</div>
+
+<nav>
+
+<a class="active">
+<i class="fa-solid fa-chart-line"></i>
+Dashboard
+</a>
+
+<a id="menuUsers">
+<i class="fa-solid fa-users"></i>
+Users
+</a>
+
+<a id="menuWithdraw">
+<i class="fa-solid fa-wallet"></i>
+Withdraw
+</a>
+
+<a id="menuDeposit">
+<i class="fa-solid fa-money-bill-wave"></i>
+Deposit
+</a>
+
+<a id="menuShortlink">
+<i class="fa-solid fa-link"></i>
+Shortlinks
+</a>
+
+<a id="menuBroadcast">
+<i class="fa-solid fa-bullhorn"></i>
+Broadcast
+</a>
+
+<a id="menuStatistic">
+<i class="fa-solid fa-chart-column"></i>
+Statistik
+</a>
+
+<a id="menuSetting">
+<i class="fa-solid fa-gear"></i>
+Settings
+</a>
+
+</nav>
+
+</div>
+
+<div class="main">
+
+<header>
+
+<h1>Dashboard</h1>
+
+<div class="admin-info">
+
+<i class="fa-solid fa-user-shield"></i>
+
+<span>Administrator</span>
+
+</div>
+
+</header>
+
+<section class="cards">
+
+<div class="card">
+
+<p>Total User</p>
+
+<h2 id="totalUsers">0</h2>
+
+</div>
+
+<div class="card">
+
+<p>User Hari Ini</p>
+
+<h2 id="todayUsers">0</h2>
+
+</div>
+
+<div class="card">
+
+<p>Total Saldo</p>
+
+<h2 id="totalBalance">Rp0</h2>
+
+</div>
+
+<div class="card">
+
+<p>Withdraw Pending</p>
+
+<h2 id="pendingWithdraw">Rp0</h2>
+
+</div>
+
+<div class="card">
+
+<p>Withdraw Success</p>
+
+<h2 id="successWithdraw">Rp0</h2>
+
+</div>
+
+<div class="card">
+
+<p>Total Klik</p>
+
+<h2 id="totalClicks">0</h2>
+
+</div>
+
+<div class="card">
+
+<p>Pendapatan</p>
+
+<h2 id="websiteIncome">Rp0</h2>
+
+</div>
+
+<div class="card">
+
+<p>Online</p>
+
+<h2 id="onlineUser">0</h2>
+
+</div>
+
+</section>
+
+<section class="table-box">
+
+<div class="table-header">
+
+<h3>Withdraw Terbaru</h3>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>User</th>
+
+<th>Metode</th>
+
+<th>Nominal</th>
+
+<th>Status</th>
+
+<th>Tanggal</th>
+
+</tr>
+
+</thead>
+
+<tbody id="recentWithdraw">
+
+<tr>
+
+<td colspan="5">
+
+Belum ada data
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</section>
+
+</div>
+
+<script src="js/database.js"></script>
+<script src="js/admin.js"></script>
+
+</body>
+
+</html>
