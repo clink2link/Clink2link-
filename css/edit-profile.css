@@ -3,6 +3,11 @@ padding-top:100px;
 padding-bottom:40px;
 }
 
+.page-title>i{
+font-size:32px;
+color:#2563eb;
+}
+
 body.dark .info-note{
 background:#172554;
 color:#93c5fd;
