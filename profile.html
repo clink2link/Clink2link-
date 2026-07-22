@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Profile • Click2Pay</title>
 
-<link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/theme.css">
 <link rel="stylesheet" href="css/navbar.css">
 <link rel="stylesheet" href="css/footer.css">
@@ -28,7 +27,6 @@
 </div>
 </section>
 
-
 <section class="profile-card">
 
 <div class="profile-header">
@@ -43,7 +41,6 @@
 </div>
 
 </div>
-
 
 <div class="profile-info">
 
@@ -61,7 +58,6 @@ ID User
 </div>
 </div>
 
-
 <div class="profile-item">
 <span>
 <i class="fa-solid fa-wallet"></i>
@@ -70,7 +66,6 @@ Saldo
 <b id="profileBalance">Rp 0</b>
 </div>
 
-
 <div class="profile-item">
 <span>
 <i class="fa-solid fa-circle-check"></i>
@@ -78,7 +73,6 @@ Status
 </span>
 <b id="profileStatus">-</b>
 </div>
-
 
 <div class="profile-item">
 <span>
@@ -92,18 +86,30 @@ Bergabung
 
 </section>
 
-
 <section class="info-note">
 
 <i class="fa-solid fa-shield-halved"></i>
 
 <div>
 <h3>Keamanan Akun</h3>
-<p>Jangan membagikan ID akun dan informasi login kepada orang lain.</p>
+<p>Jangan membagikan ID akun, password, API Key, atau informasi pembayaran kepada orang lain.</p>
 </div>
 
 </section>
 
+<section class="info-note member-note">
+
+<i class="fa-solid fa-crown"></i>
+
+<div>
+<h3>Member Click2Pay</h3>
+<p>
+Akun kamu dapat menggunakan fitur Click2Pay seperti membuat link, melihat statistik, menerima penghasilan, dan mengelola pengaturan akun.
+Pastikan data akun selalu benar agar layanan berjalan dengan aman.
+</p>
+</div>
+
+</section>
 
 <section class="setting-menu">
 
@@ -160,12 +166,9 @@ Bergabung
 
 </main>
 
-
 <div id="footer"></div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script src="js/database.js"></script>
 <script src="js/session.js"></script>
 <script src="js/theme.js"></script>
@@ -174,7 +177,6 @@ Bergabung
 <script src="js/profile.js"></script>
 <script src="assets/js/debug.js"></script>
 
-
 <script>
 fetch("components/navbar.html")
 .then(res=>res.text())
@@ -182,7 +184,6 @@ fetch("components/navbar.html")
 document.getElementById("navbar").innerHTML=html;
 if(typeof c2pInit==="function")c2pInit();
 });
-
 
 fetch("components/footer.html")
 .then(res=>res.text())
