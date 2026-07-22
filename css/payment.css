@@ -38,25 +38,21 @@ gap:18px;
 margin-top:25px;
 }
 
-/* CARD 2 KOLOM */
+/* CARD BERISI 2 ITEM */
 
-.double-card{
-display:grid !important;
-grid-template-columns:repeat(2,minmax(0,1fr));
-align-items:center;
-gap:0;
+.pay-card.double-card{
+    display:flex;
+    padding:0;
+    overflow:hidden;
 }
 
-.card-half{
-display:flex;
-flex-direction:column;
-justify-content:center;
-padding:12px 20px;
-min-width:0;
+.pay-card.double-card .card-half{
+    flex:1;
+    padding:22px;
 }
 
-.card-half:first-child{
-border-right:1px solid #e2e8f0;
+.pay-card.double-card .card-half:first-child{
+    border-right:1px solid #e2e8f0;
 }
 
 .pay-card{
@@ -492,103 +488,117 @@ body.dark .info-item b{
 color:#60a5fa;
 }
 
-/* RESPONSIVE */
+/* ==========================
+RESPONSIVE
+========================== */
 
-@media(max-width:1100px){
+@media (max-width:1100px){
+
 .payment-grid{
-grid-template-columns:repeat(2,1fr);
-}
+    grid-template-columns:repeat(2,1fr);
 }
 
-@media(max-width:700px){
+}
+
+@media (max-width:700px){
 
 main.container{
-padding-top:85px;
-padding-left:15px;
-padding-right:15px;
+    padding-top:85px;
+    padding-left:15px;
+    padding-right:15px;
 }
 
 .payment-grid{
-grid-template-columns:1fr;
-gap:12px;
+    grid-template-columns:1fr;
+    gap:12px;
 }
 
 .pay-card{
-padding:16px;
+    padding:16px;
 }
 
+/* TETAP 2 KOLOM */
 .double-card{
-    grid-template-columns:1fr;
-    gap:14px;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:0;
 }
 
 .card-half{
-    padding:12px 0;
+    padding:0 10px;
 }
 
-.card-half:not(:last-child){
-    border-right:none;
-    border-bottom:1px solid #e2e8f0;
-    padding-bottom:16px;
-    margin-bottom:2px;
-}
-
-.card-half:last-child{
-    padding-left:0;
+.card-half:first-child{
+    border-right:1px solid #e2e8f0;
+    border-bottom:none;
 }
 
 .pay-card h2{
-font-size:21px;
+    font-size:18px;
 }
 
 .card-icon{
-width:42px;
-height:42px;
-font-size:18px;
+    width:40px;
+    height:40px;
+    font-size:18px;
+    margin-bottom:10px;
 }
 
 .payment-box,
 .info-box{
-padding:18px;
-border-radius:18px;
+    padding:18px;
+    border-radius:18px;
 }
 
 .payment-action .btn-primary{
-width:100%;
+    width:100%;
 }
 
 .detail-row{
-flex-direction:column;
-gap:8px;
+    flex-direction:column;
+    gap:8px;
 }
 
 .btn-secondary{
-width:100%;
-justify-content:center;
+    width:100%;
+    justify-content:center;
 }
 
 }
 
-@media(max-width:420px){
-
-.payment-grid{
-grid-template-columns:1fr;
-}
+@media (max-width:420px){
 
 .page-title h1{
-font-size:24px;
+    font-size:24px;
+}
+
+.pay-card h2{
+    font-size:16px;
+}
+
+.card-half{
+    padding:0 8px;
+}
+
+.card-half span{
+    font-size:12px;
+}
+
+.card-icon{
+    width:36px;
+    height:36px;
+    font-size:16px;
 }
 
 }
 
 .info-item{
-padding:12px;
-gap:12px;
+    padding:12px;
+    gap:12px;
 }
 
 .info-item span{
-font-size:12px;
-line-height:1.6;
+    font-size:12px;
+    line-height:1.6;
 }
 
 /* ==========================
