@@ -291,3 +291,72 @@ border:1px solid #1e293b;
 body.dark .c2p-overlay{
 background:rgba(0,0,0,.6);
 }
+
+/* ===========================
+   PROFILE INFO
+=========================== */
+
+.profile-info{
+    margin:15px 0;
+    padding:12px;
+    background:#f8fafc;
+    border-radius:12px;
+}
+
+.profile-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:8px 0;
+    border-bottom:1px solid #e5e7eb;
+    font-size:14px;
+}
+
+.profile-row:last-child{
+    border-bottom:none;
+}
+
+.profile-row span{
+    color:#6b7280;
+}
+
+.profile-row b{
+    font-weight:600;
+    word-break:break-all;
+}
+
+.logout-btn{
+    width:100%;
+    margin-top:15px;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:#ef4444;
+    color:#fff;
+    font-weight:700;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.logout-btn:hover{
+    background:#dc2626;
+    transform:translateY(-2px);
+}
+
+/* Dark Mode */
+
+body.dark .profile-info{
+    background:#1e293b;
+}
+
+body.dark .profile-row{
+    border-bottom:1px solid #334155;
+}
+
+body.dark .profile-row span{
+    color:#94a3b8;
+}
+
+body.dark .profile-row b{
+    color:#f8fafc;
+}
