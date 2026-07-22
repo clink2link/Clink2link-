@@ -33,9 +33,27 @@ font-size:14px;
 
 .payment-grid{
 display:grid;
-grid-template-columns:repeat(3,1fr);
+grid-template-columns:repeat(2,1fr);
 gap:18px;
 margin-top:25px;
+}
+
+/* CARD 2 KOLOM */
+
+.double-card{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+}
+
+.card-half{
+padding:6px 18px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+}
+
+.card-half:first-child{
+border-right:1px solid #e2e8f0;
 }
 
 .pay-card{
@@ -108,6 +126,21 @@ color:#0f172a;
 
 .pay-card small{
 color:#94a3b8;
+}
+
+/* ISI DALAM DOUBLE CARD */
+
+.card-half span{
+font-size:13px;
+font-weight:600;
+color:#64748b;
+}
+
+.card-half h2{
+margin:8px 0 0;
+font-size:24px;
+font-weight:800;
+color:#0f172a;
 }
 
 
@@ -391,6 +424,18 @@ body.dark .info-header h3{
 color:#60a5fa;
 }
 
+body.dark .card-half h2{
+color:#fff;
+}
+
+body.dark .card-half span{
+color:#94a3b8;
+}
+
+body.dark .card-half:not(:last-child){
+border-color:#334155;
+}
+
 body.dark .pay-card span,
 body.dark .payment-box p,
 body.dark .info-box li{
@@ -461,12 +506,32 @@ padding-right:15px;
 }
 
 .payment-grid{
-grid-template-columns:repeat(2,1fr);
+grid-template-columns:1fr;
 gap:12px;
 }
 
 .pay-card{
 padding:16px;
+}
+
+.double-card{
+    grid-template-columns:1fr;
+    gap:14px;
+}
+
+.card-half{
+    padding:12px 0;
+}
+
+.card-half:not(:last-child){
+    border-right:none;
+    border-bottom:1px solid #e2e8f0;
+    padding-bottom:16px;
+    margin-bottom:2px;
+}
+
+.card-half:last-child{
+    padding-left:0;
 }
 
 .pay-card h2{
