@@ -222,6 +222,25 @@ font-size:14px;
 padding:12px 15px;
 }
 
+.copy-id{
+
+font-size:12px;
+max-width:160px;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+cursor:pointer;
+color:#2563eb;
+
+}
+
+
+.copy-id:hover{
+
+text-decoration:underline;
+
+}
+
 @media(max-width:600px){
 .c2p-logo{
 font-size:18px;
