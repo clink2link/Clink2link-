@@ -7,11 +7,13 @@ const result=document.getElementById("editResult");
 
 const profile=await database.getCurrentProfile();
 
+
 if(profile){
 
 username.value=profile.username||"";
 
 }
+
 
 
 button.onclick=async()=>{
@@ -22,13 +24,17 @@ const value=username.value.trim();
 
 if(!value){
 
-result.textContent="Username tidak boleh kosong";
+result.innerHTML="❌ Username tidak boleh kosong";
 return;
 
 }
 
 
+
 try{
+
+
+button.disabled=true;
 
 
 await database.updateProfile({
@@ -52,12 +58,17 @@ location.href="profile.html";
 
 }catch(err){
 
+console.error(err);
 
-result.textContent=
-"Gagal update profile";
+result.innerHTML=
+"❌ Gagal update profile";
+
+
+}finally{
+
+button.disabled=false;
 
 }
-
 
 
 };
