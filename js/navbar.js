@@ -162,43 +162,55 @@ const saldoBox=document.getElementById("navbarSaldo");
 
 const userId=localStorage.getItem("user_id");
 
+console.log("NAV USER ID:",userId);
+
 if(!userId)return;
 
 try{
 
 const {data,error}=await database.supabase
 .from("profiles")
-.select("id,username,balance")
+.select("*")
 .eq("id",userId)
-.single();
+.maybeSingle();
 
-if(error) throw error;
 
-if(data){
+if(error){
+console.error("NAV PROFILE ERROR:",error);
+return;
+}
 
-if(usernameBox){
+
+console.log("NAV PROFILE:",data);
+
+
+if(!data)return;
+
+
+if(usernameBox)
 usernameBox.textContent=data.username || "User";
-}
 
-if(idBox){
-idBox.textContent=data.id;
-}
 
-if(userBox){
+if(idBox)
+idBox.textContent=data.id || "-";
+
+
+if(userBox)
 userBox.textContent="@"+(data.username || "-");
-}
 
-if(saldoBox){
+
+if(saldoBox)
 saldoBox.textContent=
 "Rp "+
 Number(data.balance||0).toLocaleString("id-ID");
-}
 
-}
 
 }catch(err){
 
-console.error("Navbar Profile Error:",err);
+console.error(
+"Navbar Profile Error:",
+err
+);
 
 }
 
