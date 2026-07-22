@@ -160,63 +160,130 @@ const idBox=document.getElementById("navbarId");
 const userBox=document.getElementById("navbarUser");
 const saldoBox=document.getElementById("navbarSaldo");
 
+console.log("NAV ELEMENT:",{
+usernameBox,
+idBox,
+userBox,
+saldoBox
+});
+
+
 const userId=localStorage.getItem("user_id");
 
 console.log("NAV USER ID:",userId);
 
-if(!userId)return;
 
-try{
-
-const {data,error}=await database.supabase
-.from("profiles")
-.select("*")
-.eq("id",userId)
-.maybeSingle();
-
-
-if(error){
-console.error("NAV PROFILE ERROR:",error);
+if(!userId){
+console.warn("USER ID KOSONG");
 return;
 }
 
 
-console.log("NAV PROFILE:",data);
+try{
 
 
-if(!data)return;
+const {data,error}=await database.supabase
+.from("profiles")
+.select("id,username,balance")
+.eq("id",userId)
+.maybeSingle();
 
 
-if(usernameBox)
-usernameBox.textContent=data.username || "User";
+
+if(error){
+
+console.error(
+"NAV PROFILE ERROR:",
+error
+);
+
+return;
+
+}
 
 
-if(idBox)
-idBox.textContent=data.id || "-";
+
+console.log(
+"NAV PROFILE:",
+data
+);
 
 
-if(userBox)
-userBox.textContent="@"+(data.username || "-");
+
+if(!data){
+
+console.warn(
+"PROFILE TIDAK DITEMUKAN"
+);
+
+return;
+
+}
 
 
-if(saldoBox)
-saldoBox.textContent=
+
+// UPDATE NAVBAR
+
+if(usernameBox){
+
+usernameBox.textContent =
+data.username || "User";
+
+}
+
+
+
+if(idBox){
+
+idBox.textContent =
+data.id || "-";
+
+}
+
+
+
+if(userBox){
+
+userBox.textContent =
+"@"+(data.username || "-");
+
+}
+
+
+
+if(saldoBox){
+
+saldoBox.textContent =
 "Rp "+
-Number(data.balance||0).toLocaleString("id-ID");
+Number(data.balance || 0)
+.toLocaleString("id-ID");
+
+}
+
+
+
+console.log(
+"NAVBAR UPDATE SUCCESS"
+);
+
 
 
 }catch(err){
+
 
 console.error(
 "Navbar Profile Error:",
 err
 );
 
-}
 
 }
 
-loadNavbarProfile();
+}
+
+setTimeout(()=>{
+    loadNavbarProfile();
+},300);
 // =========================
 // LOGOUT
 // =========================
