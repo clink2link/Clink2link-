@@ -1,558 +1,280 @@
 (function(){
-
 "use strict";
 
+const DEBUG_KEY="click2pay123";
+const params=new URLSearchParams(location.search);
 
-// ============================
-// DEBUG SECRET KEY
-// ============================
-
-const DEBUG_KEY = "click2pay123";
-
-const params = new URLSearchParams(
-    window.location.search
-);
-
-
-if(params.get("debug") !== DEBUG_KEY){
-    return;
-}
-
-
-
-// ============================
-// START DEBUG
-// ============================
-
+if(params.get("debug")!==DEBUG_KEY)return;
 
 function startDebug(){
 
-
-const panel = document.createElement("div");
-
+const panel=document.createElement("div");
 panel.id="debugBox";
-
-
 panel.innerHTML=`
-
 <div class="debug-header">
-
-<span>🐞 DEBUG MODE</span>
-
-<button id="clearDebug">
-CLEAR
-</button>
-
+<span>🐞 CLICK2PAY DEBUG</span>
+<button id="clearDebug">CLEAR</button>
 </div>
-
 <div id="debugList"></div>
-
 `;
 
 document.body.appendChild(panel);
 
-
-
-
-// CSS
-
 const style=document.createElement("style");
-
-
 style.innerHTML=`
-
 #debugBox{
-
 position:fixed;
-
 bottom:10px;
-
 left:10px;
-
 right:10px;
-
-max-height:350px;
-
+max-height:400px;
 overflow:auto;
-
 background:#020617;
-
 color:#22c55e;
-
 font-family:monospace;
-
 font-size:12px;
-
 z-index:999999;
-
 border-radius:14px;
-
 border:1px solid #334155;
-
-box-shadow:0 10px 30px rgba(0,0,0,.4);
-
 }
-
-
 .debug-header{
-
 position:sticky;
-
 top:0;
-
 display:flex;
-
 justify-content:space-between;
-
-align-items:center;
-
 padding:10px;
-
 background:#111827;
-
-color:#fff;
-
-font-weight:bold;
-
+color:white;
 }
-
-
 .debug-header button{
-
 background:#ef4444;
-
 border:0;
-
-color:#fff;
-
-padding:5px 10px;
-
+color:white;
 border-radius:8px;
-
-cursor:pointer;
-
+padding:5px 10px;
 }
-
-
-
 .debug{
-
 padding:8px;
-
 border-bottom:1px solid #334155;
-
 word-break:break-word;
-
 }
-
-
-
-.debug pre{
-
+.log{color:#22c55e}
+.warn{color:#facc15}
+.err{color:#f87171}
+pre{
 white-space:pre-wrap;
-
-margin:5px 0;
-
 color:#93c5fd;
-
 }
-
-
-
-.log{
-
-color:#22c55e;
-
-}
-
-
-
-.warn{
-
-color:#facc15;
-
-}
-
-
-
-.err{
-
-color:#f87171;
-
-}
-
-
 `;
-
 document.head.appendChild(style);
-
-
 
 const list=document.getElementById("debugList");
 
-
-
-
-
-function formatData(data){
-
-
-if(data instanceof Error){
-
-return `
-
-<b>${data.message}</b>
-
-<pre>${data.stack || ""}</pre>
-
-`;
-
-}
-
-
-
-if(typeof data==="object"){
-
-try{
-
-return `
-
-<pre>
-
-${JSON.stringify(data,null,2)}
-
-</pre>
-
-`;
-
-}catch{
-
-return String(data);
-
-}
-
-}
-
-
-
-return String(data);
-
-}
-
-
-
-
-
-
 function add(type,data){
 
-
-if(!list) return;
-
-
 const item=document.createElement("div");
-
-
 item.className="debug "+type;
 
+let text;
+
+try{
+text=typeof data==="object"
+?JSON.stringify(data,null,2)
+:String(data);
+}catch{
+text=String(data);
+}
 
 item.innerHTML=`
-
 [${new Date().toLocaleTimeString()}]
-
 <b>${type.toUpperCase()}</b>
-
-<br>
-
-${formatData(data)}
-
+<pre>${text}</pre>
 `;
 
-
 list.prepend(item);
-
-
 }
 
 
-
-
-
-
-
-// ============================
-// GLOBAL ERROR
-// ============================
-
-
-const oldError = window.onerror;
-
-
-window.onerror=function(
-message,
-source,
-line,
-column,
-error
-){
-
-
-add(
-"err",
-{
+// ERROR JS
+window.onerror=function(message,source,line,column,error){
+add("err",{
+type:"JAVASCRIPT ERROR",
 message,
 file:source,
 line,
 column,
 error
-}
-);
-
-
-
-if(oldError){
-
-oldError(
-message,
-source,
-line,
-column,
-error
-);
-
-}
-
-
+});
 };
 
 
-
-
-
-
-
-
-// ============================
-// PROMISE ERROR
-// ============================
-
-
-window.addEventListener(
-"unhandledrejection",
-(e)=>{
-
-
-add(
-"err",
-e.reason
-);
-
-
+// PROMISE
+window.addEventListener("unhandledrejection",e=>{
+add("err",{
+type:"PROMISE ERROR",
+error:e.reason
+});
 });
 
 
-
-
-
-
-
-
-
-// ============================
-// FETCH ERROR
-// ============================
-
-
+// FETCH
 const oldFetch=window.fetch;
-
 
 window.fetch=function(...args){
 
+add("log",{
+type:"FETCH",
+url:args[0]
+});
 
 return oldFetch(...args)
-
 .then(res=>{
 
-
-if(!res.ok){
-
-
 add(
-"err",
+res.ok?"log":"err",
 {
-
-type:"FETCH ERROR",
-
+type:"FETCH RESPONSE",
 url:args[0],
-
-status:res.status,
-
-statusText:res.statusText
-
+status:res.status
 }
-
 );
-
-}
-
 
 return res;
 
-
 })
-
-
 .catch(err=>{
 
-
-add(
-"err",
-{
-
+add("err",{
 type:"FETCH FAILED",
-
-url:args[0],
-
 message:err.message
-
-}
-
-);
-
+});
 
 throw err;
 
-
 });
-
 
 };
 
 
-
-
-
-
-
-
-// ============================
-// CONSOLE TRACK
-// ============================
-
-
+// CONSOLE
 ["log","warn","error"].forEach(type=>{
-
 
 const old=console[type];
 
-
 console[type]=function(...args){
 
-
-
-let mode =
-
-type==="error"
-?
-"err"
-
-:
-
-type==="warn"
-?
-"warn"
-
-:
-
-"log";
-
-
-
 add(
-mode,
-args.length===1 ? args[0] : args
+type==="error"?"err":type,
+args
 );
-
-
 
 old.apply(console,args);
 
-
 };
-
 
 });
 
 
+// CLICK ERROR
+document.addEventListener("click",e=>{
 
+try{
 
+let target=e.target.closest("button,a");
 
+if(target){
 
-
-
-
-// ============================
-// CLEAR
-// ============================
-
-
-document
-.getElementById("clearDebug")
-.onclick=function(){
-
-list.innerHTML="";
-
-};
-
-
-
-
-
-
-
-// manual debug
-
-window.debug=function(data){
-
-add(
-"log",
-data
-);
-
-};
-
-
-
-
-
-add(
-"log",
-"Debug aktif"
-);
-
-
+add("log",{
+type:"CLICK",
+element:target.innerText||target.href||target.id
+});
 
 }
 
+}catch(err){
+
+add("err",err);
+
+}
+
+},true);
 
 
+// LOAD JS ERROR
+window.addEventListener("error",e=>{
+
+if(e.target.tagName==="SCRIPT"){
+
+add("err",{
+type:"SCRIPT LOAD ERROR",
+file:e.target.src
+});
+
+}
+
+},true);
 
 
-// tunggu halaman siap
+// LOCAL STORAGE
 
-if(document.body){
+add("log",{
+type:"LOCAL STORAGE",
+user_id:localStorage.getItem("user_id"),
+theme:localStorage.getItem("theme")
+});
 
-startDebug();
+
+// PAGE INFO
+
+add("log",{
+type:"PAGE",
+url:location.href,
+title:document.title
+});
+
+
+// SUPABASE CHECK
+
+setTimeout(()=>{
+
+if(window.database){
+
+add("log",{
+type:"DATABASE READY",
+database:Object.keys(window.database)
+});
 
 }else{
 
-document.addEventListener(
-"DOMContentLoaded",
-startDebug
-);
+add("warn","DATABASE BELUM READY");
 
 }
 
+},1000);
 
+
+// CLEAR
+
+document.getElementById("clearDebug").onclick=()=>{
+list.innerHTML="";
+};
+
+
+// MANUAL
+
+window.debug=function(data){
+add("log",data);
+};
+
+
+add("log","Click2Pay Debug Aktif");
+
+}
+
+if(document.body){
+startDebug();
+}else{
+document.addEventListener("DOMContentLoaded",startDebug);
+}
 
 })();
