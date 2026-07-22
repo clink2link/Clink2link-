@@ -1,0 +1,124 @@
+.edit-card{
+background:var(--card-bg,#fff);
+border-radius:24px;
+padding:25px;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+max-width:600px;
+margin:auto;
+}
+
+.edit-form{
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+.edit-form label{
+font-weight:600;
+color:var(--text-color,#111827);
+}
+
+.input-box{
+display:flex;
+align-items:center;
+gap:12px;
+background:#f8fafc;
+border:1px solid #e5e7eb;
+border-radius:16px;
+padding:14px 16px;
+}
+
+.input-box i{
+color:#2563eb;
+font-size:18px;
+}
+
+.input-box input{
+border:none;
+outline:none;
+background:transparent;
+width:100%;
+font-size:15px;
+color:var(--text-color,#111827);
+}
+
+.btn-primary{
+margin-top:10px;
+border:none;
+background:#2563eb;
+color:white;
+padding:15px 20px;
+border-radius:16px;
+font-size:15px;
+font-weight:600;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+transition:.2s;
+}
+
+.btn-primary:hover{
+transform:translateY(-2px);
+opacity:.9;
+}
+
+#editResult{
+margin-top:15px;
+padding:12px;
+border-radius:12px;
+font-size:14px;
+}
+
+
+/* DARK MODE */
+
+.dark .edit-card{
+background:#111827;
+box-shadow:0 10px 30px rgba(0,0,0,.3);
+}
+
+.dark .input-box{
+background:#1f2937;
+border-color:#374151;
+}
+
+.dark .input-box input{
+color:#f9fafb;
+}
+
+.dark .edit-form label{
+color:#f9fafb;
+}
+
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.edit-card{
+padding:20px;
+border-radius:20px;
+}
+
+.page-title{
+gap:12px;
+}
+
+.btn-primary{
+width:100%;
+}
+
+}
+
+
+/* DESKTOP */
+
+@media(min-width:1024px){
+
+.edit-card{
+margin-top:20px;
+}
+
+}
