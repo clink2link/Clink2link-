@@ -225,15 +225,17 @@ async function updateProfile(payload){
 const userId=localStorage.getItem("user_id");
 
 if(!userId)return null;
+
 const {data,error}=await supabaseClient
 .from("profiles")
-.update(payload)
+.update({
+username:payload.username
+})
 .eq("id",userId)
 .select()
 .single();
 
 if(error){
-
 console.error("UPDATE PROFILE ERROR:",error);
 throw error;
 }
