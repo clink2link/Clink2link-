@@ -1,171 +1,264 @@
-(function(){
+(function () {
 "use strict";
 
-const DEBUG_KEY="click2pay123";
-const params=new URLSearchParams(location.search);
+const DEBUG_KEY = "click2pay123";
+const params = new URLSearchParams(location.search);
 
-if(params.get("debug")!==DEBUG_KEY)return;
+if (params.get("debug") !== DEBUG_KEY) return;
 
-function startDebug(){
+// ======================
+// CONFIG
+// ======================
 
-const panel=document.createElement("div");
-panel.id="debugBox";
-panel.innerHTML=`
+const VERSION = "2.0.0";
+
+let debugList = null;
+
+function now() {
+    return new Date().toLocaleTimeString("id-ID");
+}
+
+function stringify(data) {
+    try {
+        if (typeof data === "string") return data;
+        return JSON.stringify(data, null, 2);
+    } catch (e) {
+        return String(data);
+    }
+}
+
+function add(type, data) {
+
+    if (!debugList) return;
+
+    const item = document.createElement("div");
+
+    item.className = "debug " + type;
+
+    item.innerHTML = `
+<b>[${now()}]</b>
+<pre>${stringify(data)}</pre>
+`;
+
+    debugList.prepend(item);
+}
+
+window.debug = function(data){
+    add("log", data);
+};
+
+// ======================
+// CREATE PANEL
+// ======================
+
+function createPanel(){
+
+const panel = document.createElement("div");
+
+panel.id = "debugBox";
+
+panel.innerHTML = `
 <div class="debug-header">
-<span>🐞 CLICK2PAY DEBUG</span>
-<button id="clearDebug">CLEAR</button>
+<div>
+🐞 CLICK2PAY DEBUG
+<small style="opacity:.7;">v${VERSION}</small>
 </div>
+
+<div>
+
+<button id="clearDebug">
+CLEAR
+</button>
+
+</div>
+
+</div>
+
 <div id="debugList"></div>
 `;
 
 document.body.appendChild(panel);
 
-const style=document.createElement("style");
-style.innerHTML=`
+debugList = document.getElementById("debugList");
+
+const style = document.createElement("style");
+
+style.innerHTML = `
 #debugBox{
 position:fixed;
-bottom:10px;
 left:10px;
 right:10px;
-max-height:400px;
-overflow:auto;
+bottom:10px;
+height:420px;
 background:#020617;
 color:#22c55e;
 font-family:monospace;
 font-size:12px;
-z-index:999999;
-border-radius:14px;
+z-index:999999999;
+border-radius:12px;
+overflow:auto;
 border:1px solid #334155;
+box-shadow:0 0 20px rgba(0,0,0,.5);
 }
+
 .debug-header{
 position:sticky;
 top:0;
 display:flex;
 justify-content:space-between;
+align-items:center;
 padding:10px;
 background:#111827;
-color:white;
+color:#fff;
+font-weight:bold;
 }
+
 .debug-header button{
 background:#ef4444;
 border:0;
-color:white;
-border-radius:8px;
-padding:5px 10px;
+color:#fff;
+padding:6px 12px;
+border-radius:6px;
+cursor:pointer;
 }
+
+#debugList{
+padding-bottom:20px;
+}
+
 .debug{
 padding:8px;
 border-bottom:1px solid #334155;
 word-break:break-word;
 }
-.log{color:#22c55e}
-.warn{color:#facc15}
-.err{color:#f87171}
+
+.log{
+color:#22c55e;
+}
+
+.warn{
+color:#facc15;
+}
+
+.err{
+color:#f87171;
+}
+
 pre{
+margin:0;
 white-space:pre-wrap;
 color:#93c5fd;
 }
 `;
+
 document.head.appendChild(style);
 
-const list=document.getElementById("debugList");
+document
+.getElementById("clearDebug")
+.onclick=()=>{
 
-function add(type,data){
+debugList.innerHTML="";
 
-const item=document.createElement("div");
-item.className="debug "+type;
+};
 
-let text;
+add("log","Click2Pay Debug Aktif");
 
-try{
-text=typeof data==="object"
-?JSON.stringify(data,null,2)
-:String(data);
-}catch{
-text=String(data);
+add("log",{
+version:VERSION,
+url:location.href,
+title:document.title,
+userAgent:navigator.userAgent
+});
+
 }
 
-item.innerHTML=`
-[${new Date().toLocaleTimeString()}]
-<b>${type.toUpperCase()}</b>
-<pre>${text}</pre>
-`;
-
-list.prepend(item);
+if(document.body){
+createPanel();
+}else{
+window.addEventListener("DOMContentLoaded",createPanel);
 }
 
+//======================
+// JAVASCRIPT ERROR
+//======================
 
-// ERROR JS
 window.onerror=function(message,source,line,column,error){
+
 add("err",{
 type:"JAVASCRIPT ERROR",
 message,
-file:source,
+source,
 line,
 column,
-error
+stack:error?.stack||null
 });
+
+return false;
+
 };
 
+window.addEventListener("error",e=>{
 
-// PROMISE
-window.addEventListener("unhandledrejection",e=>{
+if(e.target instanceof HTMLScriptElement){
+
 add("err",{
-type:"PROMISE ERROR",
-error:e.reason
-});
-});
-
-
-// FETCH
-const oldFetch=window.fetch;
-
-window.fetch=function(...args){
-
-add("log",{
-type:"FETCH",
-url:args[0]
+type:"SCRIPT LOAD FAILED",
+src:e.target.src
 });
 
-return oldFetch(...args)
-.then(res=>{
+return;
 
-add(
-res.ok?"log":"err",
-{
-type:"FETCH RESPONSE",
-url:args[0],
-status:res.status
 }
-);
 
-return res;
-
-})
-.catch(err=>{
+if(e.target instanceof HTMLLinkElement){
 
 add("err",{
-type:"FETCH FAILED",
-message:err.message
+type:"CSS LOAD FAILED",
+href:e.target.href
 });
 
-throw err;
+return;
+
+}
+
+},true);
+
+
+//======================
+// PROMISE ERROR
+//======================
+
+window.addEventListener("unhandledrejection",e=>{
+
+add("err",{
+type:"UNHANDLED PROMISE",
+reason:e.reason?.message||e.reason,
+stack:e.reason?.stack||null
+});
 
 });
 
-};
 
-
+//======================
 // CONSOLE
-["log","warn","error"].forEach(type=>{
+//======================
+
+["log","warn","error","info"].forEach(type=>{
 
 const old=console[type];
 
 console[type]=function(...args){
 
 add(
-type==="error"?"err":type,
-args
+type==="error"
+?"err"
+:type==="warn"
+?"warn"
+:"log",
+{
+type:"CONSOLE "+type.toUpperCase(),
+data:args
+}
 );
 
 old.apply(console,args);
@@ -175,106 +268,657 @@ old.apply(console,args);
 });
 
 
-// CLICK ERROR
-document.addEventListener("click",e=>{
+//======================
+// FETCH
+//======================
+
+const oldFetch=window.fetch;
+
+window.fetch=async function(...args){
+
+const url=args[0];
+
+add("log",{
+type:"FETCH",
+url
+});
 
 try{
 
-let target=e.target.closest("button,a");
+const res=await oldFetch.apply(this,args);
 
-if(target){
+add(
+res.ok?"log":"err",
+{
+type:"FETCH RESPONSE",
+url,
+status:res.status,
+statusText:res.statusText
+}
+);
+
+return res;
+
+}catch(err){
+
+add("err",{
+type:"FETCH FAILED",
+url,
+message:err.message,
+stack:err.stack
+});
+
+throw err;
+
+}
+
+};
+
+
+//======================
+// XHR
+//======================
+
+const oldOpen=XMLHttpRequest.prototype.open;
+const oldSend=XMLHttpRequest.prototype.send;
+
+XMLHttpRequest.prototype.open=function(method,url){
+
+this._url=url;
+this._method=method;
+
+return oldOpen.apply(this,arguments);
+
+};
+
+XMLHttpRequest.prototype.send=function(){
+
+this.addEventListener("load",()=>{
+
+add(
+this.status>=200&&this.status<300
+?"log"
+:"err",
+{
+type:"XHR",
+method:this._method,
+url:this._url,
+status:this.status
+}
+);
+
+});
+
+this.addEventListener("error",()=>{
+
+add("err",{
+type:"XHR FAILED",
+method:this._method,
+url:this._url
+});
+
+});
+
+return oldSend.apply(this,arguments);
+
+};
+
+//======================
+// SCRIPT & CSS LOADED
+//======================
+
+window.addEventListener("DOMContentLoaded",()=>{
+
+document.querySelectorAll("script").forEach(script=>{
+
+add("log",{
+type:"SCRIPT",
+src:script.src||"INLINE"
+});
+
+script.addEventListener("load",()=>{
+
+add("log",{
+type:"SCRIPT LOADED",
+src:script.src
+});
+
+});
+
+script.addEventListener("error",()=>{
+
+add("err",{
+type:"SCRIPT FAILED",
+src:script.src
+});
+
+});
+
+});
+
+document.querySelectorAll('link[rel="stylesheet"]').forEach(css=>{
+
+add("log",{
+type:"CSS",
+href:css.href
+});
+
+css.addEventListener("load",()=>{
+
+add("log",{
+type:"CSS LOADED",
+href:css.href
+});
+
+});
+
+css.addEventListener("error",()=>{
+
+add("err",{
+type:"CSS FAILED",
+href:css.href
+});
+
+});
+
+});
+
+});
+
+
+//======================
+// IMAGE ERROR
+//======================
+
+window.addEventListener("error",e=>{
+
+if(e.target instanceof HTMLImageElement){
+
+add("err",{
+type:"IMAGE FAILED",
+src:e.target.currentSrc||e.target.src
+});
+
+}
+
+},true);
+
+
+//======================
+// DOM ERROR
+//======================
+
+const oldGet=document.getElementById;
+
+document.getElementById=function(id){
+
+const el=oldGet.call(document,id);
+
+if(!el){
+
+add("warn",{
+type:"ELEMENT NOT FOUND",
+method:"getElementById",
+id
+});
+
+}
+
+return el;
+
+};
+
+const oldQuery=document.querySelector;
+
+document.querySelector=function(selector){
+
+const el=oldQuery.call(document,selector);
+
+if(!el){
+
+add("warn",{
+type:"ELEMENT NOT FOUND",
+method:"querySelector",
+selector
+});
+
+}
+
+return el;
+
+};
+
+
+//======================
+// CLICK
+//======================
+
+document.addEventListener("click",e=>{
+
+const target=e.target.closest("button,a");
+
+if(!target)return;
 
 add("log",{
 type:"CLICK",
-element:target.innerText||target.href||target.id
+text:target.innerText||"",
+id:target.id||"",
+class:target.className||"",
+href:target.href||null
+});
+
+},true);
+
+
+//======================
+// FORM SUBMIT
+//======================
+
+document.addEventListener("submit",e=>{
+
+add("log",{
+type:"FORM SUBMIT",
+id:e.target.id||"",
+action:e.target.action||"",
+method:e.target.method||"GET"
+});
+
+},true);
+
+
+//======================
+// ONLINE / OFFLINE
+//======================
+
+window.addEventListener("online",()=>{
+
+add("log",{
+type:"NETWORK",
+status:"ONLINE"
+});
+
+});
+
+window.addEventListener("offline",()=>{
+
+add("err",{
+type:"NETWORK",
+status:"OFFLINE"
+});
+
+});
+
+//======================
+// LOCAL STORAGE
+//======================
+
+try{
+
+const storage={};
+
+for(let i=0;i<localStorage.length;i++){
+
+const key=localStorage.key(i);
+
+storage[key]=localStorage.getItem(key);
+
+}
+
+add("log",{
+type:"LOCAL STORAGE",
+data:storage
+});
+
+}catch(err){
+
+add("err",{
+type:"LOCAL STORAGE ERROR",
+message:err.message
+});
+
+}
+
+
+//======================
+// SESSION STORAGE
+//======================
+
+try{
+
+const storage={};
+
+for(let i=0;i<sessionStorage.length;i++){
+
+const key=sessionStorage.key(i);
+
+storage[key]=sessionStorage.getItem(key);
+
+}
+
+add("log",{
+type:"SESSION STORAGE",
+data:storage
+});
+
+}catch(err){
+
+add("err",{
+type:"SESSION STORAGE ERROR",
+message:err.message
+});
+
+}
+
+
+//======================
+// COOKIE
+//======================
+
+add("log",{
+type:"COOKIE",
+cookie:document.cookie||"(empty)"
+});
+
+
+//======================
+// DEVICE
+//======================
+
+add("log",{
+type:"DEVICE",
+language:navigator.language,
+platform:navigator.platform,
+online:navigator.onLine,
+cookieEnabled:navigator.cookieEnabled,
+hardware:navigator.hardwareConcurrency,
+memory:navigator.deviceMemory||"unknown",
+touch:navigator.maxTouchPoints
+});
+
+
+//======================
+// SCREEN
+//======================
+
+add("log",{
+type:"SCREEN",
+width:screen.width,
+height:screen.height,
+pixelRatio:window.devicePixelRatio
+});
+
+
+//======================
+// PERFORMANCE
+//======================
+
+window.addEventListener("load",()=>{
+
+setTimeout(()=>{
+
+const nav=performance.getEntriesByType("navigation")[0];
+
+if(nav){
+
+add("log",{
+type:"PAGE LOAD",
+duration:Math.round(nav.duration)+" ms",
+dom:Math.round(nav.domContentLoadedEventEnd)+" ms",
+load:Math.round(nav.loadEventEnd)+" ms"
+});
+
+}
+
+},500);
+
+});
+
+
+//======================
+// RESOURCE
+//======================
+
+window.addEventListener("load",()=>{
+
+setTimeout(()=>{
+
+performance.getEntriesByType("resource").forEach(res=>{
+
+add("log",{
+type:"RESOURCE",
+name:res.name,
+duration:Math.round(res.duration)+" ms",
+size:res.transferSize||0
+});
+
+});
+
+},1000);
+
+});
+
+
+//======================
+// DATABASE
+//======================
+
+setInterval(()=>{
+
+if(window.database){
+
+add("log",{
+type:"DATABASE READY",
+keys:Object.keys(window.database)
+});
+
+}else{
+
+add("err",{
+type:"DATABASE NOT READY"
+});
+
+}
+
+},5000);
+
+
+//======================
+// SUPABASE
+//======================
+
+setInterval(()=>{
+
+try{
+
+if(window.database?.supabase){
+
+add("log",{
+type:"SUPABASE READY"
+});
+
+}else{
+
+add("warn",{
+type:"SUPABASE NULL"
 });
 
 }
 
 }catch(err){
 
-add("err",err);
-
-}
-
-},true);
-
-
-// LOAD JS ERROR
-window.addEventListener("error",e=>{
-
-if(e.target.tagName==="SCRIPT"){
-
 add("err",{
-type:"SCRIPT LOAD ERROR",
-file:e.target.src
+type:"SUPABASE ERROR",
+message:err.message
 });
 
 }
 
-},true);
+},5000);
 
+//======================
+// DOM READY
+//======================
 
-// LOCAL STORAGE
+document.addEventListener("DOMContentLoaded",()=>{
 
 add("log",{
-type:"LOCAL STORAGE",
-user_id:localStorage.getItem("user_id"),
-theme:localStorage.getItem("theme")
+type:"DOM READY",
+elements:document.querySelectorAll("*").length
+});
+
+});
+
+window.addEventListener("load",()=>{
+
+add("log",{
+type:"WINDOW LOAD FINISHED"
+});
+
 });
 
 
-// PAGE INFO
+//======================
+// VISIBILITY
+//======================
+
+document.addEventListener("visibilitychange",()=>{
 
 add("log",{
-type:"PAGE",
-url:location.href,
-title:document.title
+type:"VISIBILITY",
+state:document.visibilityState
+});
+
 });
 
 
-// SUPABASE CHECK
+//======================
+// RESIZE
+//======================
 
-setTimeout(()=>{
-
-if(window.database){
+window.addEventListener("resize",()=>{
 
 add("log",{
-type:"DATABASE READY",
-database:Object.keys(window.database)
+type:"RESIZE",
+width:window.innerWidth,
+height:window.innerHeight
 });
 
-}else{
+});
 
-add("warn","DATABASE BELUM READY");
+
+//======================
+// HASH CHANGE
+//======================
+
+window.addEventListener("hashchange",()=>{
+
+add("log",{
+type:"HASH CHANGE",
+hash:location.hash
+});
+
+});
+
+
+//======================
+// HISTORY
+//======================
+
+window.addEventListener("popstate",()=>{
+
+add("log",{
+type:"POPSTATE",
+url:location.href
+});
+
+});
+
+
+//======================
+// MUTATION OBSERVER
+//======================
+
+const observer=new MutationObserver(list=>{
+
+list.forEach(m=>{
+
+add("log",{
+type:"DOM MUTATION",
+mutation:m.type,
+target:m.target?.tagName||null
+});
+
+});
+
+});
+
+observer.observe(document.documentElement,{
+childList:true,
+subtree:true,
+attributes:true
+});
+
+
+//======================
+// MEMORY (jika didukung browser)
+//======================
+
+if(performance.memory){
+
+setInterval(()=>{
+
+add("log",{
+type:"MEMORY",
+used:Math.round(performance.memory.usedJSHeapSize/1024/1024)+" MB",
+total:Math.round(performance.memory.totalJSHeapSize/1024/1024)+" MB",
+limit:Math.round(performance.memory.jsHeapSizeLimit/1024/1024)+" MB"
+});
+
+},15000);
+
+}
+
+
+//======================
+// SUMMARY
+//======================
+
+setInterval(()=>{
+
+const logs=document.querySelectorAll(".debug.log").length;
+const warns=document.querySelectorAll(".debug.warn").length;
+const errs=document.querySelectorAll(".debug.err").length;
+
+const header=document.querySelector(".debug-header span");
+
+if(header){
+
+header.innerHTML=`🐞 CLICK2PAY DEBUG | LOG ${logs} | WARN ${warns} | ERR ${errs}`;
 
 }
 
 },1000);
 
 
-// CLEAR
+//======================
+// MANUAL TEST
+//======================
 
-document.getElementById("clearDebug").onclick=()=>{
-list.innerHTML="";
+window.debugTest=function(){
+
+console.log("Debug Test Log");
+console.warn("Debug Test Warn");
+console.error("Debug Test Error");
+
+fetch("404-test-file");
+
 };
 
 
-// MANUAL
+//======================
+// START
+//======================
 
-window.debug=function(data){
-add("log",data);
-};
-
-
-add("log","Click2Pay Debug Aktif");
-
-}
-
-if(document.body){
-startDebug();
-}else{
-document.addEventListener("DOMContentLoaded",startDebug);
-}
+add("log","DEBUG ENGINE READY");
 
 })();
