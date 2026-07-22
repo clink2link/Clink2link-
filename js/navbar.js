@@ -156,12 +156,13 @@ c2pClose();
 async function loadNavbarProfile(){
 
 const usernameBox=document.getElementById("navbarUsername");
+const idBox=document.getElementById("navbarId");
+const userBox=document.getElementById("navbarUser");
 const saldoBox=document.getElementById("navbarSaldo");
 
 const userId=localStorage.getItem("user_id");
 
 if(!userId)return;
-
 
 try{
 
@@ -171,47 +172,37 @@ const {data,error}=await database.supabase
 .eq("id",userId)
 .single();
 
-
 if(error) throw error;
-
 
 if(data){
 
-    if(usernameBox){
-
-        usernameBox.innerHTML = `
-            <div class="nav-user-name">${data.username || "User"}</div>
-            <div class="nav-user-id">ID: ${data.id}</div>
-        `;
-
-    }
-
-    if(saldoBox){
-
-        saldoBox.innerHTML =
-        "Rp " +
-        Number(data.balance || 0)
-        .toLocaleString("id-ID");
-
-    }
-
+if(usernameBox){
+usernameBox.textContent=data.username || "User";
 }
 
+if(idBox){
+idBox.textContent=data.id;
+}
+
+if(userBox){
+userBox.textContent="@"+(data.username || "-");
+}
+
+if(saldoBox){
+saldoBox.textContent=
+"Rp "+
+Number(data.balance||0).toLocaleString("id-ID");
+}
+
+}
 
 }catch(err){
 
-console.error(
-"Navbar Profile Error:",
-err
-);
+console.error("Navbar Profile Error:",err);
 
 }
 
-
 }
-
-
-loadNavbarProfile();
 
 
 // =========================
