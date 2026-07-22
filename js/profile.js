@@ -16,20 +16,12 @@ return;
 
 try{
 
-const {data,error}=await database.supabase
-.from("profiles")
-.select("*")
-.eq("id",userId)
-.single();
-
-if(error)throw error;
+const data=await database.getCurrentProfile();
 
 if(!data)return;
 
-
 if(username)
 username.textContent=data.username||"User";
-
 
 if(id){
 
@@ -41,7 +33,6 @@ id.dataset.full=data.id||"";
 
 }
 
-
 if(balance){
 
 balance.textContent=
@@ -51,13 +42,11 @@ Number(data.balance||0)
 
 }
 
-
 if(status){
 
 status.textContent=data.status||"active";
 
 }
-
 
 if(created){
 
@@ -67,8 +56,6 @@ created.textContent=data.created_at
 
 }
 
-
-
 if(copy){
 
 copy.onclick=()=>{
@@ -77,13 +64,10 @@ const fullId=id.dataset.full;
 
 if(!fullId)return;
 
-
 navigator.clipboard.writeText(fullId);
-
 
 copy.innerHTML=
 '<i class="fa-solid fa-check"></i>';
-
 
 setTimeout(()=>{
 
@@ -92,14 +76,11 @@ copy.innerHTML=
 
 },1000);
 
-
 };
 
 }
 
-
 console.log("PROFILE LOAD SUCCESS",data);
-
 
 }catch(err){
 
