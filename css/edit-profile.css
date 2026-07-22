@@ -1,9 +1,38 @@
+main.container{
+padding-top:100px;
+padding-bottom:40px;
+}
+
+.page-title{
+margin-bottom:25px;
+}
+
+.page-title h1{
+display:flex;
+align-items:center;
+gap:12px;
+margin:0;
+font-size:32px;
+font-weight:800;
+color:#2563eb;
+}
+
+.page-title p{
+margin-top:8px;
+color:#64748b;
+font-size:14px;
+}
+
+
 .edit-card{
 background:white;
+border:1px solid #dbeafe;
 border-radius:24px;
 padding:25px;
-box-shadow:0 10px 30px rgba(0,0,0,.08);
+box-shadow:0 10px 30px rgba(0,0,0,.06);
+max-width:700px;
 }
+
 
 .edit-header{
 display:flex;
@@ -11,6 +40,7 @@ align-items:center;
 gap:15px;
 margin-bottom:25px;
 }
+
 
 .edit-icon{
 width:60px;
@@ -25,10 +55,13 @@ font-size:24px;
 flex-shrink:0;
 }
 
+
 .edit-header h2{
 margin:0;
 font-size:22px;
+font-weight:800;
 }
+
 
 .edit-header p{
 margin:6px 0 0;
@@ -36,79 +69,93 @@ color:#64748b;
 font-size:14px;
 }
 
+
 .edit-form{
 display:flex;
 flex-direction:column;
 gap:16px;
 }
 
+
 .edit-form label{
-font-weight:600;
 font-size:14px;
+font-weight:700;
+color:#334155;
 }
 
+
 .input-box{
+height:52px;
 display:flex;
 align-items:center;
 gap:12px;
+padding:0 16px;
 background:#f8fafc;
-border:1px solid #e5e7eb;
-padding:15px 16px;
-border-radius:16px;
+border:1px solid #e2e8f0;
+border-radius:15px;
 transition:.2s;
 }
 
+
 .input-box:focus-within{
 border-color:#2563eb;
-background:white;
+box-shadow:0 0 0 4px rgba(37,99,235,.12);
 }
+
 
 .input-box i{
 color:#2563eb;
 font-size:18px;
 }
 
+
 .input-box input{
-border:none;
-outline:none;
-background:transparent;
 width:100%;
+border:0;
+outline:0;
+background:transparent;
 font-size:15px;
-color:#111827;
+color:#0f172a;
 }
 
+
 .btn-primary{
+height:48px;
+padding:0 25px;
+margin-top:10px;
+border:0;
+border-radius:15px;
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+color:white;
+font-weight:700;
 display:flex;
 align-items:center;
 justify-content:center;
 gap:10px;
-border:none;
-background:#2563eb;
-color:white;
-padding:15px;
-border-radius:16px;
-font-weight:600;
-font-size:15px;
 cursor:pointer;
-transition:.2s;
+transition:.3s;
 }
+
 
 .btn-primary:hover{
 transform:translateY(-2px);
-opacity:.9;
+box-shadow:0 12px 30px rgba(37,99,235,.35);
 }
+
 
 #editResult{
 margin-top:15px;
-padding:12px;
-border-radius:14px;
+padding:14px;
+border-radius:15px;
 font-size:14px;
 }
+
 
 .success{
 background:#dcfce7;
 color:#166534;
 }
+
 
 .error{
 background:#fee2e2;
@@ -118,42 +165,55 @@ color:#991b1b;
 
 /* DARK MODE */
 
-.dark .edit-card{
-background:#111827;
-box-shadow:0 10px 30px rgba(0,0,0,.3);
+body.dark .edit-card{
+background:#0f172a;
+border-color:#1e293b;
+box-shadow:0 10px 30px rgba(0,0,0,.4);
 }
 
-.dark .edit-header p{
+
+body.dark .edit-header p{
 color:#94a3b8;
 }
 
-.dark .input-box{
-background:#1f2937;
-border-color:#374151;
+
+body.dark .edit-form label{
+color:#cbd5e1;
 }
 
-.dark .input-box input{
+
+body.dark .input-box{
+background:#020617;
+border-color:#334155;
+}
+
+
+body.dark .input-box input{
 color:white;
-}
-
-.dark .input-box:focus-within{
-background:#111827;
-border-color:#3b82f6;
 }
 
 
 /* MOBILE */
 
-@media(max-width:768px){
+@media(max-width:700px){
+
+main.container{
+padding-top:85px;
+padding-left:15px;
+padding-right:15px;
+}
+
+
+.page-title h1{
+font-size:24px;
+}
+
 
 .edit-card{
 padding:20px;
 border-radius:20px;
 }
 
-.edit-header h2{
-font-size:20px;
-}
 
 .edit-icon{
 width:50px;
@@ -161,12 +221,19 @@ height:50px;
 font-size:20px;
 }
 
-.input-box{
-padding:14px;
+
+.edit-header h2{
+font-size:20px;
 }
 
+
+.input-box{
+height:48px;
+}
+
+
 .btn-primary{
-padding:14px;
+width:100%;
 }
 
 }
@@ -177,7 +244,6 @@ padding:14px;
 @media(min-width:1024px){
 
 .edit-card{
-max-width:700px;
 margin:auto;
 }
 
