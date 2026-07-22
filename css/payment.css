@@ -425,6 +425,24 @@ border-color:#334155;
 color:#60a5fa;
 }
 
+body.dark .info-item{
+background:#020617;
+border-color:#334155;
+}
+
+body.dark .info-item:hover{
+background:#172554;
+border-color:#1d4ed8;
+}
+
+body.dark .info-item span{
+color:#cbd5e1;
+}
+
+body.dark .info-item i,
+body.dark .info-item b{
+color:#60a5fa;
+}
 
 /* RESPONSIVE */
 
@@ -493,6 +511,16 @@ grid-template-columns:1fr;
 font-size:24px;
 }
 
+}
+
+.info-item{
+padding:12px;
+gap:12px;
+}
+
+.info-item span{
+font-size:12px;
+line-height:1.6;
 }
 
 /* ==========================
