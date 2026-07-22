@@ -642,6 +642,7 @@ logout,
 getUsers,
 
 getProfile,
+getCurrentProfile,
 getProfiles,
 
 getLinks,
