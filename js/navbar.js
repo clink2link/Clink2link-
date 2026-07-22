@@ -235,8 +235,18 @@ data.username || "User";
 
 if(idBox){
 
-idBox.textContent =
-data.id || "-";
+const shortId =
+data.id
+?
+data.id.substring(0,8)+"..."
+:
+"-";
+
+
+idBox.textContent=shortId;
+
+
+idBox.dataset.fullId=data.id || "";
 
 }
 
@@ -280,6 +290,44 @@ err
 }
 
 }
+
+document.addEventListener("click",e=>{
+
+
+if(e.target.closest("#navbarId")){
+
+
+const id=document
+.getElementById("navbarId")
+.dataset.fullId;
+
+
+if(!id)return;
+
+
+navigator.clipboard.writeText(id);
+
+
+const el=document.getElementById("navbarId");
+
+
+el.textContent="Copied!";
+
+
+setTimeout(()=>{
+
+
+el.textContent=
+id.substring(0,8)+"...";
+
+
+},1000);
+
+
+}
+
+
+});
 
 setTimeout(()=>{
     loadNavbarProfile();
