@@ -1,21 +1,18 @@
 // js/payment.js
-console.log("=== PAYMENT FILE START ===");
-
-console.log(
-    "DATABASE CHECK:",
-    window.database
-);
-
-console.log("PAYMENT JS AKTIF");
+alert("PAYMENT START");
 
 const db = window.database;
 
-if(!db){
-console.error("DATABASE BELUM READY");
-throw new Error("Database belum siap");
+alert("DATABASE = " + (db ? "ADA" : "TIDAK ADA"));
+
+if (!db) {
+    alert("DATABASE NULL");
+    return;
 }
 
-const supabase=db.supabase;
+const supabase = db.supabase;
+
+alert("SUPABASE = " + (supabase ? "ADA" : "TIDAK ADA"));
 
 const currentBalance = document.getElementById("currentBalance");
 const adsBalance = document.getElementById("adsBalance");
