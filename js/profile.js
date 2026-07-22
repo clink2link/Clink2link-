@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded",async()=>{
 
-
 const id=document.getElementById("profileId");
 const username=document.getElementById("profileUsername");
 const balance=document.getElementById("profileBalance");
@@ -8,13 +7,14 @@ const status=document.getElementById("profileStatus");
 const created=document.getElementById("profileCreated");
 const copy=document.getElementById("copyId");
 
-
 const userId=localStorage.getItem("user_id");
 
+if(!userId){
+console.warn("USER ID TIDAK ADA");
+return;
+}
 
-if(!userId)return;
-
-
+try{
 
 const {data,error}=await database.supabase
 .from("profiles")
@@ -22,56 +22,67 @@ const {data,error}=await database.supabase
 .eq("id",userId)
 .single();
 
+if(error)throw error;
+
+if(!data)return;
 
 
-if(error){
+if(username)
+username.textContent=data.username||"User";
 
-console.error(error);
-return;
+
+if(id){
+
+id.textContent=data.id
+?data.id.substring(0,8)+"..."
+:"-";
+
+id.dataset.full=data.id||"";
 
 }
 
 
-
-username.textContent=data.username || "User";
-
-id.textContent=data.id.substring(0,8)+"...";
-
-
-id.dataset.full=data.id;
-
-
+if(balance){
 
 balance.textContent=
 "Rp "+
 Number(data.balance||0)
 .toLocaleString("id-ID");
 
+}
 
 
-status.textContent=data.status || "active";
+if(status){
+
+status.textContent=data.status||"active";
+
+}
+
+
+if(created){
+
+created.textContent=data.created_at
+?new Date(data.created_at).toLocaleDateString("id-ID")
+:"-";
+
+}
 
 
 
-created.textContent=
-new Date(data.created_at)
-.toLocaleDateString("id-ID");
-
-
-
-
+if(copy){
 
 copy.onclick=()=>{
 
+const fullId=id.dataset.full;
 
-navigator.clipboard.writeText(
-id.dataset.full
-);
+if(!fullId)return;
+
+
+navigator.clipboard.writeText(fullId);
 
 
 copy.innerHTML=
 '<i class="fa-solid fa-check"></i>';
-
 
 
 setTimeout(()=>{
@@ -82,9 +93,18 @@ copy.innerHTML=
 },1000);
 
 
-
 };
 
+}
 
+
+console.log("PROFILE LOAD SUCCESS",data);
+
+
+}catch(err){
+
+console.error("PROFILE ERROR:",err);
+
+}
 
 });
