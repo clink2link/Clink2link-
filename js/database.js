@@ -169,14 +169,12 @@ const {data,error}=await supabaseClient
 .eq("id",userId)
 .maybeSingle();
 
-
 if(error){
 console.error("Get Profile Error:",error);
 return null;
 }
 
 return data;
-
 }
 
 
@@ -187,14 +185,12 @@ const {data,error}=await supabaseClient
 .from("profiles")
 .select("*");
 
-
 if(error){
 console.error("Get Profiles Error:",error);
 return [];
 }
 
 return data;
-
 }
 
 async function getCurrentProfile(){
@@ -220,13 +216,30 @@ error
 );
 
 return null;
-
 }
 
 return data;
-
 }
 
+async function updateProfile(payload){
+const userId=localStorage.getItem("user_id");
+
+if(!userId)return null;
+const {data,error}=await supabaseClient
+.from("profiles")
+.update(payload)
+.eq("id",userId)
+.select()
+.single();
+
+if(error){
+
+console.error("UPDATE PROFILE ERROR:",error);
+throw error;
+}
+
+return data;
+}
 
 // ===============================
 // LINKS
