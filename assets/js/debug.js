@@ -3,45 +3,32 @@
 "use strict";
 
 
-function formatData(data){
+// ============================
+// DEBUG SECRET KEY
+// ============================
 
-    if(data instanceof Error){
+const DEBUG_KEY = "click2pay123";
 
-        return `
-        ${data.message}
-        <br>
-        <pre>${data.stack || ""}</pre>
-        `;
-
-    }
+const params = new URLSearchParams(
+    window.location.search
+);
 
 
-    if(typeof data === "object"){
-
-        try{
-
-            return `
-            <pre>
-${JSON.stringify(data,null,2)}
-            </pre>
-            `;
-
-        }catch(e){
-
-            return String(data);
-
-        }
-
-    }
-
-
-    return String(data);
-
+if(params.get("debug") !== DEBUG_KEY){
+    return;
 }
 
 
 
-const panel=document.createElement("div");
+// ============================
+// START DEBUG
+// ============================
+
+
+function startDebug(){
+
+
+const panel = document.createElement("div");
 
 panel.id="debugBox";
 
@@ -50,7 +37,7 @@ panel.innerHTML=`
 
 <div class="debug-header">
 
-<span>🐞 DEBUG</span>
+<span>🐞 DEBUG MODE</span>
 
 <button id="clearDebug">
 CLEAR
@@ -58,15 +45,16 @@ CLEAR
 
 </div>
 
-
 <div id="debugList"></div>
 
 `;
 
-
 document.body.appendChild(panel);
 
 
+
+
+// CSS
 
 const style=document.createElement("style");
 
@@ -101,12 +89,16 @@ border-radius:14px;
 
 border:1px solid #334155;
 
-box-shadow:0 10px 30px rgba(0,0,0,.3);
+box-shadow:0 10px 30px rgba(0,0,0,.4);
 
 }
 
 
 .debug-header{
+
+position:sticky;
+
+top:0;
 
 display:flex;
 
@@ -118,13 +110,9 @@ padding:10px;
 
 background:#111827;
 
-color:white;
+color:#fff;
 
 font-weight:bold;
-
-position:sticky;
-
-top:0;
 
 }
 
@@ -133,9 +121,9 @@ top:0;
 
 background:#ef4444;
 
-color:white;
-
 border:0;
+
+color:#fff;
 
 padding:5px 10px;
 
@@ -158,20 +146,25 @@ word-break:break-word;
 }
 
 
+
 .debug pre{
 
 white-space:pre-wrap;
+
+margin:5px 0;
 
 color:#93c5fd;
 
 }
 
 
-.err{
 
-color:#f87171;
+.log{
+
+color:#22c55e;
 
 }
+
 
 
 .warn{
@@ -181,9 +174,10 @@ color:#facc15;
 }
 
 
-.log{
 
-color:#22c55e;
+.err{
+
+color:#f87171;
 
 }
 
@@ -198,19 +192,71 @@ const list=document.getElementById("debugList");
 
 
 
+
+
+function formatData(data){
+
+
+if(data instanceof Error){
+
+return `
+
+<b>${data.message}</b>
+
+<pre>${data.stack || ""}</pre>
+
+`;
+
+}
+
+
+
+if(typeof data==="object"){
+
+try{
+
+return `
+
+<pre>
+
+${JSON.stringify(data,null,2)}
+
+</pre>
+
+`;
+
+}catch{
+
+return String(data);
+
+}
+
+}
+
+
+
+return String(data);
+
+}
+
+
+
+
+
+
 function add(type,data){
 
 
 if(!list) return;
 
 
-const div=document.createElement("div");
+const item=document.createElement("div");
 
 
-div.className="debug "+type;
+item.className="debug "+type;
 
 
-div.innerHTML=`
+item.innerHTML=`
 
 [${new Date().toLocaleTimeString()}]
 
@@ -223,7 +269,7 @@ ${formatData(data)}
 `;
 
 
-list.prepend(div);
+list.prepend(item);
 
 
 }
@@ -231,7 +277,16 @@ list.prepend(div);
 
 
 
-// ERROR JAVASCRIPT GLOBAL
+
+
+
+// ============================
+// GLOBAL ERROR
+// ============================
+
+
+const oldError = window.onerror;
+
 
 window.onerror=function(
 message,
@@ -249,9 +304,23 @@ message,
 file:source,
 line,
 column,
-error:error
+error
 }
 );
+
+
+
+if(oldError){
+
+oldError(
+message,
+source,
+line,
+column,
+error
+);
+
+}
 
 
 };
@@ -260,16 +329,22 @@ error:error
 
 
 
+
+
+
+// ============================
 // PROMISE ERROR
+// ============================
+
 
 window.addEventListener(
 "unhandledrejection",
-function(event){
+(e)=>{
 
 
 add(
 "err",
-event.reason
+e.reason
 );
 
 
@@ -280,7 +355,13 @@ event.reason
 
 
 
+
+
+
+// ============================
 // FETCH ERROR
+// ============================
+
 
 const oldFetch=window.fetch;
 
@@ -290,44 +371,56 @@ window.fetch=function(...args){
 
 return oldFetch(...args)
 
-.then(response=>{
+.then(res=>{
 
 
-if(!response.ok){
+if(!res.ok){
+
 
 add(
 "err",
 {
+
 type:"FETCH ERROR",
+
 url:args[0],
-status:response.status,
-statusText:response.statusText
+
+status:res.status,
+
+statusText:res.statusText
+
 }
+
 );
 
 }
 
 
-return response;
+return res;
 
 
 })
 
 
-.catch(error=>{
+.catch(err=>{
 
 
 add(
 "err",
 {
+
 type:"FETCH FAILED",
+
 url:args[0],
-error:error.message
+
+message:err.message
+
 }
+
 );
 
 
-throw error;
+throw err;
 
 
 });
@@ -340,7 +433,11 @@ throw error;
 
 
 
-// CONSOLE TRACKER
+
+
+// ============================
+// CONSOLE TRACK
+// ============================
 
 
 ["log","warn","error"].forEach(type=>{
@@ -353,24 +450,27 @@ console[type]=function(...args){
 
 
 
-let debugType=
+let mode =
+
 type==="error"
-?"err"
+?
+"err"
+
 :
+
 type==="warn"
-?"warn"
+?
+"warn"
+
 :
+
 "log";
 
 
 
 add(
-debugType,
-args.length===1
-?
-args[0]
-:
-args
+mode,
+args.length===1 ? args[0] : args
 );
 
 
@@ -381,7 +481,6 @@ old.apply(console,args);
 };
 
 
-
 });
 
 
@@ -389,16 +488,19 @@ old.apply(console,args);
 
 
 
-// CLEAR BUTTON
+
+
+
+// ============================
+// CLEAR
+// ============================
 
 
 document
 .getElementById("clearDebug")
 .onclick=function(){
 
-
 list.innerHTML="";
-
 
 };
 
@@ -407,14 +509,8 @@ list.innerHTML="";
 
 
 
-// TEST
 
-add(
-"log",
-"Debug aktif"
-);
-
-
+// manual debug
 
 window.debug=function(data){
 
@@ -424,6 +520,38 @@ data
 );
 
 };
+
+
+
+
+
+add(
+"log",
+"Debug aktif"
+);
+
+
+
+}
+
+
+
+
+
+// tunggu halaman siap
+
+if(document.body){
+
+startDebug();
+
+}else{
+
+document.addEventListener(
+"DOMContentLoaded",
+startDebug
+);
+
+}
 
 
 
