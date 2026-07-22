@@ -1,7 +1,13 @@
 // js/payment.js
 console.log("PAYMENT JS AKTIF");
-const db = window.database;
-const supabase = db.supabase;
+const db=window.database;
+
+if(!db){
+console.error("DATABASE BELUM READY");
+throw new Error("Database belum siap");
+}
+
+const supabase=db.supabase;
 
 const currentBalance = document.getElementById("currentBalance");
 const adsBalance = document.getElementById("adsBalance");
@@ -49,7 +55,7 @@ currency:"IDR",
 maximumFractionDigits:0
 }).format(Number(v)||0);
 
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded",async()=>{
 
 await init();
 
@@ -89,14 +95,25 @@ instantWithdrawBtn.onclick=submitInstantWithdraw;
 
 async function init(){
 
-    user=await db.getUser();
+user=await db.getCurrentProfile();
 
-    if(!user){
-        location.href="login.html";
-        return;
-    }
+console.log("PAYMENT USER:",user);
 
-    await refreshPage();
+if(!user){
+location.href="login.html";
+return;
+}
+
+await refreshPage();
+
+}
+
+if(!user){
+location.href="login.html";
+return;
+}
+
+await refreshPage();
 
 }
 
@@ -112,13 +129,18 @@ async function refreshPage(){
 
 async function loadBalance(){
 
-    const profile=await db.getProfile(user.id);
+const profile=user;
 
-    if(!profile)return;
+if(!profile)return;
 
-    adsBalance.innerText=rupiah(profile.ads_earning_total||0);
-    sellLinkBalance.innerText=rupiah(profile.sell_earning_total||0);
-    currentBalance.innerText=rupiah(profile.balance||0);
+if(adsBalance)
+adsBalance.innerText=rupiah(profile.ads_earning_total||0);
+
+if(sellLinkBalance)
+sellLinkBalance.innerText=rupiah(profile.sell_earning_total||0);
+
+if(currentBalance)
+currentBalance.innerText=rupiah(profile.balance||0);
 
 }
 
@@ -167,15 +189,20 @@ let total=0;
 
 });
 
+if(requestWithdraw)
 requestWithdraw.innerText=rupiah(pending);
+
+if(pendingWithdraw)
 pendingWithdraw.innerText=rupiah(process);
+
+if(successWithdraw)
 successWithdraw.innerText=rupiah(success);
+
+if(failedWithdraw)
 failedWithdraw.innerText=rupiah(failed);
 
-if (totalWithdraw) {
-    totalWithdraw.innerText = rupiah(total);
-}
 
+if(withdrawStatus)
 withdrawStatus.innerHTML=`
 <i class="fa-solid fa-circle-check"></i>
 Status pembayaran berhasil dimuat.
@@ -198,6 +225,7 @@ return;
 
 if(!data){
 
+if(paymentDetail)
 paymentDetail.style.display="none";
 
 return;
@@ -237,6 +265,8 @@ detailContent.innerHTML=`
 
 }
 
+if(savePayment){
+
 savePayment.onclick=async()=>{
 
 const name=paymentName.value.trim();
@@ -248,26 +278,36 @@ if(!method){
     return;
 }
 
-if(!name||!number){
+if(!name || !number){
     alert("Lengkapi data pembayaran");
     return;
 }
 
+
 const payload={
-user_id:user.id,
-bank_name:method,
-account_name:name,
-account_number:number,
-method:method
+    user_id:user.id,
+    bank_name:method,
+    account_name:name,
+    account_number:number,
+    method:method
 };
 
-const {data:old}=await supabase
+
+const {data:old,error:oldError}=await supabase
 .from("payment_methods")
 .select("id")
 .eq("user_id",user.id)
 .maybeSingle();
 
+
+if(oldError){
+    console.error(oldError);
+    return;
+}
+
+
 let result;
+
 
 if(old){
 
@@ -284,20 +324,31 @@ result=await supabase
 
 }
 
+
 if(result.error){
+
 alert(result.error.message);
 return;
+
 }
 
+
 alert("Pembayaran berhasil disimpan");
+
 
 paymentName.value="";
 paymentNumber.value="";
 paymentMethod.selectedIndex=0;
 
+
 await refreshPage();
 
-}; // <-- ini penutup savePayment
+
+};
+
+} // <-- ini penutup savePayment
+
+if(editPayment){
 
 editPayment.onclick=()=>{
 
@@ -306,6 +357,8 @@ behavior:"smooth"
 });
 
 };
+
+}
 
 async function submitWithdraw(){
 
@@ -404,17 +457,29 @@ let used=0;
 used+=Number(w.amount)||0;
 });
 
-let remain=instantDailyLimit-used;
+let remain = instantDailyLimit - used;
 
-if(remain<0)remain=0;
+if(remain < 0){
+    remain = 0;
+}
 
-instantLimitText.innerText=rupiah(remain);
+if(instantLimitText){
+    instantLimitText.innerText = rupiah(remain);
+}
 
-let percent=(used/instantDailyLimit)*100;
+let percent = (used / instantDailyLimit) * 100;
 
-if(percent>100)percent=100;
+if(percent > 100){
+    percent = 100;
+}
 
-instantProgress.style.width=percent+"%";
+if(percent < 0){
+    percent = 0;
+}
+
+if(instantProgress){
+    instantProgress.style.width = percent + "%";
+}
 
 }
 
