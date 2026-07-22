@@ -1,6 +1,14 @@
 // js/payment.js
+console.log("=== PAYMENT FILE START ===");
+
+console.log(
+    "DATABASE CHECK:",
+    window.database
+);
+
 console.log("PAYMENT JS AKTIF");
-const db=window.database;
+
+const db = window.database;
 
 if(!db){
 console.error("DATABASE BELUM READY");
