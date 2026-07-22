@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
@@ -14,43 +12,25 @@
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/edit-profile.css">
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>
 
-
 <body>
-
 
 <div id="navbar"></div>
 
-
-
 <main class="container">
 
-
-
 <section class="page-title">
-
 <i class="fa-solid fa-user-pen"></i>
 
 <div>
-
-<h1>
-Edit Profile
-</h1>
-
-<p>
-Ubah informasi akun Click2Pay kamu.
-</p>
-
+<h1>Edit Profile</h1>
+<p>Ubah informasi akun Click2Pay kamu.</p>
 </div>
 
 </section>
-
-
-
 
 
 <section class="edit-card">
@@ -75,13 +55,16 @@ Ubah informasi akun Click2Pay kamu.
 Username Baru
 </label>
 
+
 <div class="input-box">
+
 <i class="fa-solid fa-at"></i>
 
 <input
 id="editUsername"
 type="text"
 placeholder="Masukkan username baru">
+
 </div>
 
 
@@ -90,6 +73,7 @@ id="saveProfile"
 class="btn-primary">
 
 <i class="fa-solid fa-floppy-disk"></i>
+
 Simpan Perubahan
 
 </button>
@@ -97,9 +81,11 @@ Simpan Perubahan
 
 <div id="editResult"></div>
 
+
 </div>
 
 </section>
+
 
 
 <section class="info-note">
@@ -119,38 +105,22 @@ Username digunakan sebagai identitas akun Click2Pay. Gunakan username yang unik 
 </section>
 
 
-
 </main>
-
-
-
 
 
 <div id="footer"></div>
 
 
-
-
-
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/database.js"></script>
-
 <script src="js/session.js"></script>
-
 <script src="js/theme.js"></script>
-
 <script src="js/navbar.js"></script>
-
 <script src="js/footer.js"></script>
-
 <script src="js/edit-profile.js"></script>
 
 <script src="assets/js/debug.js"></script>
-
-
-
 
 
 <script>
@@ -158,29 +128,24 @@ Username digunakan sebagai identitas akun Click2Pay. Gunakan username yang unik 
 fetch("components/navbar.html")
 .then(res=>res.text())
 .then(html=>{
-
 document.getElementById("navbar").innerHTML=html;
 
 if(typeof c2pInit==="function")
 c2pInit();
-
 });
 
 
 fetch("components/footer.html")
 .then(res=>res.text())
 .then(html=>{
-
 document.getElementById("footer").innerHTML=html;
 
 if(typeof c2pFooterInit==="function")
 c2pFooterInit();
-
 });
 
 </script>
 
 
 </body>
-
 </html>
