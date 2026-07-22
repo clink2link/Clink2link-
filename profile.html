@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
 <title>Profile • Click2Pay</title>
-
 
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/theme.css">
@@ -15,220 +11,99 @@
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/profile.css">
 
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-
 
 <body>
 
-
 <div id="navbar"></div>
-
-
-
 
 <main class="container">
 
-
-
 <section class="page-title">
-
 <i class="fa-solid fa-user"></i>
-
 <div>
-
-<h1>
-Profile
-</h1>
-
-<p>
-Kelola informasi akun Click2Pay kamu.
-</p>
-
+<h1>Profile</h1>
+<p>Kelola informasi akun Click2Pay kamu.</p>
 </div>
-
 </section>
-
-
-
 
 
 <section class="profile-card">
 
-
-
 <div class="profile-header">
 
-
 <div class="profile-avatar">
-
 <i class="fa-solid fa-user"></i>
-
 </div>
-
-
 
 <div>
-
-<h2 id="profileUsername">
-User
-</h2>
-
-
-<p>
-Member Click2Pay
-</p>
-
-
+<h2 id="profileUsername">User</h2>
+<p>Member Click2Pay</p>
 </div>
 
-
 </div>
-
-
-
-
-
 
 
 <div class="profile-info">
 
-
-
 <div class="profile-item">
-
 <span>
 <i class="fa-solid fa-id-card"></i>
 ID User
 </span>
 
-
 <div class="id-copy">
-
-<b id="profileId">
--
-</b>
-
-
+<b id="profileId">-</b>
 <button id="copyId">
-
 <i class="fa-solid fa-copy"></i>
-
 </button>
-
-
 </div>
-
-
 </div>
-
-
-
-
-
 
 
 <div class="profile-item">
-
 <span>
 <i class="fa-solid fa-wallet"></i>
 Saldo
 </span>
-
-
-<b id="profileBalance">
-Rp 0
-</b>
-
-
+<b id="profileBalance">Rp 0</b>
 </div>
 
 
-
-
-
-
-
-
 <div class="profile-item">
-
 <span>
 <i class="fa-solid fa-circle-check"></i>
 Status
 </span>
-
-
-<b id="profileStatus">
--
-</b>
-
-
+<b id="profileStatus">-</b>
 </div>
 
 
-
-
-
-
-
 <div class="profile-item">
-
 <span>
 <i class="fa-solid fa-calendar"></i>
 Bergabung
 </span>
-
-
-<b id="profileCreated">
--
-</b>
-
-
+<b id="profileCreated">-</b>
 </div>
 
-
-
-
-
 </div>
-
-
-
-
 
 </section>
-
-
-
-
 
 
 <section class="info-note">
 
-
 <i class="fa-solid fa-shield-halved"></i>
 
-
 <div>
-
-<h3>
-Keamanan Akun
-</h3>
-
-
-<p>
-Jangan membagikan ID akun dan informasi login kepada orang lain.
-</p>
-
-
+<h3>Keamanan Akun</h3>
+<p>Jangan membagikan ID akun dan informasi login kepada orang lain.</p>
 </div>
 
-
 </section>
+
 
 <section class="setting-menu">
 
@@ -236,6 +111,7 @@ Jangan membagikan ID akun dan informasi login kepada orang lain.
 <i class="fa-solid fa-gear"></i>
 <h2>Pengaturan Akun</h2>
 </div>
+
 
 <div class="setting-list">
 
@@ -299,72 +175,39 @@ Jangan membagikan ID akun dan informasi login kepada orang lain.
 
 </section>
 
-
-
 </main>
-
-
-
 
 
 <div id="footer"></div>
 
 
-
-
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
 <script src="js/database.js"></script>
-
 <script src="js/session.js"></script>
-
 <script src="js/theme.js"></script>
-
 <script src="js/navbar.js"></script>
-
 <script src="js/footer.js"></script>
-
 <script src="js/profile.js"></script>
-
 <script src="assets/js/debug.js"></script>
 
 
-
-
-
-
 <script>
-
 fetch("components/navbar.html")
 .then(res=>res.text())
 .then(html=>{
-
 document.getElementById("navbar").innerHTML=html;
-
-if(typeof c2pInit==="function")
-c2pInit();
-
+if(typeof c2pInit==="function")c2pInit();
 });
-
 
 
 fetch("components/footer.html")
 .then(res=>res.text())
 .then(html=>{
-
 document.getElementById("footer").innerHTML=html;
-
-if(typeof c2pFooterInit==="function")
-c2pFooterInit();
-
+if(typeof c2pFooterInit==="function")c2pFooterInit();
 });
-
-
 </script>
-
-
 
 </body>
 </html>
