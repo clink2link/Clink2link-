@@ -197,6 +197,36 @@ return data;
 
 }
 
+async function getCurrentProfile(){
+
+const userId=localStorage.getItem("user_id");
+
+if(!userId){
+console.warn("USER ID TIDAK ADA");
+return null;
+}
+
+const {data,error}=await supabaseClient
+.from("profiles")
+.select("*")
+.eq("id",userId)
+.single();
+
+if(error){
+
+console.error(
+"CURRENT PROFILE ERROR:",
+error
+);
+
+return null;
+
+}
+
+return data;
+
+}
+
 
 // ===============================
 // LINKS
