@@ -1,400 +1,285 @@
 "use strict";
 
-let supabase=null;
 let user=null;
-
-const $=id=>document.getElementById(id);
-
+let supabase=null;
 
 document.addEventListener("DOMContentLoaded",async()=>{
 
-
 if(!window.database){
-
-console.error("Database tidak tersedia");
+console.error("DATABASE BELUM SIAP");
 return;
-
 }
-
 
 supabase=database.supabase;
 
-
 user=await database.getCurrentProfile();
 
-
-
 if(!user){
-
 location.href="login.html";
 return;
-
 }
 
+await loadPayment();
 
-
-loadPayment();
-
-
-bindEvent();
-
+bindPaymentEvent();
 
 });
 
 
-
-
-// =======================
-// LOAD DATA
-// =======================
+// =============================
+// LOAD PAYMENT
+// =============================
 
 async function loadPayment(){
 
-
-const alertBox=$("paymentAlert");
-
-
 const {data,error}=await supabase
-
 .from("payment_methods")
-
 .select("*")
-
 .eq("user_id",user.id)
-
 .maybeSingle();
 
-
-
 if(error){
-
-console.log(error);
-
+console.error("LOAD PAYMENT ERROR",error);
 return;
+}
+
+if(data){
+
+showSavedPayment(data);
+
+document.getElementById("accountName").value=data.account_name || "";
+
+document.getElementById("accountNumber").value=data.account_number || "";
+
+document.getElementById("paymentMethod").value=data.method || data.bank_name;
+
+}
 
 }
 
 
-
-if(!data){
-
-alertBox.innerHTML=
-`
-<i class="fa-solid fa-circle-info"></i>
-Belum ada rekening pembayaran.
-`;
-
-return;
-
-}
-
-
-
-
-$("accountName").value=
-data.account_name||"";
-
-
-$("accountNumber").value=
-data.account_number||"";
-
-
-$("paymentMethod").value=
-data.method||"";
-
-
-
-$("currentPayment").style.display="block";
-
-
-
-$("paymentDetail").innerHTML=
-`
-
-<div class="detail-row">
-
-<span>
-Nama
-</span>
-
-<b>
-${data.account_name}
-</b>
-
-</div>
-
-
-<div class="detail-row">
-
-<span>
-Metode
-</span>
-
-<b>
-${data.method}
-</b>
-
-</div>
-
-
-<div class="detail-row">
-
-<span>
-Nomor
-</span>
-
-<b>
-${maskNumber(data.account_number)}
-</b>
-
-</div>
-
-`;
-
-
-
-alertBox.innerHTML=
-`
-<i class="fa-solid fa-circle-check"></i>
-Rekening pembayaran aktif.
-`;
-
-
-
-}
-
-
-
-
-
-// =======================
-// EVENT
-// =======================
-
-function bindEvent(){
-
-
-$("savePayment").onclick=
-savePayment;
-
-
-$("deletePayment").onclick=
-deletePayment;
-
-
-}
-
-
-
-
-// =======================
-// SIMPAN
-// =======================
+// =============================
+// SIMPAN PAYMENT
+// =============================
 
 async function savePayment(){
 
+const accountName=document.getElementById("accountName").value.trim();
 
-const name=
-$("accountName").value.trim();
+const method=document.getElementById("paymentMethod").value;
 
-
-
-const number=
-$("accountNumber").value.trim();
+const accountNumber=document.getElementById("accountNumber").value.trim();
 
 
+if(!accountName || !accountNumber){
 
-const method=
-$("paymentMethod").value;
-
-
-
-
-if(name.length<3){
-
-alert("Nama rekening tidak valid");
+alert("Lengkapi data pembayaran terlebih dahulu");
 
 return;
 
 }
 
 
-
-if(number.length<6){
-
-alert("Nomor rekening tidak valid");
-
-return;
-
-}
-
-
-
-
-
-const payload={
-
-user_id:user.id,
-
-account_name:name,
-
-account_number:number,
-
-method:method,
-
-bank_name:method
-
-};
-
-
-
-
-
-const {data:old}=await supabase
-
+const {data:oldData}=await supabase
 .from("payment_methods")
-
 .select("id")
-
 .eq("user_id",user.id)
-
 .maybeSingle();
-
-
-
-
 
 
 let result;
 
 
+const payload={
 
-if(old){
+bank_name:method,
 
+method:method,
+
+account_name:accountName,
+
+account_number:accountNumber
+
+};
+
+
+if(oldData){
 
 result=await supabase
-
 .from("payment_methods")
-
 .update(payload)
-
-.eq("user_id",user.id);
-
+.eq("id",oldData.id)
+.select()
+.single();
 
 
 }else{
 
 
 result=await supabase
-
 .from("payment_methods")
+.insert({
 
-.insert(payload);
+user_id:user.id,
 
+...payload
+
+})
+.select()
+.single();
 
 }
-
 
 
 
 if(result.error){
 
-alert(result.error.message);
+console.error(result.error);
+
+alert("Gagal menyimpan pembayaran");
 
 return;
 
 }
 
 
+alert("Pembayaran berhasil disimpan");
 
 
-alert("Rekening pembayaran berhasil disimpan");
-
-
-loadPayment();
-
+showSavedPayment(result.data);
 
 
 }
 
 
+// =============================
+// TAMPIL DATA
+// =============================
+
+function showSavedPayment(data){
+
+const box=document.getElementById("savedPayment");
+
+const detail=document.getElementById("paymentDetail");
 
 
+if(!box || !detail)
+return;
 
 
-// =======================
-// HAPUS
-// =======================
+box.style.display="block";
 
 
-async function deletePayment(){
+detail.innerHTML=`
+
+<div class="detail-row">
+<span>Bank / E-Wallet</span>
+<b>${data.method || data.bank_name}</b>
+</div>
+
+<div class="detail-row">
+<span>Nama</span>
+<b>${data.account_name}</b>
+</div>
+
+<div class="detail-row">
+<span>Nomor</span>
+<b>${maskNumber(data.account_number)}</b>
+</div>
+
+<div class="detail-row">
+<span>Status</span>
+<b style="color:#16a34a">Aktif</b>
+</div>
+
+`;
+
+}
 
 
-const confirmDelete=
-confirm(
-"Hapus rekening pembayaran?"
+// =============================
+// REQUEST BANK BARU
+// =============================
+
+async function requestPayment(){
+
+const name=document.getElementById("requestMethod").value.trim();
+
+
+if(!name){
+
+alert("Masukkan nama bank atau e-wallet");
+
+return;
+
+}
+
+
+alert(
+`Request ${name} berhasil dikirim.\nAdmin akan melakukan pengecekan.`
 );
 
 
-
-if(!confirmDelete)return;
-
-
-
-const {error}=await supabase
-
-.from("payment_methods")
-
-.delete()
-
-.eq("user_id",user.id);
-
-
-
-if(error){
-
-alert(error.message);
-
-return;
+document.getElementById("requestMethod").value="";
 
 }
 
 
+// =============================
+// EVENT
+// =============================
 
-alert("Rekening berhasil dihapus");
+function bindPaymentEvent(){
+
+const save=document.getElementById("savePayment");
+
+if(save){
+save.onclick=savePayment;
+}
 
 
-location.reload();
+const request=document.getElementById("requestPaymentBtn");
 
+if(request){
+request.onclick=requestPayment;
+}
+
+
+const edit=document.getElementById("editPayment");
+
+if(edit){
+
+edit.onclick=()=>{
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+};
+
+}
 
 }
 
 
-
-
-
-// =======================
-// MASKING NOMOR
-// =======================
-
+// =============================
+// MASK NOMOR
+// =============================
 
 function maskNumber(number){
 
-
-if(!number)return "-";
-
-
-if(number.length<=6)
-return number;
+if(!number)
+return "-";
 
 
-
-return number.substring(0,3)+
-
-"****"+
-
-number.substring(number.length-3);
+let value=String(number);
 
 
+if(value.length<=4)
+return value;
+
+
+return value.substring(0,3)+"****"+value.substring(value.length-3);
 
 }
