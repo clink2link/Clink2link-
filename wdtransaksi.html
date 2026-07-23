@@ -2,108 +2,65 @@
 <html lang="id">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>WD Transaksi • Click2Pay</title>
 
-<title>WD Transaksi • Click2Pay</title>
+  <link rel="icon" href="favicon.ico">
 
-<link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/payment.css">
 
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/theme.css">
-<link rel="stylesheet" href="css/navbar.css">
-<link rel="stylesheet" href="css/footer.css">
-<link rel="stylesheet" href="css/payment.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
-
 
 <body>
 
+  <!-- NAVBAR -->
+  <div id="navbar"></div>
 
-<div id="navbar"></div>
+  <main class="container">
 
+    <div class="page-title">
+      <h1>
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        WD Transaksi
+      </h1>
 
+      <p>
+        Riwayat penarikan dana yang sudah berhasil diproses.
+      </p>
+    </div>
 
-<main class="container">
+    <!-- INFO -->
+    <div id="wdInfo" class="payment-status">
+      Memuat transaksi...
+    </div>
 
+    <!-- LIST -->
+    <div id="wdList" class="wd-list"></div>
 
+  </main>
 
-<div class="page-title">
+  <!-- FOOTER -->
+  <div id="footer"></div>
 
-<h1>
+  <!-- SCRIPTS (WAJIB DEFER 🔥) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 
-<i class="fa-solid fa-clock-rotate-left"></i>
+  <script src="js/database.js" defer></script>
+  <script src="js/session.js" defer></script>
+  <script src="js/navbar.js" defer></script>
+  <script src="js/footer.js" defer></script>
+  <script src="js/wdtransaksi.js" defer></script>
 
-WD Transaksi
+  <!-- DEBUG (optional) -->
+  <script src="assets/js/debug.js" defer></script>
 
-</h1>
-
-
-<p>
-
-Riwayat penarikan dana yang sudah berhasil diproses.
-
-</p>
-
-
-</div>
-
-
-
-
-
-<div id="wdInfo" class="payment-status">
-
-Memuat transaksi...
-
-</div>
-
-
-
-
-
-
-<div id="wdList" class="wd-list">
-
-
-</div>
-
-
-
-
-
-</main>
-
-
-
-<div id="footer"></div>
-
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
-<script src="js/database.js"></script>
-
-<script src="js/session.js"></script>
-
-<script src="js/navbar.js"></script>
-
-<script src="js/footer.js"></script>
-
-
-<script src="js/wdtransaksi.js"></script>
-
-
-<script src="assets/js/debug.js"></script>
 </body>
-
 </html>
