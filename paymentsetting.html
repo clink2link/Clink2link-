@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Payment Setting • Click2Pay</title>
+
+<link rel="icon" href="favicon.ico">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/payment.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+
+<body>
+
+
+<div id="navbar"></div>
+
+
+
+<main class="container">
+
+
+<div class="page-title">
+
+<h1>
+<i class="fa-solid fa-gear"></i>
+Payment Setting
+</h1>
+
+<p>
+Atur rekening bank atau e-wallet untuk menerima pembayaran withdraw.
+</p>
+
+</div>
+
+
+
+
+
+<div id="paymentAlert" class="payment-status">
+
+Memuat data pembayaran...
+
+</div>
+
+
+
+
+
+<div class="payment-box">
+
+
+<h2>
+<i class="fa-solid fa-building-columns"></i>
+Data Pembayaran
+</h2>
+
+
+<p>
+Pastikan data rekening benar sebelum melakukan withdraw.
+</p>
+
+
+
+
+
+<label>
+Nama Pemilik Rekening
+</label>
+
+
+<div class="input-box">
+
+<i class="fa-solid fa-user"></i>
+
+<input
+id="accountName"
+type="text"
+placeholder="Nama sesuai rekening">
+
+</div>
+
+
+
+
+
+
+<label>
+Nomor Rekening / E-Wallet
+</label>
+
+
+<div class="input-box">
+
+<i class="fa-solid fa-credit-card"></i>
+
+<input
+id="accountNumber"
+type="text"
+placeholder="Nomor rekening atau e-wallet">
+
+</div>
+
+
+
+
+
+
+<label>
+Metode Pembayaran
+</label>
+
+
+<div class="input-box">
+
+<i class="fa-solid fa-wallet"></i>
+
+
+<select id="paymentMethod">
+
+
+<optgroup label="Bank">
+
+<option value="BCA">BCA</option>
+<option value="BRI">BRI</option>
+<option value="BNI">BNI</option>
+<option value="Mandiri">Mandiri</option>
+<option value="BTN">BTN</option>
+<option value="BSI">BSI</option>
+<option value="CIMB Niaga">CIMB Niaga</option>
+<option value="Permata Bank">Permata Bank</option>
+<option value="Bank Jago">Bank Jago</option>
+<option value="SeaBank">SeaBank</option>
+
+</optgroup>
+
+
+
+<optgroup label="E-Wallet">
+
+<option value="DANA">DANA</option>
+<option value="GoPay">GoPay</option>
+<option value="OVO">OVO</option>
+<option value="ShopeePay">ShopeePay</option>
+<option value="LinkAja">LinkAja</option>
+
+</optgroup>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+<button id="savePayment" class="btn-primary">
+
+<i class="fa-solid fa-floppy-disk"></i>
+
+Simpan Pembayaran
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+<div id="currentPayment" class="payment-box" style="display:none;">
+
+
+<h2>
+
+<i class="fa-solid fa-address-card"></i>
+
+Rekening Aktif
+
+</h2>
+
+
+<div id="paymentDetail"></div>
+
+
+
+<button id="deletePayment" class="btn-danger">
+
+<i class="fa-solid fa-trash"></i>
+
+Hapus Rekening
+
+</button>
+
+
+</div>
+
+
+
+
+
+</main>
+
+
+
+<div id="footer"></div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/database.js"></script>
+<script src="js/session.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+
+<script src="js/paymentsetting.js"></script>
+
+
+</body>
+</html>
