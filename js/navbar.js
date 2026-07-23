@@ -67,10 +67,6 @@ item.innerText.toLowerCase().includes(key)
 
 
 /* =========================
-   DARK MODE
-========================= */
-
-/* =========================
    DARK / NIGHT MODE
 ========================= */
 
@@ -81,21 +77,13 @@ const icon = themeBtn?.querySelector("i");
 
 if(theme === "dark"){
 
-
 document.documentElement.classList.add("dark");
-
-document.body.classList.add("dark");
-
 
 
 if(icon){
-
 icon.classList.remove("fa-moon");
-
 icon.classList.add("fa-sun");
-
 }
-
 
 
 }else{
@@ -103,25 +91,16 @@ icon.classList.add("fa-sun");
 
 document.documentElement.classList.remove("dark");
 
-document.body.classList.remove("dark");
-
-
 
 if(icon){
-
 icon.classList.remove("fa-sun");
-
 icon.classList.add("fa-moon");
-
 }
 
 
 }
 
-
 }
-
-
 
 // =========================
 // LOAD THEME
