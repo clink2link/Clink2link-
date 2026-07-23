@@ -1,65 +1,50 @@
 (function(){
 
-document.addEventListener("DOMContentLoaded",async()=>{
-
-console.log("NAVBAR READY");
+window.c2pInit=function(){
 
 const sidebar=document.querySelector(".c2p-sidebar");
 const overlay=document.querySelector(".c2p-overlay");
 const menuBtn=document.querySelector(".c2p-menu-btn");
-const searchInput=document.querySelector("#menuSearch");
+const search=document.querySelector("#menuSearch");
+const logout=document.querySelector(".c2p-logout");
 
 
+if(!sidebar)return;
 
-function openSidebar(){
 
+function open(){
 sidebar.style.left="0";
-
-if(overlay)
-overlay.style.display="block";
-
+if(overlay)overlay.style.display="block";
 }
 
 
-
-function closeSidebar(){
-
+function close(){
 sidebar.style.left="-270px";
-
-if(overlay)
-overlay.style.display="none";
-
+if(overlay)overlay.style.display="none";
 }
 
 
+menuBtn?.addEventListener("click",open);
 
-menuBtn?.addEventListener(
-"click",
-openSidebar
-);
+overlay?.addEventListener("click",close);
 
 
-overlay?.addEventListener(
-"click",
-closeSidebar
-);
 
+sidebar.querySelectorAll("a").forEach(a=>{
+a.addEventListener("click",close);
+});
 
 
 
 // SEARCH
 
-if(searchInput){
+if(search){
 
-const items=sidebar.querySelectorAll("a");
+search.addEventListener("input",()=>{
 
+let key=search.value.toLowerCase();
 
-searchInput.oninput=function(){
-
-const key=this.value.toLowerCase();
-
-
-items.forEach(item=>{
+sidebar.querySelectorAll("a").forEach(item=>{
 
 item.style.display=
 item.innerText.toLowerCase().includes(key)
@@ -68,91 +53,62 @@ item.innerText.toLowerCase().includes(key)
 
 });
 
-
-};
+});
 
 }
-
-
-
 
 
 // ACTIVE MENU
 
-const current=location.pathname;
+let current=location.pathname;
 
+sidebar.querySelectorAll("a").forEach(a=>{
 
-sidebar.querySelectorAll("a")
-.forEach(link=>{
+if(a.getAttribute("href")===current){
 
-
-const href=link.getAttribute("href");
-
-
-if(href && current.includes(href)){
-
-link.classList.add("active");
+a.classList.add("active");
 
 }
 
-
 });
-
 
 
 
 // USER
 
-try{
+database.getUser()
+.then(user=>{
 
-const profile=
-await database.getCurrentProfile();
+const box=document.querySelector(".c2p-user");
 
-
-const box=
-document.querySelector(".c2p-user");
-
-
-if(box && profile){
+if(box && user){
 
 box.innerHTML=
-`
-<strong>
-${profile.username || "User"}
-</strong>
-`;
+`<b>${user.email || "User"}</b>`;
 
 }
 
-
-}catch(e){
-
-console.warn(
-"USER ERROR",
-e
-);
-
-}
-
-
+});
 
 
 
 // LOGOUT
 
-const logout=
-document.querySelector(".c2p-logout");
+logout?.addEventListener("click",async()=>{
 
-
-logout?.addEventListener(
-"click",
-async()=>{
 await database.logout();
-}
-);
 
+localStorage.clear();
+sessionStorage.clear();
 
+location.href="index.html";
 
 });
+
+
+console.log("NAVBAR READY");
+
+};
+
 
 })();
