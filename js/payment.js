@@ -13,15 +13,34 @@ const $ = id => document.getElementById(id);
 
 
 
-document.addEventListener("DOMContentLoaded",async()=>{
+document.addEventListener("DOMContentLoaded", async () => {
 
+  console.log("PAYMENT INIT START");
 
-if(!window.database){
+  const dbReady = await waitDatabase();
+  if (!dbReady) return;
 
-alert("DATABASE BELUM SIAP");
+  supabase = window.database.supabase;
 
-return;
+  user = await window.database.getCurrentProfile();
 
+  console.log("USER:", user);
+
+async function waitDatabase() {
+  let retry = 0;
+
+  while (!window.database && retry < 20) {
+    console.log("MENUNGGU DATABASE...");
+    await new Promise(r => setTimeout(r, 100));
+    retry++;
+  }
+
+  if (!window.database) {
+    alert("Database gagal load");
+    return false;
+  }
+
+  return true;
 }
 
 
