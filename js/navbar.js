@@ -1,204 +1,114 @@
-"use strict";
+// ===============================
+// CLICK2PAY NAVBAR SYSTEM (FINAL)
+// ===============================
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
-  const $ = id => document.getElementById(id);
+  const container = document.getElementById("navbar");
+  if (!container) return;
 
-  // =========================
-  // SIDEBAR OPEN
-  // =========================
-  window.c2pOpen = () => {
-    $("c2pSide")?.classList.add("active");
-    $("c2pOverlay")?.classList.add("active");
-  };
+  // ===== LOAD NAVBAR HTML =====
+  try {
+    const res = await fetch("/components/navbar.html"); // WAJIB pakai /
+    const html = await res.text();
+    container.innerHTML = html;
+  } catch (err) {
+    console.error("Navbar gagal load:", err);
+    return;
+  }
 
-  // =========================
-  // SIDEBAR CLOSE
-  // =========================
-  window.c2pClose = () => {
-    $("c2pSide")?.classList.remove("active");
-    $("c2pOverlay")?.classList.remove("active");
-  };
+  // ===== INIT ELEMENT =====
+  const menuBtn = container.querySelector(".c2p-menu-btn");
+  const sidebar = container.querySelector(".c2p-sidebar");
+  const overlay = container.querySelector(".c2p-overlay");
+  const searchInput = container.querySelector("#menuSearch");
+  const menuLinks = container.querySelectorAll(".c2p-sidebar a");
 
-  // =========================
-  // USER DROPDOWN
-  // =========================
-  window.c2pUser = () => {
-    $("c2pDrop")?.classList.toggle("active");
-  };
+  // ===== SAFETY CHECK =====
+  if (!menuBtn || !sidebar || !overlay) {
+    console.warn("Navbar element tidak lengkap");
+    return;
+  }
 
-  // =========================
-  // CLOSE DROPDOWN OUTSIDE
-  // =========================
-  document.addEventListener("click", e => {
+  // ===== TOGGLE SIDEBAR =====
+  function openSidebar() {
+    sidebar.style.left = "0";
+    overlay.style.display = "block";
+    document.body.style.overflow = "hidden";
+  }
 
-    const drop = $("c2pDrop");
-    if (!drop) return;
+  function closeSidebar() {
+    sidebar.style.left = "-260px";
+    overlay.style.display = "none";
+    document.body.style.overflow = "";
+  }
 
-    if (
-      !e.target.closest(".c2p-user") &&
-      !e.target.closest(".c2p-dropdown")
-    ) {
-      drop.classList.remove("active");
-    }
+  menuBtn.addEventListener("click", openSidebar);
+  overlay.addEventListener("click", closeSidebar);
 
+  // ===== AUTO CLOSE SAAT KLIK MENU =====
+  menuLinks.forEach(link => {
+    link.addEventListener("click", () => {
+      closeSidebar();
+    });
   });
 
-  // =========================
-  // SUB MENU
-  // =========================
-  window.c2pToggle = id => {
+  // ===== SEARCH MENU (LIVE FILTER) =====
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      const keyword = searchInput.value.toLowerCase();
 
-    const menu = $(id);
-    if (!menu) return;
-
-    document
-      .querySelectorAll(".c2p-submenu")
-      .forEach(item => {
-        if (item.id !== id) {
-          item.classList.remove("active");
-        }
+      menuLinks.forEach(link => {
+        const text = link.textContent.toLowerCase();
+        link.style.display = text.includes(keyword) ? "flex" : "none";
       });
-
-    menu.classList.toggle("active");
-  };
-
-  // =========================
-  // CLOSE SIDEBAR WHEN CLICK LINK
-  // =========================
-  document
-    .querySelectorAll(".c2p-submenu a")
-    .forEach(link => {
-      link.addEventListener("click", () => c2pClose());
     });
-
-  // =========================
-  // LOAD PROFILE NAVBAR (FIXED)
-  // =========================
-  async function loadNavbarProfile(){
-
-    const usernameBox = $("navbarUsername");
-    const idBox       = $("navbarId");
-    const userBox     = $("navbarUser");
-    const saldoBox    = $("navbarSaldo");
-
-    // 🔥 FIX: kalau semua element gak ada → STOP
-    if (!usernameBox && !idBox && !userBox && !saldoBox) {
-      console.log("Navbar tidak ada di halaman ini");
-      return;
-    }
-
-    const userId = localStorage.getItem("user_id");
-
-    if (!userId) {
-      console.warn("USER ID KOSONG");
-      return;
-    }
-
-    try {
-
-      const { data, error } = await database.supabase
-        .from("profiles")
-        .select("id,username,balance")
-        .eq("id", userId)
-        .maybeSingle();
-
-      if (error) {
-        console.error("NAV PROFILE ERROR:", error);
-        return;
-      }
-
-      if (!data) {
-        console.warn("PROFILE TIDAK DITEMUKAN");
-        return;
-      }
-
-      // =========================
-      // UPDATE NAVBAR
-      // =========================
-
-      if (usernameBox) {
-        usernameBox.textContent = data.username || "User";
-      }
-
-      if (idBox) {
-        const shortId = data.id
-          ? data.id.substring(0,8) + "..."
-          : "-";
-
-        idBox.textContent = shortId;
-        idBox.dataset.fullId = data.id || "";
-      }
-
-      if (userBox) {
-        userBox.textContent = "@" + (data.username || "-");
-      }
-
-      if (saldoBox) {
-        saldoBox.textContent =
-          new Intl.NumberFormat("id-ID", {
-            style: "currency",
-            currency: "IDR",
-            maximumFractionDigits: 0
-          }).format(Number(data.balance || 0));
-      }
-
-      console.log("NAVBAR UPDATE SUCCESS");
-
-    } catch (err) {
-      console.error("Navbar Profile Error:", err);
-    }
   }
 
-  // =========================
-  // COPY USER ID
-  // =========================
-  document.addEventListener("click", e => {
+  // ===== ACTIVE LINK DETECT =====
+  const currentPath = window.location.pathname;
 
-    if (e.target.closest("#navbarId")) {
+  menuLinks.forEach(link => {
+    const href = link.getAttribute("href");
+    if (!href || href === "#") return;
 
-      const el = $("navbarId");
-      const id = el?.dataset.fullId;
-
-      if (!id) return;
-
-      navigator.clipboard.writeText(id);
-
-      el.textContent = "Copied!";
-
-      setTimeout(() => {
-        el.textContent = id.substring(0,8) + "...";
-      }, 1000);
+    if (currentPath.includes(href)) {
+      link.style.background = "rgba(0,0,0,0.05)";
+      link.style.fontWeight = "600";
     }
-
   });
 
-  // =========================
-  // INIT NAVBAR
-  // =========================
-  window.addEventListener("load", loadNavbarProfile);
+  // ===== DARK MODE AUTO (SYNC SYSTEM) =====
+  const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-  // =========================
-  // LOGOUT
-  // =========================
-  const logoutBtn = $("logoutBtn");
-
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-      try {
-
-        await database.supabase.auth.signOut();
-
-        localStorage.removeItem("user_id");
-        localStorage.removeItem("username");
-
-        window.location.href = "login.html";
-
-      } catch (err) {
-        console.error(err);
-        alert("Gagal logout");
-      }
-    });
+  function applyDark(e) {
+    if (e.matches) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
   }
+
+  applyDark(darkQuery);
+  darkQuery.addEventListener("change", applyDark);
+
+  // ===== ESC KEY CLOSE =====
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeSidebar();
+  });
+
+  // ===== SWIPE CLOSE (MOBILE UX) =====
+  let touchStartX = 0;
+
+  sidebar.addEventListener("touchstart", e => {
+    touchStartX = e.touches[0].clientX;
+  });
+
+  sidebar.addEventListener("touchmove", e => {
+    const touchX = e.touches[0].clientX;
+    if (touchX - touchStartX < -50) {
+      closeSidebar();
+    }
+  });
 
 });
