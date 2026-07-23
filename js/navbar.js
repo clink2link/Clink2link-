@@ -1,44 +1,74 @@
 (function(){
 
+let navbarLoaded = false;
+
+
 window.c2pInit=function(){
 
-const sidebar=document.querySelector(".c2p-sidebar");
-const overlay=document.querySelector(".c2p-overlay");
-const menuBtn=document.querySelector(".c2p-menu-btn");
-const search=document.querySelector("#menuSearch");
-const logout=document.querySelector(".c2p-logout");
+if(navbarLoaded) return;
+
+navbarLoaded = true;
 
 
-if(!sidebar)return;
+const sidebar = document.querySelector(".c2p-sidebar");
+const overlay = document.querySelector(".c2p-overlay");
+const menuBtn = document.querySelector(".c2p-menu-btn");
+const search = document.querySelector("#menuSearch");
+const logout = document.querySelector(".c2p-logout");
 
 
-function open(){
-sidebar.style.left="0";
-
-if(overlay){
-overlay.style.display="block";
-}
-}
-
-
-function close(){
-sidebar.style.left="-270px";
-
-if(overlay){
-overlay.style.display="none";
-}
+if(!sidebar) {
+    console.log("SIDEBAR NOT FOUND");
+    return;
 }
 
 
-menuBtn?.addEventListener("click",open);
 
-overlay?.addEventListener("click",close);
+function openSidebar(){
+
+    sidebar.style.left="0";
+
+    if(overlay){
+        overlay.style.display="block";
+    }
+
+}
 
 
 
-sidebar.querySelectorAll("a").forEach(a=>{
+function closeSidebar(){
 
-a.addEventListener("click",close);
+    sidebar.style.left="-270px";
+
+    if(overlay){
+        overlay.style.display="none";
+    }
+
+}
+
+
+
+menuBtn?.addEventListener(
+"click",
+openSidebar
+);
+
+
+
+overlay?.addEventListener(
+"click",
+closeSidebar
+);
+
+
+
+sidebar.querySelectorAll("a")
+.forEach(a=>{
+
+a.addEventListener(
+"click",
+closeSidebar
+);
 
 });
 
@@ -48,56 +78,55 @@ a.addEventListener("click",close);
 
 if(search){
 
-search.addEventListener("input",()=>{
+search.addEventListener(
+"input",
+()=>{
 
-let key=search.value.toLowerCase();
+let key =
+search.value.toLowerCase();
 
 
-sidebar.querySelectorAll("a").forEach(item=>{
+sidebar.querySelectorAll("a")
+.forEach(item=>{
 
 item.style.display =
-item.innerText.toLowerCase().includes(key)
-? "flex"
-: "none";
+item.innerText
+.toLowerCase()
+.includes(key)
+?
+"flex"
+:
+"none";
+
 
 });
-
 
 });
 
 }
-
-
-
-// ACTIVE MENU
-
-let current=location.pathname;
-
-
-sidebar.querySelectorAll("a").forEach(a=>{
-
-if(a.getAttribute("href")===current){
-
-a.classList.add("active");
-
-}
-
-});
 
 
 
 // LOGOUT
 
-logout?.addEventListener("click",async()=>{
+logout?.addEventListener(
+"click",
+async()=>{
+
+if(window.database){
 
 await database.logout();
+
+}
 
 localStorage.clear();
 sessionStorage.clear();
 
-location.href="index.html";
+location.replace("index.html");
+
 
 });
+
 
 
 console.log("NAVBAR READY");
