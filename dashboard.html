@@ -6,13 +6,19 @@
 
 <title>Dashboard - Click2Pay</title>
 
+<script>
+if(localStorage.getItem("theme")==="dark"){
+document.documentElement.classList.add("dark");
+}
+</script>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/theme.css">
 <link rel="stylesheet" href="css/navbar.css">
 <link rel="stylesheet" href="css/footer.css">
-   
+
 <style>
 
 .dash-body{
@@ -175,9 +181,9 @@ radial-gradient(circle at 80% 80%,rgba(0,184,255,.15),transparent 30%),
 linear-gradient(120deg,#020617,#0f172a);
 }
 
-body.dark .dash-welcome,
-body.dark .dash-card,
-body.dark .dash-box{
+.dark .dash-welcome,
+.dark .dash-card,
+.dark .dash-box{
 background:#0f172a;
 border-color:#1e293b;
 box-shadow:0 10px 30px rgba(0,0,0,.4);
