@@ -1,524 +1,158 @@
-// ===============================
-// CLICK2PAY NAVBAR FINAL STABLE
-// ===============================
-
 (function(){
 
-  const root = document.querySelector("#navbar");
+document.addEventListener("DOMContentLoaded",async()=>{
 
-  if(!root){
-    console.warn("NAVBAR ROOT TIDAK ADA");
-    return;
-  }
+console.log("NAVBAR READY");
 
+const sidebar=document.querySelector(".c2p-sidebar");
+const overlay=document.querySelector(".c2p-overlay");
+const menuBtn=document.querySelector(".c2p-menu-btn");
+const searchInput=document.querySelector("#menuSearch");
 
-  const sidebar = root.querySelector(".c2p-sidebar");
-  const overlay = root.querySelector(".c2p-overlay");
-  const menuBtn = root.querySelector(".c2p-menu-btn");
-  const searchInput = root.querySelector("#menuSearch");
 
 
-  let menuItems = [];
+function openSidebar(){
 
+sidebar.style.left="0";
 
-  // ===============================
-  // SIDEBAR
-  // ===============================
+if(overlay)
+overlay.style.display="block";
 
-  function openSidebar(){
+}
 
-    if(!sidebar || !overlay) return;
 
-    sidebar.style.left = "0";
-    overlay.style.display = "block";
 
-  }
+function closeSidebar(){
 
+sidebar.style.left="-270px";
 
-  function closeSidebar(){
+if(overlay)
+overlay.style.display="none";
 
-    if(!sidebar || !overlay) return;
+}
 
-    sidebar.style.left = "-270px";
-    overlay.style.display = "none";
 
-  }
 
+menuBtn?.addEventListener(
+"click",
+openSidebar
+);
 
-  menuBtn?.addEventListener(
-    "click",
-    openSidebar
-  );
 
+overlay?.addEventListener(
+"click",
+closeSidebar
+);
 
-  overlay?.addEventListener(
-    "click",
-    closeSidebar
-  );
 
 
 
-  // ===============================
-  // FALLBACK MENU
-  // ===============================
+// SEARCH
 
-  function getFallbackMenu(){
+if(searchInput){
 
-    return [
+const items=sidebar.querySelectorAll("a");
 
-      {
-        name:"Dashboard",
-        icon:"fa-solid fa-house",
-        link:"/dashboard"
-      },
 
-      {
-        name:"Create Link",
-        icon:"fa-solid fa-link",
-        link:"/create"
-      },
+searchInput.oninput=function(){
 
-      {
-        name:"My Links",
-        icon:"fa-solid fa-list",
-        link:"/links"
-      },
+const key=this.value.toLowerCase();
 
-      {
-        name:"Withdraw",
-        icon:"fa-solid fa-money-bill",
-        link:"/withdraw"
-      }
 
-    ];
+items.forEach(item=>{
 
-  }
+item.style.display=
+item.innerText.toLowerCase().includes(key)
+?"flex"
+:"none";
 
+});
 
 
-  // ===============================
-  // RENDER MENU
-  // ===============================
+};
 
-  function renderMenu(menus){
+}
 
 
-    if(!sidebar){
 
-      console.error(
-        "SIDEBAR TIDAK DITEMUKAN"
-      );
 
-      return;
 
-    }
+// ACTIVE MENU
 
+const current=location.pathname;
 
 
-    sidebar
-    .querySelectorAll("a")
-    .forEach(el=>el.remove());
+sidebar.querySelectorAll("a")
+.forEach(link=>{
 
 
+const href=link.getAttribute("href");
 
-    menus.forEach(menu=>{
 
+if(href && current.includes(href)){
 
-      const a=document.createElement("a");
+link.classList.add("active");
 
+}
 
-      a.href = menu.link;
 
+});
 
-      a.innerHTML = `
 
-        <i class="${menu.icon}"></i>
 
-        <span>
-          ${menu.name}
-        </span>
 
-      `;
+// USER
 
+try{
 
-      a.addEventListener(
-        "click",
-        closeSidebar
-      );
+const profile=
+await database.getCurrentProfile();
 
 
-      sidebar.appendChild(a);
+const box=
+document.querySelector(".c2p-user");
 
 
-    });
+if(box && profile){
 
+box.innerHTML=
+`
+<strong>
+${profile.username || "User"}
+</strong>
+`;
 
+}
 
-    initSearch();
-    setActiveMenu();
 
+}catch(e){
 
-  }
+console.warn(
+"USER ERROR",
+e
+);
 
+}
 
 
 
-  // ===============================
-  // SEARCH
-  // ===============================
 
-  function initSearch(){
 
-    if(!searchInput || !sidebar)
-      return;
+// LOGOUT
 
+const logout=
+document.querySelector(".c2p-logout");
 
-    menuItems =
-      [...sidebar.querySelectorAll("a")];
 
+logout?.addEventListener(
+"click",
+async()=>{
+await database.logout();
+}
+);
 
-    searchInput.oninput=function(){
 
 
-      const keyword =
-      this.value.toLowerCase();
-
-
-
-      menuItems.forEach(item=>{
-
-
-        const text =
-        item.innerText.toLowerCase();
-
-
-
-        item.style.display =
-        text.includes(keyword)
-        ? "flex"
-        : "none";
-
-
-      });
-
-
-    };
-
-
-  }
-
-
-
-
-  // ===============================
-  // ACTIVE MENU
-  // ===============================
-
-  function setActiveMenu(){
-
-
-    if(!sidebar)
-      return;
-
-
-    const current =
-    location.pathname;
-
-
-    sidebar
-    .querySelectorAll("a")
-    .forEach(link=>{
-
-
-      link.style.background="";
-      link.style.color="";
-
-
-      const href =
-      link.getAttribute("href");
-
-
-      if(
-        href &&
-        current.includes(href)
-      ){
-
-        link.style.background="#22c55e";
-        link.style.color="#fff";
-
-      }
-
-
-    });
-
-
-  }
-
-
-
-
-  // ===============================
-  // LOAD MENU
-  // ===============================
-
-  async function loadMenu(){
-
-
-    try{
-
-
-      const profile =
-      await database.getCurrentProfile();
-
-
-
-      if(!profile){
-
-        console.warn(
-          "PROFILE TIDAK ADA"
-        );
-
-        location.href="/login.html";
-
-        return;
-
-      }
-
-
-
-      const role =
-      profile.role || "member";
-
-
-
-      console.log(
-        "USER ROLE:",
-        role
-      );
-
-
-
-      let menus =
-      await database.getMenusByRole(role);
-
-
-
-      console.log(
-        "MENU DATABASE:",
-        menus
-      );
-
-
-
-      if(
-        !Array.isArray(menus) ||
-        menus.length===0
-      ){
-
-        console.warn(
-          "MENU KOSONG, PAKAI FALLBACK"
-        );
-
-
-        menus =
-        getFallbackMenu();
-
-      }
-
-
-
-      renderMenu(menus);
-
-
-
-      console.log(
-        "NAVBAR MENU SUCCESS"
-      );
-
-
-
-    }
-    catch(error){
-
-
-      console.error(
-        "LOAD MENU ERROR:",
-        error
-      );
-
-
-      renderMenu(
-        getFallbackMenu()
-      );
-
-
-    }
-
-
-  }
-
-
-
-
-  // ===============================
-  // USER UI
-  // ===============================
-
-  async function loadUserUI(){
-
-
-    try{
-
-
-      const profile =
-      await database.getCurrentProfile();
-
-
-      if(!profile)
-        return;
-
-
-
-      const box =
-      root.querySelector(".c2p-user");
-
-
-
-      if(box){
-
-        box.innerHTML = `
-
-        <strong>
-        ${profile.username || "User"}
-        </strong>
-
-        `;
-
-      }
-
-
-    }
-    catch(error){
-
-      console.warn(
-        "USER UI ERROR",
-        error
-      );
-
-    }
-
-
-  }
-
-
-
-
-  // ===============================
-  // LOGOUT
-  // ===============================
-
-  function initLogout(){
-
-
-    const btn =
-    root.querySelector(".c2p-logout");
-
-
-
-    if(!btn)
-      return;
-
-
-
-    btn.onclick=async()=>{
-
-
-      try{
-
-        await database.logout();
-
-      }
-      catch(error){
-
-        console.error(
-          "LOGOUT ERROR",
-          error
-        );
-
-      }
-
-
-    };
-
-
-  }
-
-
-
-
-  // ===============================
-  // AUTH PROTECT
-  // ===============================
-
-  async function protect(){
-
-
-    const user =
-    await database.getUser();
-
-
-
-    if(!user){
-
-      location.href="/login.html";
-
-      return false;
-
-    }
-
-
-    return true;
-
-
-  }
-
-
-
-
-  // ===============================
-  // START
-  // ===============================
-
-  document.addEventListener(
-    "DOMContentLoaded",
-    async()=>{
-
-
-      const ok =
-      await protect();
-
-
-
-      if(!ok)
-        return;
-
-
-
-      await loadMenu();
-
-      await loadUserUI();
-
-      initLogout();
-
-
-
-      console.log(
-        "NAVBAR INIT COMPLETE"
-      );
-
-
-    }
-  );
-
+});
 
 })();
