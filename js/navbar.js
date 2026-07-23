@@ -14,13 +14,19 @@ if(!sidebar)return;
 
 function open(){
 sidebar.style.left="0";
-if(overlay)overlay.style.display="block";
+
+if(overlay){
+overlay.style.display="block";
+}
 }
 
 
 function close(){
 sidebar.style.left="-270px";
-if(overlay)overlay.style.display="none";
+
+if(overlay){
+overlay.style.display="none";
+}
 }
 
 
@@ -31,7 +37,9 @@ overlay?.addEventListener("click",close);
 
 
 sidebar.querySelectorAll("a").forEach(a=>{
+
 a.addEventListener("click",close);
+
 });
 
 
@@ -44,47 +52,33 @@ search.addEventListener("input",()=>{
 
 let key=search.value.toLowerCase();
 
+
 sidebar.querySelectorAll("a").forEach(item=>{
 
-item.style.display=
+item.style.display =
 item.innerText.toLowerCase().includes(key)
-?"flex"
-:"none";
+? "flex"
+: "none";
 
 });
+
 
 });
 
 }
+
 
 
 // ACTIVE MENU
 
 let current=location.pathname;
 
+
 sidebar.querySelectorAll("a").forEach(a=>{
 
 if(a.getAttribute("href")===current){
 
 a.classList.add("active");
-
-}
-
-});
-
-
-
-// USER
-
-database.getUser()
-.then(user=>{
-
-const box=document.querySelector(".c2p-user");
-
-if(box && user){
-
-box.innerHTML=
-`<b>${user.email || "User"}</b>`;
 
 }
 
@@ -107,6 +101,7 @@ location.href="index.html";
 
 
 console.log("NAVBAR READY");
+
 
 };
 
