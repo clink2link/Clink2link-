@@ -1,17 +1,122 @@
 // =========================
-// ACTIVITY TRACKING MODULE
+// INIT
 // =========================
 
-// 🚀 Ambil IP lebih awal (langsung jalan saat file load)
+document.addEventListener("DOMContentLoaded", () => {
+  loadLoginActivity();
+});
+
+// =========================
+// LOAD DATA
+// =========================
+
+async function loadLoginActivity() {
+
+  const list = document.getElementById("loginList");
+  const totalEl = document.getElementById("totalLogin");
+  const lastLoginEl = document.getElementById("lastLogin");
+  const lastDeviceEl = document.getElementById("lastDevice");
+
+  if (!list) return;
+
+  const userId = localStorage.getItem("user_id");
+
+  if (!userId) {
+    list.innerHTML = "❌ User tidak ditemukan.";
+    return;
+  }
+
+  if (!window.database) {
+    list.innerHTML = "❌ Database belum siap.";
+    return;
+  }
+
+  try {
+
+    const { data, error } = await database.supabase
+      .from("login_activity")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      list.innerHTML = "Belum ada aktivitas login.";
+      return;
+    }
+
+    // =========================
+    // STATISTIK
+    // =========================
+
+    totalEl.textContent = data.length;
+
+    const last = data[0];
+
+    lastLoginEl.textContent = formatDate(last.created_at);
+    lastDeviceEl.textContent = last.device || "-";
+
+    // =========================
+    // RENDER LIST
+    // =========================
+
+    list.innerHTML = data.map(item => {
+
+      return `
+      <div class="activity-item">
+
+        <div class="activity-left">
+          <i class="fa-solid fa-laptop"></i>
+        </div>
+
+        <div class="activity-content">
+          <div class="activity-top">
+            <strong>${item.device || "Unknown Device"}</strong>
+            <span>${formatDate(item.created_at)}</span>
+          </div>
+
+          <div class="activity-bottom">
+            ${item.city || "-"}, ${item.country || "-"}
+            <br>
+            IP: ${item.ip || "-"}
+          </div>
+        </div>
+
+      </div>
+      `;
+
+    }).join("");
+
+  } catch (err) {
+
+    console.error("LOAD ACTIVITY ERROR:", err);
+    list.innerHTML = "❌ Gagal memuat data.";
+
+  }
+
+}
+
+// =========================
+// FORMAT DATE
+// =========================
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleString("id-ID", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  });
+}
+
+// =========================
+// TRACK LOGIN (TETAP ADA)
+// =========================
+
 const ipPromise = getIPInfo();
-
-// =========================
-// MAIN TRACK FUNCTION
-// =========================
 
 async function trackLoginActivity(userId) {
 
-  // ❌ cegah double insert
   if (!userId) return;
 
   if (sessionStorage.getItem("login_tracked") || window.__loginTracking) {
@@ -22,33 +127,23 @@ async function trackLoginActivity(userId) {
 
   try {
 
-    // ambil hasil IP (yang sudah jalan dari awal)
     const ipData = await ipPromise;
-
-    if (!window.database) {
-      console.warn("Database belum siap");
-      return;
-    }
 
     await database.supabase
       .from("login_activity")
       .insert({
         user_id: userId,
-
         device: getDevice(),
         user_agent: navigator.userAgent,
-
         ip: ipData.ip,
         city: ipData.city,
         region: ipData.region,
         country: ipData.country,
         org: ipData.org,
-
         latitude: ipData.lat,
         longitude: ipData.lon
       });
 
-    // tandai sudah tracking
     sessionStorage.setItem("login_tracked", "true");
 
     console.log("✅ Login activity saved");
@@ -59,7 +154,7 @@ async function trackLoginActivity(userId) {
 }
 
 // =========================
-// DEVICE DETECT
+// DEVICE
 // =========================
 
 function getDevice() {
@@ -74,7 +169,7 @@ function getDevice() {
 }
 
 // =========================
-// GET IP INFO
+// IP INFO
 // =========================
 
 async function getIPInfo() {
