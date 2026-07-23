@@ -29,6 +29,14 @@ supabase = window.database.supabase;
 
 user = await window.database.getCurrentProfile();
 
+console.log("USER:", user);
+
+if (!user || !user.id) {
+    alert("User tidak valid / belum login");
+    location.replace("login.html");
+    return;
+}
+
 
 
 if(!user){
