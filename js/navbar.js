@@ -1,237 +1,524 @@
 // ===============================
-// CLICK2PAY NAVBAR FINAL (FIXED)
+// CLICK2PAY NAVBAR FINAL STABLE
 // ===============================
 
 (function(){
 
   const root = document.querySelector("#navbar");
-  if(!root) return;
+
+  if(!root){
+    console.warn("NAVBAR ROOT TIDAK ADA");
+    return;
+  }
+
 
   const sidebar = root.querySelector(".c2p-sidebar");
   const overlay = root.querySelector(".c2p-overlay");
   const menuBtn = root.querySelector(".c2p-menu-btn");
   const searchInput = root.querySelector("#menuSearch");
 
+
   let menuItems = [];
 
+
   // ===============================
-  // SIDEBAR CONTROL
+  // SIDEBAR
   // ===============================
+
   function openSidebar(){
+
     if(!sidebar || !overlay) return;
+
     sidebar.style.left = "0";
     overlay.style.display = "block";
+
   }
+
 
   function closeSidebar(){
+
     if(!sidebar || !overlay) return;
+
     sidebar.style.left = "-270px";
     overlay.style.display = "none";
+
   }
 
-  menuBtn?.addEventListener("click", openSidebar);
-  overlay?.addEventListener("click", closeSidebar);
+
+  menuBtn?.addEventListener(
+    "click",
+    openSidebar
+  );
+
+
+  overlay?.addEventListener(
+    "click",
+    closeSidebar
+  );
+
+
 
   // ===============================
-  // SEARCH MENU
+  // FALLBACK MENU
   // ===============================
-  function initSearch(){
-    if(!searchInput || !sidebar) return;
 
-    menuItems = [...sidebar.querySelectorAll("a")];
+  function getFallbackMenu(){
 
-    searchInput.addEventListener("input", function(){
-      const keyword = this.value.toLowerCase();
+    return [
 
-      menuItems.forEach(item => {
-        const text = item.innerText.toLowerCase();
-        item.style.display = text.includes(keyword) ? "flex" : "none";
-      });
+      {
+        name:"Dashboard",
+        icon:"fa-solid fa-house",
+        link:"/dashboard"
+      },
+
+      {
+        name:"Create Link",
+        icon:"fa-solid fa-link",
+        link:"/create"
+      },
+
+      {
+        name:"My Links",
+        icon:"fa-solid fa-list",
+        link:"/links"
+      },
+
+      {
+        name:"Withdraw",
+        icon:"fa-solid fa-money-bill",
+        link:"/withdraw"
+      }
+
+    ];
+
+  }
+
+
+
+  // ===============================
+  // RENDER MENU
+  // ===============================
+
+  function renderMenu(menus){
+
+
+    if(!sidebar){
+
+      console.error(
+        "SIDEBAR TIDAK DITEMUKAN"
+      );
+
+      return;
+
+    }
+
+
+
+    sidebar
+    .querySelectorAll("a")
+    .forEach(el=>el.remove());
+
+
+
+    menus.forEach(menu=>{
+
+
+      const a=document.createElement("a");
+
+
+      a.href = menu.link;
+
+
+      a.innerHTML = `
+
+        <i class="${menu.icon}"></i>
+
+        <span>
+          ${menu.name}
+        </span>
+
+      `;
+
+
+      a.addEventListener(
+        "click",
+        closeSidebar
+      );
+
+
+      sidebar.appendChild(a);
+
+
     });
+
+
+
+    initSearch();
+    setActiveMenu();
+
+
   }
+
+
+
+
+  // ===============================
+  // SEARCH
+  // ===============================
+
+  function initSearch(){
+
+    if(!searchInput || !sidebar)
+      return;
+
+
+    menuItems =
+      [...sidebar.querySelectorAll("a")];
+
+
+    searchInput.oninput=function(){
+
+
+      const keyword =
+      this.value.toLowerCase();
+
+
+
+      menuItems.forEach(item=>{
+
+
+        const text =
+        item.innerText.toLowerCase();
+
+
+
+        item.style.display =
+        text.includes(keyword)
+        ? "flex"
+        : "none";
+
+
+      });
+
+
+    };
+
+
+  }
+
+
+
 
   // ===============================
   // ACTIVE MENU
   // ===============================
+
   function setActiveMenu(){
-    if(!sidebar) return;
 
-    const links = sidebar.querySelectorAll("a");
-    const current = location.pathname;
 
-    links.forEach(link => {
-      const href = link.getAttribute("href");
-      if(href && current.includes(href)){
-        link.style.background = "#22c55e";
-        link.style.color = "#fff";
+    if(!sidebar)
+      return;
+
+
+    const current =
+    location.pathname;
+
+
+    sidebar
+    .querySelectorAll("a")
+    .forEach(link=>{
+
+
+      link.style.background="";
+      link.style.color="";
+
+
+      const href =
+      link.getAttribute("href");
+
+
+      if(
+        href &&
+        current.includes(href)
+      ){
+
+        link.style.background="#22c55e";
+        link.style.color="#fff";
+
       }
+
+
     });
+
+
   }
 
-  // ===============================
-  // FALLBACK MENU (ANTI ERROR)
-  // ===============================
-  function getFallbackMenu(){
-    return [
-      {name:"Dashboard", icon:"fa-solid fa-house", link:"/dashboard"},
-      {name:"Create Link", icon:"fa-solid fa-link", link:"/create"},
-      {name:"My Link", icon:"fa-solid fa-list", link:"/links"},
-      {name:"Withdraw", icon:"fa-solid fa-money-bill", link:"/withdraw"}
-    ];
-  }
+
+
 
   // ===============================
   // LOAD MENU
   // ===============================
+
   async function loadMenu(){
 
+
     try{
 
-      const profile = await database.getCurrentProfile();
+
+      const profile =
+      await database.getCurrentProfile();
+
+
 
       if(!profile){
-        location.href = "/login.html";
+
+        console.warn(
+          "PROFILE TIDAK ADA"
+        );
+
+        location.href="/login.html";
+
         return;
+
       }
 
-      const role = profile.role || "member";
 
-      let menus = [];
 
-      // 🔥 SAFE CALL
-      if(typeof database.getMenusByRole === "function"){
-        try{
-          menus = await database.getMenusByRole(role);
-        }catch(e){
-          console.warn("DB MENU ERROR:", e);
-        }
+      const role =
+      profile.role || "member";
+
+
+
+      console.log(
+        "USER ROLE:",
+        role
+      );
+
+
+
+      let menus =
+      await database.getMenusByRole(role);
+
+
+
+      console.log(
+        "MENU DATABASE:",
+        menus
+      );
+
+
+
+      if(
+        !Array.isArray(menus) ||
+        menus.length===0
+      ){
+
+        console.warn(
+          "MENU KOSONG, PAKAI FALLBACK"
+        );
+
+
+        menus =
+        getFallbackMenu();
+
       }
 
-      // 🔥 FALLBACK AUTO
-      if(!menus || menus.length === 0){
-        console.warn("PAKAI FALLBACK MENU");
-        menus = getFallbackMenu();
-      }
 
-      // clear menu
-      sidebar.querySelectorAll("a").forEach(el => el.remove());
 
-      menus.forEach(menu => {
+      renderMenu(menus);
 
-        const a = document.createElement("a");
 
-        a.href = menu.link || "#";
 
-        a.innerHTML = `
-          <i class="${menu.icon || 'fa-solid fa-circle'}"></i>
-          ${menu.name || 'Menu'}
-        `;
+      console.log(
+        "NAVBAR MENU SUCCESS"
+      );
 
-        a.addEventListener("click", closeSidebar);
 
-        sidebar.appendChild(a);
 
-      });
-
-      initSearch();
-      setActiveMenu();
-
-    }catch(err){
-      console.error("LOAD MENU FATAL:", err);
-
-      // fallback kalau crash total
-      const menus = getFallbackMenu();
-
-      menus.forEach(menu => {
-        const a = document.createElement("a");
-        a.href = menu.link;
-        a.innerHTML = `<i class="${menu.icon}"></i> ${menu.name}`;
-        sidebar.appendChild(a);
-      });
     }
+    catch(error){
+
+
+      console.error(
+        "LOAD MENU ERROR:",
+        error
+      );
+
+
+      renderMenu(
+        getFallbackMenu()
+      );
+
+
+    }
+
 
   }
 
+
+
+
   // ===============================
-  // LOAD USER UI
+  // USER UI
   // ===============================
+
   async function loadUserUI(){
+
 
     try{
 
-      const profile = await database.getCurrentProfile();
 
-      if(!profile) return;
+      const profile =
+      await database.getCurrentProfile();
 
-      const userBox = root.querySelector(".c2p-user");
 
-      if(userBox){
-        userBox.innerHTML = `
-          <strong>${profile.username || "User"}</strong>
+      if(!profile)
+        return;
+
+
+
+      const box =
+      root.querySelector(".c2p-user");
+
+
+
+      if(box){
+
+        box.innerHTML = `
+
+        <strong>
+        ${profile.username || "User"}
+        </strong>
+
         `;
+
       }
 
-    }catch(e){
-      console.warn("USER UI ERROR:", e);
+
+    }
+    catch(error){
+
+      console.warn(
+        "USER UI ERROR",
+        error
+      );
+
     }
 
+
   }
+
+
+
 
   // ===============================
   // LOGOUT
   // ===============================
+
   function initLogout(){
 
-    const btn = root.querySelector(".c2p-logout");
 
-    if(!btn) return;
+    const btn =
+    root.querySelector(".c2p-logout");
 
-    btn.addEventListener("click", async () => {
+
+
+    if(!btn)
+      return;
+
+
+
+    btn.onclick=async()=>{
+
+
       try{
+
         await database.logout();
-      }catch(e){
-        console.error("LOGOUT ERROR:", e);
+
       }
-    });
+      catch(error){
+
+        console.error(
+          "LOGOUT ERROR",
+          error
+        );
+
+      }
+
+
+    };
+
 
   }
 
+
+
+
   // ===============================
-  // PROTECT PAGE
+  // AUTH PROTECT
   // ===============================
+
   async function protect(){
 
-    try{
 
-      const user = await database.getUser();
+    const user =
+    await database.getUser();
 
-      if(!user){
-        location.href = "/login.html";
-        return false;
-      }
 
-      return true;
 
-    }catch(e){
-      console.error("AUTH ERROR:", e);
-      location.href = "/login.html";
+    if(!user){
+
+      location.href="/login.html";
+
       return false;
+
     }
+
+
+    return true;
+
 
   }
 
+
+
+
   // ===============================
-  // INIT
+  // START
   // ===============================
-  document.addEventListener("DOMContentLoaded", async () => {
 
-    const ok = await protect();
-    if(!ok) return;
+  document.addEventListener(
+    "DOMContentLoaded",
+    async()=>{
 
-    await loadMenu();
-    await loadUserUI();
-    initLogout();
 
-  });
+      const ok =
+      await protect();
+
+
+
+      if(!ok)
+        return;
+
+
+
+      await loadMenu();
+
+      await loadUserUI();
+
+      initLogout();
+
+
+
+      console.log(
+        "NAVBAR INIT COMPLETE"
+      );
+
+
+    }
+  );
+
 
 })();
