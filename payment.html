@@ -473,17 +473,21 @@ Withdraw Instant
 
 <div id="footer"></div>
 
-<script src="assets/js/debug.js"></script>
+<!-- DEBUG -->
+<script defer src="assets/js/debug.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- CORE (WAJIB PALING ATAS) -->
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="js/database.js"></script>
+<script defer src="js/session.js"></script>
 
-<script src="js/database.js"></script>
-<script src="js/session.js"></script>
-<script src="js/theme.js"></script>
-<script src="js/navbar.js"></script>
-<script src="js/footer.js"></script>
+<!-- UI -->
+<script defer src="js/theme.js"></script>
+<script defer src="js/navbar.js"></script>
+<script defer src="js/footer.js"></script>
 
-<script src="js/payment.js"></script>
+<!-- PAYMENT (PALING AKHIR) -->
+<script defer src="js/payment.js"></script>
 <script>
 fetch("components/navbar.html")
 .then(res=>{
