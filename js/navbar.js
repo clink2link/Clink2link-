@@ -1,6 +1,5 @@
 // ===============================
-// CLICK2PAY NAVBAR FINAL SYSTEM
-// CONNECTED TO database.js
+// CLICK2PAY NAVBAR FINAL (FIXED)
 // ===============================
 
 (function(){
@@ -19,11 +18,13 @@
   // SIDEBAR CONTROL
   // ===============================
   function openSidebar(){
+    if(!sidebar || !overlay) return;
     sidebar.style.left = "0";
     overlay.style.display = "block";
   }
 
   function closeSidebar(){
+    if(!sidebar || !overlay) return;
     sidebar.style.left = "-270px";
     overlay.style.display = "none";
   }
@@ -35,24 +36,17 @@
   // SEARCH MENU
   // ===============================
   function initSearch(){
-    if(!searchInput) return;
+    if(!searchInput || !sidebar) return;
 
     menuItems = [...sidebar.querySelectorAll("a")];
 
     searchInput.addEventListener("input", function(){
-
       const keyword = this.value.toLowerCase();
 
       menuItems.forEach(item => {
-
         const text = item.innerText.toLowerCase();
-
-        item.style.display = text.includes(keyword)
-          ? "flex"
-          : "none";
-
+        item.style.display = text.includes(keyword) ? "flex" : "none";
       });
-
     });
   }
 
@@ -60,63 +54,101 @@
   // ACTIVE MENU
   // ===============================
   function setActiveMenu(){
+    if(!sidebar) return;
 
     const links = sidebar.querySelectorAll("a");
     const current = location.pathname;
 
     links.forEach(link => {
-
       const href = link.getAttribute("href");
-
       if(href && current.includes(href)){
         link.style.background = "#22c55e";
         link.style.color = "#fff";
       }
-
     });
-
   }
 
   // ===============================
-  // LOAD MENU FROM DATABASE
+  // FALLBACK MENU (ANTI ERROR)
+  // ===============================
+  function getFallbackMenu(){
+    return [
+      {name:"Dashboard", icon:"fa-solid fa-house", link:"/dashboard"},
+      {name:"Create Link", icon:"fa-solid fa-link", link:"/create"},
+      {name:"My Link", icon:"fa-solid fa-list", link:"/links"},
+      {name:"Withdraw", icon:"fa-solid fa-money-bill", link:"/withdraw"}
+    ];
+  }
+
+  // ===============================
+  // LOAD MENU
   // ===============================
   async function loadMenu(){
 
-    const profile = await database.getCurrentProfile();
+    try{
 
-    if(!profile){
-      location.href = "/login.html";
-      return;
+      const profile = await database.getCurrentProfile();
+
+      if(!profile){
+        location.href = "/login.html";
+        return;
+      }
+
+      const role = profile.role || "member";
+
+      let menus = [];
+
+      // 🔥 SAFE CALL
+      if(typeof database.getMenusByRole === "function"){
+        try{
+          menus = await database.getMenusByRole(role);
+        }catch(e){
+          console.warn("DB MENU ERROR:", e);
+        }
+      }
+
+      // 🔥 FALLBACK AUTO
+      if(!menus || menus.length === 0){
+        console.warn("PAKAI FALLBACK MENU");
+        menus = getFallbackMenu();
+      }
+
+      // clear menu
+      sidebar.querySelectorAll("a").forEach(el => el.remove());
+
+      menus.forEach(menu => {
+
+        const a = document.createElement("a");
+
+        a.href = menu.link || "#";
+
+        a.innerHTML = `
+          <i class="${menu.icon || 'fa-solid fa-circle'}"></i>
+          ${menu.name || 'Menu'}
+        `;
+
+        a.addEventListener("click", closeSidebar);
+
+        sidebar.appendChild(a);
+
+      });
+
+      initSearch();
+      setActiveMenu();
+
+    }catch(err){
+      console.error("LOAD MENU FATAL:", err);
+
+      // fallback kalau crash total
+      const menus = getFallbackMenu();
+
+      menus.forEach(menu => {
+        const a = document.createElement("a");
+        a.href = menu.link;
+        a.innerHTML = `<i class="${menu.icon}"></i> ${menu.name}`;
+        sidebar.appendChild(a);
+      });
     }
-
-    const role = profile.role || "member";
-
-    const menus = await database.getMenusByRole(role);
-
-    // hapus menu lama
-    sidebar.querySelectorAll("a").forEach(el => el.remove());
-
-    menus.forEach(menu => {
-
-      const a = document.createElement("a");
-
-      a.href = menu.link;
-
-      a.innerHTML = `
-        <i class="${menu.icon}"></i>
-        ${menu.name}
-      `;
-
-      // auto close mobile
-      a.addEventListener("click", closeSidebar);
-
-      sidebar.appendChild(a);
-
-    });
-
-    // re-init
-    initSearch();
-    setActiveMenu();
 
   }
 
@@ -125,16 +157,22 @@
   // ===============================
   async function loadUserUI(){
 
-    const profile = await database.getCurrentProfile();
+    try{
 
-    if(!profile) return;
+      const profile = await database.getCurrentProfile();
 
-    const userBox = root.querySelector(".c2p-user");
+      if(!profile) return;
 
-    if(userBox){
-      userBox.innerHTML = `
-        <strong>${profile.username || "User"}</strong>
-      `;
+      const userBox = root.querySelector(".c2p-user");
+
+      if(userBox){
+        userBox.innerHTML = `
+          <strong>${profile.username || "User"}</strong>
+        `;
+      }
+
+    }catch(e){
+      console.warn("USER UI ERROR:", e);
     }
 
   }
@@ -149,7 +187,11 @@
     if(!btn) return;
 
     btn.addEventListener("click", async () => {
-      await database.logout();
+      try{
+        await database.logout();
+      }catch(e){
+        console.error("LOGOUT ERROR:", e);
+      }
     });
 
   }
@@ -159,14 +201,23 @@
   // ===============================
   async function protect(){
 
-    const user = await database.getUser();
+    try{
 
-    if(!user){
+      const user = await database.getUser();
+
+      if(!user){
+        location.href = "/login.html";
+        return false;
+      }
+
+      return true;
+
+    }catch(e){
+      console.error("AUTH ERROR:", e);
       location.href = "/login.html";
       return false;
     }
 
-    return true;
   }
 
   // ===============================
