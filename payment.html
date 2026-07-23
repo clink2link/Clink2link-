@@ -469,7 +469,30 @@ Withdraw Instant
 <script src="js/footer.js"></script>
 
 <script src="js/payment.js"></script>
+<script>
+fetch("components/navbar.html")
+.then(res=>{
+if(!res.ok)throw new Error("Navbar tidak ditemukan");
+return res.text();
+})
+.then(html=>{
+document.getElementById("navbar").innerHTML=html;
+if(typeof c2pInit==="function")c2pInit();
+})
+.catch(err=>console.error("NAVBAR ERROR:",err));
 
+fetch("components/footer.html")
+.then(res=>{
+if(!res.ok)throw new Error("Footer tidak ditemukan");
+return res.text();
+})
+.then(html=>{
+document.getElementById("footer").innerHTML=html;
+if(typeof c2pFooterInit==="function")c2pFooterInit();
+})
+.catch(err=>console.error("FOOTER ERROR:",err));
+</script>
+<script src="assets/js/debug.js"></script>
 
 </body>
 </html>
