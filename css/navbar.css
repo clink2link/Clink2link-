@@ -1,254 +1,449 @@
 /* =========================
    CLICK2PAY NAVBAR SYSTEM
-   FINAL - CLEAN SaaS UI
+   FIX ICON + CLEAN
 ========================= */
 
-#navbar *{
+
+/* RESET KHUSUS NAVBAR */
+#navbar,
+#navbar *,
+#navbar *::before,
+#navbar *::after{
   box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:'Poppins',sans-serif;
 }
 
+
 /* ================= NAVBAR ================= */
-#navbar .c2p-navbar{
+
+#navbar.c2p-navbar{
   position:fixed;
   top:0;
   left:0;
   right:0;
   height:60px;
+
   display:flex;
   align-items:center;
   justify-content:space-between;
+
   padding:0 16px;
+
   background:#ffffff;
   border-bottom:1px solid #e5e7eb;
+
   z-index:1000;
 }
+
 
 #navbar .c2p-menu-btn{
+
   background:none;
   border:none;
+
   font-size:20px;
   cursor:pointer;
+
+  color:#334155;
+
 }
+
 
 #navbar .c2p-logo{
+
+  font-family:'Poppins',sans-serif;
+
   font-weight:800;
   font-size:18px;
+
   letter-spacing:.5px;
+
 }
+
 
 #navbar .c2p-logo span{
+
   color:#22c55e;
+
 }
+
 
 #navbar .c2p-lang{
+
   border:none;
+
   background:#f1f5f9;
+
   padding:6px 10px;
+
   border-radius:8px;
+
   font-size:12px;
+
 }
+
+
 
 /* ================= SIDEBAR ================= */
-#navbar .c2p-sidebar{
+
+.c2p-sidebar{
+
   position:fixed;
+
   top:0;
   left:-270px;
+
   width:270px;
+
   height:100%;
-  background:#ffffff;
-  transition:all .3s ease;
+
+  background:#fff;
+
+  transition:.3s ease;
+
   z-index:1001;
+
   overflow-y:auto;
+
   padding-top:65px;
+
 }
 
-/* ===== SEARCH DALAM SIDEBAR ===== */
-#navbar .c2p-sidebar .c2p-search-box{
+
+
+.c2p-search-box{
+
   position:sticky;
+
   top:0;
-  background:#ffffff;
+
+  background:#fff;
+
   padding:12px;
+
   border-bottom:1px solid #e5e7eb;
-  z-index:2;
+
 }
 
-#navbar .c2p-search-box input{
+
+
+.c2p-search-box input{
+
   width:100%;
+
   padding:10px;
+
   border-radius:10px;
+
   border:1px solid #d1d5db;
+
   font-size:14px;
+
 }
 
-/* ===== MENU ===== */
-#navbar .c2p-sidebar a{
+
+
+/* MENU */
+
+.c2p-sidebar a{
+
   display:flex;
+
   align-items:center;
+
   gap:12px;
+
   padding:12px 16px;
+
   color:#334155;
+
   text-decoration:none;
+
   font-size:14px;
-  transition:.2s;
+
+  font-family:'Poppins',sans-serif;
+
 }
 
-#navbar .c2p-sidebar a i{
+
+.c2p-sidebar a i{
+
   width:20px;
+
   text-align:center;
+
+  font-family:"Font Awesome 6 Free";
+
+  font-weight:900;
+
 }
 
-#navbar .c2p-sidebar a:hover{
+
+.c2p-sidebar a:hover{
+
   background:#f1f5f9;
+
 }
 
-/* ===== DIVIDER ===== */
-#navbar .c2p-divider{
+
+
+/* DIVIDER */
+
+.c2p-divider{
+
   padding:10px 16px;
+
   font-size:12px;
+
   color:#94a3b8;
+
 }
 
-/* ===== LOGOUT ===== */
-#navbar .c2p-logout{
+
+
+/* LOGOUT */
+
+.c2p-logout{
+
   width:90%;
+
   margin:12px auto;
+
   display:block;
+
   padding:10px;
+
   background:#ef4444;
+
   color:#fff;
+
   border:none;
+
   border-radius:8px;
-  font-size:14px;
+
 }
 
-/* ===== FOOTER ===== */
-#navbar .c2p-side-footer{
+
+
+/* FOOTER */
+
+.c2p-side-footer{
+
   text-align:center;
+
   font-size:12px;
+
   color:#94a3b8;
+
   padding:12px;
+
 }
 
-/* ================= OVERLAY ================= */
-#navbar .c2p-overlay{
+
+
+/* OVERLAY */
+
+.c2p-overlay{
+
   position:fixed;
+
   inset:0;
-  background:rgba(0,0,0,0.4);
+
+  background:rgba(0,0,0,.4);
+
   display:none;
+
   z-index:1000;
+
 }
+
+
 
 /* ================= BOTTOM NAV ================= */
-#navbar .c2p-bottom-nav{
+
+.c2p-bottom-nav{
+
   position:fixed;
+
   bottom:0;
+
   left:0;
+
   right:0;
+
   height:65px;
-  background:#ffffff;
+
+  background:#fff;
+
   border-top:1px solid #e5e7eb;
+
   display:flex;
+
   justify-content:space-around;
+
   align-items:center;
+
   z-index:1000;
+
 }
 
-#navbar .c2p-bottom-nav a{
+
+
+.c2p-bottom-nav a{
+
   text-align:center;
+
   font-size:11px;
+
   color:#475569;
+
   text-decoration:none;
+
+  font-family:'Poppins',sans-serif;
+
 }
 
-#navbar .c2p-bottom-nav i{
+
+
+.c2p-bottom-nav i{
+
   display:block;
+
   font-size:18px;
+
   margin-bottom:3px;
+
+  font-family:"Font Awesome 6 Free";
+
+  font-weight:900;
+
 }
 
-/* ===== BUTTON TENGAH ===== */
-#navbar .center-btn{
+
+
+.center-btn{
+
   position:relative;
+
   top:-18px;
+
   background:#22c55e;
-  color:#fff;
+
+  color:#fff!important;
+
   padding:14px;
+
   border-radius:50%;
-  box-shadow:0 8px 20px rgba(0,0,0,0.2);
+
+  box-shadow:0 8px 20px rgba(0,0,0,.2);
+
 }
 
-/* ================= DESKTOP MODE ================= */
+
+
+/* ================= DESKTOP ================= */
+
 @media(min-width:768px){
 
-  /* sidebar jadi tetap */
-  #navbar .c2p-sidebar{
-    left:0;
-  }
 
-  #navbar .c2p-overlay{
-    display:none !important;
-  }
+.c2p-sidebar{
 
-  #navbar .c2p-navbar{
-    left:270px;
-  }
-
-  #navbar .c2p-bottom-nav{
-    display:none;
-  }
+  left:0;
 
 }
 
-/* ================= BODY SPACING ================= */
+
+.c2p-overlay{
+
+  display:none!important;
+
+}
+
+
+#navbar.c2p-navbar{
+
+  left:270px;
+
+}
+
+
+.c2p-bottom-nav{
+
+  display:none;
+
+}
+
+
 body{
-  padding-top:60px;
-  padding-bottom:70px;
+
+  padding-left:270px;
+
+  padding-bottom:0;
+
 }
 
-@media(min-width:768px){
-  body{
-    padding-left:270px;
-    padding-bottom:0;
-  }
+
 }
 
-/* ================= DARK MODE AUTO ================= */
-@media (prefers-color-scheme: dark){
 
-  #navbar .c2p-navbar,
-  #navbar .c2p-sidebar,
-  #navbar .c2p-bottom-nav{
-    background:#0f172a;
-    border-color:#1e293b;
-  }
 
-  #navbar .c2p-search-box{
-    background:#0f172a;
-  }
+/* MOBILE BODY */
 
-  #navbar .c2p-search-box input{
-    background:#1e293b;
-    border-color:#334155;
-    color:#fff;
-  }
+body{
 
-  #navbar .c2p-sidebar a{
-    color:#cbd5f5;
-  }
+ padding-top:60px;
 
-  #navbar .c2p-sidebar a:hover{
-    background:#1e293b;
-  }
+ padding-bottom:70px;
 
-  #navbar .c2p-divider{
-    color:#64748b;
-  }
+}
 
-  #navbar .c2p-bottom-nav a{
-    color:#cbd5f5;
-  }
+
+
+/* ================= DARK ================= */
+
+@media(prefers-color-scheme:dark){
+
+
+#navbar.c2p-navbar,
+.c2p-sidebar,
+.c2p-bottom-nav{
+
+ background:#0f172a;
+
+ border-color:#1e293b;
+
+}
+
+
+.c2p-search-box{
+
+ background:#0f172a;
+
+}
+
+
+.c2p-search-box input{
+
+ background:#1e293b;
+
+ color:#fff;
+
+ border-color:#334155;
+
+}
+
+
+.c2p-sidebar a{
+
+ color:#cbd5f5;
+
+}
+
+
+.c2p-bottom-nav a{
+
+ color:#cbd5f5;
+
+}
+
 
 }
