@@ -329,9 +329,7 @@ id.substring(0,8)+"...";
 
 });
 
-setTimeout(()=>{
-    loadNavbarProfile();
-},300);
+loadNavbarProfile();
 // =========================
 // LOGOUT
 // =========================
