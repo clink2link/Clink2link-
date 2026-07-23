@@ -1,192 +1,230 @@
-/* =========================
-   GLOBAL CONTAINER
-========================= */
-.container {
-max-width: 1100px;
-margin: auto;
-padding: 20px;
+/* =================================
+CLICK2PAY GLOBAL THEME (AUTO DARK)
+================================= */
+
+:root{
+--bg:#f6f7fb;
+--card-bg:#ffffff;
+--item-bg:#f1f3f7;
+--hover-bg:#e9edf5;
+--text:#0f172a;
+--subtext:#64748b;
+--primary:#2563eb;
 }
 
-/* =========================
-   TITLE
-========================= */
-.page-title {
-margin-bottom: 25px;
+@media (prefers-color-scheme: dark){
+:root{
+--bg:#0f172a;
+--card-bg:#1e293b;
+--item-bg:#273449;
+--hover-bg:#334155;
+--text:#e2e8f0;
+--subtext:#94a3b8;
+--primary:#3b82f6;
+}
 }
 
-.page-title h1 {
-font-size: 24px;
-font-weight: 700;
-display: flex;
-align-items: center;
-gap: 10px;
+body{
+background:var(--bg);
+color:var(--text);
+font-family:'Inter',sans-serif;
+margin:0;
 }
 
-.page-title p {
-font-size: 14px;
-opacity: 0.7;
-margin-top: 5px;
+
+/* =================================
+CONTAINER
+================================= */
+
+main.container{
+max-width:1100px;
+margin:auto;
+padding:100px 20px 40px;
 }
 
-/* =========================
-   GRID CARD (SAMA KAYAK PAYMENT)
-========================= */
-.payment-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-gap: 15px;
-margin-bottom: 25px;
+
+/* =================================
+TITLE (MATCH PAYMENT)
+================================= */
+
+.page-title{
+margin-bottom:25px;
 }
 
-.pay-card {
-padding: 16px;
-border-radius: 14px;
-background: var(--card-bg);
-display: flex;
-flex-direction: column;
-gap: 8px;
-transition: 0.2s;
+.page-title h1{
+display:flex;
+align-items:center;
+gap:12px;
+margin:0;
+font-size:32px;
+font-weight:800;
+color:var(--primary);
 }
 
-.pay-card:hover {
-transform: translateY(-3px);
+.page-title p{
+margin-top:8px;
+color:var(--subtext);
+font-size:14px;
 }
 
-.pay-card span {
-font-size: 13px;
-opacity: 0.7;
+
+/* =================================
+GRID (MATCH PAYMENT)
+================================= */
+
+.payment-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:18px;
+margin-top:25px;
 }
 
-.pay-card h2 {
-font-size: 18px;
-font-weight: 700;
+/* RESPONSIVE */
+@media (max-width:700px){
+.payment-grid{
+grid-template-columns:1fr;
+}
 }
 
-/* =========================
-   ICON WARNA
-========================= */
-.card-icon {
-width: 38px;
-height: 38px;
-border-radius: 10px;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 16px;
+
+/* =================================
+CARD
+================================= */
+
+.pay-card{
+background:var(--card-bg);
+padding:18px;
+border-radius:16px;
+display:flex;
+flex-direction:column;
+gap:10px;
+transition:0.2s;
 }
 
-.blue { background: rgba(0,123,255,0.15); color: #3b82f6; }
-.green { background: rgba(34,197,94,0.15); color: #22c55e; }
-.purple { background: rgba(168,85,247,0.15); color: #a855f7; }
-
-/* =========================
-   INFO BOX
-========================= */
-.info-box {
-background: var(--card-bg);
-border-radius: 14px;
-padding: 16px;
+.pay-card:hover{
+transform:translateY(-3px);
 }
 
-.info-header {
-display: flex;
-align-items: center;
-gap: 10px;
-margin-bottom: 10px;
-font-weight: 600;
+.pay-card span{
+font-size:13px;
+color:var(--subtext);
 }
 
-/* =========================
-   LIST LOGIN
-========================= */
-.info-list {
-display: flex;
-flex-direction: column;
-gap: 12px;
-margin-top: 10px;
+.pay-card h2{
+margin:0;
+font-size:20px;
+font-weight:700;
 }
 
-.login-item {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 12px;
-border-radius: 10px;
-background: var(--item-bg);
-transition: 0.2s;
+
+/* =================================
+ICON
+================================= */
+
+.card-icon{
+width:42px;
+height:42px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:18px;
 }
 
-.login-item:hover {
-background: var(--hover-bg);
+.blue{
+background:rgba(37,99,235,0.15);
+color:#3b82f6;
 }
 
-.login-left {
-display: flex;
-flex-direction: column;
+.green{
+background:rgba(34,197,94,0.15);
+color:#22c55e;
 }
 
-.login-device {
-font-weight: 600;
-font-size: 14px;
+.purple{
+background:rgba(168,85,247,0.15);
+color:#a855f7;
 }
 
-.login-time {
-font-size: 12px;
-opacity: 0.6;
+
+/* =================================
+INFO BOX
+================================= */
+
+.info-box{
+background:var(--card-bg);
+border-radius:16px;
+padding:18px;
+margin-top:20px;
 }
 
-/* =========================
-   RESPONSIVE MOBILE
-========================= */
-@media (max-width: 600px) {
-
-.container {
-padding: 15px;
+.info-header{
+display:flex;
+align-items:center;
+gap:10px;
+font-weight:700;
+margin-bottom:12px;
 }
 
-.page-title h1 {
-font-size: 20px;
+
+/* =================================
+LIST LOGIN
+================================= */
+
+.info-list{
+display:flex;
+flex-direction:column;
+gap:12px;
 }
 
-.pay-card h2 {
-font-size: 16px;
+.login-item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:14px;
+border-radius:12px;
+background:var(--item-bg);
+transition:0.2s;
 }
 
-.login-item {
-flex-direction: column;
-align-items: flex-start;
-gap: 5px;
+.login-item:hover{
+background:var(--hover-bg);
 }
 
+.login-left{
+display:flex;
+flex-direction:column;
 }
 
-/* =========================
-   LIGHT MODE DEFAULT
-========================= */
-:root {
---bg: #f6f7fb;
---card-bg: #ffffff;
---item-bg: #f1f3f7;
---hover-bg: #e9edf5;
---text: #111;
+.login-device{
+font-weight:600;
+font-size:14px;
 }
 
-/* =========================
-   AUTO DARK MODE
-========================= */
-@media (prefers-color-scheme: dark) {
-
-:root {
---bg: #0f172a;
---card-bg: #1e293b;
---item-bg: #273449;
---hover-bg: #334155;
---text: #e2e8f0;
+.login-time{
+font-size:12px;
+color:var(--subtext);
 }
 
-body {
-background: var(--bg);
-color: var(--text);
+
+/* =================================
+MOBILE FIX
+================================= */
+
+@media (max-width:600px){
+
+.page-title h1{
+font-size:24px;
+}
+
+.pay-card h2{
+font-size:18px;
+}
+
+.login-item{
+flex-direction:column;
+align-items:flex-start;
+gap:6px;
 }
 
 }
