@@ -535,7 +535,7 @@ return;
 
 
 const profile =
-await database.getCurrentProfile();
+await window.database.getCurrentProfile();
 
 
 
@@ -648,7 +648,7 @@ return;
 
 
 const profile =
-await database.getCurrentProfile();
+await window.database.getCurrentProfile();
 
 
 
