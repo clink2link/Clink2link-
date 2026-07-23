@@ -429,16 +429,12 @@ profile.id
 // =========================
 
 
-localStorage.setItem(
-"user_id",
-profile.id
-);
+localStorage.setItem("user_id", profile.id);
+localStorage.setItem("username", profile.username);
 
-
-localStorage.setItem(
-"username",
-profile.username
-);
+console.log("LOGIN SAVE");
+console.log("PROFILE ID:", profile.id);
+console.log("LOCAL USER:", localStorage.getItem("user_id"));
 
 
 
