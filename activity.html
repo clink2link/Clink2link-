@@ -49,7 +49,23 @@ Memuat...
 <script src="js/navbar.js"></script>
 
 <script src="js/activity.js"></script>
+<script>
 
+fetch("components/navbar.html")
+.then(res=>res.text())
+.then(data=>{
+
+document.getElementById("navbar").innerHTML=data;
+
+
+if(typeof c2pInit==="function"){
+c2pInit();
+}
+
+});
+
+
+</script>
 
 </body>
 
