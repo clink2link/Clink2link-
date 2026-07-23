@@ -329,7 +329,9 @@ id.substring(0,8)+"...";
 
 });
 
-loadNavbarProfile();
+window.addEventListener("load", () => {
+    loadNavbarProfile();
+});
 // =========================
 // LOGOUT
 // =========================
