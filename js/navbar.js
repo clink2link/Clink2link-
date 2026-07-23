@@ -1,114 +1,186 @@
 // ===============================
-// CLICK2PAY NAVBAR SYSTEM (FINAL)
+// CLICK2PAY NAVBAR FINAL SYSTEM
+// CONNECTED TO database.js
 // ===============================
 
-document.addEventListener("DOMContentLoaded", async () => {
+(function(){
 
-  const container = document.getElementById("navbar");
-  if (!container) return;
+  const root = document.querySelector("#navbar");
+  if(!root) return;
 
-  // ===== LOAD NAVBAR HTML =====
-  try {
-    const res = await fetch("/components/navbar.html"); // WAJIB pakai /
-    const html = await res.text();
-    container.innerHTML = html;
-  } catch (err) {
-    console.error("Navbar gagal load:", err);
-    return;
-  }
+  const sidebar = root.querySelector(".c2p-sidebar");
+  const overlay = root.querySelector(".c2p-overlay");
+  const menuBtn = root.querySelector(".c2p-menu-btn");
+  const searchInput = root.querySelector("#menuSearch");
 
-  // ===== INIT ELEMENT =====
-  const menuBtn = container.querySelector(".c2p-menu-btn");
-  const sidebar = container.querySelector(".c2p-sidebar");
-  const overlay = container.querySelector(".c2p-overlay");
-  const searchInput = container.querySelector("#menuSearch");
-  const menuLinks = container.querySelectorAll(".c2p-sidebar a");
+  let menuItems = [];
 
-  // ===== SAFETY CHECK =====
-  if (!menuBtn || !sidebar || !overlay) {
-    console.warn("Navbar element tidak lengkap");
-    return;
-  }
-
-  // ===== TOGGLE SIDEBAR =====
-  function openSidebar() {
+  // ===============================
+  // SIDEBAR CONTROL
+  // ===============================
+  function openSidebar(){
     sidebar.style.left = "0";
     overlay.style.display = "block";
-    document.body.style.overflow = "hidden";
   }
 
-  function closeSidebar() {
-    sidebar.style.left = "-260px";
+  function closeSidebar(){
+    sidebar.style.left = "-270px";
     overlay.style.display = "none";
-    document.body.style.overflow = "";
   }
 
-  menuBtn.addEventListener("click", openSidebar);
-  overlay.addEventListener("click", closeSidebar);
+  menuBtn?.addEventListener("click", openSidebar);
+  overlay?.addEventListener("click", closeSidebar);
 
-  // ===== AUTO CLOSE SAAT KLIK MENU =====
-  menuLinks.forEach(link => {
-    link.addEventListener("click", () => {
-      closeSidebar();
-    });
-  });
+  // ===============================
+  // SEARCH MENU
+  // ===============================
+  function initSearch(){
+    if(!searchInput) return;
 
-  // ===== SEARCH MENU (LIVE FILTER) =====
-  if (searchInput) {
-    searchInput.addEventListener("input", () => {
-      const keyword = searchInput.value.toLowerCase();
+    menuItems = [...sidebar.querySelectorAll("a")];
 
-      menuLinks.forEach(link => {
-        const text = link.textContent.toLowerCase();
-        link.style.display = text.includes(keyword) ? "flex" : "none";
+    searchInput.addEventListener("input", function(){
+
+      const keyword = this.value.toLowerCase();
+
+      menuItems.forEach(item => {
+
+        const text = item.innerText.toLowerCase();
+
+        item.style.display = text.includes(keyword)
+          ? "flex"
+          : "none";
+
       });
+
     });
   }
 
-  // ===== ACTIVE LINK DETECT =====
-  const currentPath = window.location.pathname;
+  // ===============================
+  // ACTIVE MENU
+  // ===============================
+  function setActiveMenu(){
 
-  menuLinks.forEach(link => {
-    const href = link.getAttribute("href");
-    if (!href || href === "#") return;
+    const links = sidebar.querySelectorAll("a");
+    const current = location.pathname;
 
-    if (currentPath.includes(href)) {
-      link.style.background = "rgba(0,0,0,0.05)";
-      link.style.fontWeight = "600";
-    }
-  });
+    links.forEach(link => {
 
-  // ===== DARK MODE AUTO (SYNC SYSTEM) =====
-  const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      const href = link.getAttribute("href");
 
-  function applyDark(e) {
-    if (e.matches) {
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
-    }
+      if(href && current.includes(href)){
+        link.style.background = "#22c55e";
+        link.style.color = "#fff";
+      }
+
+    });
+
   }
 
-  applyDark(darkQuery);
-  darkQuery.addEventListener("change", applyDark);
+  // ===============================
+  // LOAD MENU FROM DATABASE
+  // ===============================
+  async function loadMenu(){
 
-  // ===== ESC KEY CLOSE =====
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeSidebar();
-  });
+    const profile = await database.getCurrentProfile();
 
-  // ===== SWIPE CLOSE (MOBILE UX) =====
-  let touchStartX = 0;
-
-  sidebar.addEventListener("touchstart", e => {
-    touchStartX = e.touches[0].clientX;
-  });
-
-  sidebar.addEventListener("touchmove", e => {
-    const touchX = e.touches[0].clientX;
-    if (touchX - touchStartX < -50) {
-      closeSidebar();
+    if(!profile){
+      location.href = "/login.html";
+      return;
     }
+
+    const role = profile.role || "member";
+
+    const menus = await database.getMenusByRole(role);
+
+    // hapus menu lama
+    sidebar.querySelectorAll("a").forEach(el => el.remove());
+
+    menus.forEach(menu => {
+
+      const a = document.createElement("a");
+
+      a.href = menu.link;
+
+      a.innerHTML = `
+        <i class="${menu.icon}"></i>
+        ${menu.name}
+      `;
+
+      // auto close mobile
+      a.addEventListener("click", closeSidebar);
+
+      sidebar.appendChild(a);
+
+    });
+
+    // re-init
+    initSearch();
+    setActiveMenu();
+
+  }
+
+  // ===============================
+  // LOAD USER UI
+  // ===============================
+  async function loadUserUI(){
+
+    const profile = await database.getCurrentProfile();
+
+    if(!profile) return;
+
+    const userBox = root.querySelector(".c2p-user");
+
+    if(userBox){
+      userBox.innerHTML = `
+        <strong>${profile.username || "User"}</strong>
+      `;
+    }
+
+  }
+
+  // ===============================
+  // LOGOUT
+  // ===============================
+  function initLogout(){
+
+    const btn = root.querySelector(".c2p-logout");
+
+    if(!btn) return;
+
+    btn.addEventListener("click", async () => {
+      await database.logout();
+    });
+
+  }
+
+  // ===============================
+  // PROTECT PAGE
+  // ===============================
+  async function protect(){
+
+    const user = await database.getUser();
+
+    if(!user){
+      location.href = "/login.html";
+      return false;
+    }
+
+    return true;
+  }
+
+  // ===============================
+  // INIT
+  // ===============================
+  document.addEventListener("DOMContentLoaded", async () => {
+
+    const ok = await protect();
+    if(!ok) return;
+
+    await loadMenu();
+    await loadUserUI();
+    initLogout();
+
   });
 
-});
+})();
