@@ -1,72 +1,110 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="id">
 <head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Aktivitas Login - Click2Pay</title>
 
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
 <link rel="stylesheet" href="css/navbar.css">
 
-<link rel="stylesheet" href="css/theme.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<link 
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
 
 </head>
 
 
 <body>
 
-
 <div id="navbar"></div>
 
 
-<main>
+<main class="container">
 
-<h2>
+<!-- TITLE -->
+<div class="page-title">
+<h1>
 <i class="fa-solid fa-user-clock"></i>
 Aktivitas Login
-</h2>
+</h1>
 
-
-<div id="loginList">
-Memuat...
+<p>
+Riwayat perangkat dan waktu login akun kamu.
+</p>
 </div>
 
+
+<!-- STATISTIK -->
+<div class="payment-grid">
+
+<div class="pay-card">
+<div class="card-icon blue">
+<i class="fa-solid fa-right-to-bracket"></i>
+</div>
+<span>Total Login</span>
+<h2 id="totalLogin">0</h2>
+</div>
+
+<div class="pay-card">
+<div class="card-icon green">
+<i class="fa-solid fa-clock"></i>
+</div>
+<span>Login Terakhir</span>
+<h2 id="lastLogin">-</h2>
+</div>
+
+<div class="pay-card">
+<div class="card-icon purple">
+<i class="fa-solid fa-laptop"></i>
+</div>
+<span>Device</span>
+<h2 id="lastDevice">-</h2>
+</div>
+
+</div>
+
+
+<!-- LIST LOGIN -->
+<div class="info-box">
+
+<div class="info-header">
+<i class="fa-solid fa-list"></i>
+<h3>Riwayat Login</h3>
+</div>
+
+<div id="loginList" class="info-list">
+Memuat data...
+</div>
+
+</div>
 
 </main>
 
 
 
+<!-- SCRIPT -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
 <script src="js/database.js"></script>
-
 <script src="js/session.js"></script>
-
 <script src="js/navbar.js"></script>
-
 <script src="js/activity.js"></script>
+
 <script>
-
 fetch("components/navbar.html")
-.then(res=>res.text())
-.then(data=>{
+.then(res => res.text())
+.then(data => {
+  document.getElementById("navbar").innerHTML = data;
 
-document.getElementById("navbar").innerHTML=data;
-
-
-if(typeof c2pInit==="function"){
-c2pInit();
-}
-
+  if (typeof c2pInit === "function") {
+    c2pInit();
+  }
 });
-
-
 </script>
 
 </body>
-
 </html>
