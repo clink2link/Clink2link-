@@ -11,22 +11,28 @@ const $ = id => document.getElementById(id);
 // ===============================
 document.addEventListener("DOMContentLoaded", async () => {
 
-  if (!window.database) {
-    console.error("Database tidak tersedia");
-    return;
+  try {
+
+    if (!window.database) {
+      console.error("Database tidak tersedia");
+      return;
+    }
+
+    supabase = database.supabase;
+
+    user = await database.getCurrentProfile();
+
+    if (!user) {
+      location.href = "login.html";
+      return;
+    }
+
+    await loadWD();
+    startRealtime();
+
+  } catch (err) {
+    console.error("INIT ERROR:", err);
   }
-
-  supabase = database.supabase;
-
-  user = await database.getCurrentProfile();
-
-  if (!user) {
-    location.href = "login.html";
-    return;
-  }
-
-  await loadWD();
-  startRealtime();
 });
 
 
@@ -38,18 +44,91 @@ async function loadWD(){
   const info = $("wdInfo");
   const list = $("wdList");
 
-  // 🔥 loading state
-  list.innerHTML = "<div class='loading'>Loading...</div>";
+  // 🔥 proteksi biar gak crash
+  if (!info || !list) {
+    console.error("wdInfo / wdList tidak ditemukan");
+    return;
+  }
 
-  const {data, error} = await supabase
-    .from("withdraws")
-    .select("id, amount, method, account_number, fee, created_at")
-    .eq("user_id", user.id)
-    .eq("status", "success")
-    .order("created_at", {ascending:false});
+  try {
 
-  if(error){
-    console.log(error);
+    // loading
+    list.innerHTML = "<div class='loading'>Loading...</div>";
+
+    const {data, error} = await supabase
+      .from("withdraws")
+      .select("id, amount, method, account_number, fee, created_at")
+      .eq("user_id", user.id)
+      .eq("status", "success")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+
+      info.innerHTML = `
+        <i class="fa-solid fa-info-circle"></i>
+        Belum ada transaksi withdraw berhasil.
+      `;
+
+      list.innerHTML = "";
+      return;
+    }
+
+    info.innerHTML = `
+      <i class="fa-solid fa-circle-check"></i>
+      Total ${data.length} transaksi berhasil.
+    `;
+
+    const fragment = document.createDocumentFragment();
+
+    data.forEach(item => {
+
+      const card = document.createElement("div");
+      card.className = "wd-card";
+
+      card.innerHTML = `
+        <div class="wd-header">
+          <div class="wd-icon">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div>
+            <h3>Withdraw Success</h3>
+            <span>${formatDate(item.created_at)}</span>
+          </div>
+        </div>
+
+        <div class="wd-amount">
+          ${rupiah(item.amount)}
+        </div>
+
+        <div class="wd-detail">
+          <div>
+            <span>Metode</span>
+            <b>${escapeHTML(item.method || "-")}</b>
+          </div>
+
+          <div>
+            <span>Nomor</span>
+            <b>${mask(item.account_number)}</b>
+          </div>
+
+          <div>
+            <span>Biaya</span>
+            <b>${rupiah(item.fee || 0)}</b>
+          </div>
+        </div>
+      `;
+
+      fragment.appendChild(card);
+    });
+
+    list.innerHTML = "";
+    list.appendChild(fragment);
+
+  } catch (err) {
+
+    console.error("LOAD WD ERROR:", err);
 
     info.innerHTML = `
       <i class="fa-solid fa-circle-xmark"></i>
@@ -57,80 +136,19 @@ async function loadWD(){
     `;
 
     list.innerHTML = "";
-    return;
   }
-
-  if(!data || data.length === 0){
-
-    info.innerHTML = `
-      <i class="fa-solid fa-info-circle"></i>
-      Belum ada transaksi withdraw berhasil.
-    `;
-
-    list.innerHTML = "";
-    return;
-  }
-
-  info.innerHTML = `
-    <i class="fa-solid fa-circle-check"></i>
-    Total ${data.length} transaksi berhasil.
-  `;
-
-  // 🔥 render aman (no innerHTML +=)
-  const fragment = document.createDocumentFragment();
-
-  data.forEach(item => {
-
-    const card = document.createElement("div");
-    card.className = "wd-card";
-
-    card.innerHTML = `
-      <div class="wd-header">
-        <div class="wd-icon">
-          <i class="fa-solid fa-circle-check"></i>
-        </div>
-        <div>
-          <h3>Withdraw Success</h3>
-          <span>${formatDate(item.created_at)}</span>
-        </div>
-      </div>
-
-      <div class="wd-amount">
-        ${rupiah(item.amount)}
-      </div>
-
-      <div class="wd-detail">
-        <div>
-          <span>Metode</span>
-          <b>${escapeHTML(item.method || "-")}</b>
-        </div>
-
-        <div>
-          <span>Nomor</span>
-          <b>${mask(item.account_number)}</b>
-        </div>
-
-        <div>
-          <span>Biaya</span>
-          <b>${rupiah(item.fee || 0)}</b>
-        </div>
-      </div>
-    `;
-
-    fragment.appendChild(card);
-  });
-
-  list.innerHTML = "";
-  list.appendChild(fragment);
 }
 
 
 // ===============================
-// REALTIME (FIX MEMORY LEAK)
+// REALTIME
 // ===============================
 function startRealtime(){
 
-  if(wdChannel){
+  if (!supabase || !user) return;
+
+  // cleanup channel lama
+  if (wdChannel) {
     supabase.removeChannel(wdChannel);
   }
 
@@ -144,14 +162,14 @@ function startRealtime(){
         table: "withdraws",
         filter: `user_id=eq.${user.id}`
       },
-      debounce(loadWD, 300) // 🔥 anti spam reload
+      debounce(() => loadWD(), 300)
     )
     .subscribe();
 }
 
-// cleanup
+// cleanup saat keluar
 window.addEventListener("beforeunload", () => {
-  if(wdChannel){
+  if (wdChannel && supabase) {
     supabase.removeChannel(wdChannel);
   }
 });
@@ -161,7 +179,7 @@ window.addEventListener("beforeunload", () => {
 // UTILS
 // ===============================
 
-// 🔥 anti XSS
+// anti XSS
 function escapeHTML(str){
   return String(str)
     .replace(/&/g,"&amp;")
@@ -171,8 +189,7 @@ function escapeHTML(str){
     .replace(/'/g,"&#039;");
 }
 
-
-// 🔥 debounce
+// debounce
 function debounce(fn, delay){
   let t;
   return (...args)=>{
@@ -181,44 +198,40 @@ function debounce(fn, delay){
   };
 }
 
-
-// 🔥 rupiah aman
+// format rupiah
 function rupiah(value){
   const num = Number(value);
-  if(isNaN(num)) return "Rp0";
+  if (isNaN(num)) return "Rp0";
 
-  return new Intl.NumberFormat("id-ID",{
-    style:"currency",
-    currency:"IDR",
-    maximumFractionDigits:0
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0
   }).format(num);
 }
 
-
-// 🔥 mask aman
+// mask rekening
 function mask(value){
-  if(!value) return "-";
+  if (!value) return "-";
 
   const str = String(value);
 
-  if(str.length <= 6) return str;
+  if (str.length <= 6) return str;
 
   return str.slice(0,3) + "****" + str.slice(-3);
 }
 
-
-// 🔥 format tanggal aman
+// format tanggal
 function formatDate(date){
-
   const d = new Date(date);
 
-  if(isNaN(d.getTime())) return "-";
+  if (isNaN(d.getTime())) return "-";
 
-  return d.toLocaleString("id-ID",{
-    day:"2-digit",
-    month:"long",
-    year:"numeric",
-    hour:"2-digit",
-    minute:"2-digit"
+  return d.toLocaleString("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
   });
 }
