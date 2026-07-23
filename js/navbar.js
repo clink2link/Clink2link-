@@ -70,37 +70,123 @@ item.innerText.toLowerCase().includes(key)
    DARK MODE
 ========================= */
 
+/* =========================
+   DARK / NIGHT MODE
+========================= */
+
 function applyTheme(theme){
 
+const icon = themeBtn?.querySelector("i");
+
+
 if(theme === "dark"){
+
+
+document.documentElement.classList.add("dark");
+
 document.body.classList.add("dark");
-themeBtn?.querySelector("i")
-.classList.replace("fa-moon","fa-sun");
-}else{
-document.body.classList.remove("dark");
-themeBtn?.querySelector("i")
-.classList.replace("fa-sun","fa-moon");
-}
+
+
+
+if(icon){
+
+icon.classList.remove("fa-moon");
+
+icon.classList.add("fa-sun");
 
 }
+
+
+
+}else{
+
+
+document.documentElement.classList.remove("dark");
+
+document.body.classList.remove("dark");
+
+
+
+if(icon){
+
+icon.classList.remove("fa-sun");
+
+icon.classList.add("fa-moon");
+
+}
+
+
+}
+
+
+}
+
+
+
+// =========================
+// LOAD THEME
+// =========================
 
 const savedTheme = localStorage.getItem("theme");
 
-// auto detect system
-if(!savedTheme){
-const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-applyTheme(prefersDark ? "dark" : "light");
-}else{
+
+
+if(savedTheme){
+
+
 applyTheme(savedTheme);
+
+
+
+}else{
+
+
+const prefersDark =
+window.matchMedia(
+"(prefers-color-scheme: dark)"
+).matches;
+
+
+
+applyTheme(
+prefersDark ? "dark" : "light"
+);
+
+
+
 }
 
-themeBtn?.addEventListener("click", ()=>{
 
-const isDark = document.body.classList.contains("dark");
-const newTheme = isDark ? "light" : "dark";
 
-localStorage.setItem("theme", newTheme);
+// =========================
+// BUTTON TOGGLE
+// =========================
+
+themeBtn?.addEventListener(
+"click",
+()=>{
+
+
+const isDark =
+document.documentElement.classList.contains("dark");
+
+
+
+const newTheme =
+isDark ? "light" : "dark";
+
+
+
+localStorage.setItem(
+"theme",
+newTheme
+);
+
+
+
 applyTheme(newTheme);
+
+
 
 });
 
