@@ -1,5 +1,6 @@
-"use strict";
+console.log("PAYMENT JS AKTIF");
 
+"use strict";
 
 let supabase = null;
 let user = null;
@@ -17,17 +18,16 @@ document.addEventListener("DOMContentLoaded",async()=>{
 
 if(!window.database){
 
-console.error("DATABASE BELUM SIAP");
+alert("DATABASE BELUM SIAP");
 
 return;
 
 }
 
 
-supabase = database.supabase;
+supabase = window.database.supabase;
 
-
-user = await database.getCurrentProfile();
+user = await window.database.getCurrentProfile();
 
 
 
