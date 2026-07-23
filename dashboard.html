@@ -1,57 +1,1773 @@
-<header class="c2p-navbar">
-  <button class="c2p-menu-btn">
-    <i class="fa-solid fa-bars"></i>
-  </button>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-  <div class="c2p-logo">
-    CLICK<span>2PAY</span>
-  </div>
+<title>Dashboard - Click2Pay</title>
 
-  <select class="c2p-lang">
-    <option value="id">ID</option>
-    <option value="en">EN</option>
-  </select>
-</header>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-<div class="c2p-search-box">
-  <input type="text" placeholder="Cari menu..." id="menuSearch">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/footer.css">
+   
+<style>
+
+.dash-body{
+margin:0;
+padding-top:90px;
+min-height:100vh;
+font-family:'Poppins',sans-serif;
+background:#f8fbff;
+color:#111;
+}
+
+.dash-bg{
+position:fixed;
+inset:0;
+z-index:-1;
+background:
+radial-gradient(circle at 20% 20%,rgba(37,99,235,.15),transparent 30%),
+radial-gradient(circle at 80% 80%,rgba(0,184,255,.15),transparent 30%),
+linear-gradient(120deg,#fff,#f1f8ff);
+}
+
+.dash-container{
+max-width:1200px;
+margin:auto;
+padding:20px;
+}
+
+.dash-welcome,
+.dash-box,
+.dash-card{
+background:#fff;
+border:1px solid #dbeafe;
+border-radius:22px;
+box-shadow:0 10px 30px rgba(0,0,0,.06);
+transition:.3s;
+}
+
+.dash-welcome{
+padding:25px;
+margin-bottom:25px;
+}
+
+.dash-box{
+padding:30px;
+margin-top:25px;
+}
+
+.dash-card{
+padding:25px;
+}
+
+.dash-card:hover,
+.dash-box:hover{
+transform:translateY(-6px);
+box-shadow:0 18px 40px rgba(15,23,42,.12);
+}
+
+.dash-welcome h1{
+margin:0;
+font-size:28px;
+color:#2563eb;
+}
+
+.dash-welcome p{
+margin-top:8px;
+color:#64748b;
+}
+
+.dash-box h2{
+margin:0 0 15px;
+color:#2563eb;
+}
+
+.dash-stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+}
+
+.dash-icon{
+width:50px;
+height:50px;
+margin-bottom:15px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:15px;
+background:#eff6ff;
+color:#2563eb;
+font-size:24px;
+}
+
+.dash-card h3{
+margin:0;
+font-size:14px;
+color:#64748b;
+}
+
+.dash-card h2{
+margin:8px 0 0;
+font-size:28px;
+}
+
+.dash-buttons{
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+}
+
+.dash-btn{
+display:flex;
+align-items:center;
+gap:10px;
+padding:14px 25px;
+border:none;
+border-radius:15px;
+font-weight:700;
+cursor:pointer;
+}
+
+.dash-primary{
+background:#2563eb;
+color:#fff;
+}
+
+.dash-secondary{
+background:#eff6ff;
+color:#2563eb;
+}
+
+.dash-grid{
+display:block;
+margin-top:25px;
+}
+
+.dash-progress{
+height:12px;
+margin-top:15px;
+overflow:hidden;
+border-radius:20px;
+background:#e2e8f0;
+}
+
+.dash-progress span{
+display:block;
+height:100%;
+width:70%;
+background:linear-gradient(90deg,#2563eb,#00b8ff);
+}
+
+body.dark{
+background:#020617;
+color:#f8fafc;
+}
+
+body.dark .dash-bg{
+background:
+radial-gradient(circle at 20% 20%,rgba(37,99,235,.25),transparent 30%),
+radial-gradient(circle at 80% 80%,rgba(0,184,255,.15),transparent 30%),
+linear-gradient(120deg,#020617,#0f172a);
+}
+
+body.dark .dash-welcome,
+body.dark .dash-card,
+body.dark .dash-box{
+background:#0f172a;
+border-color:#1e293b;
+box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
+
+body.dark .dash-card:hover,
+body.dark .dash-box:hover{
+box-shadow:0 18px 40px rgba(0,0,0,.55);
+}
+
+body.dark .dash-welcome h1,
+body.dark .dash-box h2{
+color:#60a5fa;
+}
+
+body.dark .dash-welcome p,
+body.dark .dash-card h3,
+body.dark p{
+color:#94a3b8;
+}
+
+body.dark .dash-card h2,
+body.dark b{
+color:#f8fafc;
+}
+
+body.dark .dash-icon{
+background:#1e293b;
+color:#60a5fa;
+}
+
+body.dark .dash-primary{
+background:#2563eb;
+color:#fff;
+}
+
+body.dark .dash-secondary{
+background:#1e293b;
+color:#60a5fa;
+}
+
+body.dark .dash-progress{
+background:#1e293b;
+}
+
+@media(max-width:900px){
+.dash-stats{
+grid-template-columns:repeat(2,1fr);
+}
+}
+
+@media(max-width:600px){
+.dash-container{
+padding:15px;
+}
+.dash-stats{
+grid-template-columns:1fr;
+}
+.dash-welcome,
+.dash-card,
+.dash-box{
+padding:18px;
+border-radius:18px;
+}
+.dash-welcome h1{
+font-size:24px;
+}
+.dash-card h2{
+font-size:24px;
+}
+}
+
+/* REPORT PENDAPATAN */
+
+.report-section{
+margin-top:20px;
+}
+
+.report-title{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:14px 20px;
+margin-bottom:16px;
+border-radius:16px;
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+color:#fff;
+font-size:18px;
+font-weight:700;
+box-shadow:0 10px 25px rgba(37,99,235,.22);
+}
+
+.report-title div{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.report-title i{
+font-size:18px;
+}
+
+.report-title small{
+font-size:12px;
+font-weight:500;
+opacity:.9;
+}
+
+/* Desktop = 4 Card */
+
+.report-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:16px;
+}
+
+.report-card{
+position:relative;
+background:#fff;
+padding:18px;
+border:1px solid #e2e8f0;
+border-radius:18px;
+box-shadow:0 8px 22px rgba(15,23,42,.06);
+overflow:hidden;
+transition:.25s;
+min-height:105px;
+}
+
+.report-card:hover{
+transform:translateY(-4px);
+box-shadow:0 15px 35px rgba(15,23,42,.1);
+}
+
+.report-icon{
+position:absolute;
+top:16px;
+right:16px;
+width:42px;
+height:42px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:50%;
+font-size:17px;
+color:#fff;
+}
+
+.green{
+background:linear-gradient(135deg,#34d399,#14b8a6);
+}
+
+.blue{
+background:linear-gradient(135deg,#38bdf8,#2563eb);
+}
+
+.orange{
+background:linear-gradient(135deg,#fb923c,#f97316);
+}
+
+.purple{
+background:linear-gradient(135deg,#a855f7,#8b5cf6);
+}
+
+.report-card h4{
+margin:0;
+font-size:13px;
+font-weight:600;
+color:#64748b;
+}
+
+.report-card h2{
+margin-top:10px;
+font-size:24px;
+font-weight:800;
+line-height:1.2;
+color:#0f172a;
+}
+
+/* DARK */
+
+body.dark .report-card{
+background:#0f172a;
+border-color:#1e293b;
+box-shadow:0 8px 22px rgba(0,0,0,.35);
+}
+
+body.dark .report-card h4{
+color:#94a3b8;
+}
+
+body.dark .report-card h2{
+color:#fff;
+}
+
+/* Tablet */
+
+@media(max-width:992px){
+
+.report-grid{
+grid-template-columns:repeat(2,1fr);
+gap:14px;
+}
+
+}
+
+/* Android */
+
+@media(max-width:600px){
+
+.report-title{
+padding:12px 16px;
+font-size:16px;
+}
+
+.report-title small{
+font-size:11px;
+}
+
+.report-grid{
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+}
+
+.report-card{
+padding:14px;
+min-height:90px;
+border-radius:16px;
+}
+
+.report-icon{
+width:36px;
+height:36px;
+font-size:14px;
+top:12px;
+right:12px;
+}
+
+.report-card h4{
+font-size:11px;
+}
+
+.report-card h2{
+margin-top:8px;
+font-size:18px;
+}
+
+}
+/* STATISTIK */
+
+.stats-container{
+display:grid;
+grid-template-columns:1fr;
+gap:18px;
+margin-top:22px;
+}
+
+.stats-box{
+background:#fff;
+border:1px solid #e2e8f0;
+border-radius:20px;
+padding:18px;
+box-shadow:0 8px 24px rgba(15,23,42,.06);
+position:relative;
+overflow:hidden;
+transition:.25s;
+min-height:360px;
+}
+
+.stats-box:hover{
+transform:translateY(-4px);
+box-shadow:0 15px 35px rgba(15,23,42,.1);
+}
+
+.stats-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:16px;
+gap:12px;
+}
+
+.stats-head h2{
+margin:0;
+display:flex;
+align-items:center;
+gap:8px;
+font-size:19px;
+font-weight:700;
+color:#2563eb;
+}
+
+.stats-head select{
+height:36px;
+padding:0 14px;
+border:1px solid #dbeafe;
+border-radius:10px;
+background:#f8fafc;
+font:600 13px Poppins,sans-serif;
+outline:none;
+cursor:pointer;
+}
+
+.chart-wrapper{
+position:relative;
+width:100%;
+height:230px;
+}
+
+.stats-box canvas{
+width:100%!important;
+height:100%!important;
+display:block!important;
+}
+
+.stats-info{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-top:16px;
+}
+
+.stats-info div{
+padding:12px;
+background:#f8fafc;
+border-radius:14px;
+text-align:center;
+}
+
+.stats-info span{
+display:block;
+margin-bottom:4px;
+font-size:12px;
+color:#64748b;
+}
+
+.stats-info b{
+font-size:18px;
+font-weight:700;
+color:#2563eb;
+}
+
+.stats-note{
+margin-top:14px;
+text-align:center;
+font-size:12px;
+color:#64748b;
+}
+
+/* DARK */
+
+body.dark .stats-box{
+background:#0f172a;
+border-color:#1e293b;
+box-shadow:0 8px 24px rgba(0,0,0,.35);
+}
+
+body.dark .stats-head h2{
+color:#60a5fa;
+}
+
+body.dark .stats-head select{
+background:#1e293b;
+border-color:#334155;
+color:#fff;
+}
+
+body.dark .stats-info div{
+background:#1e293b;
+}
+
+body.dark .stats-info span,
+body.dark .stats-note{
+color:#94a3b8;
+}
+
+body.dark .stats-info b{
+color:#60a5fa;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+.stats-box{
+padding:15px;
+min-height:330px;
+}
+
+.stats-head{
+flex-direction:column;
+align-items:flex-start;
+}
+
+.stats-head h2{
+font-size:17px;
+}
+
+.stats-head select{
+width:100%;
+}
+
+.chart-wrapper{
+height:200px;
+}
+
+.stats-info{
+grid-template-columns:1fr;
+}
+
+.stats-info div{
+padding:10px;
+}
+
+.stats-info b{
+font-size:16px;
+}
+
+}
+
+/* REPORT TABLE */
+
+.report-card{
+margin-top:22px;
+padding:20px;
+background:#fff;
+border:1px solid #e2e8f0;
+border-radius:20px;
+box-shadow:0 8px 24px rgba(15,23,42,.06);
+overflow:hidden;
+transition:.25s;
+}
+
+.report-card:hover{
+box-shadow:0 15px 35px rgba(15,23,42,.1);
+}
+
+.report-header{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:18px;
+font-size:22px;
+font-weight:700;
+color:#2563eb;
+}
+
+.report-header i{
+font-size:22px;
+}
+
+.report-table{
+overflow-x:auto;
+border-radius:14px;
+}
+
+.report-table table{
+width:100%;
+border-collapse:collapse;
+min-width:650px;
+}
+
+.report-table th,
+.report-table td{
+padding:12px 10px;
+font-size:13px;
+text-align:center;
+white-space:nowrap;
+}
+
+.report-table th{
+background:#eff6ff;
+color:#1e293b;
+font-weight:700;
+border-bottom:1px solid #dbeafe;
+}
+
+.report-table td{
+background:#fff;
+border-bottom:1px solid #eef2f7;
+}
+
+.report-table tbody tr:hover td{
+background:#f8fbff;
+}
+
+.report-table .earning{
+font-weight:700;
+color:#2563eb;
+}
+
+/* DARK */
+
+body.dark .report-card{
+background:#0f172a;
+border-color:#1e293b;
+box-shadow:0 8px 24px rgba(0,0,0,.35);
+}
+
+body.dark .report-table th{
+background:#162033;
+color:#fff;
+border-color:#1e293b;
+}
+
+body.dark .report-table td{
+background:#0f172a;
+color:#fff;
+border-color:#1e293b;
+}
+
+body.dark .report-table tbody tr:hover td{
+background:#162033;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.report-card{
+padding:16px;
+}
+
+.report-header{
+font-size:18px;
+margin-bottom:14px;
+}
+
+.report-header i{
+font-size:18px;
+}
+
+.report-table th,
+.report-table td{
+padding:10px 8px;
+font-size:12px;
+}
+
+}
+
+.sell-card{
+position:relative;
+transition:.25s;
+}
+
+.sell-card.locked{
+opacity:.8;
+filter:grayscale(.25);
+pointer-events:none;
+}
+
+.sell-card.locked::after{
+content:"🔒 Sell Link Terkunci";
+position:absolute;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(255,255,255,.72);
+backdrop-filter:blur(5px);
+border-radius:18px;
+font-size:14px;
+font-weight:700;
+letter-spacing:.3px;
+color:#475569;
+transition:.25s;
+}
+
+.sell-card.locked:hover{
+transform:translateY(-2px);
+}
+
+body.dark .sell-card.locked::after{
+background:rgba(15,23,42,.78);
+color:#cbd5e1;
+}
+
+/* ===========================
+   GUIDE CLICK2PAY
+=========================== */
+
+.guide-grid{
+display:grid;
+grid-template-columns:repeat(4,minmax(0,1fr));
+gap:14px;
+margin-top:18px;
+}
+
+.guide-card{
+
+padding:14px;
+border:1px solid #e2e8f0;
+border-radius:16px;
+
+background:#fff;
+
+display:flex;
+flex-direction:column;
+
+min-height:180px;
+
+transition:.25s;
+}
+
+.guide-card:hover{
+transform:translateY(-4px);
+box-shadow:0 12px 30px rgba(15,23,42,.1);
+}
+
+/* ICON */
+
+.guide-icon{
+
+width:38px;
+height:38px;
+
+border-radius:12px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+margin-bottom:10px;
+
+background:#2563eb;
+
+color:#fff;
+
+font-size:16px;
+
+}
+
+.guide-icon.green{
+background:#10b981;
+}
+
+.guide-icon.orange{
+background:#f97316;
+}
+
+.guide-icon.purple{
+background:#8b5cf6;
+}
+
+.guide-icon.red{
+background:#ef4444;
+}
+
+.guide-icon.cyan{
+background:#06b6d4;
+}
+
+.guide-icon.pink{
+background:#ec4899;
+}
+
+.guide-icon.yellow{
+background:#eab308;
+}
+
+/* TEXT */
+
+.guide-card h3{
+
+margin:0;
+
+font-size:14px;
+
+font-weight:700;
+
+color:#0f172a;
+
+}
+
+.guide-card p{
+
+margin:7px 0 12px;
+
+font-size:11px;
+
+line-height:1.5;
+
+color:#64748b;
+
+flex:1;
+
+}
+
+/* BUTTON */
+
+.guide-btn{
+
+height:34px;
+
+border:none;
+
+border-radius:10px;
+
+background:#2563eb;
+
+color:#fff;
+
+font:600 11px Poppins,sans-serif;
+
+cursor:pointer;
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+gap:6px;
+
+}
+
+.guide-btn:hover{
+
+background:#1d4ed8;
+
+}
+
+/* DARK */
+
+body.dark .guide-card{
+
+background:#0f172a;
+
+border-color:#1e293b;
+
+}
+
+body.dark .guide-card h3{
+
+color:#fff;
+
+}
+
+body.dark .guide-card p{
+
+color:#94a3b8;
+
+}
+
+/* TABLET */
+
+@media(max-width:992px){
+
+.guide-grid{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+/* ANDROID */
+
+@media(max-width:600px){
+
+.guide-grid{
+
+grid-template-columns:repeat(2,1fr);
+
+gap:10px;
+
+}
+
+.guide-card{
+
+padding:11px;
+
+min-height:170px;
+
+border-radius:14px;
+
+}
+
+.guide-icon{
+
+width:34px;
+height:34px;
+
+font-size:14px;
+
+border-radius:10px;
+
+}
+
+.guide-card h3{
+
+font-size:12px;
+
+}
+
+.guide-card p{
+
+font-size:10px;
+
+margin:6px 0 10px;
+
+}
+
+.guide-btn{
+height:32px;
+font-size:10px;
+}
+}
+
+/* ==========================================
+   GLOBAL CPM MARKET
+========================================== */
+
+.cpm-market{
+
+margin-top:24px;
+
+background:#fff;
+
+border:1px solid #e5e7eb;
+
+border-radius:22px;
+
+padding:20px;
+
+box-shadow:0 10px 30px rgba(15,23,42,.06);
+
+}
+
+body.dark .cpm-market{
+
+background:#0f172a;
+
+border-color:#1e293b;
+
+}
+
+.cpm-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:flex-start;
+
+margin-bottom:18px;
+
+gap:20px;
+
+}
+
+.cpm-header h2{
+
+margin:0;
+
+font-size:22px;
+
+font-weight:700;
+
+color:#2563eb;
+
+}
+
+.cpm-header p{
+
+margin:6px 0 0;
+
+font-size:14px;
+
+color:#64748b;
+
+line-height:1.5;
+
+}
+
+body.dark .cpm-header p{
+
+color:#94a3b8;
+
+}
+
+.market-live{
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+font-size:13px;
+
+font-weight:700;
+
+color:#16a34a;
+
+}
+
+.live-dot{
+
+width:10px;
+
+height:10px;
+
+border-radius:50%;
+
+background:#16a34a;
+
+animation:livePulse 1.2s infinite;
+
+}
+
+@keyframes livePulse{
+
+0%{transform:scale(1);opacity:1;}
+
+50%{transform:scale(1.5);opacity:.35;}
+
+100%{transform:scale(1);opacity:1;}
+
+}
+
+.market-row{
+
+display:grid;
+
+grid-template-columns:40px 1fr auto;
+
+align-items:center;
+
+gap:15px;
+
+padding:14px 0;
+
+border-bottom:1px solid #eef2f7;
+
+}
+
+.market-row:last-child{
+
+border-bottom:none;
+
+}
+
+.flag{
+
+font-size:26px;
+
+}
+
+.country{
+
+font-size:15px;
+
+font-weight:600;
+
+}
+
+.spark{
+
+height:5px;
+
+margin-top:8px;
+
+background:#e5e7eb;
+
+border-radius:999px;
+
+overflow:hidden;
+
+}
+
+.spark span{
+
+display:block;
+
+height:100%;
+
+width:60%;
+
+background:linear-gradient(90deg,#2563eb,#22c55e);
+
+border-radius:999px;
+
+transition:.5s;
+
+}
+
+.market-price{
+
+text-align:right;
+
+}
+
+.market-price b{
+
+display:block;
+
+font-size:18px;
+
+}
+
+.market-change{
+
+margin-top:5px;
+
+font-size:13px;
+
+font-weight:700;
+
+}
+
+.up{
+
+color:#16a34a;
+
+}
+
+.down{
+
+color:#ef4444;
+
+}
+
+body.dark .market-row{
+
+border-color:#1e293b;
+
+}
+
+body.dark .spark{
+
+background:#1e293b;
+
+}
+
+body.dark .country,
+
+body.dark .market-price b{
+
+color:#fff;
+
+}
+
+@media(max-width:700px){
+
+.market-row{
+
+grid-template-columns:35px 1fr;
+
+}
+
+.market-price{
+
+grid-column:2;
+
+text-align:left;
+
+margin-top:8px;
+
+}
+
+}
+</style>
+
+</head>
+
+<body class="dash-body">
+<div class="dash-bg"></div>
+
+<div id="navbar"></div>
+
+<div class="dash-container">
+
+<div class="dash-welcome">
+
+<h1>
+<i class="fa-solid fa-house"></i>
+Dashboard Click2Pay
+</h1>
+
 </div>
 
-<!-- SIDEBAR -->
-<div class="c2p-sidebar">
+<!-- ===========================
+     QUICK GUIDE
+=========================== -->
 
-  <a href="#"><i class="fa-solid fa-house"></i>Dashboard</a>
+<div class="dash-box">
 
-  <a href="#"><i class="fa-solid fa-link"></i>Create Link</a>
-  <a href="#"><i class="fa-solid fa-cart-plus"></i>Create Sell Link</a>
-  <a href="#"><i class="fa-solid fa-list"></i>My Link</a>
+<h2>
+<i class="fa-solid fa-book-open"></i>
+Panduan Click2Pay
+</h2>
 
-  <a href="#"><i class="fa-solid fa-money-bill-wave"></i>Withdraw</a>
-  <a href="#"><i class="fa-solid fa-clock-rotate-left"></i>History Saldo</a>
+<p style="margin:8px 0 18px;color:#64748b">
+Pelajari semua fitur Click2Pay sebelum mulai menghasilkan uang.
+</p>
 
-  <a href="#"><i class="fa-solid fa-users"></i>Referral</a>
-  <a href="#"><i class="fa-solid fa-bell"></i>Notifikasi</a>
+<div class="guide-grid">
 
-  <div class="c2p-divider">Akun</div>
-  <a href="#"><i class="fa-solid fa-gear"></i>Pengaturan</a>
-  <a href="#"><i class="fa-solid fa-user-clock"></i>Aktivitas Login</a>
-
-  <div class="c2p-divider">Support</div>
-  <a href="#"><i class="fa-brands fa-telegram"></i>Telegram</a>
-  <a href="#"><i class="fa-brands fa-facebook"></i>Facebook</a>
-
-  <button class="c2p-logout">Logout</button>
-
-  <div class="c2p-side-footer">© 2026 Click2Pay</div>
+<div class="guide-card">
+<div class="guide-icon">
+<i class="fa-solid fa-link"></i>
 </div>
 
-<div class="c2p-overlay"></div>
+<h3>Buat Ads Link</h3>
 
-<!-- BOTTOM NAV -->
-<div class="c2p-bottom-nav">
-  <a href="#"><i class="fa-solid fa-house"></i>Dashboard</a>
-  <a href="#"><i class="fa-solid fa-wallet"></i>Payment</a>
-  <a href="#" class="center-btn"><i class="fa-solid fa-plus"></i></a>
-  <a href="#"><i class="fa-solid fa-crown"></i>Premium</a>
-  <a href="#"><i class="fa-solid fa-user"></i>Profil</a>
+<p>
+Pelajari cara membuat Ads Link pertama dan membagikannya.
+</p>
+
+<button class="guide-btn" onclick="location.href='tutorial-ads.html'">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
 </div>
+
+<div class="guide-card">
+<div class="guide-icon purple">
+<i class="fa-solid fa-cart-shopping"></i>
+</div>
+
+<h3>Buat Sell Link</h3>
+
+<p>
+Cara mengaktifkan Sell Link dan menjual akses premium.
+</p>
+
+<button class="guide-btn" onclick="location.href='tutorial-sell.html'">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
+</div>
+
+<div class="guide-card">
+<div class="guide-icon green">
+<i class="fa-solid fa-chart-line"></i>
+</div>
+
+<h3>Lihat Statistik</h3>
+
+<p>
+Pelajari arti Views, Click, CPM dan Pendapatan.
+</p>
+
+<button class="guide-btn" onclick="location.href='tutorial-statistik.html'">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
+</div>
+
+<div class="guide-card">
+<div class="guide-icon orange">
+<i class="fa-solid fa-wallet"></i>
+</div>
+
+<h3>Withdraw</h3>
+
+<p>
+Cara menarik saldo ke rekening atau e-wallet.
+</p>
+
+<button class="guide-btn" onclick="location.href='tutorial-withdraw.html'">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
+</div>
+
+<div class="guide-card">
+<div class="guide-icon red">
+<i class="fa-solid fa-money-bill-trend-up"></i>
+</div>
+
+<h3>Mendapatkan Penghasilan</h3>
+
+<p>
+Tips meningkatkan traffic dan pendapatan harian.
+</p>
+
+<button class="guide-btn" onclick="location.href='tutorial-penghasilan.html'">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
+</div>
+
+<div class="guide-card">
+<div class="guide-icon cyan">
+<i class="fa-solid fa-user-gear"></i>
+</div>
+
+<h3>Pengaturan Akun</h3>
+
+<p>
+Mengubah profil, password, atau pengaturan akun.
+</p>
+
+<button class="guide-btn" onclick="location.href='tutorial-akun.html'">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
+</div>
+
+<div class="guide-card">
+<div class="guide-icon pink">
+<i class="fa-solid fa-trash"></i>
+</div>
+
+<h3>Hapus Akun</h3>
+
+<p>
+Panduan menonaktifkan atau menghapus akun permanen.
+</p>
+
+<button class="guide-btn" onclick="location.href='tutorial-hapus-akun.html'">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
+</div>
+
+<div class="guide-card">
+<div class="guide-icon yellow">
+<i class="fa-solid fa-circle-question"></i>
+</div>
+
+<h3>Pusat Bantuan</h3>
+
+<p>
+FAQ, pertanyaan yang sering ditanyakan pengguna.
+</p>
+
+<button class="guide-btn" onclick="location.href='tutorial-faq.html'">
+<i class="fa-solid fa-arrow-right"></i>
+Buka
+</button>
+</div>
+
+</div>
+
+</div>
+
+<div class="cpm-market">
+
+    <div class="cpm-header">
+
+        <div>
+            <h2>
+                <i class="fa-solid fa-earth-asia"></i>
+                Global CPM Market
+            </h2>
+
+            <p id="countryNotice">
+                Memuat CPM negara...
+            </p>
+        </div>
+
+        <div class="market-live">
+            <span class="live-dot"></span>
+            LIVE
+        </div>
+
+    </div>
+
+    <div id="cpmMarketList"></div>
+
+</div>
+
+<!-- =========================
+     REPORT PENDAPATAN ADS
+========================= -->
+
+<div class="report-section">
+
+    <div class="report-title">
+        <div>
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Report Pendapatan Ads</span>
+        </div>
+
+        <small id="todayDate">-</small>
+    </div>
+
+    <div class="report-grid">
+
+        <!-- ADS HARI INI -->
+        <div class="report-card">
+            <div class="report-icon green">
+                <i class="fa-solid fa-calendar-day"></i>
+            </div>
+
+            <h4>Ads Hari Ini</h4>
+            <h2 id="adsToday">Rp 0</h2>
+        </div>
+
+        <!-- ADS BULAN INI -->
+        <div class="report-card">
+            <div class="report-icon blue">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+
+            <h4>Ads Bulan Ini</h4>
+            <h2 id="adsMonth">Rp 0</h2>
+        </div>
+
+        <!-- CPM -->
+        <div class="report-card">
+            <div class="report-icon purple">
+                <i class="fa-solid fa-arrow-trend-up"></i>
+            </div>
+
+            <h4>CPM Saat Ini</h4>
+            <h2 id="currentCpm">Rp 0</h2>
+        </div>
+
+        <!-- VIEW -->
+        <div class="report-card">
+            <div class="report-icon orange">
+                <i class="fa-solid fa-eye"></i>
+            </div>
+
+            <h4>Total Views</h4>
+            <h2 id="adsViewsMonth">0</h2>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     REPORT SELL LINK
+========================= -->
+
+<div class="report-section">
+
+    <div class="report-title">
+        <div>
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Report Pendapatan Sell Link</span>
+        </div>
+
+        <small id="todayDateSell">-</small>
+    </div>
+
+    <div class="report-grid">
+
+        <!-- SELL HARI INI -->
+        <div class="report-card sell-card locked">
+            <div class="report-icon orange">
+                <i class="fa-solid fa-calendar-day"></i>
+            </div>
+
+            <h4>Sell Hari Ini</h4>
+            <h2 id="sellToday">Rp 0</h2>
+        </div>
+
+        <!-- SELL BULAN INI -->
+        <div class="report-card sell-card locked">
+            <div class="report-icon purple">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+
+            <h4>Sell Bulan Ini</h4>
+            <h2 id="sellMonth">Rp 0</h2>
+        </div>
+
+        <!-- BULAN LALU -->
+        <div class="report-card sell-card locked">
+            <div class="report-icon blue">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+
+            <h4>Bulan Kemarin</h4>
+            <h2 id="sellLastMonth">Rp 0</h2>
+        </div>
+
+        <!-- TOTAL LINK -->
+        <div class="report-card sell-card locked">
+            <div class="report-icon green">
+                <i class="fa-solid fa-link"></i>
+            </div>
+
+            <h4>Total Sell Link</h4>
+            <h2 id="sellTotalLink">0</h2>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     STATISTIK
+=========================== -->
+
+<div id="statistics" class="stats-container">
+
+    <div class="stats-box" id="statistics">
+
+        <div class="stats-head">
+            <h2>
+                <i class="fa-solid fa-chart-line"></i>
+                Statistik Ads
+            </h2>
+
+            <select id="adsMonthSelect">
+                <option>July 2026</option>
+            </select>
+        </div>
+
+        <div class="chart-wrapper">
+            <canvas id="adsChart"></canvas>
+        </div>
+
+        <div class="stats-info">
+
+            <div>
+                <span>Views</span>
+                <b id="adsViews">0</b>
+            </div>
+
+            <div>
+                <span>Klik</span>
+                <b id="adsClicks">0</b>
+            </div>
+
+            <div>
+                <span>CPM</span>
+                <b id="adsCpm">0</b>
+            </div>
+
+        </div>
+
+        <p class="stats-note">
+            Report berdasarkan waktu Asia/Jakarta.
+        </p>
+
+    </div>
+
+    <div class="stats-box sell-card locked">
+
+        <div class="stats-head">
+
+            <h2>
+                <i class="fa-solid fa-cart-shopping"></i>
+                Statistik Sell Link
+            </h2>
+
+            <select id="sellMonthSelect">
+                <option>July 2026</option>
+            </select>
+
+        </div>
+
+        <div class="chart-wrapper">
+            <canvas id="sellChart"></canvas>
+        </div>
+
+        <div class="stats-info">
+
+            <div>
+                <span>Views</span>
+                <b id="sellViews">0</b>
+            </div>
+
+            <div>
+                <span>Klik</span>
+                <b id="sellClicks">0</b>
+            </div>
+
+            <div>
+                <span>CPM</span>
+                <b id="sellCpm">0</b>
+            </div>
+
+        </div>
+
+        <p class="stats-note">
+            Report berdasarkan waktu Asia/Jakarta.
+        </p>
+
+    </div>
+
+</div>
+
+<!-- REPORT TABLE -->
+
+<div class="report-card">
+
+    <div class="report-header">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Detail Report Harian Ads Link</span>
+    </div>
+
+    <div class="report-table">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Valid</th>
+                    <th>Earnings</th>
+                    <th>Daily CPM</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody id="reportTable">
+                <tr>
+                    <td colspan="5" class="empty">
+                        Belum ada data
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- PENGUMUMAN -->
+
+<div class="dash-box">
+
+<h2>
+
+<i class="fa-solid fa-bullhorn"></i>
+
+Pengumuman Admin
+
+</h2>
+
+<div id="announcementBox">
+
+Belum ada pengumuman.
+
+</div>
+
+</div>
+
+</div>
+
+<div id="footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="js/database.js"></script>
+<script src="js/session.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/admin-cpm.js"></script>
+<script src="js/dashboard.js"></script>
+
+<script>
+fetch("components/navbar.html")
+.then(res => res.text())
+.then(data => {
+    document.getElementById("navbar").innerHTML = data;
+
+    if (typeof c2pInit === "function") c2pInit();
+
+    document.querySelectorAll(".c2p-sidebar a").forEach(link => {
+        link.addEventListener("click", () => {
+            if (typeof c2pClose === "function") c2pClose();
+        });
+    });
+
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (logoutBtn) {
+        logoutBtn.onclick = async () => {
+            await database.logout();
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace("index.html");
+        };
+    }
+});
+
+fetch("components/footer.html")
+.then(res => res.text())
+.then(data => {
+    document.getElementById("footer").innerHTML = data;
+
+    if (typeof c2pFooterInit === "function") {
+        c2pFooterInit();
+    }
+});
+</script>
+
+<!-- DEBUG SYSTEM -->
+<script src="assets/js/debug.js"></script>
+
+</body>
+</html>
