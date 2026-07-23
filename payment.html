@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Payment • Click2Pay</title>
 
 <link rel="icon" href="favicon.ico">
@@ -13,13 +14,9 @@
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/payment.css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
 </head>
 
 <body>
@@ -29,118 +26,116 @@
 <main class="container">
 
 <div class="page-title">
-
-<div>
-
 <h1>
-
 <i class="fa-solid fa-wallet"></i>
-
 Payment
-
 </h1>
 
 <p>
-
-Kelola saldo, rekening pembayaran, dan seluruh proses withdraw Anda melalui halaman ini.
-
+Kelola saldo dan lakukan penarikan dana melalui Click2Pay.
 </p>
-
 </div>
 
+
+<!-- STATUS LAYANAN WD -->
+
+<div id="withdrawService" class="payment-status">
+Memeriksa layanan withdraw...
 </div>
 
-<!-- =========================
-STATISTIK PAYMENT
-========================= -->
+
+
+<!-- STATISTIK PAYMENT -->
 
 <div class="payment-grid">
 
-    <div class="pay-card double-card">
-        <div class="card-half">
-            <div class="card-icon blue">
-                <i class="fa-solid fa-bullhorn"></i>
-            </div>
-            <span>Saldo Ads</span>
-            <h2 id="adsBalance">Rp0</h2>
-        </div>
+<div class="pay-card">
+<div class="card-icon blue">
+<i class="fa-solid fa-wallet"></i>
+</div>
+<span>Saldo Saat Ini</span>
+<h2 id="balance">Rp0</h2>
+</div>
 
-        <div class="card-half">
-            <div class="card-icon cyan">
-                <i class="fa-solid fa-link"></i>
-            </div>
-            <span>Saldo Sell Link</span>
-            <h2 id="sellLinkBalance">Rp0</h2>
-        </div>
-    </div>
 
-    <div class="pay-card double-card">
-        <div class="card-half">
-            <div class="card-icon blue">
-                <i class="fa-solid fa-wallet"></i>
-            </div>
-            <span>Saldo Saat Ini</span>
-            <h2 id="currentBalance">Rp0</h2>
-        </div>
+<div class="pay-card">
+<div class="card-icon cyan">
+<i class="fa-solid fa-bullhorn"></i>
+</div>
+<span>Saldo Ads</span>
+<h2 id="adsBalance">Rp0</h2>
+</div>
 
-        <div class="card-half">
-            <div class="card-icon purple">
-                <i class="fa-solid fa-money-bill-wave"></i>
-            </div>
-            <span>Total Withdraw</span>
-            <h2 id="totalWithdraw">Rp0</h2>
-        </div>
-    </div>
 
-    <div class="pay-card double-card">
-        <div class="card-half">
-            <div class="card-icon orange">
-                <i class="fa-solid fa-hourglass-half"></i>
-            </div>
-            <span>Withdraw Pending</span>
-            <h2 id="pendingWithdraw">Rp0</h2>
-        </div>
+<div class="pay-card">
+<div class="card-icon purple">
+<i class="fa-solid fa-link"></i>
+</div>
+<span>Saldo Sell Link</span>
+<h2 id="sellBalance">Rp0</h2>
+</div>
 
-        <div class="card-half">
-            <div class="card-icon cyan">
-                <i class="fa-solid fa-spinner"></i>
-            </div>
-            <span>Withdraw Process</span>
-            <h2 id="requestWithdraw">Rp0</h2>
-        </div>
-    </div>
 
-    <div class="pay-card double-card">
-        <div class="card-half">
-            <div class="card-icon red">
-                <i class="fa-solid fa-circle-xmark"></i>
-            </div>
-            <span>Withdraw Failed</span>
-            <h2 id="failedWithdraw">Rp0</h2>
-        </div>
+<div class="pay-card">
+<div class="card-icon green">
+<i class="fa-solid fa-circle-check"></i>
+</div>
+<span>WD Success</span>
+<h2 id="successWD">Rp0</h2>
+</div>
 
-        <div class="card-half">
-            <div class="card-icon green">
-                <i class="fa-solid fa-circle-check"></i>
-            </div>
-            <span>Withdraw Success</span>
-            <h2 id="successWithdraw">Rp0</h2>
-        </div>
-    </div>
+
+<div class="pay-card">
+<div class="card-icon orange">
+<i class="fa-solid fa-clock"></i>
+</div>
+<span>WD Pending</span>
+<h2 id="pendingWD">Rp0</h2>
+</div>
+
+
+<div class="pay-card">
+<div class="card-icon red">
+<i class="fa-solid fa-xmark"></i>
+</div>
+<span>WD Failed</span>
+<h2 id="failedWD">Rp0</h2>
+</div>
 
 </div>
 
-<!-- STATUS -->
 
-<div id="withdrawStatus" class="payment-status">
 
-Loading status pembayaran...
+<!-- WARNING REKENING -->
+
+<div id="paymentWarning" class="warning-box" style="display:none;">
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+<div>
+
+<h3>Rekening belum disimpan</h3>
+
+<p>
+Silakan simpan rekening pembayaran terlebih dahulu sebelum melakukan withdraw.
+</p>
+
+<a href="paymentsetting.html" class="btn-secondary">
+<i class="fa-solid fa-gear"></i>
+Payment Setting
+</a>
 
 </div>
+
+</div>
+
+
+
+<!-- BUTTON REQUEST WD -->
 
 <div class="payment-action">
 
-<button id="withdrawTopBtn" class="btn-primary">
+<button id="manualScrollBtn" class="btn-primary">
 
 <i class="fa-solid fa-money-bill-transfer"></i>
 
@@ -150,462 +145,288 @@ Request Withdraw
 
 </div>
 
-<!-- INFORMASI PEMBAYARAN -->
+<!-- INFORMASI WITHDRAW -->
 
 <div class="info-box">
 
-    <div class="info-header">
-        <i class="fa-solid fa-circle-info"></i>
-        <h3>Informasi Pembayaran</h3>
-    </div>
-
-    <div class="info-list">
-
-        <div class="info-item">
-            <i class="fa-solid fa-calendar-days"></i>
-            <span>Withdraw diproses setiap <b>Senin - Kamis</b> pada jam operasional Click2Pay.</span>
-        </div>
-
-        <div class="info-item">
-            <i class="fa-solid fa-clock"></i>
-            <span><b>Jumat - Minggu</b> layanan withdraw ditutup untuk settlement, maintenance, dan rekonsiliasi sistem.</span>
-        </div>
-
-        <div class="info-item">
-            <i class="fa-solid fa-hourglass-half"></i>
-            <span>Request saat layanan tutup akan otomatis masuk antrean dan diproses pada hari operasional berikutnya.</span>
-        </div>
-
-        <div class="info-item">
-            <i class="fa-solid fa-user-check"></i>
-            <span>Pastikan nama penerima sesuai dengan nama pemilik rekening atau e-wallet.</span>
-        </div>
-
-        <div class="info-item">
-            <i class="fa-solid fa-building-columns"></i>
-            <span>Nomor rekening atau e-wallet yang salah menjadi tanggung jawab pengguna.</span>
-        </div>
-
-        <div class="info-item">
-            <i class="fa-solid fa-wallet"></i>
-            <span>Saldo hanya dapat ditarik apabila memenuhi minimal withdraw yang berlaku.</span>
-        </div>
-
-        <div class="info-item">
-            <i class="fa-solid fa-spinner"></i>
-            <span>Setelah request berhasil, saldo akan dipotong dan status berubah menjadi <b>Pending</b>.</span>
-        </div>
-
-        <div class="info-item">
-            <i class="fa-solid fa-list-check"></i>
-            <span>Status withdraw dapat berubah menjadi <b>Pending</b>, <b>Success</b>, atau <b>Failed</b>.</span>
-        </div>
-
-        <div class="info-item">
-            <i class="fa-solid fa-shield-halved"></i>
-            <span>Click2Pay berhak melakukan verifikasi, menunda, atau menolak request yang melanggar ketentuan.</span>
-        </div>
-
-    </div>
-
+<div class="info-header">
+<i class="fa-solid fa-circle-info"></i>
+<h3>Informasi Withdraw</h3>
 </div>
 
-<!-- PENGATURAN PEMBAYARAN -->
 
-<div id="paymentForm" class="payment-box">
+<div class="info-list">
 
-<h2>
 
+<div class="info-item">
+<i class="fa-solid fa-calendar-days"></i>
+<span>
+Layanan withdraw dibuka <b>Senin - Jumat</b>.
+</span>
+</div>
+
+
+<div class="info-item">
+<i class="fa-solid fa-clock"></i>
+<span>
+Jam operasional withdraw:
+<b>08:00 - 18:00 WIB</b>.
+</span>
+</div>
+
+
+<div class="info-item">
+<i class="fa-solid fa-lock"></i>
+<span>
+Sabtu dan Minggu layanan withdraw otomatis ditutup.
+</span>
+</div>
+
+
+<div class="info-item">
 <i class="fa-solid fa-building-columns"></i>
+<span>
+Pastikan rekening pembayaran sudah tersimpan di menu <b>Payment Setting</b>.
+</span>
+</div>
 
-Pengaturan Pembayaran
 
-</h2>
+<div class="info-item">
+<i class="fa-solid fa-shield-halved"></i>
+<span>
+Kesalahan rekening atau e-wallet menjadi tanggung jawab pengguna.
+</span>
+</div>
 
-<p>
 
-Tambahkan rekening bank atau akun e-wallet yang akan digunakan untuk menerima hasil withdraw.
+<div class="info-item">
+<i class="fa-solid fa-clock-rotate-left"></i>
+<span>
+Withdraw manual akan masuk status <b>Pending</b> sebelum diproses admin.
+</span>
+</div>
 
-</p>
 
-<label>Nama Sesuai Rekening</label>
+<div class="info-item">
+<i class="fa-solid fa-bolt"></i>
+<span>
+Withdraw instant diproses otomatis apabila layanan tersedia.
+</span>
+</div>
 
-<div class="input-box">
 
-<i class="fa-solid fa-user"></i>
+<div class="info-item">
+<i class="fa-solid fa-check"></i>
+<span>
+Withdraw berhasil akan masuk ke menu <b>WD Transaksi</b>.
+</span>
+</div>
 
-<input
-id="paymentName"
-type="text"
-placeholder="Nama sesuai rekening atau e-wallet">
 
 </div>
 
-<label>Nomor Rekening / E-Wallet</label>
-
-<div class="input-box">
-
-<i class="fa-solid fa-credit-card"></i>
-
-<input
-id="paymentNumber"
-type="text"
-placeholder="Masukkan nomor rekening atau e-wallet">
-
 </div>
 
-<label>Metode Pembayaran</label>
 
-<div class="input-box">
 
-<i class="fa-solid fa-wallet"></i>
 
-<select id="paymentMethod">
+<!-- MANUAL WITHDRAW -->
 
-<optgroup label="Bank">
+<div id="manualWithdrawBox" class="payment-box">
 
-<option value="BCA">BCA</option>
-<option value="BRI">BRI</option>
-<option value="BNI">BNI</option>
-<option value="Mandiri">Mandiri</option>
-<option value="BTN">BTN</option>
-<option value="BSI">BSI</option>
-<option value="CIMB Niaga">CIMB Niaga</option>
-<option value="Permata Bank">Permata Bank</option>
-<option value="Danamon">Danamon</option>
-<option value="OCBC NISP">OCBC NISP</option>
-<option value="Maybank">Maybank</option>
-<option value="Panin Bank">Panin Bank</option>
-<option value="Bank Mega">Bank Mega</option>
-<option value="Bank Jago">Bank Jago</option>
-<option value="SeaBank">SeaBank</option>
-<option value="Neo Bank">Neo Bank</option>
-<option value="Allo Bank">Allo Bank</option>
-<option value="blu by BCA">blu by BCA</option>
-<option value="Bank Lainnya">Bank Lainnya</option>
-
-</optgroup>
-
-<optgroup label="E-Wallet">
-
-<option value="DANA">DANA</option>
-<option value="GoPay">GoPay</option>
-<option value="OVO">OVO</option>
-<option value="ShopeePay">ShopeePay</option>
-<option value="LinkAja">LinkAja</option>
-<option value="iSaku">iSaku</option>
-<option value="AstraPay">AstraPay</option>
-<option value="MotionPay">MotionPay</option>
-<option value="Flip">Flip</option>
-<option value="E-Wallet Lainnya">E-Wallet Lainnya</option>
-
-</optgroup>
-
-</select>
-
-</div>
-
-<button
-id="savePayment"
-class="btn-primary">
-
-<i class="fa-solid fa-floppy-disk"></i>
-
-Simpan Pembayaran
-
-</button>
-
-</div>
-
-<!-- AKUN PEMBAYARAN -->
-
-<div id="paymentDetail" class="payment-box" style="display:none;">
 
 <h2>
-
-<i class="fa-solid fa-address-card"></i>
-
-Akun Pembayaran
-
-</h2>
-
-<p>
-
-Data pembayaran di bawah ini akan digunakan untuk seluruh proses withdraw.
-
-</p>
-
-<div id="detailContent"></div>
-
-<div class="btn-group">
-
-<button
-id="editPayment"
-class="btn-secondary">
-
-<i class="fa-solid fa-pen"></i>
-
-Ubah Pembayaran
-
-</button>
-
-</div>
-
-</div>
-
-<!-- REQUEST WITHDRAW -->
-
-<div class="payment-box">
-
-<h2>
-
 <i class="fa-solid fa-money-bill-transfer"></i>
-
-Request Withdraw
-
+Withdraw Manual
 </h2>
 
+
 <p>
-
-Masukkan nominal withdraw yang ingin dicairkan ke rekening atau e-wallet yang telah disimpan.
-
+Tarik saldo menggunakan rekening yang sudah tersimpan pada Payment Setting.
 </p>
 
-<label>Nominal Withdraw</label>
+
+
+<label>
+Nominal Withdraw
+</label>
+
 
 <div class="input-box">
 
 <i class="fa-solid fa-rupiah-sign"></i>
 
 <input
+id="manualAmount"
 type="number"
-id="withdrawAmount"
-placeholder="Contoh : 100000"
+placeholder="Minimal Rp100.000"
 min="100000">
 
 </div>
 
+
+
 <div class="withdraw-note">
 
-<b>Ketentuan Withdraw</b>
+<b>Ketentuan Withdraw Manual</b>
 
 <ul>
 
-<li>Minimal withdraw Rp100.000.</li>
+<li>
+Minimal withdraw Rp100.000.
+</li>
 
-<li>Maksimal sesuai saldo yang tersedia.</li>
+<li>
+Saldo akan dipotong setelah request berhasil.
+</li>
 
-<li>Withdraw hanya dapat dilakukan saat layanan pembayaran sedang dibuka.</li>
+<li>
+Status awal withdraw adalah Pending.
+</li>
 
-<li>Saldo akan dipotong setelah request berhasil dibuat.</li>
+<li>
+Admin akan melakukan pengecekan sebelum pembayaran.
+</li>
 
-<li>Status withdraw akan berubah menjadi <b>Pending</b> hingga diproses admin.</li>
+<li>
+Jika berhasil status berubah menjadi Success.
+</li>
 
-<li>Apabila pembayaran berhasil maka status berubah menjadi <b>Success</b>.</li>
-
-<li>Apabila terjadi kesalahan rekening atau kendala lain maka status berubah menjadi <b>Failed</b>.</li>
-
-<li>Pastikan seluruh data pembayaran telah benar sebelum melakukan request withdraw.</li>
+<li>
+Jika gagal status berubah menjadi Failed.
+</li>
 
 </ul>
 
 </div>
 
-<button
-id="withdrawBtn"
-class="btn-primary"
-style="width:100%;margin-top:20px;">
+
+
+<button id="manualWithdrawBtn" class="btn-primary">
 
 <i class="fa-solid fa-paper-plane"></i>
 
-Request Withdraw
+Request Withdraw Manual
 
 </button>
 
+
 </div>
 
-<!-- WITHDRAW INSTAN -->
 
-<div class="payment-box instant-box">
+
+
+
+<!-- INSTANT WITHDRAW -->
+
+
+<div class="payment-box">
+
 
 <h2>
 <i class="fa-solid fa-bolt"></i>
-Withdraw Instan
+Withdraw Instant
 </h2>
 
+
 <p>
-Tarik saldo secara instan dengan batas maksimal Rp500.000 per hari.
+Tarik saldo otomatis dengan batas maksimal sesuai aturan sistem.
 </p>
+
 
 
 <div class="instant-limit">
 
+
 <div>
-<b>Batas Instan Hari Ini</b>
-<span id="instantLimitText">Rp500.000</span>
+
+<b>
+Limit Instant Hari Ini
+</b>
+
+<span id="instantLimit">
+Rp500.000
+</span>
+
 </div>
+
+
 
 <div class="progress">
+
 <div id="instantProgress"></div>
-</div>
-
-<small>
-Sisa penarikan instan hari ini
-</small>
 
 </div>
 
-
-<label>Nama Rekening</label>
-
-<div class="input-box">
-
-<i class="fa-solid fa-user"></i>
-
-<input
-id="instantName"
-type="text"
-placeholder="Nama pemilik rekening">
 
 </div>
 
 
 
-<label>Tipe Bank / E-Wallet</label>
-
-<div class="input-box">
-
-<i class="fa-solid fa-wallet"></i>
-
-<select id="instantMethod">
-
-<option value="BCA">BCA</option>
-<option value="BRI">BRI</option>
-<option value="BNI">BNI</option>
-<option value="Mandiri">Mandiri</option>
-<option value="BTN">BTN</option>
-<option value="BSI">BSI</option>
-<option value="CIMB Niaga">CIMB Niaga</option>
-<option value="Permata Bank">Permata Bank</option>
-
-<option value="DANA">DANA</option>
-<option value="OVO">OVO</option>
-<option value="GoPay">GoPay</option>
-<option value="ShopeePay">ShopeePay</option>
-<option value="LinkAja">LinkAja</option>
-
-<option value="Lainnya">
-Bank / E-Wallet Lainnya
-</option>
-
-</select>
-
-</div>
 
 
-<div id="instantOtherBox" style="display:none;">
+<label>
+Nominal Withdraw
+</label>
 
-<label>Nama Bank / E-Wallet</label>
-
-<div class="input-box">
-
-<i class="fa-solid fa-building-columns"></i>
-
-<input
-id="instantOtherMethod"
-type="text"
-placeholder="Contoh: Bank Jago, SeaBank, AstraPay">
-
-</div>
-
-</div>
-
-
-
-<label>No Rekening / E-Wallet</label>
-
-<div class="input-box">
-
-<i class="fa-solid fa-credit-card"></i>
-
-<input
-id="instantNumber"
-type="text"
-placeholder="Nomor rekening atau e-wallet">
-
-</div>
-
-
-
-<label>Pilih Nominal Penarikan</label>
 
 <div class="instant-options">
 
-<button type="button" data-value="50000">
+
+<button data-value="50000">
 Rp50.000
 </button>
 
-<button type="button" data-value="100000">
+
+<button data-value="100000">
 Rp100.000
 </button>
 
-<button type="button" data-value="150000">
-Rp150.000
-</button>
 
-<button type="button" data-value="200000">
-Rp200.000
-</button>
-
-<button type="button" data-value="250000">
+<button data-value="250000">
 Rp250.000
 </button>
+
+
+<button data-value="500000">
+Rp500.000
+</button>
+
 
 </div>
 
 
-<input
-type="hidden"
-id="instantAmount">
+
+<input type="hidden" id="instantAmount">
+
+
 
 
 
 <div class="withdraw-note">
 
-<b>Ketentuan Withdraw Instan</b>
+<b>Ketentuan Withdraw Instant</b>
 
 <ul>
 
 <li>
-Batas maksimal penarikan instan Rp500.000 per hari.
+Biaya layanan instant Rp15.000.
 </li>
 
 <li>
-Biaya layanan instan Rp15.000 setiap transaksi.
+Saldo harus mencukupi nominal + biaya.
 </li>
 
 <li>
-Saldo harus mencukupi nominal withdraw + biaya layanan.
+Contoh Rp50.000 membutuhkan saldo Rp65.000.
 </li>
 
 <li>
-Contoh: Withdraw Rp50.000 membutuhkan saldo Rp65.000.
+Batas instant maksimal Rp500.000 per hari.
 </li>
 
 <li>
-Contoh: Withdraw Rp250.000 membutuhkan saldo Rp265.000.
-</li>
-
-<li>
-Jika bank atau e-wallet tidak tersedia, pilih <b>Bank / E-Wallet Lainnya</b> dan isi secara manual.
-</li>
-
-<li>
-Pastikan data rekening benar karena kesalahan pembayaran menjadi tanggung jawab pengguna.
-</li>
-
-<li>
-Withdraw instan diproses otomatis oleh sistem setelah request berhasil.
+Withdraw diproses otomatis oleh sistem.
 </li>
 
 </ul>
@@ -614,23 +435,30 @@ Withdraw instan diproses otomatis oleh sistem setelah request berhasil.
 
 
 
-<button
-id="instantWithdrawBtn"
-class="btn-primary"
-style="width:100%;">
+<button id="instantWithdrawBtn" class="btn-primary">
 
 <i class="fa-solid fa-bolt"></i>
 
-Withdraw Instan
+Withdraw Instant
 
 </button>
 
 
 </div>
 
+
+
+
+
+<!-- FOOTER -->
+
+
 </main>
 
+
 <div id="footer"></div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -640,1070 +468,8 @@ Withdraw Instan
 <script src="js/navbar.js"></script>
 <script src="js/footer.js"></script>
 
-<script>
-"use strict";
+<script src="js/payment.js"></script>
 
-// ======================================================
-// PAYMENT V2
-// Click2Pay
-// Part 1
-// ======================================================
-
-let db = null;
-let supabase = null;
-let user = null;
-
-const instantFee = 15000;
-const instantDailyLimit = 500000;
-
-const $ = id => document.getElementById(id);
-
-const currentBalance = $("currentBalance");
-const adsBalance = $("adsBalance");
-const sellLinkBalance = $("sellLinkBalance");
-
-const requestWithdraw = $("requestWithdraw");
-const pendingWithdraw = $("pendingWithdraw");
-const successWithdraw = $("successWithdraw");
-const failedWithdraw = $("failedWithdraw");
-const totalWithdraw = $("totalWithdraw");
-
-const withdrawStatus = $("withdrawStatus");
-
-const paymentForm = $("paymentForm");
-const paymentDetail = $("paymentDetail");
-const detailContent = $("detailContent");
-
-const paymentName = $("paymentName");
-const paymentNumber = $("paymentNumber");
-const paymentMethod = $("paymentMethod");
-
-const savePayment = $("savePayment");
-const editPayment = $("editPayment");
-
-const withdrawAmount = $("withdrawAmount");
-const withdrawBtn = $("withdrawBtn");
-const withdrawTopBtn = $("withdrawTopBtn");
-
-const instantLimitText = $("instantLimitText");
-const instantProgress = $("instantProgress");
-
-const instantName = $("instantName");
-const instantMethod = $("instantMethod");
-const instantOtherMethod = $("instantOtherMethod");
-const instantOtherBox = $("instantOtherBox");
-const instantNumber = $("instantNumber");
-const instantAmount = $("instantAmount");
-const instantWithdrawBtn = $("instantWithdrawBtn");
-
-let instantSelected = 0;
-
-function rupiah(v){
-
-return new Intl.NumberFormat("id-ID",{
-
-style:"currency",
-
-currency:"IDR",
-
-maximumFractionDigits:0
-
-}).format(Number(v)||0);
-
-}
-
-function status(text,color="#2563eb"){
-
-if(!withdrawStatus)return;
-
-withdrawStatus.innerHTML=
-`<span style="color:${color};">${text}</span>`;
-
-}
-
-async function init(){
-
-console.log("PAYMENT INIT");
-
-db=window.database;
-
-if(!db){
-
-console.error("DATABASE NULL");
-
-status("Database belum siap","#ef4444");
-
-return;
-
-}
-
-supabase = db.supabase;
-
-try{
-
-const profile = await db.getCurrentProfile();
-
-user = profile;
-
-console.log("PROFILE:",user);
-
-if(!user){
-
-location.replace("login.html");
-
-return;
-
-}
-
-await refreshPage();
-
-bindEvents();
-
-startRealtime();
-
-}catch(err){
-
-console.error(err);
-
-status("Gagal memuat data pembayaran","#ef4444");
-
-}
-
-}
-
-async function refreshPage(){
-
-await loadBalance();
-
-await loadWithdrawStatistic();
-
-await loadPaymentMethod();
-
-await loadInstantLimit();
-
-}
-
-async function loadBalance(){
-
-if(!user)return;
-
-if(currentBalance)
-currentBalance.innerText=rupiah(user.balance);
-
-if(adsBalance)
-adsBalance.innerText=rupiah(user.ads_earning_total);
-
-if(sellLinkBalance)
-sellLinkBalance.innerText=rupiah(user.sell_earning_total);
-
-}
-
-async function loadWithdrawStatistic(){
-
-const {data,error}=await supabase
-
-.from("withdraws")
-
-.select("*")
-
-.eq("user_id",user.id);
-
-if(error){
-
-console.error(error);
-
-status("Gagal mengambil data withdraw","#ef4444");
-
-return;
-
-}
-
-let pending=0;
-
-let process=0;
-
-let success=0;
-
-let failed=0;
-
-let total=0;
-
-(data||[]).forEach(item=>{
-
-const amount=Number(item.amount)||0;
-
-total+=amount;
-
-switch(item.status){
-
-case "pending":
-
-pending+=amount;
-
-break;
-
-case "process":
-
-process+=amount;
-
-break;
-
-case "success":
-
-success+=amount;
-
-break;
-
-case "failed":
-
-failed+=amount;
-
-break;
-
-}
-
-});
-
-if(pendingWithdraw)
-pendingWithdraw.innerText = rupiah(pending);
-
-if(requestWithdraw)
-requestWithdraw.innerText = rupiah(process);
-    
-if(successWithdraw)
-successWithdraw.innerText = rupiah(success);
-
-if(failedWithdraw)
-failedWithdraw.innerText = rupiah(failed);
-
-if(totalWithdraw)
-totalWithdraw.innerText = rupiah(total);
-
-status("Status pembayaran berhasil dimuat","#16a34a");
-
-}
-
-function bindEvents(){
-
-if(withdrawBtn)
-withdrawBtn.onclick=submitWithdraw;
-
-if(withdrawTopBtn)
-withdrawTopBtn.onclick=submitWithdraw;
-
-if(savePayment)
-savePayment.onclick=savePaymentMethod;
-
-if(editPayment){
-
-editPayment.onclick=()=>{
-
-paymentForm.scrollIntoView({
-
-behavior:"smooth"
-
-});
-
-};
-
-}
-
-if(instantMethod){
-
-instantMethod.onchange=()=>{
-
-instantOtherBox.style.display=
-
-instantMethod.value==="Lainnya"
-
-?"block"
-
-:"none";
-
-};
-
-}
-
-document
-
-.querySelectorAll(".instant-options button")
-
-.forEach(btn=>{
-
-btn.onclick=()=>{
-
-document
-
-.querySelectorAll(".instant-options button")
-
-.forEach(x=>x.classList.remove("active"));
-
-btn.classList.add("active");
-
-instantSelected=Number(btn.dataset.value);
-
-instantAmount.value=instantSelected;
-
-};
-
-});
-
-if(instantWithdrawBtn)
-instantWithdrawBtn.onclick=submitInstantWithdraw;
-
-}
-
-document.addEventListener("DOMContentLoaded",init);
-
-// ======================================================
-// PAYMENT METHOD
-// ======================================================
-
-async function loadPaymentMethod(){
-
-const {data,error}=await supabase
-
-.from("payment_methods")
-
-.select("*")
-
-.eq("user_id",user.id)
-
-.maybeSingle();
-
-if(error){
-
-console.error(error);
-
-return;
-
-}
-
-if(!data){
-
-if(paymentDetail)
-paymentDetail.style.display="none";
-
-if(paymentForm)
-paymentForm.style.display="block";
-
-return;
-
-}
-
-if(paymentName)
-paymentName.value=data.account_name||"";
-
-if(paymentNumber)
-paymentNumber.value=data.account_number||"";
-
-if(paymentMethod)
-paymentMethod.value=data.method||"";
-
-renderPaymentMethod(data);
-
-}
-
-function renderPaymentMethod(data){
-
-if(!paymentDetail)return;
-
-paymentDetail.style.display="block";
-
-paymentForm.style.display="none";
-
-detailContent.innerHTML=`
-
-<div class="detail-row">
-<span class="detail-label">
-Nama
-</span>
-<span class="detail-value">
-${data.account_name||"-"}
-</span>
-</div>
-
-<div class="detail-row">
-<span class="detail-label">
-Metode
-</span>
-<span class="detail-value">
-${data.method||"-"}
-</span>
-</div>
-
-<div class="detail-row">
-<span class="detail-label">
-Nomor
-</span>
-<span class="detail-value">
-${data.account_number||"-"}
-</span>
-</div>
-
-`;
-
-}
-
-async function savePaymentMethod(){
-
-const name=paymentName.value.trim();
-
-const number=paymentNumber.value.trim();
-
-const method=paymentMethod.value;
-
-if(name.length<3){
-
-alert("Nama rekening belum benar");
-
-paymentName.focus();
-
-return;
-
-}
-
-if(number.length<6){
-
-alert("Nomor rekening belum benar");
-
-paymentNumber.focus();
-
-return;
-
-}
-
-const payload={
-
-user_id:user.id,
-
-account_name:name,
-
-account_number:number,
-
-method:method,
-
-bank_name:method
-
-};
-
-const {data:old,error:oldError}=await supabase
-
-.from("payment_methods")
-
-.select("id")
-
-.eq("user_id",user.id)
-
-.maybeSingle();
-
-if(oldError){
-
-console.error(oldError);
-
-alert(oldError.message);
-
-return;
-
-}
-
-let result;
-
-if(old){
-
-result=await supabase
-
-.from("payment_methods")
-
-.update(payload)
-
-.eq("user_id",user.id);
-
-}else{
-
-result=await supabase
-
-.from("payment_methods")
-
-.insert(payload);
-
-}
-
-if(result.error){
-
-alert(result.error.message);
-
-return;
-
-}
-
-alert("Metode pembayaran berhasil disimpan");
-
-await loadPaymentMethod();
-
-}
-
-if(editPayment){
-
-editPayment.onclick=()=>{
-
-paymentDetail.style.display="none";
-
-paymentForm.style.display="block";
-
-paymentForm.scrollIntoView({
-
-behavior:"smooth"
-
-});
-
-};
-
-}
-
-// ======================================================
-// MANUAL WITHDRAW
-// ======================================================
-
-async function submitWithdraw(){
-
-const amount=Number(withdrawAmount.value);
-
-if(!amount){
-
-alert("Masukkan nominal withdraw");
-
-withdrawAmount.focus();
-
-return;
-
-}
-
-if(amount<100000){
-
-alert("Minimal withdraw Rp100.000");
-
-withdrawAmount.focus();
-
-return;
-
-}
-
-const profile=await db.getProfile(user.id);
-
-if(!profile){
-
-alert("Profile tidak ditemukan");
-
-return;
-
-}
-
-const balance=Number(profile.balance)||0;
-
-if(balance<amount){
-
-alert("Saldo tidak mencukupi");
-
-return;
-
-}
-
-const {data:payment,error:paymentError}=await supabase
-
-.from("payment_methods")
-
-.select("*")
-
-.eq("user_id",user.id)
-
-.maybeSingle();
-
-if(paymentError){
-
-console.error(paymentError);
-
-alert(paymentError.message);
-
-return;
-
-}
-
-if(!payment){
-
-alert("Silakan simpan metode pembayaran terlebih dahulu");
-
-return;
-
-}
-
-const {error}=await supabase
-
-.from("withdraws")
-
-.insert({
-
-user_id:user.id,
-
-amount:amount,
-
-fee:0,
-
-type:"manual",
-
-status:"pending",
-
-method:payment.method,
-
-account_name:payment.account_name,
-
-account_number:payment.account_number
-
-});
-
-if(error){
-
-console.error(error);
-
-alert(error.message);
-
-return;
-
-}
-
-const {error:updateError}=await supabase
-
-.from("profiles")
-
-.update({
-
-balance:balance-amount
-
-})
-
-.eq("id",user.id);
-
-if(updateError){
-
-console.error(updateError);
-
-alert(updateError.message);
-
-return;
-
-}
-
-user = await db.getCurrentProfile();
-
-withdrawAmount.value="";
-
-await refreshPage();
-
-alert("Request withdraw berhasil dikirim");
-
-}
-
-// ======================================================
-// INSTANT WITHDRAW
-// ======================================================
-
-async function loadInstantLimit(){
-
-const today=new Date();
-
-today.setHours(0,0,0,0);
-
-const {data,error}=await supabase
-
-.from("withdraws")
-
-.select("amount")
-
-.eq("user_id",user.id)
-
-.eq("type","instant")
-
-.gte("created_at",today.toISOString());
-
-if(error){
-
-console.error(error);
-
-return;
-
-}
-
-let used=0;
-
-(data||[]).forEach(item=>{
-
-used+=Number(item.amount)||0;
-
-});
-
-let remain=instantDailyLimit-used;
-
-if(remain<0)remain=0;
-
-if(instantLimitText)
-instantLimitText.innerText=rupiah(remain);
-
-if(instantProgress){
-
-let percent=(used/instantDailyLimit)*100;
-
-if(percent>100)percent=100;
-
-instantProgress.style.width=percent+"%";
-
-}
-
-}
-
-async function submitInstantWithdraw(){
-
-if(!instantSelected){
-
-alert("Pilih nominal withdraw");
-
-return;
-
-}
-
-let method=instantMethod.value;
-
-if(method==="Lainnya"){
-
-method=instantOtherMethod.value.trim();
-
-}
-
-const name=instantName.value.trim();
-
-const number=instantNumber.value.trim();
-
-if(!name){
-
-alert("Masukkan nama rekening");
-
-return;
-
-}
-
-if(!number){
-
-alert("Masukkan nomor rekening");
-
-return;
-
-}
-
-if(!method){
-
-alert("Pilih metode pembayaran");
-
-return;
-
-}
-
-const profile=await db.getProfile(user.id);
-
-if(!profile){
-
-alert("Profile tidak ditemukan");
-
-return;
-
-}
-
-const balance=Number(profile.balance)||0;
-
-const totalPotong=instantSelected+instantFee;
-
-if(balance<totalPotong){
-
-alert(
-"Saldo tidak cukup.\n\n"+
-"Nominal : "+rupiah(instantSelected)+
-"\nFee : "+rupiah(instantFee)+
-"\nTotal : "+rupiah(totalPotong)
-);
-
-return;
-
-}
-
-const today=new Date();
-
-today.setHours(0,0,0,0);
-
-const {data:list}=await supabase
-
-.from("withdraws")
-
-.select("amount")
-
-.eq("user_id",user.id)
-
-.eq("type","instant")
-
-.gte("created_at",today.toISOString());
-
-let used=0;
-
-(list||[]).forEach(item=>{
-
-used+=Number(item.amount)||0;
-
-});
-
-if(used+instantSelected>instantDailyLimit){
-
-alert("Limit withdraw instan hari ini telah habis.");
-
-return;
-
-}
-
-const {error}=await supabase
-
-.from("withdraws")
-
-.insert({
-
-user_id:user.id,
-
-amount:instantSelected,
-
-fee:instantFee,
-
-status:"success",
-
-type:"instant",
-
-method:method,
-
-account_name:name,
-
-account_number:number
-
-});
-
-if(error){
-
-console.error(error);
-
-alert(error.message);
-
-return;
-
-}
-
-const {error:updateError}=await supabase
-
-.from("profiles")
-
-.update({
-
-user = await db.getCurrentProfile();
-
-})
-
-.eq("id",user.id);
-
-if(updateError){
-
-console.error(updateError);
-
-alert(updateError.message);
-
-return;
-
-}
-
-user.balance=balance-totalPotong;
-
-instantName.value="";
-
-instantNumber.value="";
-
-instantOtherMethod.value="";
-
-instantAmount.value="";
-
-instantSelected=0;
-
-instantMethod.selectedIndex=0;
-
-if(instantOtherBox)
-instantOtherBox.style.display="none";
-
-document.querySelectorAll(".instant-options button")
-.forEach(btn=>btn.classList.remove("active"));
-
-await refreshPage();
-
-alert("Withdraw instan berhasil diproses.");
-
-}
-
-// ======================================================
-// REALTIME
-// ======================================================
-
-function startRealtime(){
-
-if(!supabase || !user)return;
-
-supabase
-
-.channel("payment-"+user.id)
-
-.on(
-
-"postgres_changes",
-
-{
-
-event:"*",
-
-schema:"public",
-
-table:"profiles",
-
-filter:`id=eq.${user.id}`
-
-},
-
-async()=>{
-
-console.log("PROFILE UPDATED");
-
-user=await db.getCurrentProfile();
-
-await loadBalance();
-
-}
-
-)
-
-.on(
-
-"postgres_changes",
-
-{
-
-event:"*",
-
-schema:"public",
-
-table:"withdraws",
-
-filter:`user_id=eq.${user.id}`
-
-},
-
-async()=>{
-
-console.log("WITHDRAW UPDATED");
-
-await loadWithdrawStatistic();
-
-await loadInstantLimit();
-
-}
-
-)
-
-.on(
-
-"postgres_changes",
-
-{
-
-event:"*",
-
-schema:"public",
-
-table:"payment_methods",
-
-filter:`user_id=eq.${user.id}`
-
-},
-
-async()=>{
-
-console.log("PAYMENT UPDATED");
-
-await loadPaymentMethod();
-
-}
-
-)
-
-.subscribe(status=>{
-
-console.log("REALTIME:",status);
-
-});
-
-}
-
-</script>
-<script src="assets/js/debug.js"></script>
-
-<script>
-
-// LOAD NAVBAR
-
-fetch("components/navbar.html")
-.then(res=>res.text())
-.then(html=>{
-
-document.getElementById("navbar").innerHTML=html;
-
-if(typeof c2pInit==="function"){
-c2pInit();
-}
-
-const logoutBtn=document.getElementById("logoutBtn");
-
-if(logoutBtn){
-
-logoutBtn.onclick=async()=>{
-
-try{
-
-await database.logout();
-
-}catch(e){}
-
-localStorage.clear();
-sessionStorage.clear();
-
-window.location.replace("login.html");
-
-};
-
-}
-
-});
-
-// LOAD FOOTER
-
-fetch("components/footer.html")
-.then(res=>res.text())
-.then(html=>{
-
-document.getElementById("footer").innerHTML=html;
-
-if(typeof c2pFooterInit==="function"){
-c2pFooterInit();
-}
-
-});
-
-</script>
 
 </body>
 </html>
