@@ -1,105 +1,239 @@
-<header class="c2p-navbar">
-  <button class="c2p-menu" onclick="c2pOpen()">
-    <i class="fa-solid fa-bars"></i>
-  </button>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <div class="c2p-logo">
-    <i class="fa-solid fa-bolt"></i>CLICK<span>2PAY</span>
-  </div>
+<title>Click2Pay</title>
 
-  <div style="display:flex;align-items:center;gap:10px;">
-    <button onclick="openNotif()"><i class="fa-solid fa-bell"></i></button>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <!-- PROFILE ICON -->
-    <button onclick="goProfile()">
-      <i class="fa-solid fa-user"></i>
-    </button>
+<style>
 
-    <select onchange="changeLang(this.value)">
-      <option value="id">ID</option>
-      <option value="en">EN</option>
-    </select>
-  </div>
-</header>
+/* ===== NAVBAR ===== */
+.c2p-navbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 15px;
+  background:#fff;
+  border-bottom:1px solid #eee;
+}
 
+.c2p-logo span{
+  color:#4CAF50;
+}
 
-<!-- SIDEBAR -->
+/* ===== SEARCH ===== */
+.c2p-search-box{
+  padding:10px;
+}
+.c2p-search-box input{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #ddd;
+}
+
+/* ===== SIDEBAR ===== */
+.c2p-sidebar{
+  position:fixed;
+  left:-260px;
+  top:0;
+  width:260px;
+  height:100%;
+  background:#fff;
+  overflow:auto;
+  transition:0.3s;
+  z-index:1000;
+}
+
+.c2p-sidebar a{
+  display:block;
+  padding:12px;
+  color:#333;
+  text-decoration:none;
+}
+
+.c2p-sidebar a:hover{
+  background:#f5f5f5;
+}
+
+.c2p-divider{
+  padding:10px;
+  font-size:12px;
+  color:#999;
+}
+
+.c2p-logout{
+  width:90%;
+  margin:10px auto;
+  display:block;
+  padding:10px;
+  background:#ff4d4f;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+}
+
+.c2p-side-footer{
+  text-align:center;
+  font-size:12px;
+  color:#aaa;
+  padding:10px;
+}
+
+/* ===== OVERLAY ===== */
+.c2p-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,0.4);
+  display:none;
+  z-index:999;
+}
+
+/* ===== BOTTOM NAV ===== */
+.c2p-bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:60px;
+  background:#fff;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  border-top:1px solid #eee;
+}
+
+.c2p-bottom-nav a{
+  text-align:center;
+  font-size:12px;
+  color:#555;
+  text-decoration:none;
+}
+
+.c2p-bottom-nav i{
+  display:block;
+  font-size:18px;
+}
+
+/* tombol tengah */
+.center-btn{
+  position:relative;
+  top:-15px;
+  background:#4CAF50;
+  color:#fff;
+  padding:12px;
+  border-radius:50%;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
 <div class="c2p-sidebar" id="c2pSide">
 
-  <div class="c2p-side-title">
-    Click2Pay
-    <button class="c2p-close" onclick="c2pClose()">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-  </div>
+  <a href="#"><i class="fa-solid fa-house"></i> Dashboard</a>
 
-  <!-- PROFILE SECTION -->
-  <div class="c2p-profile-box">
-    <img src="https://i.pravatar.cc/80" alt="profile">
-    <div>
-      <strong id="navUsername">Loading...</strong>
-      <p id="navEmail">user@email.com</p>
-    </div>
-  </div>
+  <a href="#"><i class="fa-solid fa-plus-circle"></i> Create Link</a>
+  <a href="#"><i class="fa-solid fa-cart-plus"></i> Create Sell Link</a>
+  <a href="#"><i class="fa-solid fa-link"></i> My Link</a>
 
-  <a href="dashboard.html"><i class="fa-solid fa-house"></i>Dashboard</a>
+  <a href="#"><i class="fa-solid fa-wallet"></i> Withdraw</a>
+  <a href="#"><i class="fa-solid fa-clock-rotate-left"></i> History Saldo</a>
 
-  <!-- LINKS -->
-  <div class="c2p-parent" onclick="c2pToggle('linksMenu')">
-    <i class="fa-solid fa-link"></i><span>Links</span>
-    <i class="fa-solid fa-chevron-down arrow"></i>
-  </div>
+  <a href="#"><i class="fa-solid fa-user-group"></i> Referral</a>
+  <a href="#"><i class="fa-solid fa-bell"></i> Notifikasi</a>
 
-  <div class="c2p-submenu" id="linksMenu">
-    <a href="create-link.html"><i class="fa-solid fa-plus"></i>Create Link</a>
-    <a href="#"><i class="fa-solid fa-cart-shopping"></i>Create Sell Link</a>
-    <a href="my-link.html"><i class="fa-solid fa-list"></i>My Link</a>
-  </div>
+  <div class="c2p-divider">Akun</div>
 
-  <a href="payment.html"><i class="fa-solid fa-money-bill-transfer"></i>Payment</a>
-  <a href="referral.html"><i class="fa-solid fa-users"></i>Referral</a>
+  <a href="#"><i class="fa-solid fa-gear"></i> Pengaturan</a>
+  <a href="#"><i class="fa-solid fa-shield-halved"></i> Aktivitas Login</a>
 
-  <!-- SETTING -->
-  <div class="c2p-parent" onclick="c2pToggle('settingMenu')">
-    <i class="fa-solid fa-gear"></i><span>Setting</span>
-    <i class="fa-solid fa-chevron-down arrow"></i>
-  </div>
+  <div class="c2p-divider">Support</div>
 
-  <div class="c2p-submenu" id="settingMenu">
-    <a href="paymentsetting.html"><i class="fa-solid fa-credit-card"></i>Setting Payment</a>
-  </div>
+  <a href="#"><i class="fa-brands fa-telegram"></i> Telegram</a>
+  <a href="#"><i class="fa-brands fa-facebook"></i> Facebook</a>
 
-  <!-- SUPPORT -->
-  <div class="c2p-parent" onclick="c2pToggle('supportMenu')">
-    <i class="fa-solid fa-headset"></i><span>Support</span>
-    <i class="fa-solid fa-chevron-down arrow"></i>
-  </div>
-
-  <div class="c2p-submenu" id="supportMenu">
-    <a href="https://t.me/click2pay"><i class="fa-brands fa-telegram"></i>Telegram</a>
-    <a href="#"><i class="fa-brands fa-whatsapp"></i>WhatsApp</a>
-    <a href="mailto:support@click2pay.com"><i class="fa-solid fa-envelope"></i>Email</a>
-  </div>
-
-  <!-- PENGUMUMAN -->
-  <div class="c2p-announcement">
-    <img src="https://via.placeholder.com/300x120" alt="info">
-    <div>
-      <strong>Update Terbaru</strong>
-      <p>Fitur withdraw sudah aktif 🚀</p>
-    </div>
-  </div>
-
-  <!-- LOGOUT -->
   <button class="c2p-logout" onclick="logoutUser()">
     <i class="fa-solid fa-right-from-bracket"></i> Logout
   </button>
 
-  <!-- FOOTER -->
-  <div class="c2p-side-footer">
-    <p>© 2026 Click2Pay</p>
-  </div>
+  <div class="c2p-side-footer">© 2026 Click2Pay</div>
 
 </div>
 
-<div class="c2p-overlay" id="c2pOverlay" onclick="c2pClose()"></div>
+<div class="c2p-overlay" id="overlay" onclick="c2pClose()"></div>
+
+<!-- BOTTOM NAV -->
+<div class="c2p-bottom-nav">
+
+  <a href="#">
+    <i class="fa-solid fa-house"></i>
+    Dashboard
+  </a>
+
+  <a href="#">
+    <i class="fa-solid fa-credit-card"></i>
+    Payment
+  </a>
+
+  <a href="#" class="center-btn">
+    <i class="fa-solid fa-plus"></i>
+  </a>
+
+  <a href="#">
+    <i class="fa-solid fa-crown"></i>
+    Premium
+  </a>
+
+  <a href="#">
+    <i class="fa-solid fa-user"></i>
+    Profil
+  </a>
+
+</div>
+
+<!-- SCRIPT -->
+<script>
+
+// sidebar
+function c2pOpen(){
+  document.getElementById("c2pSide").style.left = "0";
+  document.getElementById("overlay").style.display = "block";
+}
+
+function c2pClose(){
+  document.getElementById("c2pSide").style.left = "-260px";
+  document.getElementById("overlay").style.display = "none";
+}
+
+// language
+function changeLang(val){
+  alert(val === "id" ? "Bahasa Indonesia" : "English");
+}
+
+// logout
+function logoutUser(){
+  alert("Logout berhasil");
+  // nanti sambung supabase
+}
+
+// search menu
+document.getElementById("menuSearch").addEventListener("input", function(){
+  let val = this.value.toLowerCase();
+  document.querySelectorAll(".c2p-sidebar a").forEach(el=>{
+    el.style.display = el.innerText.toLowerCase().includes(val) ? "block" : "none";
+  });
+});
+
+</script>
+
+</body>
+</html>
