@@ -737,11 +737,13 @@ return;
 
 }
 
-supabase=db.supabase;
+supabase = db.supabase;
 
 try{
 
-user=await db.getCurrentProfile();
+const profile = await db.getCurrentProfile();
+
+user = profile;
 
 console.log("PROFILE:",user);
 
@@ -862,20 +864,20 @@ break;
 
 });
 
-if(requestWithdraw)
-requestWithdraw.innerText=rupiah(pending);
-
 if(pendingWithdraw)
-pendingWithdraw.innerText=rupiah(process);
+pendingWithdraw.innerText = rupiah(pending);
 
+if(requestWithdraw)
+requestWithdraw.innerText = rupiah(process);
+    
 if(successWithdraw)
-successWithdraw.innerText=rupiah(success);
+successWithdraw.innerText = rupiah(success);
 
 if(failedWithdraw)
-failedWithdraw.innerText=rupiah(failed);
+failedWithdraw.innerText = rupiah(failed);
 
 if(totalWithdraw)
-totalWithdraw.innerText=rupiah(total);
+totalWithdraw.innerText = rupiah(total);
 
 status("Status pembayaran berhasil dimuat","#16a34a");
 
@@ -1291,7 +1293,7 @@ return;
 
 }
 
-user.balance=balance-amount;
+user = await db.getCurrentProfile();
 
 withdrawAmount.value="";
 
@@ -1503,7 +1505,7 @@ const {error:updateError}=await supabase
 
 .update({
 
-balance:balance-totalPotong
+user = await db.getCurrentProfile();
 
 })
 
