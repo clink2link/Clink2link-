@@ -1,0 +1,192 @@
+/* =========================
+   GLOBAL CONTAINER
+========================= */
+.container {
+max-width: 1100px;
+margin: auto;
+padding: 20px;
+}
+
+/* =========================
+   TITLE
+========================= */
+.page-title {
+margin-bottom: 25px;
+}
+
+.page-title h1 {
+font-size: 24px;
+font-weight: 700;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.page-title p {
+font-size: 14px;
+opacity: 0.7;
+margin-top: 5px;
+}
+
+/* =========================
+   GRID CARD (SAMA KAYAK PAYMENT)
+========================= */
+.payment-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+gap: 15px;
+margin-bottom: 25px;
+}
+
+.pay-card {
+padding: 16px;
+border-radius: 14px;
+background: var(--card-bg);
+display: flex;
+flex-direction: column;
+gap: 8px;
+transition: 0.2s;
+}
+
+.pay-card:hover {
+transform: translateY(-3px);
+}
+
+.pay-card span {
+font-size: 13px;
+opacity: 0.7;
+}
+
+.pay-card h2 {
+font-size: 18px;
+font-weight: 700;
+}
+
+/* =========================
+   ICON WARNA
+========================= */
+.card-icon {
+width: 38px;
+height: 38px;
+border-radius: 10px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 16px;
+}
+
+.blue { background: rgba(0,123,255,0.15); color: #3b82f6; }
+.green { background: rgba(34,197,94,0.15); color: #22c55e; }
+.purple { background: rgba(168,85,247,0.15); color: #a855f7; }
+
+/* =========================
+   INFO BOX
+========================= */
+.info-box {
+background: var(--card-bg);
+border-radius: 14px;
+padding: 16px;
+}
+
+.info-header {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 10px;
+font-weight: 600;
+}
+
+/* =========================
+   LIST LOGIN
+========================= */
+.info-list {
+display: flex;
+flex-direction: column;
+gap: 12px;
+margin-top: 10px;
+}
+
+.login-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 12px;
+border-radius: 10px;
+background: var(--item-bg);
+transition: 0.2s;
+}
+
+.login-item:hover {
+background: var(--hover-bg);
+}
+
+.login-left {
+display: flex;
+flex-direction: column;
+}
+
+.login-device {
+font-weight: 600;
+font-size: 14px;
+}
+
+.login-time {
+font-size: 12px;
+opacity: 0.6;
+}
+
+/* =========================
+   RESPONSIVE MOBILE
+========================= */
+@media (max-width: 600px) {
+
+.container {
+padding: 15px;
+}
+
+.page-title h1 {
+font-size: 20px;
+}
+
+.pay-card h2 {
+font-size: 16px;
+}
+
+.login-item {
+flex-direction: column;
+align-items: flex-start;
+gap: 5px;
+}
+
+}
+
+/* =========================
+   LIGHT MODE DEFAULT
+========================= */
+:root {
+--bg: #f6f7fb;
+--card-bg: #ffffff;
+--item-bg: #f1f3f7;
+--hover-bg: #e9edf5;
+--text: #111;
+}
+
+/* =========================
+   AUTO DARK MODE
+========================= */
+@media (prefers-color-scheme: dark) {
+
+:root {
+--bg: #0f172a;
+--card-bg: #1e293b;
+--item-bg: #273449;
+--hover-bg: #334155;
+--text: #e2e8f0;
+}
+
+body {
+background: var(--bg);
+color: var(--text);
+}
+
+}
