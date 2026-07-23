@@ -1,242 +1,362 @@
 "use strict";
 
-let supabase=null;
-let user=null;
-let withdrawOpen=false;
 
-const $=id=>document.getElementById(id);
+let supabase = null;
+let user = null;
+
+let withdrawOpen = false;
+let instantSelected = 0;
+
+
+const $ = id => document.getElementById(id);
+
+
 
 document.addEventListener("DOMContentLoaded",async()=>{
 
+
 if(!window.database){
-console.error("Database belum siap");
+
+console.error("DATABASE BELUM SIAP");
+
 return;
+
 }
 
-supabase=database.supabase;
 
-user=await database.getCurrentProfile();
+supabase = database.supabase;
+
+
+user = await database.getCurrentProfile();
+
+
 
 if(!user){
-location.href="login.html";
+
+location.replace("login.html");
+
 return;
+
 }
 
+
+
 checkWithdrawService();
+
 await loadBalance();
+
 await checkPayment();
+
 await loadWithdrawStats();
 
 bindEvent();
 
+
 });
 
 
-// =============================
-// SERVICE WD
-// =============================
+
+
+
+// =========================
+// CEK JAM WITHDRAW
+// =========================
+
 
 function checkWithdrawService(){
 
-const box=$("withdrawService");
-const btn=$("manualScrollBtn");
 
-const now=new Date();
+const box = $("withdrawService");
 
-const day=now.getDay();
-const hour=now.getHours();
 
-if(day>=1&&day<=5&&hour>=8&&hour<18){
+const btn = $("manualScrollBtn");
 
-withdrawOpen=true;
 
-if(box){
+const now = new Date();
 
-box.innerHTML=`
+
+const day = now.getDay();
+
+const hour = now.getHours();
+
+
+
+if(
+day >= 1 &&
+day <= 5 &&
+hour >= 8 &&
+hour < 18
+){
+
+
+withdrawOpen = true;
+
+
+box.innerHTML = `
+
 <i class="fa-solid fa-circle-check"></i>
-Withdraw sedang buka
+
+Withdraw buka
+
 <br>
-Senin - Jumat | 08:00 - 18:00
+
+Senin - Jumat
+08:00 - 18:00 WIB
+
 `;
 
 box.style.color="#16a34a";
 
-}
 
 if(btn){
+
 btn.disabled=false;
+
 btn.style.opacity="1";
+
 }
+
 
 }else{
 
+
 withdrawOpen=false;
 
-if(box){
 
-box.innerHTML=`
+box.innerHTML = `
+
 <i class="fa-solid fa-circle-xmark"></i>
+
 Withdraw sedang tutup
+
 <br>
-Buka Senin - Jumat | 08:00 - 18:00
+
+Buka Senin - Jumat
+08:00 - 18:00 WIB
+
 `;
 
 box.style.color="#dc2626";
 
-}
 
 if(btn){
 
 btn.disabled=true;
+
 btn.style.opacity="0.5";
 
 }
 
-}
 
 }
 
 
 
-// =============================
+}
+
+
+
+
+
+
+
+// =========================
 // LOAD SALDO
-// =============================
+// =========================
+
 
 async function loadBalance(){
 
-if(!user)return;
 
-$("balance").innerText=rupiah(user.balance);
+$("balance").innerText =
+rupiah(user.balance);
 
-$("adsBalance").innerText=
+
+
+$("adsBalance").innerText =
 rupiah(user.ads_earning_total);
 
-$("sellBalance").innerText=
+
+
+$("sellBalance").innerText =
 rupiah(user.sell_earning_total);
+
+
 
 }
 
 
 
-// =============================
+
+
+
+
+
+// =========================
 // CEK REKENING
-// =============================
+// =========================
+
 
 async function checkPayment(){
 
-const warning=$("paymentWarning");
 
-if(!warning)return;
+const warning = $("paymentWarning");
+
 
 
 const {data,error}=await supabase
+
 .from("payment_methods")
+
 .select("id")
+
 .eq("user_id",user.id)
+
 .maybeSingle();
 
 
+
 if(error){
 
-console.log(error);
+console.error(error);
+
 return;
 
 }
 
 
-if(data){
 
-warning.style.display="none";
-
-}else{
+if(!data){
 
 warning.style.display="flex";
 
-}
+}else{
+
+warning.style.display="none";
 
 }
 
 
+}
 
-// =============================
+
+
+
+
+
+
+// =========================
 // STATISTIK WD
-// =============================
+// =========================
+
 
 async function loadWithdrawStats(){
 
+
 const {data,error}=await supabase
+
 .from("withdraws")
+
 .select("*")
+
 .eq("user_id",user.id);
+
 
 
 if(error){
 
-console.log(error);
+console.error(error);
+
 return;
 
 }
 
 
+
 let success=0;
+
 let pending=0;
+
 let failed=0;
+
 
 
 (data||[]).forEach(w=>{
 
-const amount=Number(w.amount)||0;
+
+let amount =
+Number(w.amount)||0;
 
 
-if(w.status==="success")
+
+if(w.status==="success"){
+
 success+=amount;
 
+}
 
-if(w.status==="pending")
+
+if(w.status==="pending"){
+
 pending+=amount;
 
+}
 
-if(w.status==="failed")
+
+if(w.status==="failed"){
+
 failed+=amount;
+
+}
 
 
 });
 
 
-if($("successWD"))
-$("successWD").innerText=rupiah(success);
+
+$("successWD").innerText =
+rupiah(success);
 
 
-if($("pendingWD"))
-$("pendingWD").innerText=rupiah(pending);
+$("pendingWD").innerText =
+rupiah(pending);
 
 
-if($("failedWD"))
-$("failedWD").innerText=rupiah(failed);
+$("failedWD").innerText =
+rupiah(failed);
+
 
 
 }
 
 
 
-// =============================
-// BUTTON
-// =============================
+
+
+
+
+// =========================
+// EVENT
+// =========================
+
 
 function bindEvent(){
 
-const btn=$("manualScrollBtn");
-
-if(!btn)return;
 
 
-btn.onclick=()=>{
+const scrollBtn=$("manualScrollBtn");
+
+
+if(scrollBtn){
+
+
+scrollBtn.onclick=()=>{
 
 
 if(!withdrawOpen){
 
 alert(
-"Withdraw sedang tutup.\n\nJam buka:\nSenin - Jumat\n08:00 - 18:00"
+"Withdraw sedang tutup.\n\nJam:\nSenin - Jumat\n08:00 - 18:00 WIB"
 );
 
 return;
@@ -244,34 +364,463 @@ return;
 }
 
 
-const box=$("withdrawBox");
 
-if(box){
+$("manualWithdrawBox")
+.scrollIntoView({
 
-box.scrollIntoView({
 behavior:"smooth"
-});
 
-}
+});
 
 
 };
 
 
+
 }
 
 
 
-// =============================
-// FORMAT RUPIAH
-// =============================
+
+
+const manualBtn=$("manualWithdrawBtn");
+
+
+if(manualBtn){
+
+manualBtn.onclick =
+manualWithdraw;
+
+}
+
+
+
+document
+
+.querySelectorAll(".instant-options button")
+
+.forEach(btn=>{
+
+
+btn.onclick=()=>{
+
+
+document
+
+.querySelectorAll(".instant-options button")
+
+.forEach(x=>x.classList.remove("active"));
+
+
+
+btn.classList.add("active");
+
+
+instantSelected =
+Number(btn.dataset.value);
+
+
+
+$("instantAmount").value =
+instantSelected;
+
+
+
+};
+
+
+
+});
+
+
+
+
+const instantBtn=$("instantWithdrawBtn");
+
+
+if(instantBtn){
+
+instantBtn.onclick =
+instantWithdraw;
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+// =========================
+// WD MANUAL
+// =========================
+
+
+async function manualWithdraw(){
+
+
+if(!withdrawOpen){
+
+alert("Withdraw sedang tutup");
+
+return;
+
+}
+
+
+
+const amount =
+Number($("manualAmount").value);
+
+
+
+if(!amount){
+
+alert("Masukkan nominal withdraw");
+
+return;
+
+}
+
+
+
+if(amount < 100000){
+
+alert("Minimal withdraw Rp100.000");
+
+return;
+
+}
+
+
+
+
+const {data:payment}=await supabase
+
+.from("payment_methods")
+
+.select("*")
+
+.eq("user_id",user.id)
+
+.maybeSingle();
+
+
+
+if(!payment){
+
+alert(
+"Silakan simpan rekening terlebih dahulu"
+);
+
+location.href="paymentsetting.html";
+
+return;
+
+}
+
+
+
+
+const profile =
+await database.getCurrentProfile();
+
+
+
+if(profile.balance < amount){
+
+alert("Saldo tidak cukup");
+
+return;
+
+}
+
+
+
+
+
+const {error}=await supabase
+
+.from("withdraws")
+
+.insert({
+
+user_id:user.id,
+
+method:payment.method,
+
+account_number:payment.account_number,
+
+amount:amount,
+
+status:"pending",
+
+type:"manual",
+
+fee:0
+
+});
+
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+
+
+
+
+await supabase
+
+.from("profiles")
+
+.update({
+
+balance:
+Number(profile.balance)-amount
+
+})
+
+.eq("id",user.id);
+
+
+
+alert(
+"Withdraw manual berhasil dibuat"
+);
+
+
+
+location.reload();
+
+
+}
+
+
+
+
+
+
+
+// =========================
+// WD INSTANT
+// =========================
+
+
+async function instantWithdraw(){
+
+
+if(!withdrawOpen){
+
+alert("Withdraw sedang tutup");
+
+return;
+
+}
+
+
+
+if(!instantSelected){
+
+alert("Pilih nominal");
+
+return;
+
+}
+
+
+
+const profile =
+await database.getCurrentProfile();
+
+
+
+const fee = 15000;
+
+
+const total =
+instantSelected + fee;
+
+
+
+if(profile.balance < total){
+
+alert(
+"Saldo tidak cukup\n\n"+
+"Withdraw : "+rupiah(instantSelected)+
+"\nFee : "+rupiah(fee)
+);
+
+return;
+
+}
+
+
+
+const {data:payment}=await supabase
+
+.from("payment_methods")
+
+.select("*")
+
+.eq("user_id",user.id)
+
+.maybeSingle();
+
+
+
+if(!payment){
+
+alert(
+"Simpan rekening terlebih dahulu"
+);
+
+location.href="paymentsetting.html";
+
+return;
+
+}
+
+
+
+
+
+const {data:list}=await supabase
+
+.from("withdraws")
+
+.select("amount")
+
+.eq("user_id",user.id)
+
+.eq("type","instant");
+
+
+
+let used=0;
+
+
+(list||[]).forEach(x=>{
+
+used += Number(x.amount)||0;
+
+});
+
+
+
+if(
+used + instantSelected > 500000
+){
+
+alert(
+"Limit instant hari ini habis"
+);
+
+return;
+
+}
+
+
+
+
+const {error}=await supabase
+
+.from("withdraws")
+
+.insert({
+
+user_id:user.id,
+
+method:payment.method,
+
+account_number:payment.account_number,
+
+amount:instantSelected,
+
+status:"success",
+
+type:"instant",
+
+fee:fee
+
+});
+
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+
+
+await supabase
+
+.from("profiles")
+
+.update({
+
+balance:
+Number(profile.balance)-total
+
+})
+
+.eq("id",user.id);
+
+
+
+alert(
+"Withdraw instant berhasil"
+);
+
+
+location.reload();
+
+
+}
+
+
+
+
+
+
+
+
+// =========================
+// FORMAT
+// =========================
+
 
 function rupiah(value){
 
-return new Intl.NumberFormat("id-ID",{
+
+return new Intl.NumberFormat(
+"id-ID",
+{
+
 style:"currency",
+
 currency:"IDR",
+
 maximumFractionDigits:0
-}).format(Number(value)||0);
+
+}
+
+).format(
+Number(value)||0
+);
+
 
 }
