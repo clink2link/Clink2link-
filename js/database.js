@@ -641,6 +641,26 @@ return data || [];
 
 }
 
+
+// ===============================
+// MENUS (WAJIB TAMBAH INI)
+// ===============================
+
+async function getMenusByRole(role){
+
+  const {data,error}=await supabaseClient
+  .from("menus")
+  .select("*")
+  .eq("role",role);
+
+  if(error){
+    console.error("MENU ERROR:",error);
+    return [];
+  }
+
+  return data;
+}
+
 // ===============================
 // EXPORT
 // ===============================
@@ -660,6 +680,8 @@ getProfile,
 getCurrentProfile,
 getProfiles,
 updateProfile,
+
+getMenusByRole,
 
 getLinks,
 createLink,
