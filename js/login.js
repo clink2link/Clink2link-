@@ -110,6 +110,8 @@ btn.innerHTML=
 
 try{
 
+  // 🚀 ambil IP dari awal (paralel, biar cepat)
+  const ipPromise = getIPInfo();
 
 let email=login.toLowerCase();
 
@@ -406,23 +408,46 @@ return;
 // UPDATE LOGIN
 // =========================
 
-
 await database.supabase
-
 .from("profiles")
-
 .update({
-
-updated_at:new Date().toISOString()
-
+  updated_at:new Date().toISOString()
 })
-
-.eq(
-"id",
-profile.id
-);
+.eq("id", profile.id);
 
 
+// =========================
+// SIMPAN LOGIN ACTIVITY 🔥
+// =========================
+
+if (!sessionStorage.getItem("login_tracked") && !window.__loginTracking) {
+
+  window.__loginTracking = true;
+
+  try {
+    const ipData = await ipPromise;
+
+    await database.supabase
+      .from("login_activity")
+      .insert({
+        user_id: profile.id,
+        device: getDevice(),
+        user_agent: navigator.userAgent,
+        ip: ipData.ip,
+        city: ipData.city,
+        region: ipData.region,
+        country: ipData.country,
+        org: ipData.org,
+        latitude: ipData.lat,
+        longitude: ipData.lon
+      });
+
+    sessionStorage.setItem("login_tracked", "true");
+
+  } catch (e) {
+    console.warn("Login activity error:", e);
+  }
+}
 
 // =========================
 // LOCAL STORAGE
@@ -497,3 +522,43 @@ btn.innerHTML=
 
 
 });
+
+
+function getDevice() {
+  const ua = navigator.userAgent;
+
+  if (/android/i.test(ua)) return "Android";
+  if (/iPhone|iPad/i.test(ua)) return "iPhone";
+  if (/Windows/i.test(ua)) return "Windows";
+  if (/Mac/i.test(ua)) return "Mac";
+
+  return "Unknown Device";
+}
+
+async function getIPInfo() {
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+
+    return {
+      ip: data.ip,
+      city: data.city,
+      region: data.region,
+      country: data.country_name,
+      org: data.org,
+      lat: data.latitude,
+      lon: data.longitude
+    };
+
+  } catch (e) {
+    return {
+      ip: "Unknown",
+      city: "-",
+      region: "-",
+      country: "-",
+      org: "-",
+      lat: null,
+      lon: null
+    };
+  }
+}
