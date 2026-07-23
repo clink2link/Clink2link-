@@ -1,27 +1,29 @@
 "use strict";
 
-let user=null;
-let supabase=null;
+let user = null;
+let supabase = null;
 
-document.addEventListener("DOMContentLoaded",async()=>{
+document.addEventListener("DOMContentLoaded", async () => {
 
-if(!window.database){
-console.error("DATABASE BELUM SIAP");
-return;
-}
+  console.log("[PAYMENT PAGE] INIT");
 
-supabase=database.supabase;
+  if (!window.database){
+    console.error("DATABASE BELUM SIAP");
+    return;
+  }
 
-user=await database.getCurrentProfile();
+  supabase = window.database.supabase;
 
-if(!user){
-location.href="login.html";
-return;
-}
+  user = await window.database.getCurrentProfile();
 
-await loadPayment();
+  if (!user){
+    location.href = "login.html";
+    return;
+  }
 
-bindPaymentEvent();
+  await loadPayment();
+
+  bindPaymentEvent();
 
 });
 
@@ -32,28 +34,32 @@ bindPaymentEvent();
 
 async function loadPayment(){
 
-const {data,error}=await supabase
-.from("payment_methods")
-.select("*")
-.eq("user_id",user.id)
-.maybeSingle();
+  const { data, error } = await supabase
+    .from("payment_methods")
+    .select("*")
+    .eq("user_id", user.id)
+    .maybeSingle();
 
-if(error){
-console.error("LOAD PAYMENT ERROR",error);
-return;
-}
+  if (error){
+    console.error("[LOAD PAYMENT ERROR]", error);
+    return;
+  }
 
-if(data){
+  if (data){
 
-showSavedPayment(data);
+    console.log("[PAYMENT DATA]", data);
 
-document.getElementById("accountName").value=data.account_name || "";
+    showSavedPayment(data);
 
-document.getElementById("accountNumber").value=data.account_number || "";
+    const name = document.getElementById("accountName");
+    const number = document.getElementById("accountNumber");
+    const method = document.getElementById("paymentMethod");
 
-document.getElementById("paymentMethod").value=data.method || data.bank_name;
+    if (name) name.value = data.account_name || "";
+    if (number) number.value = data.account_number || "";
+    if (method) method.value = data.method || data.bank_name;
 
-}
+  }
 
 }
 
@@ -64,90 +70,75 @@ document.getElementById("paymentMethod").value=data.method || data.bank_name;
 
 async function savePayment(){
 
-const accountName=document.getElementById("accountName").value.trim();
+  const nameEl = document.getElementById("accountName");
+  const numberEl = document.getElementById("accountNumber");
+  const methodEl = document.getElementById("paymentMethod");
 
-const method=document.getElementById("paymentMethod").value;
+  if (!nameEl || !numberEl || !methodEl){
+    console.log("[ERROR] form element tidak lengkap");
+    return;
+  }
 
-const accountNumber=document.getElementById("accountNumber").value.trim();
+  const accountName = nameEl.value.trim();
+  const method = methodEl.value;
+  const accountNumber = numberEl.value.trim();
 
+  if (!accountName || !accountNumber){
+    alert("Lengkapi data pembayaran terlebih dahulu");
+    return;
+  }
 
-if(!accountName || !accountNumber){
+  const { data: oldData, error: oldError } = await supabase
+    .from("payment_methods")
+    .select("id")
+    .eq("user_id", user.id)
+    .maybeSingle();
 
-alert("Lengkapi data pembayaran terlebih dahulu");
+  if (oldError){
+    console.log("[OLD DATA ERROR]", oldError);
+    return;
+  }
 
-return;
+  const payload = {
+    bank_name: method,
+    method: method,
+    account_name: accountName,
+    account_number: accountNumber
+  };
 
-}
+  let result;
 
+  if (oldData){
 
-const {data:oldData}=await supabase
-.from("payment_methods")
-.select("id")
-.eq("user_id",user.id)
-.maybeSingle();
+    result = await supabase
+      .from("payment_methods")
+      .update(payload)
+      .eq("id", oldData.id)
+      .select()
+      .single();
 
+  } else {
 
-let result;
+    result = await supabase
+      .from("payment_methods")
+      .insert({
+        user_id: user.id,
+        ...payload
+      })
+      .select()
+      .single();
 
+  }
 
-const payload={
+  if (result.error){
+    console.error(result.error);
+    alert("Gagal menyimpan pembayaran");
+    return;
+  }
 
-bank_name:method,
+  alert("Pembayaran berhasil disimpan");
 
-method:method,
-
-account_name:accountName,
-
-account_number:accountNumber
-
-};
-
-
-if(oldData){
-
-result=await supabase
-.from("payment_methods")
-.update(payload)
-.eq("id",oldData.id)
-.select()
-.single();
-
-
-}else{
-
-
-result=await supabase
-.from("payment_methods")
-.insert({
-
-user_id:user.id,
-
-...payload
-
-})
-.select()
-.single();
-
-}
-
-
-
-if(result.error){
-
-console.error(result.error);
-
-alert("Gagal menyimpan pembayaran");
-
-return;
-
-}
-
-
-alert("Pembayaran berhasil disimpan");
-
-
-showSavedPayment(result.data);
-
+  showSavedPayment(result.data);
 
 }
 
@@ -158,94 +149,80 @@ showSavedPayment(result.data);
 
 function showSavedPayment(data){
 
-const box=document.getElementById("savedPayment");
+  const box = document.getElementById("savedPayment");
+  const detail = document.getElementById("paymentDetail");
 
-const detail=document.getElementById("paymentDetail");
+  if (!box || !detail){
+    console.log("[ERROR] element display tidak ditemukan");
+    return;
+  }
 
+  box.style.display = "block";
 
-if(!box || !detail)
-return;
+  detail.innerHTML = `
+    <div class="detail-row">
+      <span>Bank / E-Wallet</span>
+      <b>${data.method || data.bank_name}</b>
+    </div>
 
+    <div class="detail-row">
+      <span>Nama</span>
+      <b>${data.account_name}</b>
+    </div>
 
-box.style.display="block";
+    <div class="detail-row">
+      <span>Nomor</span>
+      <b>${maskNumber(data.account_number)}</b>
+    </div>
 
-
-detail.innerHTML=`
-
-<div class="detail-row">
-<span>Bank / E-Wallet</span>
-<b>${data.method || data.bank_name}</b>
-</div>
-
-<div class="detail-row">
-<span>Nama</span>
-<b>${data.account_name}</b>
-</div>
-
-<div class="detail-row">
-<span>Nomor</span>
-<b>${maskNumber(data.account_number)}</b>
-</div>
-
-<div class="detail-row">
-<span>Status</span>
-<b style="color:#16a34a">Aktif</b>
-</div>
-
-`;
+    <div class="detail-row">
+      <span>Status</span>
+      <b style="color:#16a34a">Aktif</b>
+    </div>
+  `;
 
 }
 
 
 // =============================
-// REQUEST BANK BARU
+// REQUEST BANK BARU (FIXED)
 // =============================
 
 async function requestPayment(){
 
-const name=document.getElementById("requestMethod").value.trim();
+  const input = document.getElementById("requestMethod");
 
+  if (!input){
+    console.log("[ERROR] requestMethod tidak ditemukan");
+    return;
+  }
 
-if(!name){
+  const name = input.value.trim();
 
-alert("Masukkan nama bank atau e-wallet");
+  if (!name){
+    alert("Masukkan nama bank atau e-wallet");
+    return;
+  }
 
-return;
+  const { error } = await supabase
+    .from("payment_requests")
+    .insert({
+      user_id: user.id,
+      payment_name: name,
+      status: "pending"
+    });
 
-}
+  if (error){
+    console.error("[REQUEST PAYMENT ERROR]", error);
+    alert("Gagal mengirim request");
+    return;
+  }
 
+  alert("Request berhasil dikirim.\nAdmin akan melakukan pengecekan.");
 
-const {error}=await supabase
-.from("payment_requests")
-.insert({
-user_id:user.id,
-payment_name:name,
-status:"pending"
-});
+  input.value = "";
 
-
-if(error){
-
-console.error(
-"REQUEST PAYMENT ERROR:",
-error
-);
-
-alert(
-"Gagal mengirim request"
-);
-
-return;
-
-}
-
-
-alert(
-"Request berhasil dikirim.\nAdmin akan melakukan pengecekan."
-);
-
-
-document.getElementById("requestMethod").value="";
+} // ✅ INI YANG TADI KURANG
 
 
 // =============================
@@ -254,34 +231,27 @@ document.getElementById("requestMethod").value="";
 
 function bindPaymentEvent(){
 
-const save=document.getElementById("savePayment");
+  console.log("[BIND PAYMENT EVENT]");
 
-if(save){
-save.onclick=savePayment;
-}
+  const save = document.getElementById("savePayment");
+  if (save){
+    save.onclick = savePayment;
+  }
 
+  const request = document.getElementById("requestPaymentBtn");
+  if (request){
+    request.onclick = requestPayment;
+  }
 
-const request=document.getElementById("requestPaymentBtn");
-
-if(request){
-request.onclick=requestPayment;
-}
-
-
-const edit=document.getElementById("editPayment");
-
-if(edit){
-
-edit.onclick=()=>{
-
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
-
-};
-
-}
+  const edit = document.getElementById("editPayment");
+  if (edit){
+    edit.onclick = () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    };
+  }
 
 }
 
@@ -292,17 +262,12 @@ behavior:"smooth"
 
 function maskNumber(number){
 
-if(!number)
-return "-";
+  if (!number) return "-";
 
+  const value = String(number);
 
-let value=String(number);
+  if (value.length <= 4) return value;
 
-
-if(value.length<=4)
-return value;
-
-
-return value.substring(0,3)+"****"+value.substring(value.length-3);
+  return value.substring(0,3) + "****" + value.substring(value.length-3);
 
 }
