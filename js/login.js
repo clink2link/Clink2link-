@@ -449,13 +449,18 @@ if (!sessionStorage.getItem("login_tracked") && !window.__loginTracking) {
   }
 }
 
-// =========================
-// LOCAL STORAGE
-// =========================
+ // =========================
+ // TRACK LOGIN ACTIVITY 🔥
+ // =========================
 
+ await trackLoginActivity(profile.id);
 
-localStorage.setItem("user_id", profile.id);
-localStorage.setItem("username", profile.username);
+ // =========================
+ // LOCAL STORAGE
+ // =========================
+
+ localStorage.setItem("user_id", profile.id);
+ localStorage.setItem("username", profile.username);
 
 console.log("LOGIN SAVE");
 console.log("PROFILE ID:", profile.id);
