@@ -1,241 +1,139 @@
 "use strict";
 
-
 let supabase=null;
 let user=null;
-
-const instantFee=15000;
-const instantLimit=500000;
-
+let withdrawOpen=false;
 
 const $=id=>document.getElementById(id);
-
-
 
 document.addEventListener("DOMContentLoaded",async()=>{
 
 if(!window.database){
-console.error("Database tidak ditemukan");
+console.error("Database belum siap");
 return;
 }
-
 
 supabase=database.supabase;
 
-
 user=await database.getCurrentProfile();
 
-
 if(!user){
-
 location.href="login.html";
 return;
-
 }
 
+checkWithdrawService();
+await loadBalance();
+await checkPayment();
+await loadWithdrawStats();
 
-await initPayment();
-
+bindEvent();
 
 });
 
 
-
-
-async function initPayment(){
-
-await checkWithdrawService();
-
-await loadBalance();
-
-await checkPaymentAccount();
-
-await loadWithdrawStatistic();
-
-
-bindPaymentEvent();
-
-}
-
-
-
-
-
-
-// ===============================
-// CEK JAM WD
-// ===============================
-
+// =============================
+// SERVICE WD
+// =============================
 
 function checkWithdrawService(){
 
-
 const box=$("withdrawService");
+const btn=$("manualScrollBtn");
 
-if(!box)return;
+const now=new Date();
 
+const day=now.getDay();
+const hour=now.getHours();
 
-let now=new Date();
+if(day>=1&&day<=5&&hour>=8&&hour<18){
 
-let day=now.getDay();
+withdrawOpen=true;
 
-let hour=now.getHours();
+if(box){
 
-
-
-let open=true;
-
-
-
-// minggu 0 sabtu 6
-
-if(day===0 || day===6){
-
-open=false;
-
-}
-
-
-
-if(hour<8 || hour>=18){
-
-open=false;
-
-}
-
-
-
-
-if(open){
-
-
-box.innerHTML=
-`
+box.innerHTML=`
 <i class="fa-solid fa-circle-check"></i>
-Withdraw Dibuka
+Withdraw sedang buka
 <br>
-08:00 - 18:00 WIB
+Senin - Jumat | 08:00 - 18:00
 `;
 
-box.className="payment-status success";
+box.style.color="#16a34a";
 
+}
+
+if(btn){
+btn.disabled=false;
+btn.style.opacity="1";
+}
 
 }else{
 
+withdrawOpen=false;
 
-box.innerHTML=
-`
-<i class="fa-solid fa-lock"></i>
-Withdraw Ditutup
+if(box){
+
+box.innerHTML=`
+<i class="fa-solid fa-circle-xmark"></i>
+Withdraw sedang tutup
 <br>
-Senin - Jumat 08:00 - 18:00 WIB
+Buka Senin - Jumat | 08:00 - 18:00
 `;
 
+box.style.color="#dc2626";
 
-box.className="payment-status danger";
+}
 
+if(btn){
+
+btn.disabled=true;
+btn.style.opacity="0.5";
+
+}
+
+}
 
 }
 
 
-return open;
 
-
-}
-
-
-
-
-
-// ===============================
-// SALDO
-// ===============================
-
+// =============================
+// LOAD SALDO
+// =============================
 
 async function loadBalance(){
 
+if(!user)return;
 
-$("balance").innerText=
-rupiah(user.balance);
-
+$("balance").innerText=rupiah(user.balance);
 
 $("adsBalance").innerText=
 rupiah(user.ads_earning_total);
 
-
 $("sellBalance").innerText=
 rupiah(user.sell_earning_total);
 
-
 }
 
 
 
-
-
-// ===============================
+// =============================
 // CEK REKENING
-// ===============================
+// =============================
 
-
-async function checkPaymentAccount(){
-
-
-const {data}=await supabase
-
-.from("payment_methods")
-
-.select("*")
-
-.eq("user_id",user.id)
-
-.maybeSingle();
-
-
+async function checkPayment(){
 
 const warning=$("paymentWarning");
 
-
-
-if(!data){
-
-if(warning)
-warning.style.display="flex";
-
-
-}else{
-
-
-if(warning)
-warning.style.display="none";
-
-
-}
-
-
-
-}
-
-
-
-
-
-// ===============================
-// STATISTIK WD
-// ===============================
-
-
-async function loadWithdrawStatistic(){
+if(!warning)return;
 
 
 const {data,error}=await supabase
-
-.from("withdraws")
-
-.select("*")
-
-.eq("user_id",user.id);
-
+.from("payment_methods")
+.select("id")
+.eq("user_id",user.id)
+.maybeSingle();
 
 
 if(error){
@@ -246,17 +144,48 @@ return;
 }
 
 
+if(data){
+
+warning.style.display="none";
+
+}else{
+
+warning.style.display="flex";
+
+}
+
+}
+
+
+
+// =============================
+// STATISTIK WD
+// =============================
+
+async function loadWithdrawStats(){
+
+const {data,error}=await supabase
+.from("withdraws")
+.select("*")
+.eq("user_id",user.id);
+
+
+if(error){
+
+console.log(error);
+return;
+
+}
+
 
 let success=0;
 let pending=0;
 let failed=0;
 
 
-
 (data||[]).forEach(w=>{
 
-
-let amount=Number(w.amount)||0;
+const amount=Number(w.amount)||0;
 
 
 if(w.status==="success")
@@ -274,300 +203,40 @@ failed+=amount;
 });
 
 
-
-$("successWD").innerText=
-rupiah(success);
-
-
-$("pendingWD").innerText=
-rupiah(pending);
+if($("successWD"))
+$("successWD").innerText=rupiah(success);
 
 
-$("failedWD").innerText=
-rupiah(failed);
+if($("pendingWD"))
+$("pendingWD").innerText=rupiah(pending);
 
+
+if($("failedWD"))
+$("failedWD").innerText=rupiah(failed);
 
 
 }
 
 
 
+// =============================
+// BUTTON
+// =============================
 
-
-
-
-// ===============================
-// EVENT
-// ===============================
-
-
-function bindPaymentEvent(){
-
-
+function bindEvent(){
 
 const btn=$("manualScrollBtn");
 
-
-if(btn){
-
-btn.onclick=()=>{
-
-
-document
-
-.getElementById("manualWithdrawBox")
-
-.scrollIntoView({
-
-behavior:"smooth"
-
-});
-
-
-};
-
-
-}
-
-
-
-const manual=$("manualWithdrawBtn");
-
-
-if(manual){
-
-manual.onclick=manualWithdraw;
-
-}
-
-
-
-const instant=$("instantWithdrawBtn");
-
-
-if(instant){
-
-instant.onclick=instantWithdraw;
-
-}
-
-
-
-
-
-document.querySelectorAll(".instant-options button")
-
-.forEach(btn=>{
+if(!btn)return;
 
 
 btn.onclick=()=>{
 
 
-document.querySelectorAll(".instant-options button")
-
-.forEach(x=>x.classList.remove("active"));
-
-
-
-btn.classList.add("active");
-
-
-$("instantAmount").value=
-btn.dataset.value;
-
-
-
-};
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-// ===============================
-// MANUAL WD
-// ===============================
-
-
-async function manualWithdraw(){
-
-
-if(!checkWithdrawService()){
-
-alert("Withdraw sedang tutup.");
-
-return;
-
-}
-
-
-
-const amount=
-Number($("manualAmount").value);
-
-
-
-if(amount<100000){
-
-alert("Minimal withdraw Rp100.000");
-
-return;
-
-}
-
-
-
-
-const {data:payment}=await supabase
-
-.from("payment_methods")
-
-.select("*")
-
-.eq("user_id",user.id)
-
-.maybeSingle();
-
-
-
-if(!payment){
-
-alert("Silakan simpan rekening terlebih dahulu.");
-
-return;
-
-}
-
-
-
-if(user.balance < amount){
-
-alert("Saldo tidak mencukupi");
-
-return;
-
-}
-
-
-
-
-
-const {error}=await supabase
-
-.from("withdraws")
-
-.insert({
-
-user_id:user.id,
-
-amount:amount,
-
-fee:0,
-
-type:"manual",
-
-status:"pending",
-
-method:payment.method,
-
-account_name:payment.account_name,
-
-account_number:payment.account_number
-
-});
-
-
-
-
-if(error){
-
-alert(error.message);
-
-return;
-
-}
-
-
-
-await supabase
-
-.from("profiles")
-
-.update({
-
-balance:user.balance-amount
-
-})
-
-.eq("id",user.id);
-
-
-
-alert("Request withdraw berhasil dibuat");
-
-
-location.reload();
-
-
-}
-
-
-
-
-
-
-// ===============================
-// INSTANT WD
-// ===============================
-
-
-async function instantWithdraw(){
-
-
-if(!checkWithdrawService()){
-
-alert("Withdraw sedang tutup.");
-
-return;
-
-}
-
-
-
-let amount=
-Number($("instantAmount").value);
-
-
-
-if(!amount){
-
-alert("Pilih nominal");
-
-return;
-
-}
-
-
-
-
-let total=amount+instantFee;
-
-
-
-if(user.balance<total){
+if(!withdrawOpen){
 
 alert(
-"Saldo kurang\n\n"+
-"Withdraw : "+rupiah(amount)+
-"\nFee : "+rupiah(instantFee)
+"Withdraw sedang tutup.\n\nJam buka:\nSenin - Jumat\n08:00 - 18:00"
 );
 
 return;
@@ -575,81 +244,34 @@ return;
 }
 
 
+const box=$("withdrawBox");
 
-const {error}=await supabase
+if(box){
 
-.from("withdraws")
-
-.insert({
-
-user_id:user.id,
-
-amount:amount,
-
-fee:instantFee,
-
-type:"instant",
-
-status:"success",
-
-method:user.payment_method||"",
-
-account_name:user.fullname||"",
-
-account_number:""
-
+box.scrollIntoView({
+behavior:"smooth"
 });
 
-
-
-if(error){
-
-alert(error.message);
-
-return;
-
 }
 
 
-
-await supabase
-
-.from("profiles")
-
-.update({
-
-balance:user.balance-total
-
-})
-
-.eq("id",user.id);
-
-
-
-alert("Withdraw instant berhasil");
-
-
-location.reload();
+};
 
 
 }
 
 
 
+// =============================
+// FORMAT RUPIAH
+// =============================
 
-
-
-function rupiah(v){
+function rupiah(value){
 
 return new Intl.NumberFormat("id-ID",{
-
 style:"currency",
-
 currency:"IDR",
-
 maximumFractionDigits:0
-
-}).format(Number(v)||0);
-
+}).format(Number(value)||0);
 
 }
