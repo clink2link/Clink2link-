@@ -10,7 +10,6 @@ const $ = id => document.getElementById(id);
 // INIT
 // ===============================
 document.addEventListener("DOMContentLoaded", async () => {
-
   try {
 
     if (!window.database) {
@@ -44,15 +43,24 @@ async function loadWD(){
   const info = $("wdInfo");
   const list = $("wdList");
 
-  // 🔥 proteksi biar gak crash
   if (!info || !list) {
     console.error("wdInfo / wdList tidak ditemukan");
     return;
   }
 
+  if (!user?.id) {
+    console.error("User ID tidak valid");
+    return;
+  }
+
   try {
 
-    // loading
+    // loading UI
+    info.innerHTML = `
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      Memuat transaksi...
+    `;
+
     list.innerHTML = "<div class='loading'>Loading...</div>";
 
     const {data, error} = await supabase
@@ -93,7 +101,10 @@ async function loadWD(){
             <i class="fa-solid fa-circle-check"></i>
           </div>
           <div>
-            <h3>Withdraw Success</h3>
+            <h3>
+              Withdraw Success 
+              <span class="badge success">SUCCESS</span>
+            </h3>
             <span>${formatDate(item.created_at)}</span>
           </div>
         </div>
@@ -123,8 +134,8 @@ async function loadWD(){
       fragment.appendChild(card);
     });
 
-    list.innerHTML = "";
-    list.appendChild(fragment);
+    // replace lebih efisien dari innerHTML kosong
+    list.replaceChildren(fragment);
 
   } catch (err) {
 
@@ -141,33 +152,37 @@ async function loadWD(){
 
 
 // ===============================
-// REALTIME
+// REALTIME (FIXED)
 // ===============================
 function startRealtime(){
 
-  if (!supabase || !user) return;
+  if (!supabase || !user?.id) return;
 
-  // cleanup channel lama
+  // hapus channel lama
   if (wdChannel) {
     supabase.removeChannel(wdChannel);
   }
+
+  // ✅ FIX debounce (tidak langsung dieksekusi)
+  const debouncedReload = debounce(loadWD, 300);
 
   wdChannel = supabase
     .channel("wd-history-" + user.id)
     .on(
       "postgres_changes",
       {
-        event: "*",
+        event: "INSERT", // lebih efisien
         schema: "public",
         table: "withdraws",
         filter: `user_id=eq.${user.id}`
       },
-      debounce(() => loadWD(), 300)
+      debouncedReload
     )
     .subscribe();
 }
 
-// cleanup saat keluar
+
+// cleanup saat keluar halaman
 window.addEventListener("beforeunload", () => {
   if (wdChannel && supabase) {
     supabase.removeChannel(wdChannel);
@@ -189,7 +204,7 @@ function escapeHTML(str){
     .replace(/'/g,"&#039;");
 }
 
-// debounce
+// debounce (FIX SAFE)
 function debounce(fn, delay){
   let t;
   return (...args)=>{
@@ -210,13 +225,13 @@ function rupiah(value){
   }).format(num);
 }
 
-// mask rekening
+// mask rekening (lebih aman)
 function mask(value){
   if (!value) return "-";
 
   const str = String(value);
 
-  if (str.length <= 6) return str;
+  if (str.length <= 6) return "****";
 
   return str.slice(0,3) + "****" + str.slice(-3);
 }
