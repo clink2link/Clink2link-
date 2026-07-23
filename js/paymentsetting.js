@@ -215,14 +215,37 @@ return;
 }
 
 
+const {error}=await supabase
+.from("payment_requests")
+.insert({
+user_id:user.id,
+payment_name:name,
+status:"pending"
+});
+
+
+if(error){
+
+console.error(
+"REQUEST PAYMENT ERROR:",
+error
+);
+
 alert(
-`Request ${name} berhasil dikirim.\nAdmin akan melakukan pengecekan.`
+"Gagal mengirim request"
+);
+
+return;
+
+}
+
+
+alert(
+"Request berhasil dikirim.\nAdmin akan melakukan pengecekan."
 );
 
 
 document.getElementById("requestMethod").value="";
-
-}
 
 
 // =============================
