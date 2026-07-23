@@ -648,17 +648,65 @@ return data || [];
 
 async function getMenusByRole(role){
 
-  const {data,error}=await supabaseClient
-  .from("menus")
-  .select("*")
-  .eq("role",role);
+  try{
 
-  if(error){
-    console.error("MENU ERROR:",error);
+    // ===============================
+    // VALIDASI ROLE
+    // ===============================
+    if(!role || typeof role !== "string"){
+      console.warn("ROLE INVALID → pakai default 'member'");
+      role = "member";
+    }
+
+    // ===============================
+    // QUERY DATABASE
+    // ===============================
+    const { data, error } = await supabaseClient
+      .from("menus")
+      .select("*")
+      .eq("role", role)
+      .order("id", { ascending: true });
+
+    // ===============================
+    // HANDLE ERROR
+    // ===============================
+    if(error){
+      console.error("MENU ERROR:", error);
+      return [];
+    }
+
+    // ===============================
+    // VALIDASI DATA
+    // ===============================
+    if(!data || !Array.isArray(data)){
+      console.warn("MENU DATA KOSONG / INVALID:", data);
+      return [];
+    }
+
+    // ===============================
+    // SANITIZE DATA (ANTI BUG UI)
+    // ===============================
+    const cleanMenus = data.map(menu => ({
+      name: menu.name || "Menu",
+      icon: menu.icon || "fa-solid fa-circle",
+      link: menu.link || "#",
+      role: menu.role || role
+    }));
+
+    // ===============================
+    // DEBUG (optional)
+    // ===============================
+    console.log("MENU LOADED:", cleanMenus);
+
+    return cleanMenus;
+
+  }catch(e){
+
+    console.error("MENU FATAL:", e);
     return [];
+
   }
 
-  return data;
 }
 
 // ===============================
