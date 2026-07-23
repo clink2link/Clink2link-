@@ -50,3 +50,34 @@ resetSessionTimer();
 window.addEventListener("focus",resetSessionTimer);
 
 document.addEventListener("DOMContentLoaded",resetSessionTimer);
+
+
+// =========================
+// TRACK LOGIN ON SESSION
+// =========================
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+  try {
+
+    if (!window.database?.supabase) return;
+
+    const { data: { session } } =
+      await window.database.supabase.auth.getSession();
+
+    if (!session?.user) return;
+
+    const userId = session.user.id;
+
+    // 🚀 panggil tracking
+    if (typeof trackLoginActivity === "function") {
+      await trackLoginActivity(userId);
+    } else {
+      console.warn("trackLoginActivity tidak ditemukan");
+    }
+
+  } catch (err) {
+    console.warn("Session tracking error:", err);
+  }
+
+});
