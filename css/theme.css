@@ -1,37 +1,71 @@
 /* ===============================
-CLICK2PAY GLOBAL THEME
+CLICK2PAY GLOBAL THEME SYSTEM
 =============================== */
+
 
 *{
 box-sizing:border-box;
 }
 
-html,body{
+
+html,
+body{
+
 margin:0;
 padding:0;
+
 min-height:100%;
+
 background:#f8fafc;
 color:#0f172a;
-transition:.3s;
-font-family:Inter,Arial,sans-serif;
+
+transition:
+background .3s ease,
+color .3s ease;
+
+font-family:
+Inter,
+Arial,
+sans-serif;
+
 }
 
-/* DARK GLOBAL */
+
+/* ===============================
+   DARK GLOBAL
+=============================== */
+
 
 html.dark,
 html.dark body{
+
 background:#020617;
 color:#e2e8f0;
+
 }
 
-/* CONTAINER */
+
+
+/* ===============================
+   ALL CONTAINER
+=============================== */
+
 
 html.dark .container,
-html.dark main{
+html.dark main,
+html.dark section{
+
 color:#e2e8f0;
+
 }
 
-/* CARD */
+
+
+
+/* ===============================
+   CARD SYSTEM
+=============================== */
+
 
 .card,
 .box,
@@ -40,12 +74,24 @@ color:#e2e8f0;
 .link-card,
 .report-card,
 .stats-box,
+.guide-card,
+.cpm-market,
+.sell-card,
 .empty{
-background:#fff;
+
+
+background:#ffffff;
+
 color:#0f172a;
-border:1px solid #e2e8f0;
+
+border:
+1px solid #e2e8f0;
+
 transition:.3s;
+
 }
+
+
 
 html.dark .card,
 html.dark .box,
@@ -54,148 +100,510 @@ html.dark .dash-box,
 html.dark .link-card,
 html.dark .report-card,
 html.dark .stats-box,
+html.dark .guide-card,
+html.dark .cpm-market,
+html.dark .sell-card,
 html.dark .empty{
+
+
 background:#0f172a;
+
 color:#f8fafc;
+
 border-color:#1e293b;
+
 }
 
-/* TEXT */
+
+
+/* ===============================
+   TEXT
+=============================== */
+
 
 html.dark h1,
 html.dark h2,
 html.dark h3,
 html.dark h4,
+html.dark h5,
+html.dark h6,
 html.dark p,
 html.dark span,
 html.dark label,
 html.dark small{
+
+
 color:#e2e8f0;
+
 }
 
-html.dark .link-info p,
+
+
+html.dark .text-muted,
 html.dark .stats-note,
-html.dark .create-note{
+html.dark .create-note,
+html.dark .link-info p{
+
+
 color:#94a3b8;
+
 }
 
-/* NAVBAR */
+
+
+
+/* ===============================
+   NAVBAR
+=============================== */
+
 
 html.dark .c2p-navbar{
+
+
 background:#0f172a;
-color:#fff;
+
 border-color:#1e293b;
+
 }
+
+
 
 html.dark .c2p-logo{
+
 color:#fff;
+
 }
+
+
+
+html.dark .c2p-menu-btn{
+
+color:#e2e8f0;
+
+}
+
+
+
+html.dark .c2p-theme-btn{
+
+
+background:#1e293b;
+
+color:#fff;
+
+border-color:#334155;
+
+}
+
+
+
+
+/* ===============================
+ SIDEBAR
+=============================== */
+
 
 html.dark .c2p-sidebar{
+
+
 background:#0f172a;
-color:#fff;
+
+box-shadow:
+0 0 25px rgba(0,0,0,.5);
+
 }
 
-html.dark .c2p-sidebar a,
-html.dark .c2p-parent{
+
+
+html.dark .c2p-sidebar a{
+
+
 color:#cbd5e1;
+
 }
+
+
 
 html.dark .c2p-sidebar a:hover,
-html.dark .c2p-parent:hover{
+html.dark .c2p-sidebar a.active{
+
+
 background:#1e293b;
+
+color:#22c55e;
+
 }
 
-/* DROPDOWN */
 
-html.dark .c2p-dropdown{
+
+html.dark .c2p-divider{
+
+color:#64748b;
+
+}
+
+
+
+
+/* ===============================
+   BOTTOM NAV
+=============================== */
+
+
+html.dark .c2p-bottom-nav{
+
+
 background:#0f172a;
-color:#fff;
+
 border-color:#1e293b;
+
 }
 
-/* INPUT */
+
+
+html.dark .c2p-bottom-nav a{
+
+color:#cbd5e1;
+
+}
+
+
+
+
+/* ===============================
+   INPUT SYSTEM
+=============================== */
+
 
 input,
-select,
-textarea{
+textarea,
+select{
+
+
 background:#fff;
+
 color:#0f172a;
-border:1px solid #cbd5e1;
+
+border:
+
+1px solid #cbd5e1;
+
+border-radius:10px;
+
 transition:.3s;
+
 }
+
+
 
 html.dark input,
-html.dark select,
-html.dark textarea{
+html.dark textarea,
+html.dark select{
+
+
 background:#020617;
+
 color:#fff;
+
 border-color:#334155;
+
 }
 
-/* BUTTON */
+
+
+html.dark input::placeholder,
+html.dark textarea::placeholder{
+
+color:#64748b;
+
+}
+
+
+
+
+/* ===============================
+ BUTTON
+=============================== */
+
 
 button{
+
 transition:.3s;
+
 }
+
+
 
 html.dark button{
+
+
 color:#fff;
+
 }
 
-/* TABLE */
+
+
+
+/* ===============================
+ DROPDOWN
+=============================== */
+
+
+html.dark option{
+
+
+background:#0f172a;
+
+color:#fff;
+
+}
+
+
+
+
+/* ===============================
+ TABLE
+=============================== */
+
 
 table{
+
 width:100%;
+
+border-collapse:collapse;
+
 }
+
+
 
 html.dark table{
+
+
 background:#0f172a;
+
 color:#e2e8f0;
+
 }
+
+
 
 html.dark th{
+
+
 background:#162033;
+
 color:#fff;
+
 }
+
+
 
 html.dark td{
+
+
 background:#0f172a;
+
 color:#e2e8f0;
+
 border-color:#334155;
+
 }
 
-/* FOOTER */
+
+
+html.dark tr:hover td{
+
+
+background:#162033;
+
+}
+
+
+
+
+/* ===============================
+ MODAL
+=============================== */
+
+
+html.dark .modal,
+html.dark .popup,
+html.dark .dropdown-menu{
+
+
+background:#0f172a;
+
+color:#fff;
+
+border-color:#334155;
+
+}
+
+
+
+
+/* ===============================
+ BADGE
+=============================== */
+
+
+html.dark .badge{
+
+
+background:#1e293b;
+
+color:#e2e8f0;
+
+}
+
+
+
+
+/* ===============================
+ PROGRESS
+=============================== */
+
+
+html.dark .progress,
+html.dark .dash-progress{
+
+
+background:#1e293b;
+
+}
+
+
+
+html.dark .progress span,
+html.dark .dash-progress span{
+
+
+background:
+linear-gradient(
+90deg,
+#2563eb,
+#22c55e
+);
+
+}
+
+
+
+
+/* ===============================
+ FOOTER
+=============================== */
+
 
 html.dark footer,
-html.dark .footer{
+html.dark .footer,
+html.dark .c2p-side-footer{
+
+
 background:#0f172a;
+
 color:#cbd5e1;
+
 border-color:#1e293b;
+
 }
 
-/* MOBILE */
+
+
+
+/* ===============================
+ LINKS
+=============================== */
+
+
+html.dark a{
+
+color:#93c5fd;
+
+}
+
+
+
+html.dark a:hover{
+
+color:#22c55e;
+
+}
+
+
+
+
+
+/* ===============================
+ SCROLLBAR
+=============================== */
+
+
+html.dark::-webkit-scrollbar,
+html.dark body::-webkit-scrollbar{
+
+width:8px;
+
+}
+
+
+
+html.dark::-webkit-scrollbar-thumb,
+html.dark body::-webkit-scrollbar-thumb{
+
+background:#334155;
+
+border-radius:10px;
+
+}
+
+
+
+
+/* ===============================
+ MOBILE
+=============================== */
+
 
 @media(max-width:768px){
 
+
 body{
+
 font-size:14px;
+
 }
+
 
 .card,
 .box,
-.link-card{
+.link-card,
+.report-card{
+
 border-radius:16px;
-}
 
 }
 
-/* DESKTOP */
+
+}
+
+
+
+
+
+/* ===============================
+ DESKTOP
+=============================== */
+
 
 @media(min-width:769px){
 
+
 body{
+
 font-size:15px;
+
 }
+
 
 }
