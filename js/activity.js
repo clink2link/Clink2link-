@@ -1,87 +1,106 @@
 // =========================
-// INIT
+// ACTIVITY TRACKING MODULE
 // =========================
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadLoginActivity();
-});
-
+// 🚀 Ambil IP lebih awal (langsung jalan saat file load)
+const ipPromise = getIPInfo();
 
 // =========================
-// LOAD DATA
+// MAIN TRACK FUNCTION
 // =========================
 
-async function loadLoginActivity() {
-  const loginList = document.getElementById("loginList");
+async function trackLoginActivity(userId) {
+
+  // ❌ cegah double insert
+  if (!userId) return;
+
+  if (sessionStorage.getItem("login_tracked") || window.__loginTracking) {
+    return;
+  }
+
+  window.__loginTracking = true;
 
   try {
-    // ambil user login sekarang
-    const user = await database.getUser();
 
-    if (!user) {
-      loginList.innerHTML = "User belum login";
+    // ambil hasil IP (yang sudah jalan dari awal)
+    const ipData = await ipPromise;
+
+    if (!window.database) {
+      console.warn("Database belum siap");
       return;
     }
 
-    // ambil data dari supabase
-    const { data, error } = await database.client
+    await database.supabase
       .from("login_activity")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+      .insert({
+        user_id: userId,
 
-    if (error) throw error;
+        device: getDevice(),
+        user_agent: navigator.userAgent,
 
-    if (!data || data.length === 0) {
-      loginList.innerHTML = "Belum ada aktivitas login";
-      return;
-    }
+        ip: ipData.ip,
+        city: ipData.city,
+        region: ipData.region,
+        country: ipData.country,
+        org: ipData.org,
 
-    // =========================
-    // RENDER LIST
-    // =========================
+        latitude: ipData.lat,
+        longitude: ipData.lon
+      });
 
-    loginList.innerHTML = data.map(item => `
-      <div class="login-item">
-        <div class="login-left">
-          <div class="login-device">${item.device || "Unknown Device"}</div>
-          <div class="login-time">${formatDate(item.created_at)}</div>
-        </div>
-        <i class="fa-solid fa-check" style="color:lime;"></i>
-      </div>
-    `).join("");
+    // tandai sudah tracking
+    sessionStorage.setItem("login_tracked", "true");
 
-    // =========================
-    // STATISTIK
-    // =========================
+    console.log("✅ Login activity saved");
 
-    document.getElementById("totalLogin").innerText = data.length;
-
-    const last = data[0];
-    document.getElementById("lastLogin").innerText = formatShortDate(last.created_at);
-    document.getElementById("lastDevice").innerText = last.device || "-";
-
-  } catch (err) {
-    console.error(err);
-    loginList.innerHTML = "Gagal load data";
+  } catch (e) {
+    console.warn("⚠️ Activity tracking gagal:", e);
   }
 }
 
-
 // =========================
-// FORMAT TANGGAL
+// DEVICE DETECT
 // =========================
 
-function formatDate(date) {
-  return new Date(date).toLocaleString("id-ID", {
-    dateStyle: "medium",
-    timeStyle: "short"
-  });
+function getDevice() {
+  const ua = navigator.userAgent;
+
+  if (/android/i.test(ua)) return "Android";
+  if (/iPhone|iPad/i.test(ua)) return "iPhone";
+  if (/Windows/i.test(ua)) return "Windows";
+  if (/Mac/i.test(ua)) return "Mac";
+
+  return "Unknown Device";
 }
 
-function formatShortDate(date) {
-  return new Date(date).toLocaleDateString("id-ID", {
-    day: "numeric",
-    month: "short"
-  });
+// =========================
+// GET IP INFO
+// =========================
+
+async function getIPInfo() {
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+
+    return {
+      ip: data.ip,
+      city: data.city,
+      region: data.region,
+      country: data.country_name,
+      org: data.org,
+      lat: data.latitude,
+      lon: data.longitude
+    };
+
+  } catch (e) {
+    return {
+      ip: "Unknown",
+      city: "-",
+      region: "-",
+      country: "-",
+      org: "-",
+      lat: null,
+      lon: null
+    };
+  }
 }
