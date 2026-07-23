@@ -1724,46 +1724,103 @@ Belum ada pengumuman.
 <script src="js/database.js"></script>
 <script src="js/session.js"></script>
 <script src="js/theme.js"></script>
-<script src="js/navbar.js"></script>
 <script src="js/footer.js"></script>
 <script src="js/admin-cpm.js"></script>
 <script src="js/dashboard.js"></script>
 
 <script>
+
 fetch("components/navbar.html")
-.then(res => res.text())
-.then(data => {
-    document.getElementById("navbar").innerHTML = data;
+.then(res=>res.text())
+.then(data=>{
 
-    if (typeof c2pInit === "function") c2pInit();
+document.getElementById("navbar").innerHTML=data;
 
-    document.querySelectorAll(".c2p-sidebar a").forEach(link => {
-        link.addEventListener("click", () => {
-            if (typeof c2pClose === "function") c2pClose();
-        });
-    });
 
-    const logoutBtn = document.getElementById("logoutBtn");
+const script=document.createElement("script");
+script.src="js/navbar.js";
 
-    if (logoutBtn) {
-        logoutBtn.onclick = async () => {
-            await database.logout();
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.replace("index.html");
-        };
-    }
+
+script.onload=()=>{
+
+console.log("NAVBAR READY");
+
+
+if(typeof c2pInit==="function"){
+    c2pInit();
+}
+
+
+document.querySelectorAll(".c2p-sidebar a")
+.forEach(link=>{
+
+link.addEventListener("click",()=>{
+
+if(typeof c2pClose==="function"){
+    c2pClose();
+}
+
 });
+
+});
+
+
+const logoutBtn=document.getElementById("logoutBtn");
+
+
+if(logoutBtn){
+
+logoutBtn.onclick=async()=>{
+
+await database.logout();
+
+localStorage.clear();
+sessionStorage.clear();
+
+window.location.replace("index.html");
+
+};
+
+}
+
+
+};
+
+
+document.body.appendChild(script);
+
+
+})
+.catch(err=>{
+
+console.error("NAVBAR LOAD ERROR:",err);
+
+});
+
+
 
 fetch("components/footer.html")
-.then(res => res.text())
-.then(data => {
-    document.getElementById("footer").innerHTML = data;
+.then(res=>res.text())
+.then(data=>{
 
-    if (typeof c2pFooterInit === "function") {
-        c2pFooterInit();
-    }
+document.getElementById("footer").innerHTML=data;
+
+
+if(typeof c2pFooterInit==="function"){
+
+c2pFooterInit();
+
+}
+
+
+})
+.catch(err=>{
+
+console.error("FOOTER LOAD ERROR:",err);
+
 });
+
+
 </script>
 
 <!-- DEBUG SYSTEM -->
