@@ -1,9 +1,9 @@
 // js/payment.js
-alert("PAYMENT START");
+alert("PAYMENT-V2 LOADED");
 
 const db = window.database;
 
-alert("DATABASE = " + (db ? "ADA" : "TIDAK ADA"));
+alert("DATABASE = " + !!db);
 
 if (!db) {
     alert("DATABASE NULL");
@@ -103,6 +103,8 @@ async function init(){
     try{
 
         user = await db.getCurrentProfile();
+
+        alert(JSON.stringify(user));
 
         console.log("PAYMENT USER:", user);
 
