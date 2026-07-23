@@ -5,6 +5,19 @@ const KEY="click2pay123";
 
 if(new URLSearchParams(location.search).get("debug")!==KEY)return;
 
+
+function safeJSON(data){
+try{
+if(typeof data==="object"){
+return JSON.stringify(data,null,2);
+}
+return String(data);
+}catch(e){
+return String(data);
+}
+}
+
+
 function log(type,data){
 
 let box=document.getElementById("debugBox");
@@ -19,96 +32,181 @@ position:fixed;
 left:10px;
 right:10px;
 bottom:10px;
-max-height:250px;
+max-height:350px;
 overflow:auto;
 background:#000;
-color:#0f0;
+color:#00ff00;
 font:12px monospace;
-padding:10px;
+padding:12px;
 z-index:999999;
-border-radius:10px;
+border-radius:12px;
 `;
 
 document.body.appendChild(box);
 
 }
 
+
 const item=document.createElement("div");
 
-item.style.marginBottom="8px";
+item.style.marginBottom="10px";
 
 item.innerHTML=
-`<b>[${type}]</b><br><pre>${typeof data==="object"
-?JSON.stringify(data,null,2)
-:data}</pre>`;
+`
+<b>[${type}]</b>
+<pre style="white-space:pre-wrap">${safeJSON(data)}</pre>
+`;
 
 box.prepend(item);
 
 }
 
+
 window.debug=log;
 
+
+
+// PAGE
+
+log("PAGE",{
+url:location.href,
+title:document.title,
+time:new Date().toString()
+});
+
+
+
+// DEVICE
+
+log("DEVICE",navigator.userAgent);
+
+
+
+// ONLINE
+
+log("NETWORK",
+navigator.onLine?"ONLINE":"OFFLINE"
+);
+
+
+
+window.addEventListener("offline",()=>{
+log("NETWORK","OFFLINE");
+});
+
+
+window.addEventListener("online",()=>{
+log("NETWORK","ONLINE");
+});
+
+
+
 // JS ERROR
-window.onerror=(m,s,l,c,e)=>{
+
+window.onerror=function(
+msg,
+src,
+line,
+col,
+err
+){
 
 log("JS ERROR",{
-message:m,
-file:s,
-line:l,
-column:c,
-stack:e?.stack
+message:msg,
+file:src,
+line:line,
+column:col,
+stack:err?.stack
 });
 
 };
 
-// PROMISE
-window.addEventListener("unhandledrejection",e=>{
 
-log("PROMISE",e.reason);
+
+// PROMISE ERROR
+
+window.addEventListener(
+"unhandledrejection",
+e=>{
+
+log("PROMISE ERROR",{
+error:e.reason
+});
 
 });
 
-// SCRIPT/CSS ERROR
-window.addEventListener("error",e=>{
 
-if(e.target instanceof HTMLScriptElement){
 
-log("SCRIPT FAILED",e.target.src);
+// FILE ERROR
+
+window.addEventListener(
+"error",
+e=>{
+
+
+const target=e.target;
+
+
+if(target?.tagName==="SCRIPT"){
+
+log("JS FILE ERROR",{
+file:target.src
+});
 
 }
 
-if(e.target instanceof HTMLLinkElement){
 
-log("CSS FAILED",e.target.href);
+if(target?.tagName==="LINK"){
+
+log("CSS FILE ERROR",{
+file:target.href
+});
 
 }
 
-},true);
 
-// FETCH ERROR
+},
+true
+);
+
+
+
+// FETCH MONITOR
+
 const oldFetch=window.fetch;
 
-window.fetch=async(...args)=>{
+
+window.fetch=async function(...args){
 
 try{
 
 const res=await oldFetch(...args);
 
+
 if(!res.ok){
 
-log("FETCH",{
-url:args[0],
+log("FETCH ERROR",{
+url:String(args[0]),
+status:res.status
+});
+
+}else{
+
+log("FETCH OK",{
+url:String(args[0]),
 status:res.status
 });
 
 }
 
+
 return res;
+
 
 }catch(err){
 
-log("FETCH ERROR",{
-url:args[0],
+log("FETCH FAILED",{
+url:String(args[0]),
 message:err.message
 });
 
@@ -118,67 +216,242 @@ throw err;
 
 };
 
-// PAGE INFO
-log("PAGE",{
-url:location.href,
-title:document.title
-});
 
-log("BROWSER",navigator.userAgent);
 
-// ONLINE / OFFLINE
-window.addEventListener("online",()=>{
-log("NETWORK","ONLINE");
-});
 
-window.addEventListener("offline",()=>{
-log("NETWORK","OFFLINE");
-});
+// CONSOLE MONITOR
 
-// CONSOLE
 ["log","warn","error"].forEach(type=>{
+
 
 const old=console[type];
 
-console[type]=(...args)=>{
 
-log("CONSOLE "+type.toUpperCase(),args);
+console[type]=function(...args){
+
+log(
+"CONSOLE "+type.toUpperCase(),
+args
+);
 
 old.apply(console,args);
 
 };
 
-});
-
-// SCRIPT & CSS LOADED
-window.addEventListener("DOMContentLoaded",()=>{
-
-document.querySelectorAll("script").forEach(script=>{
-
-log("SCRIPT",script.src||"INLINE");
 
 });
 
-document.querySelectorAll('link[rel="stylesheet"]').forEach(css=>{
 
-log("CSS",css.href);
 
+
+// DOM READY
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+
+log("DOM","READY");
+
+
+
+// CHECK SCRIPT
+
+document.querySelectorAll("script")
+.forEach(s=>{
+
+log("SCRIPT",{
+src:s.src||"INLINE"
 });
 
 });
 
-// DATABASE
+
+
+// CHECK CSS
+
+document.querySelectorAll(
+'link[rel="stylesheet"]'
+)
+.forEach(c=>{
+
+log("CSS",{
+src:c.href
+});
+
+});
+
+
+
+});
+
+
+
+
+// DATABASE CHECK
+
 setTimeout(()=>{
 
-log("DATABASE",window.database?"READY":"NULL");
 
-},1000);
+log(
+"DATABASE",
+window.database
+?"READY"
+:"NULL"
+);
 
-// USER
+
+
+if(window.database){
+
+log(
+"SUPABASE",
+window.database.supabase
+?"READY"
+:"NULL"
+);
+
+}
+
+
+},1500);
+
+
+
+
+// USER CHECK
+
 setTimeout(()=>{
 
-log("USER_ID",localStorage.getItem("user_id"));
 
-},1200);
+log(
+"USER_ID",
+localStorage.getItem("user_id")||"KOSONG"
+);
+
+
+},2000);
+
+
+
+
+// PAYMENT CHECK
+
+setTimeout(()=>{
+
+
+log(
+"PAYMENT JS",
+typeof window.savePayment
+);
+
+
+
+const ids=[
+"withdrawService",
+"balance",
+"paymentWarning",
+"manualWithdrawBtn",
+"instantWithdrawBtn"
+];
+
+
+ids.forEach(id=>{
+
+log(
+"HTML "+id,
+document.getElementById(id)
+?"FOUND"
+:"MISSING"
+);
+
+});
+
+
+},3000);
+
+
+
+
+// CSS CHECK
+
+setTimeout(()=>{
+
+
+const sheets=[...document.styleSheets];
+
+
+log(
+"CSS COUNT",
+sheets.length
+);
+
+
+sheets.forEach((css,i)=>{
+
+try{
+
+log(
+"CSS ACTIVE "+i,
+css.href||"INLINE"
+);
+
+
+}catch(e){
+
+log(
+"CSS BLOCKED",
+css.href
+);
+
+}
+
+
+});
+
+
+},4000);
+
+
+
+
+// SUPABASE TABLE TEST
+
+setTimeout(async()=>{
+
+
+if(!window.database)return;
+
+
+try{
+
+
+const {data,error}=await window.database.supabase
+.from("profiles")
+.select("id")
+.limit(1);
+
+
+if(error){
+
+log("SUPABASE ERROR",error);
+
+}else{
+
+log("SUPABASE QUERY","OK");
+
+}
+
+
+}catch(e){
+
+log("SUPABASE FAILED",e.message);
+
+}
+
+
+},5000);
+
+
 
 })();
