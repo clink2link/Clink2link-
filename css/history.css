@@ -4,7 +4,7 @@ MATCH DASHBOARD
 ================================= */
 
 .app-container{
-padding-top:100px;
+padding-top:15px;
 padding-bottom:40px;
 }
 
@@ -339,7 +339,7 @@ grid-template-columns:repeat(2,1fr);
 @media(max-width:700px){
 
 .app-container{
-padding-top:85px;
+padding-top:10px;
 padding-left:15px;
 padding-right:15px;
 }
