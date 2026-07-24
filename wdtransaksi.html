@@ -19,12 +19,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
-<body>
+<body class="app-body">
 
-  <!-- NAVBAR -->
-  <div id="navbar"></div>
+<div class="app-bg"></div>
 
-  <main class="container">
+<div id="navbar"></div> <!-- TAMBAHAN -->
+
+<div class="app-container">
 
     <div class="page-title">
       <h1>
@@ -46,9 +47,9 @@
     <div id="wdList" class="wd-list"></div>
 
   </main>
+</div> <!-- TAMBAHAN (nutup app-container) -->
 
-  <!-- FOOTER -->
-  <div id="footer"></div>
+<div id="footer"></div>
 
   <!-- SCRIPTS (WAJIB DEFER 🔥) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
