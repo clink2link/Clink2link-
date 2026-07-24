@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Sell Link • Click2Pay</title>
+
+<script>
+if(localStorage.getItem("theme")==="dark"){
+document.documentElement.classList.add("dark");
+}
+</script>
+
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/app-ui.css">
+<link rel="stylesheet" href="css/sell-link.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body class="app-body">
+
+<div class="app-bg"></div>
+
+<div id="navbar"></div>
+
+
+<div class="app-container">
+
+
+<section class="page-title">
+<i class="fa-solid fa-tags"></i>
+<div>
+<h1>Sell Link</h1>
+<p>Jual link dan dapatkan penghasilan tambahan</p>
+</div>
+</section>
+
+
+
+<!-- CARA & KEGUNAAN -->
+
+<section class="info-box">
+
+<div class="info-header">
+<i class="fa-solid fa-book-open"></i>
+<h3>Cara & Kegunaan Sell Link</h3>
+</div>
+
+<ul>
+
+<li>
+<i class="fa-solid fa-check"></i>
+Sell Link digunakan untuk menjual akses file, produk digital, atau halaman khusus.
+</li>
+
+<li>
+<i class="fa-solid fa-check"></i>
+Buat link, tentukan harga, lalu bagikan kepada pembeli.
+</li>
+
+<li>
+<i class="fa-solid fa-check"></i>
+Pembeli dapat memilih Link Buy untuk melakukan pembayaran.
+</li>
+
+<li>
+<i class="fa-solid fa-check"></i>
+Link Ads digunakan untuk mendapatkan penghasilan tambahan dari pengunjung.
+</li>
+
+<li>
+<i class="fa-solid fa-check"></i>
+Saldo hasil penjualan masuk otomatis ke akun kamu.
+</li>
+
+</ul>
+
+</section>
+
+
+
+
+<!-- STATUS -->
+
+<section class="info-box">
+
+<div class="info-header">
+<i class="fa-solid fa-shield-halved"></i>
+<h3>Status Sell Link</h3>
+</div>
+
+<p id="sellStatus">
+Memeriksa akun...
+</p>
+
+</section>
+
+
+
+
+
+<!-- CREATE -->
+
+<section class="sell-card">
+
+<h3>
+<i class="fa-solid fa-plus"></i>
+Buat Sell Link
+</h3>
+
+
+<div class="form-group">
+
+<label>Judul Link</label>
+
+<input
+id="sellTitle"
+placeholder="Contoh: Premium File, Course, Template">
+
+</div>
+
+
+
+<div class="form-group">
+
+<label>URL Tujuan</label>
+
+<input
+id="sellUrl"
+placeholder="https://website.com/file">
+
+</div>
+
+
+
+<div class="form-group">
+
+<label>Harga Jual</label>
+
+<input
+id="sellPrice"
+type="number"
+placeholder="Minimal Rp10.000">
+
+</div>
+
+
+
+<button
+class="btn-sell"
+id="createSellBtn"
+disabled>
+
+Memeriksa Status...
+
+</button>
+
+</section>
+
+
+
+
+
+<!-- LIST -->
+
+<section class="sell-card">
+
+<div class="section-title">
+
+<h2>
+<i class="fa-solid fa-list"></i>
+Link Saya
+</h2>
+
+</div>
+
+<div id="sellList"></div>
+
+</section>
+
+
+
+
+<!-- GENERATED -->
+
+<div id="generatedBox"></div>
+
+
+
+</div>
+
+
+
+<div id="footer"></div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="js/database.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/sell-link.js"></script>
+
+
+
+<script>
+
+fetch("components/navbar.html")
+.then(r=>r.text())
+.then(h=>{
+document.getElementById("navbar").innerHTML=h;
+if(typeof c2pInit==="function")c2pInit();
+});
+
+
+fetch("components/footer.html")
+.then(r=>r.text())
+.then(h=>{
+document.getElementById("footer").innerHTML=h;
+if(typeof c2pFooterInit==="function")c2pFooterInit();
+});
+
+</script>
+
+
+</body>
+</html>
