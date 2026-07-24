@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Referral • Click2Pay</title>
+
+<script>
+if(localStorage.getItem("theme")==="dark"){
+document.documentElement.classList.add("dark");
+}
+</script>
+
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/app-ui.css">
+<link rel="stylesheet" href="css/referral.css"> <!-- ✅ CSS BARU -->
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="app-body">
+
+<div class="app-bg"></div>
+
+<div id="navbar"></div>
+
+<div class="app-container">
+
+<section class="page-title">
+<i class="fa-solid fa-user-plus"></i>
+<div>
+<h1>Referral</h1>
+<p>Undang teman & dapatkan bonus</p>
+</div>
+</section>
+
+<section class="info-box">
+<div class="info-header">
+<i class="fa-solid fa-circle-info"></i>
+<h3>Program Referral</h3>
+</div>
+<ul>
+<li><i class="fa-solid fa-check"></i> Bagikan link ke teman</li>
+<li><i class="fa-solid fa-check"></i> Teman daftar pakai link kamu</li>
+<li><i class="fa-solid fa-check"></i> Kamu dapat bonus otomatis</li>
+<li><i class="fa-solid fa-check"></i> Bonus masuk ke saldo</li>
+</ul>
+</section>
+
+<section class="ref-card">
+<h3>Kode Referral Kamu</h3>
+
+<div class="ref-box">
+<input id="refCode" readonly>
+<button onclick="copyReferral()">Copy</button>
+</div>
+
+<p class="ref-link" id="refLink"></p>
+</section>
+
+<section class="quick-stats">
+<div class="stat-card">
+<i class="fa-solid fa-users"></i>
+<h4>Total Referral</h4>
+<h2 id="totalRef">0</h2>
+</div>
+
+<div class="stat-card">
+<i class="fa-solid fa-coins"></i>
+<h4>Bonus Didapat</h4>
+<h2 id="totalBonus">Rp0</h2>
+</div>
+</section>
+
+<section class="link-section">
+<div class="section-title">
+<h2><i class="fa-solid fa-user-group"></i> Teman Bergabung</h2>
+<a href="dashboard.html">
+<i class="fa-solid fa-arrow-left"></i> Dashboard
+</a>
+</div>
+
+<div id="refList"></div>
+</section>
+
+</div>
+
+<div id="footer"></div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="js/database.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/referral.js"></script> <!-- ✅ JS BARU -->
+
+<script>
+fetch("components/navbar.html")
+.then(r=>r.text())
+.then(h=>{
+document.getElementById("navbar").innerHTML=h;
+if(typeof c2pInit==="function")c2pInit();
+});
+
+fetch("components/footer.html")
+.then(r=>r.text())
+.then(h=>{
+document.getElementById("footer").innerHTML=h;
+if(typeof c2pFooterInit==="function")c2pFooterInit();
+});
+</script>
+
+</body>
+</html>
