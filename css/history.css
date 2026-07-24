@@ -1,0 +1,396 @@
+/* =================================
+CLICK2PAY HISTORY STYLE
+MATCH DASHBOARD
+================================= */
+
+.app-container{
+padding-top:100px;
+padding-bottom:40px;
+}
+
+/* ================= TITLE ================= */
+
+.page-title{
+display:flex;
+align-items:center;
+gap:14px;
+margin-bottom:25px;
+}
+
+.page-title i{
+font-size:28px;
+color:#2563eb;
+}
+
+.page-title h1{
+margin:0;
+font-size:30px;
+font-weight:800;
+color:#2563eb;
+}
+
+.page-title p{
+margin-top:6px;
+font-size:14px;
+color:#64748b;
+}
+
+/* ================= BOX ================= */
+
+.info-box{
+background:#fff;
+border:1px solid #dbeafe;
+border-radius:22px;
+padding:25px;
+margin-bottom:25px;
+box-shadow:0 10px 30px rgba(0,0,0,.05);
+transition:.3s;
+}
+
+.info-box:hover{
+transform:translateY(-3px);
+}
+
+.info-header{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:12px;
+}
+
+.info-header i,
+.info-header h3{
+color:#2563eb;
+}
+
+.info-header h3{
+margin:0;
+font-size:18px;
+}
+
+.info-box ul{
+margin:0;
+padding-left:0;
+list-style:none;
+}
+
+.info-box li{
+display:flex;
+gap:10px;
+font-size:13px;
+color:#64748b;
+margin:8px 0;
+}
+
+.info-box li i{
+color:#16a34a;
+}
+
+/* ================= STATS ================= */
+
+.quick-stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:16px;
+margin-bottom:25px;
+}
+
+.stat-card{
+background:#fff;
+border:1px solid #dbeafe;
+border-radius:20px;
+padding:20px;
+box-shadow:0 8px 25px rgba(0,0,0,.05);
+transition:.25s;
+}
+
+.stat-card:hover{
+transform:translateY(-4px);
+}
+
+.stat-card i{
+font-size:20px;
+color:#2563eb;
+margin-bottom:10px;
+}
+
+.stat-card h4{
+margin:0;
+font-size:13px;
+color:#64748b;
+}
+
+.stat-card h2{
+margin-top:8px;
+font-size:22px;
+font-weight:800;
+color:#0f172a;
+}
+
+/* ================= SEARCH ================= */
+
+.search-area{
+display:flex;
+justify-content:space-between;
+gap:12px;
+margin-bottom:20px;
+flex-wrap:wrap;
+}
+
+.search-box{
+flex:1;
+display:flex;
+align-items:center;
+gap:10px;
+background:#f8fafc;
+border:1px solid #e2e8f0;
+border-radius:14px;
+padding:0 14px;
+height:45px;
+}
+
+.search-box i{
+color:#2563eb;
+}
+
+.search-box input{
+border:none;
+outline:none;
+width:100%;
+background:transparent;
+font-size:14px;
+}
+
+/* FILTER */
+
+.link-filter{
+display:flex;
+gap:10px;
+}
+
+.link-filter button{
+height:42px;
+padding:0 16px;
+border-radius:12px;
+border:1px solid #dbeafe;
+background:#fff;
+color:#2563eb;
+font-weight:600;
+cursor:pointer;
+transition:.2s;
+}
+
+.link-filter button:hover{
+transform:translateY(-2px);
+}
+
+.link-filter button.active{
+background:#2563eb;
+color:#fff;
+box-shadow:0 8px 20px rgba(37,99,235,.25);
+}
+
+/* ================= LIST ================= */
+
+.link-section{
+margin-top:10px;
+}
+
+.section-title{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:15px;
+}
+
+.section-title h2{
+margin:0;
+font-size:18px;
+color:#2563eb;
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.section-title a{
+font-size:13px;
+color:#2563eb;
+font-weight:600;
+text-decoration:none;
+}
+
+/* CARD */
+
+.link-card{
+background:#fff;
+border:1px solid #e2e8f0;
+border-radius:18px;
+padding:16px;
+margin-bottom:12px;
+box-shadow:0 6px 18px rgba(0,0,0,.05);
+transition:.25s;
+}
+
+.link-card:hover{
+transform:translateY(-3px);
+}
+
+.link-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+}
+
+.link-top h3{
+margin:0;
+font-size:14px;
+font-weight:700;
+color:#0f172a;
+}
+
+.link-mid{
+display:flex;
+justify-content:space-between;
+font-size:13px;
+color:#64748b;
+}
+
+/* BADGE */
+
+.badge{
+padding:4px 10px;
+border-radius:10px;
+font-size:11px;
+font-weight:700;
+}
+
+.success{
+background:#dcfce7;
+color:#166534;
+}
+
+.pending{
+background:#fef3c7;
+color:#92400e;
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark .page-title h1{
+color:#60a5fa;
+}
+
+body.dark .page-title p{
+color:#94a3b8;
+}
+
+body.dark .info-box,
+body.dark .stat-card,
+body.dark .link-card{
+background:#0f172a;
+border-color:#1e293b;
+box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
+
+body.dark .info-box li,
+body.dark .stat-card h4,
+body.dark .link-mid{
+color:#94a3b8;
+}
+
+body.dark .stat-card h2,
+body.dark .link-top h3{
+color:#fff;
+}
+
+body.dark .search-box{
+background:#020617;
+border-color:#334155;
+}
+
+body.dark .search-box input{
+color:#fff;
+}
+
+body.dark .link-filter button{
+background:#0f172a;
+border-color:#334155;
+color:#60a5fa;
+}
+
+body.dark .link-filter button.active{
+background:#2563eb;
+color:white;
+}
+
+body.dark .section-title a{
+color:#60a5fa;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1100px){
+.quick-stats{
+grid-template-columns:repeat(2,1fr);
+}
+}
+
+@media(max-width:700px){
+
+.app-container{
+padding-top:85px;
+padding-left:15px;
+padding-right:15px;
+}
+
+/* stats jadi 2 */
+.quick-stats{
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+}
+
+/* search jadi stack */
+.search-area{
+flex-direction:column;
+}
+
+/* tombol full */
+.link-filter{
+width:100%;
+}
+
+.link-filter button{
+flex:1;
+}
+
+/* card kecil */
+.stat-card{
+padding:16px;
+}
+
+.stat-card h2{
+font-size:18px;
+}
+
+.link-card{
+padding:14px;
+}
+
+}
+
+@media(max-width:420px){
+
+.page-title h1{
+font-size:22px;
+}
+
+.stat-card h2{
+font-size:16px;
+}
+
+.link-top h3{
+font-size:13px;
+}
+
+}
