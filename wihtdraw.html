@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Withdraw • Click2Pay</title>
+
+
+<script>
+if(localStorage.getItem("theme")==="dark"){
+document.documentElement.classList.add("dark");
+}
+</script>
+
+
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/app-ui.css">
+<link rel="stylesheet" href="css/withdraw.css">
+
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+</head>
+
+
+<body class="app-body">
+
+
+<div class="app-bg"></div>
+
+
+<div id="navbar"></div>
+
+
+<div class="app-container">
+
+
+
+<!-- TITLE -->
+
+<section class="page-title">
+
+<i class="fa-solid fa-money-bill-transfer"></i>
+
+<div>
+<h1>Withdraw</h1>
+<p>Tarik pendapatan dari Click2Pay</p>
+</div>
+
+</section>
+
+
+
+
+
+<!-- BALANCE -->
+
+<section class="withdraw-card balance-card">
+
+<h3>
+<i class="fa-solid fa-wallet"></i>
+Saldo Kamu
+</h3>
+
+
+<div class="balance">
+
+Rp <span id="balance">0</span>
+
+</div>
+
+
+</section>
+
+
+
+
+
+<!-- INFO -->
+
+<section class="withdraw-card note-card">
+
+<h3>
+<i class="fa-solid fa-circle-info"></i>
+Informasi Withdraw
+</h3>
+
+
+<ul>
+
+<li>
+<i class="fa-solid fa-check"></i>
+Withdraw manual diproses sesuai antrean admin.
+</li>
+
+
+<li>
+<i class="fa-solid fa-check"></i>
+Withdraw instan diproses otomatis.
+</li>
+
+
+<li>
+<i class="fa-solid fa-check"></i>
+Minimal penarikan Rp10.000.
+</li>
+
+
+<li>
+<i class="fa-solid fa-check"></i>
+Pastikan data rekening / e-wallet benar.
+</li>
+
+
+</ul>
+
+
+</section>
+
+
+
+
+
+
+<!-- TYPE WITHDRAW -->
+
+<section class="withdraw-card">
+
+
+<h3>
+<i class="fa-solid fa-bolt"></i>
+Pilih Jenis Withdraw
+</h3>
+
+
+
+<div class="withdraw-type">
+
+
+<button 
+class="type-btn active"
+data-type="manual">
+
+<i class="fa-solid fa-clock"></i>
+
+<div>
+<strong>Manual</strong>
+<span>Menunggu antrean</span>
+</div>
+
+</button>
+
+
+
+
+<button 
+class="type-btn"
+data-type="instant">
+
+<i class="fa-solid fa-bolt"></i>
+
+<div>
+<strong>Instan</strong>
+<span>Proses otomatis</span>
+</div>
+
+</button>
+
+
+</div>
+
+
+
+<div id="instantInfo" class="instant-info">
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- FORM -->
+
+<section class="withdraw-card">
+
+
+<h3>
+<i class="fa-solid fa-paper-plane"></i>
+Ajukan Withdraw
+</h3>
+
+
+
+
+<div class="form-group">
+
+<label>Jumlah Penarikan</label>
+
+<input 
+id="amount"
+type="number"
+placeholder="Minimal Rp10.000">
+
+</div>
+
+
+
+
+<div class="form-group">
+
+<label>Metode</label>
+
+
+<select id="method">
+
+<option value="bank">
+Transfer Bank
+</option>
+
+
+<option value="dana">
+Dana
+</option>
+
+
+<option value="ovo">
+OVO
+</option>
+
+
+<option value="gopay">
+GoPay
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+<div class="form-group">
+
+<label>Nomor Tujuan</label>
+
+<input 
+id="target"
+placeholder="Nomor rekening / e-wallet">
+
+</div>
+
+
+
+
+
+<button 
+id="withdrawBtn"
+class="btn-withdraw">
+
+Ajukan Withdraw
+
+</button>
+
+
+</section>
+
+
+
+
+
+
+<!-- HISTORY -->
+
+<section class="withdraw-card">
+
+
+<h3>
+
+<i class="fa-solid fa-clock-rotate-left"></i>
+
+Riwayat Withdraw
+
+</h3>
+
+
+
+<div id="withdrawList">
+
+<div class="empty">
+
+Belum ada riwayat withdraw
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+</div>
+
+
+
+
+<div id="footer"></div>
+
+
+
+
+
+<script src="js/navbar.js"></script>
+
+<script src="js/footer.js"></script>
+
+<script src="js/withdraw.js"></script>
+
+
+
+
+<script>
+
+fetch("components/navbar.html")
+.then(r=>r.text())
+.then(h=>{
+
+document.getElementById("navbar").innerHTML=h;
+
+if(typeof c2pInit==="function")
+c2pInit();
+
+});
+
+
+
+fetch("components/footer.html")
+.then(r=>r.text())
+.then(h=>{
+
+document.getElementById("footer").innerHTML=h;
+
+if(typeof c2pFooterInit==="function")
+c2pFooterInit();
+
+});
+
+
+</script>
+
+
+
+</body>
+</html>
