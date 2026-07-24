@@ -577,3 +577,67 @@ color:#e2e8f0;
 color:#e2e8f0;
 
 }
+
+/* =========================
+   ICON WARNA-WARNI
+========================= */
+
+/* Default icon sidebar */
+.c2p-sidebar a i{
+transition:.3s;
+}
+
+/* Per menu warna beda */
+.c2p-sidebar a:nth-child(3) i{ color:#3b82f6; }   /* Dashboard */
+.c2p-sidebar a:nth-child(4) i{ color:#22c55e; }   /* Create Link */
+.c2p-sidebar a:nth-child(5) i{ color:#f59e0b; }   /* Sell */
+.c2p-sidebar a:nth-child(6) i{ color:#6366f1; }   /* My Link */
+.c2p-sidebar a:nth-child(7) i{ color:#14b8a6; }   /* Payment */
+.c2p-sidebar a:nth-child(8) i{ color:#eab308; }   /* History */
+.c2p-sidebar a:nth-child(9) i{ color:#8b5cf6; }   /* Referral */
+.c2p-sidebar a:nth-child(10) i{ color:#ef4444; }  /* Notif */
+.c2p-sidebar a:nth-child(12) i{ color:#0ea5e9; }  /* Profile */
+.c2p-sidebar a:nth-child(13) i{ color:#64748b; }  /* Settings */
+.c2p-sidebar a:nth-child(14) i{ color:#f97316; }  /* Activity */
+
+/* Hover makin hidup */
+.c2p-sidebar a:hover i{
+filter:brightness(1.2);
+transform:scale(1.15);
+}
+
+
+/* =========================
+   FIX SCROLL HORIZONTAL
+========================= */
+
+html, body{
+overflow-x:hidden;
+}
+
+.c2p-sidebar{
+overflow-x:hidden;
+}
+
+/* =========================
+   ICON WARNA-WARNI BOTTOM NAV
+========================= */
+
+.c2p-bottom-nav a:nth-child(1) i{ color:#3b82f6; }  /* Dashboard */
+.c2p-bottom-nav a:nth-child(2) i{ color:#22c55e; }  /* Withdraw */
+.c2p-bottom-nav a:nth-child(3) i{ color:#fff; }     /* Center (+ tetap putih) */
+.c2p-bottom-nav a:nth-child(4) i{ color:#f59e0b; }  /* Premium */
+.c2p-bottom-nav a:nth-child(5) i{ color:#8b5cf6; }  /* Profile */
+
+
+/* Hover effect */
+.c2p-bottom-nav a:hover i{
+transform:scale(1.15);
+filter:brightness(1.2);
+}
+
+
+/* ACTIVE MENU */
+.c2p-bottom-nav a.active i{
+transform:scale(1.2);
+}
