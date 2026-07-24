@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>History Saldo • Click2Pay</title>
+
+<script>
+if(localStorage.getItem("theme")==="dark"){
+document.documentElement.classList.add("dark");
+}
+</script>
+
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/app-ui.css">
+<link rel="stylesheet" href="css/create-link.css">
+<link rel="stylesheet" href="css/history.css"> <!-- CSS KHUSUS -->
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body class="app-body">
+
+<div class="app-bg"></div>
+
+<div id="navbar"></div>
+
+<div class="app-container">
+
+<!-- TITLE -->
+<section class="page-title">
+<i class="fa-solid fa-clock-rotate-left"></i>
+<div>
+<h1>History Saldo</h1>
+<p>Riwayat semua transaksi saldo akun kamu.</p>
+</div>
+</section>
+
+<!-- INFO -->
+<section class="info-box">
+<div class="info-header">
+<i class="fa-solid fa-circle-info"></i>
+<h3>Informasi Transaksi</h3>
+</div>
+<ul>
+<li><i class="fa-solid fa-check"></i> Semua pemasukan & pengeluaran tercatat.</li>
+<li><i class="fa-solid fa-check"></i> Data update otomatis dari sistem.</li>
+<li><i class="fa-solid fa-check"></i> Status menunjukkan proses transaksi.</li>
+<li><i class="fa-solid fa-check"></i> Gunakan filter untuk pencarian cepat.</li>
+</ul>
+</section>
+
+<!-- STATS -->
+<section class="quick-stats">
+<div class="stat-card">
+<i class="fa-solid fa-wallet"></i>
+<h4>Total Masuk</h4>
+<h2 id="totalIn">Rp0</h2>
+</div>
+
+<div class="stat-card">
+<i class="fa-solid fa-arrow-up"></i>
+<h4>Total Keluar</h4>
+<h2 id="totalOut">Rp0</h2>
+</div>
+
+<div class="stat-card">
+<i class="fa-solid fa-list"></i>
+<h4>Total Transaksi</h4>
+<h2 id="totalTx">0</h2>
+</div>
+
+<div class="stat-card">
+<i class="fa-solid fa-clock"></i>
+<h4>Pending</h4>
+<h2 id="totalPending">0</h2>
+</div>
+</section>
+
+<!-- SEARCH -->
+<section class="search-area">
+<div class="search-box">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input id="searchInput" type="text" placeholder="Cari transaksi...">
+</div>
+
+<div class="link-filter">
+<button class="active" data-filter="all">Semua</button>
+<button data-filter="income">Masuk</button>
+<button data-filter="expense">Keluar</button>
+</div>
+</section>
+
+<!-- LIST -->
+<section class="link-section">
+
+<div class="section-title">
+<h2><i class="fa-solid fa-list"></i> Daftar Transaksi</h2>
+<a href="dashboard.html">
+<i class="fa-solid fa-arrow-left"></i> Dashboard
+</a>
+</div>
+
+<div id="historyList"></div>
+
+</section>
+
+</div>
+
+<div id="footer"></div>
+
+<!-- JS -->
+<script src="js/history.js"></script>
+
+<!-- LOAD COMPONENT -->
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+
+<script>
+fetch("components/navbar.html")
+.then(r=>r.text())
+.then(h=>{
+document.getElementById("navbar").innerHTML=h;
+if(typeof c2pInit==="function")c2pInit();
+});
+
+fetch("components/footer.html")
+.then(r=>r.text())
+.then(h=>{
+document.getElementById("footer").innerHTML=h;
+if(typeof c2pFooterInit==="function")c2pFooterInit();
+});
+</script>
+
+</body>
+</html>
