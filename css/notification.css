@@ -1,0 +1,207 @@
+/* =================================
+CLICK2PAY NOTIFICATIONS STYLE
+CONSISTENT WITH ALL PAGES
+================================= */
+
+.app-container{
+padding-top:15px;
+padding-bottom:40px;
+}
+
+/* ================= TITLE ================= */
+
+.page-title{
+display:flex;
+align-items:center;
+gap:14px;
+margin-bottom:25px;
+}
+
+.page-title i{
+font-size:28px;
+color:#2563eb;
+}
+
+.page-title h1{
+margin:0;
+font-size:30px;
+font-weight:800;
+color:#2563eb;
+}
+
+.page-title p{
+margin-top:6px;
+font-size:14px;
+color:#64748b;
+}
+
+/* ================= ACTION ================= */
+
+.notif-actions{
+display:flex;
+justify-content:flex-end;
+margin-bottom:18px;
+}
+
+.notif-actions button{
+background:#2563eb;
+color:#fff;
+border:none;
+padding:10px 16px;
+border-radius:12px;
+cursor:pointer;
+font-weight:600;
+transition:.2s;
+}
+
+.notif-actions button:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(37,99,235,.25);
+}
+
+/* ================= LIST ================= */
+
+.notif-list{
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+/* ================= ITEM ================= */
+
+.notif-item{
+display:flex;
+gap:14px;
+align-items:flex-start;
+background:#fff;
+border:1px solid #dbeafe;
+border-radius:20px;
+padding:16px;
+cursor:pointer;
+transition:.25s;
+box-shadow:0 10px 30px rgba(0,0,0,.05);
+}
+
+.notif-item:hover{
+transform:translateY(-3px);
+}
+
+/* UNREAD STYLE */
+.notif-item.unread{
+border-color:#2563eb;
+background:linear-gradient(135deg,#eff6ff,#ffffff);
+}
+
+/* ICON */
+
+.notif-icon{
+font-size:18px;
+color:#2563eb;
+margin-top:3px;
+}
+
+/* CONTENT */
+
+.notif-content{
+flex:1;
+}
+
+.notif-title{
+font-weight:700;
+margin-bottom:4px;
+color:#0f172a;
+}
+
+.notif-desc{
+font-size:14px;
+color:#475569;
+margin-bottom:6px;
+}
+
+.notif-time{
+font-size:12px;
+color:#94a3b8;
+}
+
+/* EMPTY STATE */
+
+.notif-empty{
+text-align:center;
+padding:30px 10px;
+color:#64748b;
+font-size:14px;
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark .page-title h1{
+color:#60a5fa;
+}
+
+body.dark .page-title p{
+color:#94a3b8;
+}
+
+body.dark .notif-item{
+background:#0f172a;
+border-color:#1e293b;
+box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
+
+body.dark .notif-item.unread{
+background:linear-gradient(135deg,#1e3a8a33,#0f172a);
+border-color:#2563eb;
+}
+
+body.dark .notif-title{
+color:#fff;
+}
+
+body.dark .notif-desc{
+color:#cbd5f5;
+}
+
+body.dark .notif-time{
+color:#94a3b8;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:700px){
+
+.app-container{
+padding-top:10px;
+padding-left:15px;
+padding-right:15px;
+}
+
+.notif-item{
+padding:14px;
+}
+
+.notif-title{
+font-size:14px;
+}
+
+.notif-desc{
+font-size:13px;
+}
+
+}
+
+/* ================= ANIMATION ================= */
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(10px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.notif-item{
+animation:fadeIn .3s ease;
+}
