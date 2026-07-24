@@ -51,32 +51,64 @@ minute: "2-digit"
 });
 };
 
-/* ================= RENDER ================= */
+/* ================= ELEMENT ================= */
 
 const container = document.getElementById("historyList");
+
+/* ================= UI ENHANCEMENT ================= */
+
+// SKELETON
+const showSkeleton = () => {
+container.innerHTML = "";
+for(let i=0;i<4;i++){
+container.innerHTML += `
+<div class="link-card" style="opacity:.6">
+<div style="height:14px;width:60%;background:#e2e8f0;border-radius:6px;margin-bottom:10px;"></div>
+<div style="height:12px;width:40%;background:#e2e8f0;border-radius:6px;"></div>
+</div>
+`;
+}
+};
+
+// EMPTY STATE
+const emptyState = () => {
+container.innerHTML = `
+<div style="text-align:center;padding:40px 20px;">
+<i class="fa-regular fa-folder-open" style="font-size:40px;color:#94a3b8;margin-bottom:10px;"></i>
+<h3 style="margin:0;color:#334155;">Belum ada transaksi</h3>
+<p style="font-size:13px;color:#64748b;">Transaksi kamu akan muncul di sini</p>
+</div>
+`;
+};
+
+// STATUS TEXT
+const getStatusText = (status) => {
+if(status === "success") return "Berhasil";
+if(status === "pending") return "Diproses";
+return status;
+};
+
+/* ================= RENDER ================= */
 
 const renderHistory = (data) => {
 
 container.innerHTML = "";
 
 if(data.length === 0){
-container.innerHTML = `
-<div style="text-align:center;padding:30px;color:#64748b;">
-<i class="fa-solid fa-inbox" style="font-size:30px;margin-bottom:10px;"></i>
-<p>Tidak ada transaksi</p>
-</div>
-`;
+emptyState();
 return;
 }
 
-data.forEach(item => {
+data.forEach((item,index) => {
+
+let isNew = index === 0;
 
 container.innerHTML += `
-<div class="link-card">
+<div class="link-card" style="animation:fadeIn .4s ease ${index * 0.05}s both; ${isNew ? 'border:2px solid #2563eb;' : ''}">
 <div class="link-top">
 <h3>${item.title}</h3>
 <span class="badge ${item.status === "success" ? "success" : "pending"}">
-${item.status}
+${getStatusText(item.status)}
 </span>
 </div>
 
@@ -133,7 +165,7 @@ updateStats(filtered);
 // SEARCH
 document.getElementById("searchInput").addEventListener("input", applyFilter);
 
-// FILTER BUTTON
+// FILTER
 document.querySelectorAll(".filterBtn").forEach(btn => {
 
 btn.addEventListener("click", () => {
@@ -152,7 +184,11 @@ applyFilter();
 
 /* ================= INIT ================= */
 
+showSkeleton();
+
+setTimeout(() => {
 renderHistory(historyData);
 updateStats(historyData);
+}, 800);
 
 });
