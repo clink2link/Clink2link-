@@ -429,17 +429,12 @@ async function deleteLink(id){
 const {
 error
 }=await supabaseClient
-
 .from("links")
-
 .delete()
-
 .eq(
 "id",
 id
 );
-
-
 
 if(error){
 
@@ -449,12 +444,25 @@ error
 );
 
 throw error;
-
 }
 
-
 return true;
+}
 
+async function getLinkByCode(shortCode){
+
+const {data,error}=await supabaseClient
+.from("links")
+.select("*")
+.eq("short_code",shortCode)
+.single();
+
+if(error){
+console.error("GET LINK BY CODE ERROR:",error);
+return null;
+}
+
+return data;
 
 }
 
@@ -699,6 +707,7 @@ updateProfile,
 getMenusByRole,
 
 getLinks,
+getLinkByCode,
 createLink,
 updateLink,
 deleteLink,
