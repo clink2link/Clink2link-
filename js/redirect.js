@@ -20,8 +20,36 @@ return;
 
 }
 
-location.replace(
-link.destination_url||link.destination
-);
+if(link.status!=="active"){
+
+document.body.innerHTML="<h2>Link sudah tidak aktif.</h2>";
+
+return;
+
+}
+
+// Simpan data link
+sessionStorage.setItem("link_id",link.id);
+sessionStorage.setItem("short_code",link.short_code);
+
+// Pilih alur berdasarkan type
+if(link.type==="ads"){
+
+location.replace(`task1.html?id=${link.id}`);
+
+return;
+
+}
+
+if(link.type==="sell"){
+
+location.replace(`sell.html?id=${link.id}`);
+
+return;
+
+}
+
+// Default
+document.body.innerHTML="<h2>Tipe link tidak dikenali.</h2>";
 
 })();
