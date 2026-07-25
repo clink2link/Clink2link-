@@ -1,6 +1,6 @@
 (async()=>{
 
-const shortCode=location.pathname.split("/").pop();
+const shortCode=new URLSearchParams(location.search).get("code");
 
 if(!shortCode){
 
