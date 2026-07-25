@@ -20,79 +20,26 @@ SUPABASE_ANON_KEY
 // ===============================
 
 async function getUser(){
-
-    try{
-
-
-        const userId =
-        localStorage.getItem("user_id");
-
-
-
-        if(!userId){
-
-            console.log(
-                "USER ID TIDAK ADA"
-            );
-
-            return null;
-
-        }
-
-
-
-        const {
-            data,
-            error
-        } = await supabaseClient
-
-        .from("users")
-
-        .select("*")
-
-        .eq(
-            "id",
-            userId
-        )
-
-        .single();
-
-
-
-        if(error){
-
-            console.error(
-                "GET USER ERROR:",
-                error
-            );
-
-            return null;
-
-        }
-
-
-
-        return data;
-
-
-
-    }catch(err){
-
-
-        console.error(
-            "AUTH ERROR:",
-            err
-        );
-
-
-        return null;
-
-
-    }
-
+try{
+const userId=localStorage.getItem("user_id");
+if(!userId){
+return null;
 }
-
-
+const {data,error}=await supabaseClient
+.from("users")
+.select("*")
+.eq("id",userId)
+.maybeSingle();
+if(error){
+console.error("GET USER ERROR:",error);
+return null;
+}
+return data;
+}catch(err){
+console.error("AUTH ERROR:",err);
+return null;
+}
+}
 
 
 
@@ -168,64 +115,43 @@ const {data,error}=await supabaseClient
 .select("*")
 .eq("id",userId)
 .maybeSingle();
-
 if(error){
-console.error("Get Profile Error:",error);
-return null;
-}
-
-return data;
-}
-
-
-
-async function getProfiles(){
-
-const {data,error}=await supabaseClient
-.from("profiles")
-.select("*");
-
-if(error){
-console.error("Get Profiles Error:",error);
-return [];
-}
-
-return data;
-}
-
-async function getCurrentProfile(){
-
-const userId=localStorage.getItem("user_id");
-
-if(!userId){
-console.warn("USER ID TIDAK ADA");
-return null;
-}
-
-const {data,error}=await supabaseClient
-.from("profiles")
-.select("*")
-.eq("id",userId)
-.single();
-
-if(error){
-
 console.error(
-"CURRENT PROFILE ERROR:",
+"GET PROFILE ERROR:",
 error
 );
-
 return null;
 }
-
+if(!data){
+const {data:newProfile,error:createError}=await supabaseClient
+.from("profiles")
+.insert({
+id:userId,
+balance:0,
+ads_earning_total:0,
+ads_earning_today:0,
+ads_earning_month:0,
+total_views:0,
+total_clicks:0
+})
+.select()
+.single();
+if(createError){
+console.error(
+"CREATE PROFILE ERROR:",
+createError
+);
+return null;
+}
+return newProfile;
+}
 return data;
 }
+
 
 async function updateProfile(payload){
 const userId=localStorage.getItem("user_id");
-
 if(!userId)return null;
-
 const {data,error}=await supabaseClient
 .from("profiles")
 .update({
@@ -234,14 +160,31 @@ username:payload.username
 .eq("id",userId)
 .select()
 .single();
-
 if(error){
 console.error("UPDATE PROFILE ERROR:",error);
 throw error;
 }
-
 return data;
 }
+
+async function getCurrentProfile(){
+const userId=localStorage.getItem("user_id");
+if(!userId){
+return null;
+}
+return await getProfile(userId);
+}
+async function getProfiles(){
+const {data,error}=await supabaseClient
+.from("profiles")
+.select("*");
+if(error){
+console.error("GET PROFILES ERROR:",error);
+return [];
+}
+return data || [];
+}
+
 
 // ===============================
 // LINKS
@@ -263,6 +206,7 @@ error
 id,
 user_id,
 type,
+link_type,
 title,
 short_code,
 destination,
@@ -478,7 +422,10 @@ const {data,error}=await supabaseClient
 .order("id",{ascending:false});
 
 
-if(error) throw error;
+if(error){
+console.error(error);
+return [];
+}
 
 return data;
 
@@ -497,7 +444,10 @@ const {data,error}=await supabaseClient
 .order("id",{ascending:false});
 
 
-if(error) throw error;
+if(error){
+console.error(error);
+return [];
+}
 
 return data;
 
@@ -516,7 +466,10 @@ const {data,error}=await supabaseClient
 .order("id",{ascending:false});
 
 
-if(error) throw error;
+if(error){
+console.error(error);
+return [];
+}
 
 return data;
 
@@ -535,7 +488,10 @@ const {data,error}=await supabaseClient
 .order("id",{ascending:false});
 
 
-if(error) throw error;
+if(error){
+console.error(error);
+return [];
+}
 
 return data;
 
@@ -550,7 +506,10 @@ const {data,error}=await supabaseClient
 .order("id",{ascending:false});
 
 
-if(error) throw error;
+if(error){
+console.error(error);
+return [];
+}
 
 return data;
 
@@ -569,7 +528,10 @@ const {data,error}=await supabaseClient
 .order("id",{ascending:false});
 
 
-if(error) throw error;
+if(error){
+console.error(error);
+return [];
+}
 
 return data;
 
@@ -596,18 +558,26 @@ return data || [];
 
 
 async function getReports(userId){
+
 const {data,error}=await supabaseClient
 .from("daily_reports")
 .select("*")
 .eq("user_id",userId)
-.order("report_date",{ascending:true});
-
+.order(
+"report_date",
+{
+ascending:false
+}
+)
+.limit(30);
 if(error){
-console.error("Report Error:",error);
+console.error(
+"REPORT ERROR:",
+error
+);
 return [];
 }
-
-return data || [];
+return data ? data.reverse() : [];
 }
 
 // ===============================
