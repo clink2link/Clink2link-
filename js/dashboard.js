@@ -1,5 +1,8 @@
 // js/dashboard.js
 
+let adsChartInstance=null;
+let sellChartInstance=null;
+
 async function loadDashboard(){
 
 try{
@@ -172,10 +175,9 @@ const earning=Number(profile.ads_earning_total || 0);
 
 if(views>0){
 
-cpm = views > 0 
-? Math.round(earning / (views / 1000))
-: 0;
-
+cpm = Math.round(
+earning / (views / 1000)
+);
 }
 
 currentCpm.textContent=
@@ -187,173 +189,108 @@ currentCpm.textContent=
 // CHART ADS & SELL
 // ===========================
 
-const reports = await database.getReports(authId) || [];
+const reports=await database.getReports(authId)||[];
 
-let labels = [];
-let views = [];
-let earnings = [];
+let labels=[];
+let views=[];
+let earnings=[];
+let sellViews=[];
 
-if (reports.length) {
+if(reports.length){
 
-    const chartData = reports
-        .sort((a,b)=>new Date(a.report_date)-new Date(b.report_date))
-        .slice(-7);
+const chartData=reports.slice(-7);
 
+labels=chartData.map(item=>{
+const date=new Date(item.report_date);
+return date.toLocaleDateString("id-ID",{
+day:"2-digit",
+month:"short"
+});
+});
 
-    labels = chartData.map(item => {
+views=chartData.map(item=>
+Number(item.ads_views||0)
+);
 
-        const date = new Date(item.report_date);
+earnings=chartData.map(item=>
+Number(item.ads_earnings||0)
+);
 
-        return date.toLocaleDateString("id-ID",{
-            day:"2-digit",
-            month:"short"
-        });
+sellViews=chartData.map(item=>
+Number(item.sell_views||0)
+);
 
-    });
+}else{
 
+const today=new Date();
 
-    views = chartData.map(item =>
-        Number(item.ads_views || 0)
-    );
+for(let i=6;i>=0;i--){
 
+const date=new Date();
+date.setDate(today.getDate()-i);
 
-    earnings = chartData.map(item =>
-        Number(item.ads_earnings || 0)
-    );
+labels.push(
+date.toLocaleDateString("id-ID",{
+day:"2-digit",
+month:"short"
+})
+);
 
-
-} else {
-
-    const today = new Date();
-
-    for(let i=6;i>=0;i--){
-
-        const date = new Date();
-
-        date.setDate(
-            today.getDate()-i
-        );
-
-        labels.push(
-            date.toLocaleDateString("id-ID",{
-                day:"2-digit",
-                month:"short"
-            })
-        );
-
-        views.push(0);
-        earnings.push(0);
-
-    }
+views.push(0);
+earnings.push(0);
+sellViews.push(0);
 
 }
 
+}
 
-const commonOptions = {
-
+const commonOptions={
 responsive:true,
 maintainAspectRatio:false,
-
 interaction:{
-    mode:"index",
-    intersect:false
+mode:"index",
+intersect:false
 },
-
-
 plugins:{
-
-
 legend:{
-    display:false
+display:false
 },
-
-
 tooltip:{
-
-
 backgroundColor:"#0f172a",
-
 padding:12,
-
-
 callbacks:{
-
-
 label(context){
 
-
-const value = Number(context.parsed.y || 0);
-
+const value=Number(context.parsed.y||0);
 
 if(context.dataset.label==="Pendapatan"){
-
-return " Rp "+
-value.toLocaleString("id-ID");
-
+return " Rp "+value.toLocaleString("id-ID");
 }
 
-
-return " "+
-value.toLocaleString("id-ID")+" views";
-
+return " "+value.toLocaleString("id-ID")+" views";
 
 }
-
-
 }
-
-
 }
-
-
 },
-
-
 scales:{
-
-
 x:{
-
-
 grid:{
-    display:false
+display:false
 }
-
-
 },
-
-
 y:{
-
-
 beginAtZero:true,
-
-
 grid:{
-    color:"rgba(148,163,184,.15)"
+color:"rgba(148,163,184,.15)"
 },
-
-
 ticks:{
-
-
 callback(value){
-
-return Number(value)
-.toLocaleString("id-ID");
-
+return Number(value).toLocaleString("id-ID");
 }
-
-
 }
-
-
 }
-
-
 }
-
-
 };
 
 // ===========================
@@ -364,7 +301,11 @@ const adsCanvas=document.getElementById("adsChart");
 
 if(adsCanvas){
 
-new Chart(adsCanvas,{
+if(adsChartInstance){
+adsChartInstance.destroy();
+}
+
+adsChartInstance=new Chart(adsCanvas,{
 
 type:"line",
 
@@ -484,15 +425,19 @@ const sellCanvas = document.getElementById("sellChart");
 
 if (sellCanvas) {
 
-new Chart(sellCanvas, {
+if(sellChartInstance){
+sellChartInstance.destroy();
+}
+
+sellChartInstance=new Chart(sellCanvas, {
 
 type: "line",
 
 data: {
 labels,
-datasets: [{
-label: "Views",
-data: views,
+datasets:[{
+label:"Views",
+data:sellViews,
 
 borderColor: "#8b5cf6",
 backgroundColor: "rgba(139,92,246,.12)",
@@ -579,7 +524,9 @@ if(reportTable){
 
             return `
 <tr>
-<td>${row.report_date}</td>
+<td>
+${new Date(row.report_date).toLocaleDateString("id-ID")}
+</td>
 <td>${Number(row.ads_views || 0).toLocaleString("id-ID")}</td>
 <td class="earning">
 Rp ${Number(row.ads_earnings || 0).toLocaleString("id-ID")}
