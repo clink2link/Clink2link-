@@ -341,7 +341,7 @@ total_clicks:0,
 
 total_earnings:0,
 
-link_type:"ads"
+link_type:payload.link_type || "ads"
 
 })
 
