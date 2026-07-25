@@ -1,6 +1,26 @@
 let allLinks=[];
 let filteredLinks=[];
 
+function generateShortCode(length = 10){
+
+const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+let result="";
+
+const array=new Uint8Array(length);
+
+crypto.getRandomValues(array);
+
+for(let i=0;i<length;i++){
+
+result+=chars[array[i]%chars.length];
+
+}
+
+return result;
+
+}
+
 const linkList=document.getElementById("linkList");
 const totalLink=document.getElementById("totalLink");
 const totalView=document.getElementById("totalView");
@@ -285,9 +305,7 @@ try{
 const user=await getCurrentUser();
 if(!user)return;
 
-const short_code=crypto.randomUUID()
-.replaceAll("-","")
-.substring(0,8);
+const short_code=generateShortCode(8);
 
 await database.createLink({
 
