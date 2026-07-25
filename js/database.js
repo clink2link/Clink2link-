@@ -577,6 +577,8 @@ error
 );
 return [];
 }
+alert(JSON.stringify(data,null,2));
+
 return data ? data.reverse() : [];
 }
 
