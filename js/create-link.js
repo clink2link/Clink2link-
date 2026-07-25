@@ -305,9 +305,13 @@ try{
 const user=await getCurrentUser();
 if(!user)return;
 
-const short_code=generateShortCode(8);
+let short_code;
 
-await database.createLink({
+do{
+    short_code=generateShortCode(8);
+}while(await database.getLinkByCode(short_code));
+
+const newLink=await database.createLink({
 
 user_id:user.id,
 type:"ads",
@@ -322,6 +326,9 @@ total_earnings:0,
 link_type:"ads"
 
 });
+
+localStorage.setItem("last_short_code",newLink.short_code);
+localStorage.setItem("last_link_id",newLink.id);
 
 createForm.reset();
 
