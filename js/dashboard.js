@@ -172,9 +172,9 @@ const earning=Number(profile.ads_earning_total || 0);
 
 if(views>0){
 
-cpm=Math.round(
-(earning/views)*1000
-);
+cpm = views > 0 
+? Math.round(earning / (views / 1000))
+: 0;
 
 }
 
@@ -187,100 +187,172 @@ currentCpm.textContent=
 // CHART ADS & SELL
 // ===========================
 
-const reports=await database.getReports(authId);
+const reports = await database.getReports(authId) || [];
 
-let labels=[];
-let views=[];
-let earnings=[];
+let labels = [];
+let views = [];
+let earnings = [];
 
-if(Array.isArray(reports)&&reports.length){
+if (reports.length) {
 
-const chartData=reports.slice(-7);
+    const chartData = reports
+        .sort((a,b)=>new Date(a.report_date)-new Date(b.report_date))
+        .slice(-7);
 
-labels=chartData.map(item=>item.report_date);
 
-views = chartData.map(item =>
-Number(item.ads_views || 0)
-);
+    labels = chartData.map(item => {
 
-earnings = chartData.map(item =>
-Number(item.ads_earnings || 0)
-);
+        const date = new Date(item.report_date);
 
-}else{
+        return date.toLocaleDateString("id-ID",{
+            day:"2-digit",
+            month:"short"
+        });
 
-labels=[
-"Hari 1",
-"Hari 2",
-"Hari 3",
-"Hari 4",
-"Hari 5",
-"Hari 6",
-"Hari 7"
-];
+    });
 
-views=[0,0,0,0,0,0,0];
-earnings=[0,0,0,0,0,0,0];
+
+    views = chartData.map(item =>
+        Number(item.ads_views || 0)
+    );
+
+
+    earnings = chartData.map(item =>
+        Number(item.ads_earnings || 0)
+    );
+
+
+} else {
+
+    const today = new Date();
+
+    for(let i=6;i>=0;i--){
+
+        const date = new Date();
+
+        date.setDate(
+            today.getDate()-i
+        );
+
+        labels.push(
+            date.toLocaleDateString("id-ID",{
+                day:"2-digit",
+                month:"short"
+            })
+        );
+
+        views.push(0);
+        earnings.push(0);
+
+    }
 
 }
 
-const commonOptions={
+
+const commonOptions = {
 
 responsive:true,
 maintainAspectRatio:false,
 
 interaction:{
-mode:"index",
-intersect:false
+    mode:"index",
+    intersect:false
 },
+
 
 plugins:{
 
+
 legend:{
-display:false
+    display:false
 },
+
 
 tooltip:{
+
+
 backgroundColor:"#0f172a",
+
 padding:12,
-titleFont:{size:13},
-bodyFont:{size:14},
+
+
 callbacks:{
+
+
 label(context){
 
-const value=context.parsed.y||0;
 
-return context.dataset.label==="Pendapatan"
-? " Rp "+value.toLocaleString("id-ID")
-: " "+value.toLocaleString("id-ID");
+const value = Number(context.parsed.y || 0);
+
+
+if(context.dataset.label==="Pendapatan"){
+
+return " Rp "+
+value.toLocaleString("id-ID");
 
 }
+
+
+return " "+
+value.toLocaleString("id-ID")+" views";
+
+
 }
+
+
 }
+
+
+}
+
 
 },
+
 
 scales:{
 
+
 x:{
+
+
 grid:{
-display:false
+    display:false
 }
+
+
 },
+
 
 y:{
+
+
 beginAtZero:true,
+
+
 grid:{
-color:"rgba(148,163,184,.15)"
+    color:"rgba(148,163,184,.15)"
 },
+
+
 ticks:{
+
+
 callback(value){
-return value.toLocaleString("id-ID");
-}
-}
-}
+
+return Number(value)
+.toLocaleString("id-ID");
 
 }
+
+
+}
+
+
+}
+
+
+}
+
 
 };
 
