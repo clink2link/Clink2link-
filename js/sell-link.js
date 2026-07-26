@@ -4,8 +4,6 @@ CLICK2PAY SELL LINK SYSTEM
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-let userPremium=false;
-let withdrawSuccess=0;
 let sellActive=false;
 
 let sellLinks=[];
@@ -20,10 +18,9 @@ if(window.database){
 currentUser =
 await database.getUser();
 if(currentUser){
-userPremium =
-currentUser.is_premium || false;
-withdrawSuccess =
-currentUser.withdraw_success || 0;
+sellActive =
+currentUser.sell_unlocked ||
+currentUser.withdraw_count >= 3;
 }
 }
 }catch(e){
@@ -65,9 +62,9 @@ function checkAccess(){
 
 let status=document.getElementById("sellStatus");
 let btn=document.getElementById("createSellBtn");
-sellActive=
-userPremium ||
-withdrawSuccess>=3;
+sellActive =
+currentUser.sell_unlocked ||
+currentUser.withdraw_count >= 3;
 if(sellActive){
 if(status)
 status.innerHTML=`
