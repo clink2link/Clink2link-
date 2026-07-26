@@ -335,20 +335,23 @@ Copy Link Buy
 
 
 
-
 /* COPY */
 
 window.copySell=function(text){
-
-navigator.clipboard.writeText(text);
-
+navigator.clipboard.writeText(text)
+.then(()=>{
 alert("Link berhasil disalin");
+})
+.catch(err=>{
+console.error(
+"COPY ERROR:",
+err
+);
+});
+};
 
-}
 
-
-
-
+/* INIT */
 
 (async()=>{
 await loadUser();
