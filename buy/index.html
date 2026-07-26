@@ -10,36 +10,33 @@
 
 <link rel="stylesheet" href="../css/theme.css">
 <link rel="stylesheet" href="../css/app-ui.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>
 
-
 <body>
 
-
 <div class="app-container">
-
 
 <h1>
 <i class="fa-solid fa-cart-shopping"></i>
 Pembelian
 </h1>
 
-
 <div id="buyBox">
 Loading...
 </div>
 
-
 </div>
 
+<script>
+window.BUY_CODE=location.pathname.split("/").pop();
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
 <script src="../js/database.js"></script>
-
 <script src="../js/buy.js"></script>
 
-
 </body>
+
 </html>
