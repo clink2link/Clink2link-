@@ -277,12 +277,8 @@ let code =
 item.short_code || item.id;
 
 
-let buy =
-`https://click2pay.my.id/buy/${code}`;
-
-
-let ads =
-`https://click2pay.my.id/ads/${code}`;
+let buy = `https://click2pay.my.id/b/${code}`;
+let ads = `https://click2pay.my.id/a/${code}`;
 
 
 
