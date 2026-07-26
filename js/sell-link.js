@@ -9,91 +9,88 @@ let withdrawSuccess=0;
 let sellActive=false;
 
 let sellLinks=[];
+let currentUser=null;
 
 
 /* LOAD USER */
 
 async function loadUser(){
-
 try{
-
 if(window.database){
-
-let user=await database.getUser();
-
-if(user){
-
-userPremium=user.is_premium||false;
-withdrawSuccess=user.withdraw_success||0;
-
+currentUser =
+await database.getUser();
+if(currentUser){
+userPremium =
+currentUser.is_premium || false;
+withdrawSuccess =
+currentUser.withdraw_success || 0;
 }
-
 }
-
 }catch(e){
-
 console.log(e);
-
 }
-
-
 checkAccess();
+}
 
+async function loadSellLinks(){
+try{
+if(!currentUser){
+currentUser = await database.getUser();
+}
+if(!currentUser){
+return;
+}
+let data =
+await database.getLinks(currentUser.id);
+sellLinks =
+data.filter(
+item =>
+item.link_type==="sell" ||
+item.type==="sell"
+);
+renderLinks();
+}catch(e){
+console.error(
+"LOAD SELL LINK ERROR:",
+e
+);
+}
 }
 
 
+  
 /* CEK AKSES */
 
 function checkAccess(){
 
 let status=document.getElementById("sellStatus");
 let btn=document.getElementById("createSellBtn");
-
-
 sellActive=
 userPremium ||
 withdrawSuccess>=3;
-
-
-
 if(sellActive){
-
 if(status)
 status.innerHTML=`
 <i class="fa-solid fa-circle-check"></i>
 Sell Link aktif. Kamu bisa membuat link jual.
 `;
-
 if(btn){
-
 btn.disabled=false;
 btn.innerText="Buat Sell Link";
-
 }
-
-
 }else{
-
-
 if(status)
 status.innerHTML=`
 <i class="fa-solid fa-lock"></i>
 Sell Link terkunci.
 Selesaikan 3 withdraw berhasil atau upgrade Premium.
 `;
-
 if(btn){
-
 btn.disabled=true;
 btn.innerText="Sell Link Terkunci";
-
 }
-
 }
-
-
 }
-
 
 
 /* GENERATE ID */
@@ -115,8 +112,7 @@ let createBtn=document.getElementById("createSellBtn");
 
 
 if(createBtn){
-
-createBtn.onclick=()=>{
+createBtn.onclick=async()=>{
 
 
 if(!sellActive){
@@ -157,34 +153,20 @@ let code=generateCode();
 
 
 
-let data={
-
-id:code,
-
+let saved =
+await database.createLink({
+user_id:currentUser.id,
+type:"sell",
+link_type:"sell",
 title:title,
-
-url:url,
-
+destination:url,
+destination_url:url,
 price:price,
-
-ads:
-`https://click2pay.com/ads/${code}`,
-
-buy:
-`https://click2pay.com/buy/${code}`,
-
-created:
-new Date().toLocaleDateString("id-ID")
-
-};
-
-
-
-sellLinks.unshift(data);
-
-
-
-renderLinks();
+short_code:code
+});
+if(saved){
+await loadSellLinks();
+}
 
 
 document.getElementById("sellTitle").value="";
@@ -255,7 +237,7 @@ Harga
 </span>
 
 <strong>
-Rp ${item.price.toLocaleString("id-ID")}
+Rp ${Number(item.price).toLocaleString("id-ID")}
 </strong>
 
 </div>
@@ -263,9 +245,8 @@ Rp ${item.price.toLocaleString("id-ID")}
 
 <button class="btn-sell"
 onclick="generateLink('${item.id}')">
-
-Generate Link
-
+<i class="fa-solid fa-qrcode"></i>
+QR / Link Buy
 </button>
 
 
@@ -286,11 +267,25 @@ Generate Link
 window.generateLink=function(id){
 
 
-let item=
+let item =
 sellLinks.find(x=>x.id===id);
 
 
-if(!item)return;
+if(!item){
+return;
+}
+
+
+let code =
+item.short_code || item.id;
+
+
+let buy =
+`https://click2pay.my.id/buy/${code}`;
+
+
+let ads =
+`https://click2pay.my.id/ads/${code}`;
 
 
 
@@ -311,18 +306,20 @@ Link Otomatis
 Link Ads
 </label>
 
-<input readonly value="${item.ads}">
+<input readonly value="${ads}">
 
 
 <label>
 Link Buy
 </label>
 
-<input readonly value="${item.buy}">
+<input readonly value="${buy}">
 
 
 <button class="btn-sell"
-onclick="copySell('${item.buy}')">
+onclick="copySell('${buy}')">
+
+<i class="fa-solid fa-copy"></i>
 
 Copy Link Buy
 
@@ -332,7 +329,6 @@ Copy Link Buy
 </section>
 
 `;
-
 
 
 }
@@ -354,7 +350,8 @@ alert("Link berhasil disalin");
 
 
 
-loadUser();
-
-
+(async()=>{
+await loadUser();
+await loadSellLinks();
+})();
 });
