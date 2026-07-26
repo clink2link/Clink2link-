@@ -211,7 +211,11 @@ title,
 short_code,
 destination,
 destination_url,
+price,
 status,
+views,
+clicks,
+earnings,
 total_views,
 total_clicks,
 total_earnings,
@@ -275,9 +279,17 @@ destination:payload.destination,
 
 destination_url:payload.destination_url,
 
+price:payload.price || 0,
+
 short_code:payload.short_code,
 
 status:"active",
+
+views:0,
+
+clicks:0,
+
+earnings:0,
 
 total_views:0,
 
@@ -332,7 +344,9 @@ title:payload.title,
 destination:payload.destination,
 
 destination_url:
-payload.destination_url || payload.destination
+payload.destination_url || payload.destination,
+
+price:payload.price || 0
 
 })
 
