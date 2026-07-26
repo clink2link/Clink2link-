@@ -1,9 +1,10 @@
 document.addEventListener("DOMContentLoaded",async()=>{
 
 const buyBox=document.getElementById("buyBox");
-const code=location.pathname.split("/").pop();
 
-if(!code){
+const code=window.BUY_CODE||location.pathname.split("/").pop();
+
+if(!code||code==="b"||code==="buy"){
 buyBox.innerHTML="<h3>Link tidak valid</h3>";
 return;
 }
@@ -34,13 +35,19 @@ buyBox.innerHTML=`
 </div>
 `;
 
-document.getElementById("payBtn").onclick=()=>{
+document.getElementById("payBtn").addEventListener("click",()=>{
+
 console.log("PAY:",link);
-};
+
+// TODO:
+// Panggil BayarGG / payment.html di sini
+
+});
 
 }catch(err){
 
-console.error(err);
+console.error("BUY ERROR:",err);
+
 buyBox.innerHTML="<h3>Terjadi kesalahan</h3>";
 
 }
