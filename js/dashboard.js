@@ -30,6 +30,20 @@ return;
 window.currentUserCountry = profile.country || "Indonesia";
 
 // ===========================
+// SELL LINK ACCESS
+// ===========================
+
+const sellEnabled = Boolean(profile.sell_link_enabled);
+
+document.querySelectorAll(".sell-card").forEach(card => {
+    if (sellEnabled) {
+        card.classList.remove("locked");
+    } else {
+        card.classList.add("locked");
+    }
+});
+
+// ===========================
 // DATE
 // ===========================
 
