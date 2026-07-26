@@ -100,9 +100,9 @@ btn.innerText="Sell Link Terkunci";
 
 function generateCode(){
 
-return "C2P-"+Math.random()
+return Math.random()
 .toString(36)
-.substring(2,8)
+.substring(2,10)
 .toUpperCase();
 
 }
