@@ -81,7 +81,6 @@ hash
 
 }
 
-
 // ===============================
 // USERS
 // ===============================
@@ -91,18 +90,16 @@ async function getUsers(){
 const {data,error}=await supabaseClient
 .from("users")
 .select("*")
-.order("id",{ascending:false});
-
+.order("created_at",{ascending:false});
 
 if(error){
-console.error("Get Users Error:",error);
+console.error("GET USERS ERROR:",error);
 return [];
 }
 
-return data;
+return data || [];
 
 }
-
 
 // ===============================
 // PROFILE
@@ -577,23 +574,16 @@ const {data,error}=await supabaseClient
 .from("daily_reports")
 .select("*")
 .eq("user_id",userId)
-.order(
-"report_date",
-{
-ascending:false
-}
-)
+.order("report_date",{ascending:false})
 .limit(30);
+
 if(error){
-console.error(
-"REPORT ERROR:",
-error
-);
+console.error("REPORT ERROR:",error);
 return [];
 }
-alert(JSON.stringify(data,null,2));
 
 return data ? data.reverse() : [];
+
 }
 
 // ===============================
