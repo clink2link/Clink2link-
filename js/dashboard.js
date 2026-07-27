@@ -656,7 +656,11 @@ document.addEventListener("DOMContentLoaded",()=>{
 
 loadDashboard();
 
+checkSellStatus();
+
+
 const params=new URLSearchParams(location.search);
+
 
 if(params.get("tab")==="statistics"){
 
@@ -676,6 +680,7 @@ block:"start"
 },700);
 
 }
+
 
 });
 
