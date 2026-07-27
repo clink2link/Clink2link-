@@ -1,33 +1,35 @@
-(function(){
+(function () {
 "use strict";
 
-const KEY="click2pay123";
+const KEY = "click2pay123";
 
-if(new URLSearchParams(location.search).get("debug")!==KEY)return;
+if (new URLSearchParams(location.search).get("debug") !== KEY) return;
 
+// =========================================
+// UTIL
+// =========================================
 
 function safeJSON(data){
-try{
-if(typeof data==="object"){
-return JSON.stringify(data,null,2);
+    try{
+        if(typeof data==="object"){
+            return JSON.stringify(data,null,2);
+        }
+        return String(data);
+    }catch(e){
+        return String(data);
+    }
 }
-return String(data);
-}catch(e){
-return String(data);
-}
-}
-
 
 function log(type,data){
 
-let box=document.getElementById("debugBox");
+    let box=document.getElementById("debugBox");
 
-if(!box){
+    if(!box){
 
-box=document.createElement("div");
-box.id="debugBox";
+        box=document.createElement("div");
+        box.id="debugBox";
 
-box.style.cssText=`
+        box.style.cssText=`
 position:fixed;
 left:10px;
 right:10px;
@@ -42,416 +44,254 @@ z-index:999999;
 border-radius:12px;
 `;
 
-document.body.appendChild(box);
+        document.body.appendChild(box);
 
-}
+    }
 
+    const item=document.createElement("div");
 
-const item=document.createElement("div");
+    item.style.marginBottom="10px";
 
-item.style.marginBottom="10px";
-
-item.innerHTML=
-`
+    item.innerHTML=`
 <b>[${type}]</b>
 <pre style="white-space:pre-wrap">${safeJSON(data)}</pre>
 `;
 
-box.prepend(item);
+    box.prepend(item);
 
 }
-
 
 window.debug=log;
 
-
-
+// =========================================
 // PAGE
+// =========================================
 
 log("PAGE",{
-url:location.href,
-title:document.title,
-time:new Date().toString()
+    url:location.href,
+    title:document.title,
+    time:new Date().toString()
 });
-
-
-
-// DEVICE
 
 log("DEVICE",navigator.userAgent);
 
+log("NETWORK",navigator.onLine?"ONLINE":"OFFLINE");
 
+// =========================================
+// ERROR
+// =========================================
 
-// ONLINE
+window.onerror=function(msg,src,line,col,err){
 
-log("NETWORK",
-navigator.onLine?"ONLINE":"OFFLINE"
-);
-
-
-
-window.addEventListener("offline",()=>{
-log("NETWORK","OFFLINE");
-});
-
-
-window.addEventListener("online",()=>{
-log("NETWORK","ONLINE");
-});
-
-
-
-// JS ERROR
-
-window.onerror=function(
-msg,
-src,
-line,
-col,
-err
-){
-
-log("JS ERROR",{
-message:msg,
-file:src,
-line:line,
-column:col,
-stack:err?.stack
-});
+    log("JS ERROR",{
+        message:msg,
+        file:src,
+        line,
+        column:col,
+        stack:err?.stack
+    });
 
 };
 
-
-
-// PROMISE ERROR
-
-window.addEventListener(
-"unhandledrejection",
-e=>{
-
-log("PROMISE ERROR",{
-error:e.reason
+window.addEventListener("unhandledrejection",e=>{
+    log("PROMISE ERROR",e.reason);
 });
 
-});
-
-
-
-// FILE ERROR
-
-window.addEventListener(
-"error",
-e=>{
-
-
-const target=e.target;
-
-
-if(target?.tagName==="SCRIPT"){
-
-log("JS FILE ERROR",{
-file:target.src
-});
-
-}
-
-
-if(target?.tagName==="LINK"){
-
-log("CSS FILE ERROR",{
-file:target.href
-});
-
-}
-
-
-},
-true
-);
-
-
-
-// FETCH MONITOR
+// =========================================
+// FETCH
+// =========================================
 
 const oldFetch=window.fetch;
 
+window.fetch=async(...args)=>{
 
-window.fetch=async function(...args){
+    try{
 
-try{
+        const res=await oldFetch(...args);
 
-const res=await oldFetch(...args);
+        log(
+            res.ok?"FETCH OK":"FETCH ERROR",
+            {
+                url:String(args[0]),
+                status:res.status
+            }
+        );
 
+        return res;
 
-if(!res.ok){
+    }catch(err){
 
-log("FETCH ERROR",{
-url:String(args[0]),
-status:res.status
-});
+        log("FETCH FAILED",err.message);
 
-}else{
+        throw err;
 
-log("FETCH OK",{
-url:String(args[0]),
-status:res.status
-});
-
-}
-
-
-return res;
-
-
-}catch(err){
-
-log("FETCH FAILED",{
-url:String(args[0]),
-message:err.message
-});
-
-throw err;
-
-}
+    }
 
 };
 
-
-
-
-// CONSOLE MONITOR
+// =========================================
+// CONSOLE
+// =========================================
 
 ["log","warn","error"].forEach(type=>{
 
+    const old=console[type];
 
-const old=console[type];
+    console[type]=function(...args){
 
+        log("CONSOLE "+type.toUpperCase(),args);
 
-console[type]=function(...args){
+        old.apply(console,args);
 
-log(
-"CONSOLE "+type.toUpperCase(),
-args
-);
-
-old.apply(console,args);
-
-};
-
+    };
 
 });
 
-
-
-
+// =========================================
 // DOM READY
+// =========================================
 
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
+document.addEventListener("DOMContentLoaded",()=>{
 
+    log("DOM","READY");
 
-log("DOM","READY");
+    // SCRIPT
 
+    const scripts=[...document.scripts];
 
+    log("SCRIPT COUNT",scripts.length);
 
-// CHECK SCRIPT
+    scripts.forEach((s,i)=>{
 
-document.querySelectorAll("script")
-.forEach(s=>{
+        log("SCRIPT "+i,{
+            src:s.src||"INLINE",
+            async:s.async,
+            defer:s.defer
+        });
 
-log("SCRIPT",{
-src:s.src||"INLINE"
+    });
+
+    // CSS
+
+    const css=[...document.querySelectorAll('link[rel="stylesheet"]')];
+
+    log("CSS LINK COUNT",css.length);
+
+    css.forEach((c,i)=>{
+
+        log("CSS "+i,{
+            href:c.href,
+            disabled:c.disabled
+        });
+
+    });
+
+    // INLINE STYLE
+
+    const styles=[...document.querySelectorAll("style")];
+
+    log("INLINE STYLE",styles.length);
+
+    // data-debug
+
+    const debugElements=document.querySelectorAll("[data-debug]");
+
+    log("DEBUG ELEMENT COUNT",debugElements.length);
+
+    debugElements.forEach(el=>{
+
+        log("ELEMENT",{
+            id:el.id,
+            tag:el.tagName
+        });
+
+    });
+
 });
 
-});
-
-
-
-// CHECK CSS
-
-document.querySelectorAll(
-'link[rel="stylesheet"]'
-)
-.forEach(c=>{
-
-log("CSS",{
-src:c.href
-});
-
-});
-
-
-
-});
-
-
-
-
-// DATABASE CHECK
+// =========================================
+// DATABASE
+// =========================================
 
 setTimeout(()=>{
 
+    log("DATABASE",window.database?"READY":"NULL");
 
-log(
-"DATABASE",
-window.database
-?"READY"
-:"NULL"
-);
+    if(window.database){
 
+        log(
+            "SUPABASE",
+            window.database.supabase?"READY":"NULL"
+        );
 
-
-if(window.database){
-
-log(
-"SUPABASE",
-window.database.supabase
-?"READY"
-:"NULL"
-);
-
-}
-
+    }
 
 },1500);
 
-
-
-
-// USER CHECK
+// =========================================
+// USER
+// =========================================
 
 setTimeout(()=>{
 
-
-log(
-"USER_ID",
-localStorage.getItem("user_id")||"KOSONG"
-);
-
+    log(
+        "USER_ID",
+        localStorage.getItem("user_id")||"KOSONG"
+    );
 
 },2000);
 
-
-
-
-// PAYMENT CHECK
+// =========================================
+// CSS ACTIVE
+// =========================================
 
 setTimeout(()=>{
 
+    [...document.styleSheets].forEach((sheet,i)=>{
 
-log(
-"PAYMENT JS",
-typeof window.savePayment
-);
+        try{
 
+            log("CSS ACTIVE "+i,{
+                href:sheet.href||"INLINE",
+                rules:sheet.cssRules.length
+            });
 
+        }catch(e){
 
-const ids=[
-"withdrawService",
-"balance",
-"paymentWarning",
-"manualWithdrawBtn",
-"instantWithdrawBtn"
-];
+            log("CSS BLOCKED",sheet.href);
 
+        }
 
-ids.forEach(id=>{
-
-log(
-"HTML "+id,
-document.getElementById(id)
-?"FOUND"
-:"MISSING"
-);
-
-});
-
+    });
 
 },3000);
 
-
-
-
-// CSS CHECK
-
-setTimeout(()=>{
-
-
-const sheets=[...document.styleSheets];
-
-
-log(
-"CSS COUNT",
-sheets.length
-);
-
-
-sheets.forEach((css,i)=>{
-
-try{
-
-log(
-"CSS ACTIVE "+i,
-css.href||"INLINE"
-);
-
-
-}catch(e){
-
-log(
-"CSS BLOCKED",
-css.href
-);
-
-}
-
-
-});
-
-
-},4000);
-
-
-
-
-// SUPABASE TABLE TEST
+// =========================================
+// SUPABASE TEST
+// =========================================
 
 setTimeout(async()=>{
 
+    if(!window.database)return;
 
-if(!window.database)return;
+    try{
 
+        const {error}=await window.database.supabase
+        .from("profiles")
+        .select("id")
+        .limit(1);
 
-try{
+        log(
+            error?"SUPABASE ERROR":"SUPABASE QUERY",
+            error||"OK"
+        );
 
+    }catch(e){
 
-const {data,error}=await window.database.supabase
-.from("profiles")
-.select("id")
-.limit(1);
+        log("SUPABASE FAILED",e.message);
 
-
-if(error){
-
-log("SUPABASE ERROR",error);
-
-}else{
-
-log("SUPABASE QUERY","OK");
-
-}
-
-
-}catch(e){
-
-log("SUPABASE FAILED",e.message);
-
-}
-
+    }
 
 },5000);
-
-
 
 })();
