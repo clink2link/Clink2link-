@@ -838,6 +838,17 @@ function selectCountry(id){
     }
 }
 
+
+function toggleGuide(){
+
+const content=document.getElementById("guideContent");
+const toggle=document.querySelector(".guide-toggle");
+
+content.classList.toggle("hide");
+toggle.classList.toggle("active");
+
+}
+
 // ===========================
 // CHECK SELL LINK STATUS
 // ===========================
