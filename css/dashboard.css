@@ -199,12 +199,12 @@
    DARK MODE
 ========================= */
 
-body.dark{
+html.dark{
     background:#020617;
     color:#f8fafc;
 }
 
-body.dark .dash-bg{
+html.dark .dash-bg{
     background:
     radial-gradient(circle at 20% 20%,rgba(37,99,235,.25),transparent 30%),
     radial-gradient(circle at 80% 80%,rgba(0,184,255,.15),transparent 30%),
@@ -212,40 +212,40 @@ body.dark .dash-bg{
 }
 
 
-body.dark .dash-welcome,
-body.dark .dash-box,
-body.dark .dash-card,
-body.dark .stats-box,
-body.dark .report-card,
-body.dark .cpm-market,
-body.dark .guide-card{
+html.dark .dash-welcome,
+html.dark .dash-box,
+html.dark .dash-card,
+html.dark .stats-box,
+html.dark .report-card,
+html.dark .cpm-market,
+html.dark .guide-card{
     background:#0f172a;
     border-color:#1e293b;
     box-shadow:0 10px 30px rgba(0,0,0,.4);
 }
 
 
-body.dark .dash-card:hover,
-body.dark .dash-box:hover{
+html.dark .dash-card:hover,
+html.dark .dash-box:hover{
     box-shadow:0 18px 40px rgba(0,0,0,.55);
 }
 
 
-body.dark .dash-welcome h1,
-body.dark .dash-box h2{
+html.dark .dash-welcome h1,
+html.dark .dash-box h2{
     color:#60a5fa;
 }
 
 
-body.dark .dash-welcome p,
-body.dark .dash-card h3,
-body.dark p{
+html.dark .dash-welcome p,
+html.dark .dash-card h3,
+html.dark p{
     color:#94a3b8;
 }
 
 
-body.dark .dash-card h2,
-body.dark b{
+html.dark .dash-card h2,
+html.dark b{
     color:#f8fafc;
 }
 
@@ -256,18 +256,18 @@ body.dark .dash-icon{
 }
 
 
-body.dark .dash-primary{
+html.dark .dash-primary{
     background:#2563eb;
 }
 
 
-body.dark .dash-secondary{
+html.dark .dash-secondary{
     background:#1e293b;
     color:#60a5fa;
 }
 
 
-body.dark .dash-progress{
+html.dark .dash-progress{
     background:#1e293b;
 }
 
@@ -409,11 +409,11 @@ body.dark .dash-progress{
 }
 
 
-body.dark .report-card h4{
+html.dark .report-card h4{
     color:#94a3b8;
 }
 
-body.dark .report-card h2{
+html.dark .report-card h2{
     color:#fff;
 }
 
@@ -565,30 +565,30 @@ body.dark .report-card h2{
 
 /* DARK STAT */
 
-body.dark .stats-head h2{
+html.dark .stats-head h2{
     color:#60a5fa;
 }
 
 
-body.dark .stats-head select{
+html.dark .stats-head select{
     background:#1e293b;
     border-color:#334155;
     color:#fff;
 }
 
 
-body.dark .stats-info div{
+html.dark .stats-info div{
     background:#1e293b;
 }
 
 
-body.dark .stats-info span,
-body.dark .stats-note{
+html.dark .stats-info span,
+html.dark .stats-note{
     color:#94a3b8;
 }
 
 
-body.dark .stats-info b{
+html.dark .stats-info b{
     color:#60a5fa;
 }
 
@@ -687,20 +687,20 @@ body.dark .stats-info b{
 }
 
 
-body.dark .report-table th{
+html.dark .report-table th{
     background:#162033;
     color:#fff;
 }
 
 
-body.dark .report-table td{
+html.dark .report-table td{
     background:#0f172a;
     color:#fff;
     border-color:#1e293b;
 }
 
 
-body.dark .report-table tbody tr:hover td{
+html.dark .report-table tbody tr:hover td{
     background:#162033;
 }
 
@@ -845,11 +845,11 @@ body.dark .sell-card.locked::after{
 }
 
 
-body.dark .guide-card h3{
+html.dark .guide-card h3{
     color:#fff;
 }
 
-body.dark .guide-card p{
+html.dark .guide-card p{
     color:#94a3b8;
 }
 
@@ -1049,23 +1049,23 @@ opacity:1;
 }
 
 
-body.dark .cpm-header p{
+html.dark .cpm-header p{
     color:#94a3b8;
 }
 
 
-body.dark .market-row{
+html.dark .market-row{
     border-color:#1e293b;
 }
 
 
-body.dark .spark{
+html.dark .spark{
     background:#1e293b;
 }
 
 
-body.dark .country,
-body.dark .market-price b{
+html.dark .country,
+html.dark .market-price b{
     color:#fff;
 }
 
@@ -1085,5 +1085,307 @@ body.dark .market-price b{
 .cpm-header{
     flex-direction:column;
 }
+
+}
+
+/* =====================================
+   CLICK2PAY CLEAN COMPACT DASHBOARD
+===================================== */
+
+
+/* GLOBAL */
+
+.dash-body{
+    font-size:14px;
+}
+
+
+.dash-container{
+    max-width:1150px;
+    padding:15px;
+}
+
+
+/* ALL CARD CLEAN */
+
+.dash-welcome,
+.dash-box,
+.stats-box,
+.report-card,
+.cpm-market,
+.guide-card{
+    border-radius:16px;
+    box-shadow:0 6px 20px rgba(15,23,42,.05);
+}
+
+
+/* WELCOME */
+
+.dash-welcome{
+    padding:20px;
+    margin-bottom:18px;
+}
+
+
+.dash-welcome h1{
+    font-size:22px;
+}
+
+
+/* BOX */
+
+.dash-box{
+    padding:22px;
+    margin-top:18px;
+}
+
+
+.dash-box h2{
+    font-size:18px;
+}
+
+
+/* GUIDE */
+
+.guide-grid{
+    gap:12px;
+}
+
+
+.guide-card{
+    padding:12px;
+    min-height:155px;
+}
+
+
+.guide-icon{
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    font-size:14px;
+}
+
+
+.guide-card h3{
+    font-size:13px;
+}
+
+
+.guide-card p{
+    font-size:10px;
+    margin:5px 0 10px;
+}
+
+
+.guide-btn{
+    height:30px;
+    font-size:10px;
+}
+
+
+
+/* REPORT */
+
+.report-section{
+    margin-top:16px;
+}
+
+
+.report-title{
+    padding:11px 16px;
+    border-radius:12px;
+    font-size:15px;
+}
+
+
+.report-grid{
+    gap:12px;
+}
+
+
+.report-card{
+    padding:15px;
+    min-height:90px;
+}
+
+
+.report-card h4{
+    font-size:11px;
+}
+
+
+.report-card h2{
+    font-size:20px;
+    margin-top:8px;
+}
+
+
+.report-icon{
+    width:34px;
+    height:34px;
+    font-size:13px;
+}
+
+
+
+/* STAT */
+
+.stats-container{
+    margin-top:18px;
+    gap:14px;
+}
+
+
+.stats-box{
+    padding:15px;
+    min-height:330px;
+}
+
+
+.stats-head h2{
+    font-size:16px;
+}
+
+
+.stats-head select{
+    height:32px;
+    font-size:11px;
+}
+
+
+.chart-wrapper{
+    height:210px;
+}
+
+
+.stats-info div{
+    padding:10px;
+}
+
+
+.stats-info b{
+    font-size:16px;
+}
+
+
+.stats-note{
+    font-size:11px;
+}
+
+
+
+/* TABLE */
+
+.report-header{
+    font-size:17px;
+}
+
+
+.report-table th,
+.report-table td{
+    padding:9px;
+    font-size:12px;
+}
+
+
+
+/* CPM MARKET */
+
+.cpm-market{
+    padding:14px;
+}
+
+
+.cpm-header h2{
+    font-size:16px;
+}
+
+
+.cpm-header p{
+    font-size:11px;
+}
+
+
+.market-row{
+    padding:8px 0;
+}
+
+
+.flag{
+    font-size:22px;
+}
+
+
+.country{
+    font-size:12px;
+}
+
+
+.market-price b{
+    font-size:12px;
+}
+
+
+
+/* SELL LOCK */
+
+.sell-card.locked::after{
+    font-size:12px;
+}
+
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+.dash-container{
+    padding:10px;
+}
+
+
+.dash-welcome{
+    padding:16px;
+}
+
+
+.dash-welcome h1{
+    font-size:20px;
+}
+
+
+.dash-box{
+    padding:16px;
+}
+
+
+.guide-grid{
+    gap:8px;
+}
+
+
+.guide-card{
+    min-height:135px;
+}
+
+
+.report-grid{
+    gap:8px;
+}
+
+
+.report-card{
+    padding:12px;
+}
+
+
+.report-card h2{
+    font-size:17px;
+}
+
+
+.stats-box{
+    padding:12px;
+}
+
 
 }
