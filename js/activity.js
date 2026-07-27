@@ -115,7 +115,7 @@ function formatDate(dateStr) {
 
 const ipPromise = getIPInfo();
 
-async function trackLoginActivity(userId) {
+window.trackLoginActivity = async function(userId) {
 
   if (!userId) return;
 
