@@ -1,113 +1,167 @@
+"use strict";
+
+let ipPromise = null;
+
+
+// =========================
+// EXPORT DULU
+// =========================
+
+window.trackLoginActivity = trackLoginActivity;
+
+
 // =========================
 // INIT
 // =========================
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadLoginActivity();
+document.addEventListener("DOMContentLoaded",()=>{
+
+    loadLoginActivity();
+
 });
 
+
 // =========================
-// LOAD DATA
+// LOAD LOGIN ACTIVITY
 // =========================
 
-async function loadLoginActivity() {
+async function loadLoginActivity(){
 
-  const list = document.getElementById("loginList");
-  const totalEl = document.getElementById("totalLogin");
-  const lastLoginEl = document.getElementById("lastLogin");
-  const lastDeviceEl = document.getElementById("lastDevice");
+const list=document.getElementById("loginList");
 
-  if (!list) return;
+if(!list)return;
 
-  const userId = localStorage.getItem("user_id");
 
-  if (!userId) {
-    list.innerHTML = "❌ User tidak ditemukan.";
-    return;
-  }
+const totalEl=document.getElementById("totalLogin");
+const lastLoginEl=document.getElementById("lastLogin");
+const lastDeviceEl=document.getElementById("lastDevice");
 
-  if (!window.database) {
-    list.innerHTML = "❌ Database belum siap.";
-    return;
-  }
 
-  try {
+const userId=localStorage.getItem("user_id");
 
-    const { data, error } = await window.database.supabase
-      .from("login_activity")
-      .select("*")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false });
 
-    if (error) throw error;
+if(!userId){
 
-    if (!data || data.length === 0) {
-      list.innerHTML = "Belum ada aktivitas login.";
-      return;
-    }
+list.innerHTML="❌ User tidak ditemukan";
 
-    // =========================
-    // STATISTIK
-    // =========================
-
-    totalEl.textContent = data.length;
-
-    const last = data[0];
-
-    lastLoginEl.textContent = formatDate(last.created_at);
-    lastDeviceEl.textContent = last.device || "-";
-
-    // =========================
-    // RENDER LIST
-    // =========================
-
-    list.innerHTML = data.map(item => {
-
-      return `
-      <div class="activity-item">
-
-        <div class="activity-left">
-          <i class="fa-solid fa-laptop"></i>
-        </div>
-
-        <div class="activity-content">
-          <div class="activity-top">
-            <strong>${item.device || "Unknown Device"}</strong>
-            <span>${formatDate(item.created_at)}</span>
-          </div>
-
-          <div class="activity-bottom">
-            ${item.city || "-"}, ${item.country || "-"}
-            <br>
-            IP: ${item.ip || "-"}
-          </div>
-        </div>
-
-      </div>
-      `;
-
-    }).join("");
-
-  } catch (err) {
-
-    console.error("LOAD ACTIVITY ERROR:", err);
-    list.innerHTML = "❌ Gagal memuat data.";
-
-  }
+return;
 
 }
 
-// =========================
-// FORMAT DATE
-// =========================
 
-function formatDate(dateStr) {
-  const d = new Date(dateStr);
-  return d.toLocaleString("id-ID", {
-    dateStyle: "medium",
-    timeStyle: "short"
-  });
+if(!window.database?.supabase){
+
+list.innerHTML="❌ Database belum siap";
+
+return;
+
 }
+
+
+try{
+
+
+const {data,error}=await window.database.supabase
+.from("login_activity")
+.select("*")
+.eq("user_id",userId)
+.order("created_at",{ascending:false});
+
+
+if(error)throw error;
+
+
+if(!data || data.length===0){
+
+list.innerHTML="Belum ada aktivitas login";
+
+return;
+
+}
+
+
+
+if(totalEl)
+totalEl.textContent=data.length;
+
+
+if(lastLoginEl)
+lastLoginEl.textContent=formatDate(data[0].created_at);
+
+
+if(lastDeviceEl)
+lastDeviceEl.textContent=data[0].device||"-";
+
+
+
+list.innerHTML=data.map(item=>`
+
+<div class="activity-item">
+
+
+<div class="activity-left">
+
+<i class="fa-solid fa-laptop"></i>
+
+</div>
+
+
+<div class="activity-content">
+
+
+<div class="activity-top">
+
+<strong>
+${escapeHTML(item.device||"Unknown")}
+</strong>
+
+
+<span>
+${formatDate(item.created_at)}
+</span>
+
+
+</div>
+
+
+<div class="activity-bottom">
+
+${escapeHTML(item.city||"-")},
+${escapeHTML(item.country||"-")}
+
+<br>
+
+IP:
+${escapeHTML(item.ip||"-")}
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+`).join("");
+
+
+
+}catch(e){
+
+console.error(
+"LOAD ACTIVITY ERROR",
+e
+);
+
+list.innerHTML="❌ Gagal memuat aktivitas";
+
+
+}
+
+
+}
+
 
 // =========================
 // TRACK LOGIN
@@ -115,130 +169,250 @@ function formatDate(dateStr) {
 
 async function trackLoginActivity(userId){
 
-    if(!userId) return;
 
-    if(!window.database?.supabase){
-        console.warn("Database belum siap");
-        return;
-    }
+if(!userId)return;
 
-    if(
-        sessionStorage.getItem("login_tracked") ||
-        window.__loginTracking
-    ){
-        return;
-    }
 
-    window.__loginTracking=true;
+if(
+sessionStorage.getItem("login_tracked") ||
+window.__loginTracking
+){
 
-    try{
-
-        const ipData = await getIP();
-
-        const {error}=await window.database.supabase
-        .from("login_activity")
-        .insert({
-            user_id:userId,
-            device:getDevice(),
-            user_agent:navigator.userAgent,
-            ip:ipData.ip,
-            city:ipData.city,
-            country:ipData.country,
-            region:ipData.region,
-            org:ipData.org,
-            latitude:ipData.lat,
-            longitude:ipData.lon
-        });
-
-        if(error) throw error;
-
-        sessionStorage.setItem(
-            "login_tracked",
-            "true"
-        );
-
-        console.log(
-            "✅ Login activity saved"
-        );
-
-    }catch(e){
-
-        console.warn(
-            "Activity tracking gagal:",
-            e
-        );
-
-    }
+return;
 
 }
 
 
-// EXPORT
-window.trackLoginActivity = trackLoginActivity;
-window.loadLoginActivity = loadLoginActivity;
+window.__loginTracking=true;
+
+
+
+try{
+
+
+const ipData=await getIP();
+
+
+
+const {error}=await window.database.supabase
+.from("login_activity")
+.insert({
+
+user_id:userId,
+
+device:getDevice(),
+
+user_agent:navigator.userAgent,
+
+ip:ipData.ip,
+
+city:ipData.city,
+
+region:ipData.region,
+
+country:ipData.country,
+
+org:ipData.org,
+
+latitude:ipData.lat,
+
+longitude:ipData.lon
+
+});
+
+
+
+if(error)throw error;
+
+
+
+sessionStorage.setItem(
+"login_tracked",
+"true"
+);
+
+
+
+console.log(
+"✅ Login activity saved"
+);
+
+
+
+}catch(e){
+
+
+console.warn(
+"Activity tracking gagal",
+e
+);
+
+
+window.__loginTracking=false;
+
+
+}
+
+
+}
+
 
 // =========================
 // DEVICE
 // =========================
 
-function getDevice() {
-  const ua = navigator.userAgent;
+function getDevice(){
 
-  if (/android/i.test(ua)) return "Android";
-  if (/iPhone|iPad/i.test(ua)) return "iPhone";
-  if (/Windows/i.test(ua)) return "Windows";
-  if (/Mac/i.test(ua)) return "Mac";
+const ua=navigator.userAgent;
 
-  return "Unknown Device";
+
+if(/android/i.test(ua))
+return "Android";
+
+
+if(/iphone|ipad/i.test(ua))
+return "iPhone";
+
+
+if(/windows/i.test(ua))
+return "Windows";
+
+
+if(/mac/i.test(ua))
+return "Mac";
+
+
+return "Unknown";
+
+
 }
 
-// =========================
-// IP INFO
-// =========================
 
-let ipPromise = null;
+// =========================
+// IP
+// =========================
 
 
 function getIP(){
 
-    if(!ipPromise){
-        ipPromise = getIPInfo();
-    }
 
-    return ipPromise;
+if(!ipPromise){
+
+ipPromise=getIPInfo();
+
 }
+
+
+return ipPromise;
+
+
+}
+
 
 
 async function getIPInfo(){
 
-    try {
 
-        const res = await fetch("https://ipapi.co/json/");
+try{
 
-        const data = await res.json();
 
-        return {
-            ip: data.ip,
-            city: data.city,
-            region: data.region,
-            country: data.country_name,
-            org: data.org,
-            lat: data.latitude,
-            lon: data.longitude
-        };
+const res=await fetch(
+"https://ipapi.co/json/"
+);
 
-    } catch(e){
 
-        return {
-            ip:"Unknown",
-            city:"-",
-            region:"-",
-            country:"-",
-            org:"-",
-            lat:null,
-            lon:null
-        };
+const data=await res.json();
 
-    }
+
+
+return {
+
+ip:data.ip||"Unknown",
+
+city:data.city||"-",
+
+region:data.region||"-",
+
+country:data.country_name||"-",
+
+org:data.org||"-",
+
+lat:data.latitude||null,
+
+lon:data.longitude||null
+
+
+};
+
+
+
+}catch(e){
+
+
+return {
+
+ip:"Unknown",
+
+city:"-",
+
+region:"-",
+
+country:"-",
+
+org:"-",
+
+lat:null,
+
+lon:null
+
+};
+
+
+}
+
+
+
+}
+
+
+// =========================
+// DATE
+// =========================
+
+
+function formatDate(date){
+
+
+return new Date(date)
+.toLocaleString(
+"id-ID",
+{
+dateStyle:"medium",
+timeStyle:"short"
+}
+);
+
+
+}
+
+
+// =========================
+// SECURITY
+// =========================
+
+
+function escapeHTML(str){
+
+return String(str)
+.replace(/[&<>"']/g,m=>({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+
+}[m]));
+
 
 }
