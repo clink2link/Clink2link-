@@ -142,10 +142,10 @@ adsViews+=Number(link.total_views||0);
 adsClicks+=Number(link.total_clicks||0);
 }
 
-if(link.type==="sell"){
-sellViews+=Number(link.total_views||0);
-sellClicks+=Number(link.total_clicks||0);
-totalSell++;
+if (link.type === "sell") {
+    totalSellViews += Number(link.total_views || 0);
+    totalSellClicks += Number(link.total_clicks || 0);
+    totalSell++;
 }
 
 });
@@ -175,13 +175,13 @@ adsViews.toLocaleString("id-ID");
 const sellViewsEl=document.getElementById("sellViews");
 if(sellViewsEl){
 sellViewsEl.textContent=
-sellViews.toLocaleString("id-ID");
+totalSellViews.toLocaleString("id-ID");
 }
 
 const sellClicksEl=document.getElementById("sellClicks");
 if(sellClicksEl){
 sellClicksEl.textContent=
-sellClicks.toLocaleString("id-ID");
+totalSellClicks.toLocaleString("id-ID");
 }
 
 const sellTotalLink=document.getElementById("sellTotalLink");
