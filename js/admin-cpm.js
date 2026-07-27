@@ -1,85 +1,80 @@
-async function updateCPM(){
+async function updateCPM() {
 
-try{
+    try {
 
-const {data,error}=await supabaseClient
-.from("cpm_rates")
-.select("*");
+        const { data, error } = await supabaseClient
+            .from("cpm_rates")
+            .select("*");
 
-if(error){
-console.log(error);
-return;
+        if (error) throw error;
+
+        if (!data?.length) return;
+
+        for (const item of data) {
+
+            const oldCpm = Number(item.cpm || 100);
+
+            // Perubahan maksimal ±3%
+            const maxMove = oldCpm * 0.03;
+            const delta = (Math.random() * maxMove * 2) - maxMove;
+
+            const newCpm = Math.max(
+                100,
+                Math.round(oldCpm + delta)
+            );
+
+            const percent = oldCpm > 0
+                ? ((newCpm - oldCpm) / oldCpm) * 100
+                : 0;
+
+            // Riwayat grafik
+            let history = Array.isArray(item.history)
+                ? [...item.history]
+                : [];
+
+            history.push(newCpm);
+
+            // Simpan 30 titik terakhir
+            if (history.length > 30) {
+                history = history.slice(-30);
+            }
+
+            // Trend bar
+            let trend = Number(item.trend || 50);
+
+            trend += (Math.random() * 8) - 4;
+
+            trend = Math.max(10, Math.min(100, trend));
+
+            const { error: updateError } = await supabaseClient
+                .from("cpm_rates")
+                .update({
+                    cpm: newCpm,
+                    change: Number(percent.toFixed(2)),
+                    trend: Number(trend.toFixed(1)),
+                    history,
+                    updated_at: new Date().toISOString()
+                })
+                .eq("id", item.id);
+
+            if (updateError) {
+                console.error(updateError);
+            }
+
+        }
+
+        console.log("✅ CPM berhasil diperbarui");
+
+    } catch (err) {
+
+        console.error("CPM ERROR:", err);
+
+    }
+
 }
 
-if(!data || !data.length)return;
-
-
-for(const item of data){
-
-let oldCpm=Number(item.cpm||0);
-
-/* naik turun random */
-let change=(Math.random()*20)-10;
-
-
-/* batas CPM */
-let newCpm=Math.round(
-Math.max(100,oldCpm+change)
-);
-
-
-/* hitung persen */
-let percent=0;
-
-if(oldCpm>0){
-percent=((newCpm-oldCpm)/oldCpm)*100;
-}
-
-
-await supabaseClient
-.from("cpm_rates")
-.update({
-
-cpm:newCpm,
-
-change:Number(percent.toFixed(1)),
-
-trend:Math.min(
-100,
-Math.max(
-10,
-Number(item.trend||50)+
-(Math.random()*10-5)
-)
-),
-
-updated_at:new Date()
-
-})
-.eq("id",item.id);
-
-
-}
-
-console.log("CPM berhasil diperbarui");
-
-
-}catch(err){
-
-console.log("CPM ERROR:",err);
-
-}
-
-}
-
-
-/* update saat halaman dibuka */
+// Update saat halaman dibuka
 updateCPM();
 
-
-/* update otomatis setiap 10 menit */
-setInterval(()=>{
-
-updateCPM();
-
-},600000);
+// Update setiap 10 menit
+setInterval(updateCPM, 600000);
