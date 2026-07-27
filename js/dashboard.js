@@ -686,52 +686,73 @@ block:"start"
 
 async function checkSellStatus(){
 
+try{
+
 const user = await database.getUser();
 
-if(!user) return;
-
-
-const {data,error}=await database.supabase
-.from("profiles")
-.select("sell_link_enabled")
-.eq("id",user.id)
-.single();
-
-
-if(error){
-console.error("SELL STATUS ERROR:",error);
+if(!user){
+console.log("USER TIDAK ADA");
 return;
 }
+
+
+// ambil profile dari database.js
+const profile = await database.getProfile(user.id);
+
+
+if(!profile){
+
+console.error("PROFILE TIDAK DITEMUKAN");
+return;
+
+}
+
+
+console.log("PROFILE:",profile);
+
+
+// cek status sell
+const enabled = profile.sell_link_enabled === true;
 
 
 const cards=document.querySelectorAll(".sell-card");
 
 
-if(data.sell_link_enabled === true){
+if(enabled){
 
 cards.forEach(card=>{
+
 card.classList.remove("locked");
+
 });
 
-console.log("✅ SELL LINK UNLOCKED");
+
+console.log("✅ SELL LINK AKTIF");
 
 
 }else{
 
+
 cards.forEach(card=>{
+
 card.classList.add("locked");
+
 });
 
-console.log("🔒 SELL LINK LOCKED");
+
+console.log("🔒 SELL LINK TERKUNCI");
+
+
+}
+
+
+}catch(err){
+
+console.error(
+"CHECK SELL ERROR:",
+err
+);
 
 }
 
 }
-
-
-// jalankan setelah halaman siap
-document.addEventListener("DOMContentLoaded",()=>{
-
-checkSellStatus();
-
-});
