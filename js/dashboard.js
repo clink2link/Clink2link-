@@ -678,3 +678,60 @@ block:"start"
 }
 
 });
+
+
+// ===========================
+// CHECK SELL LINK STATUS
+// ===========================
+
+async function checkSellStatus(){
+
+const user = await database.getUser();
+
+if(!user) return;
+
+
+const {data,error}=await database.supabase
+.from("profiles")
+.select("sell_link_enabled")
+.eq("id",user.id)
+.single();
+
+
+if(error){
+console.error("SELL STATUS ERROR:",error);
+return;
+}
+
+
+const cards=document.querySelectorAll(".sell-card");
+
+
+if(data.sell_link_enabled === true){
+
+cards.forEach(card=>{
+card.classList.remove("locked");
+});
+
+console.log("✅ SELL LINK UNLOCKED");
+
+
+}else{
+
+cards.forEach(card=>{
+card.classList.add("locked");
+});
+
+console.log("🔒 SELL LINK LOCKED");
+
+}
+
+}
+
+
+// jalankan setelah halaman siap
+document.addEventListener("DOMContentLoaded",()=>{
+
+checkSellStatus();
+
+});
