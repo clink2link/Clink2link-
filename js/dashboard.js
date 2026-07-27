@@ -2,6 +2,7 @@
 
 let adsChartInstance=null;
 let sellChartInstance=null;
+let marketChartInstance = null;
 
 async function loadDashboard(){
 
@@ -379,71 +380,46 @@ options:commonOptions
 
 const marketList = document.getElementById("cpmMarketList");
 
-if(marketList){
+const market = await database.getCPMMarket();
 
-    const market = await database.getCPMMarket();
+marketData = market || [];
 
+if (marketList && marketData.length) {
 
-    if(Array.isArray(market) && market.length){
-
-
-        marketList.innerHTML = market.map(item=>`
-
-        <div class="market-row">
+    marketList.innerHTML = marketData.map(item => `
+        <div class="market-row"
+             onclick="selectCountry(${item.id})">
 
             <div class="flag">
                 ${item.flag || "🌍"}
             </div>
 
-
             <div>
-
-                <div class="country">
-                    ${item.country || "Unknown"}
-                </div>
-
+                <div class="country">${item.country}</div>
 
                 <div class="spark">
                     <span style="width:${item.trend || 50}%"></span>
                 </div>
-
             </div>
-
 
             <div class="market-price">
+                <b>Rp ${Number(item.cpm).toLocaleString("id-ID")}</b>
 
-                <b>
-                    Rp ${Number(item.cpm || 0).toLocaleString("id-ID")}
-                </b>
-
-
-                <div class="market-change ${Number(item.change) >= 0 ? "up":"down"}">
-
-                    ${Number(item.change) >= 0 ? "▲":"▼"}
-
-                    ${Math.abs(Number(item.change || 0)).toFixed(1)}%
-
+                <div class="market-change ${Number(item.change)>=0?"up":"down"}">
+                    ${Number(item.change)>=0?"▲":"▼"}
+                    ${Math.abs(Number(item.change)).toFixed(2)}%
                 </div>
-
             </div>
 
-
         </div>
+    `).join("");
 
-        `).join("");
+    selectCountry(marketData[0].id);
 
+} else {
 
-    }else{
-
-
-        marketList.innerHTML = `
-        <div class="empty-market">
-            Belum ada data CPM Market.
-        </div>
-        `;
-
-
-    }
+    marketList.innerHTML =
+        "<div>Belum ada data CPM.</div>";
 
 }
 
@@ -714,6 +690,66 @@ block:"start"
 
 });
 
+let marketData = [];
+
+function selectCountry(id){
+
+    const item = marketData.find(x => x.id == id);
+
+    if(!item) return;
+
+    document.getElementById("marketCountry").textContent =
+        item.country;
+
+    document.getElementById("marketPrice").textContent =
+        "Rp " + Number(item.cpm).toLocaleString("id-ID");
+
+    document.getElementById("marketChange").innerHTML =
+        (Number(item.change)>=0?"▲ ":"▼ ") +
+        Math.abs(Number(item.change)).toFixed(2) + "%";
+
+    if(!marketChartInstance){
+
+        marketChartInstance = new Chart(
+            document.getElementById("marketChart"),
+            {
+                type:"line",
+                data:{
+                    labels:item.history.map((_,i)=>i+1),
+                    datasets:[{
+                        data:item.history,
+                        borderColor:"#2563eb",
+                        backgroundColor:"rgba(37,99,235,.12)",
+                        fill:true,
+                        tension:.4,
+                        pointRadius:0
+                    }]
+                },
+                options:{
+                    responsive:true,
+                    maintainAspectRatio:false,
+                    plugins:{
+                        legend:{display:false}
+                    },
+                    scales:{
+                        x:{display:false},
+                        y:{display:false}
+                    }
+                }
+            }
+        );
+
+    }else{
+
+        marketChartInstance.data.labels =
+            item.history.map((_,i)=>i+1);
+
+        marketChartInstance.data.datasets[0].data =
+            item.history;
+
+        marketChartInstance.update();
+    }
+}
 
 // ===========================
 // CHECK SELL LINK STATUS
