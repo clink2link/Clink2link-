@@ -1244,6 +1244,77 @@ margin-top:8px;
 }
 
 }
+
+.market-layout{
+display:grid;
+grid-template-columns:320px 1fr;
+gap:20px;
+}
+
+.market-list{
+display:flex;
+flex-direction:column;
+}
+
+.market-detail{
+background:#f8fafc;
+border-radius:18px;
+padding:18px;
+border:1px solid #e5e7eb;
+}
+
+.dark .market-detail{
+background:#111827;
+border-color:#1e293b;
+}
+
+.market-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.market-top h3{
+margin:0;
+font-size:22px;
+}
+
+.market-price-big span{
+display:block;
+font-size:28px;
+font-weight:700;
+}
+
+.market-price-big div{
+margin-top:4px;
+font-weight:700;
+}
+
+.market-row{
+cursor:pointer;
+transition:.25s;
+}
+
+.market-row:hover{
+background:rgba(37,99,235,.05);
+border-radius:12px;
+padding-left:10px;
+}
+
+.market-row.active{
+background:#2563eb15;
+border-radius:12px;
+padding-left:10px;
+}
+
+@media(max-width:900px){
+
+.market-layout{
+grid-template-columns:1fr;
+}
+
+}
 </style>
 
 </head>
@@ -1443,7 +1514,35 @@ Buka
 
     </div>
 
-    <div id="cpmMarketList"></div>
+    <div class="market-layout">
+
+    <div class="market-list" id="cpmMarketList"></div>
+
+    <div class="market-detail">
+
+        <div class="market-top">
+
+            <div>
+                <h3 id="marketCountry">Indonesia</h3>
+                <small>Live CPM Market</small>
+            </div>
+
+            <div class="market-price-big">
+                <span id="marketPrice">Rp 0</span>
+                <div id="marketChange" class="up">
+                    ▲ 0.0%
+                </div>
+            </div>
+
+        </div>
+
+        <div class="chart-wrapper" style="height:250px">
+            <canvas id="marketChart"></canvas>
+        </div>
+
+    </div>
+
+</div>
 
 </div>
 
