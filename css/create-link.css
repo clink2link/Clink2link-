@@ -77,7 +77,7 @@ display:block;
    CONTAINER
 ========================= */
 
-.container{
+.app-container{
 
 max-width:1200px;
 
@@ -1309,8 +1309,7 @@ cursor:pointer;
    DARK MODE
 ========================= */
 
-
-body.dark{
+html.dark{
 
 background:#020617;
 
@@ -1320,14 +1319,14 @@ color:#f8fafc;
 
 
 
-body.dark .info-box,
-body.dark .create-form,
-body.dark .stat-card,
-body.dark .link-card,
-body.dark .empty,
-body.dark .advanced-box,
-body.dark .search-box,
-body.dark .link-filter{
+html.dark .info-box,
+html.dark .create-form,
+html.dark .stat-card,
+html.dark .link-card,
+html.dark .empty,
+html.dark .advanced-box,
+html.dark .search-box,
+html.dark .link-filter{
 
 background:#111827;
 
@@ -1337,13 +1336,13 @@ border-color:#1f2937;
 
 
 
-body.dark .page-title h1,
-body.dark .create-header h2,
-body.dark label,
-body.dark .stat-card h2,
-body.dark .section-title h2,
-body.dark .link-card h3,
-body.dark .empty h3{
+html.dark .page-title h1,
+html.dark .create-header h2,
+html.dark label,
+html.dark .stat-card h2,
+html.dark .section-title h2,
+html.dark .link-card h3,
+html.dark .empty h3{
 
 color:#f8fafc;
 
@@ -1351,11 +1350,11 @@ color:#f8fafc;
 
 
 
-body.dark .info-box li,
-body.dark .link-meta,
-body.dark .created,
-body.dark .empty p,
-body.dark .info-note p{
+html.dark .info-box li,
+html.dark .link-meta,
+html.dark .created,
+html.dark .empty p,
+html.dark .info-note p{
 
 color:#cbd5e1;
 
@@ -1363,7 +1362,7 @@ color:#cbd5e1;
 
 
 
-body.dark .input-box{
+html.dark .input-box{
 
 background:#111827;
 
@@ -1373,7 +1372,7 @@ border-color:#334155;
 
 
 
-body.dark input{
+html.dark input{
 
 color:#fff;
 
@@ -1381,7 +1380,7 @@ color:#fff;
 
 
 
-body.dark .copy-box{
+html.dark .copy-box{
 
 border-color:#334155;
 
@@ -1389,7 +1388,7 @@ border-color:#334155;
 
 
 
-body.dark .copy-box input{
+html.dark .copy-box input{
 
 background:#1f2937;
 
@@ -1399,7 +1398,7 @@ color:#fff;
 
 
 
-body.dark .copy-box button{
+html.dark .copy-box button{
 
 background:#111827;
 
@@ -1409,7 +1408,7 @@ color:#fff;
 
 
 
-body.dark .btn-secondary{
+html.dark .btn-secondary{
 
 background:#1e293b;
 
@@ -1419,7 +1418,7 @@ color:#fff;
 
 
 
-body.dark .link-filter button{
+html.dark .link-filter button{
 
 color:#cbd5e1;
 
@@ -1427,7 +1426,7 @@ color:#cbd5e1;
 
 
 
-body.dark .link-filter button:hover{
+html.dark .link-filter button:hover{
 
 background:#1e293b;
 
@@ -1435,7 +1434,7 @@ background:#1e293b;
 
 
 
-body.dark .info-note{
+html.dark .info-note{
 
 background:#1f2937;
 
@@ -1445,7 +1444,7 @@ border-color:#374151;
 
 
 
-body.dark .info-note h4{
+html.dark .info-note h4{
 
 color:#f8fafc;
 
