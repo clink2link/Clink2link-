@@ -110,14 +110,17 @@ function formatDate(dateStr) {
 }
 
 // =========================
-// TRACK LOGIN (TETAP ADA)
+// TRACK LOGIN
 // =========================
-
-const ipPromise = getIPInfo();
 
 async function trackLoginActivity(userId){
 
     if(!userId) return;
+
+    if(!window.database?.supabase){
+        console.warn("Database belum siap");
+        return;
+    }
 
     if(
         sessionStorage.getItem("login_tracked") ||
@@ -147,20 +150,16 @@ async function trackLoginActivity(userId){
             longitude:ipData.lon
         });
 
-
         if(error) throw error;
-
 
         sessionStorage.setItem(
             "login_tracked",
             "true"
         );
 
-
         console.log(
             "✅ Login activity saved"
         );
-
 
     }catch(e){
 
@@ -176,6 +175,7 @@ async function trackLoginActivity(userId){
 
 // EXPORT
 window.trackLoginActivity = trackLoginActivity;
+window.loadLoginActivity = loadLoginActivity;
 
 // =========================
 // DEVICE
