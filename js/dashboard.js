@@ -560,6 +560,93 @@ if (reportTable) {
 
 }
 
+
+// ===========================
+// SELL REPORT TABLE
+// ===========================
+
+const sellReportTable = document.getElementById("sellReportTable");
+
+
+if(sellReportTable){
+
+    if(reports.length){
+
+        sellReportTable.innerHTML = reports.map(row=>{
+
+
+            const sellViews = Number(
+                row.sell_views || 0
+            );
+
+
+            const sellEarnings = Number(
+                row.sell_earnings || 0
+            );
+
+
+            const sellCpm = sellViews > 0
+            ?
+            Math.round(
+                (sellEarnings * 1000) / sellViews
+            )
+            :
+            0;
+
+
+            return `
+<tr>
+
+<td>
+${new Date(row.report_date)
+.toLocaleDateString("id-ID")}
+</td>
+
+
+<td>
+${sellViews.toLocaleString("id-ID")}
+</td>
+
+
+<td class="earning">
+Rp ${sellEarnings.toLocaleString("id-ID")}
+</td>
+
+
+<td>
+${sellCpm.toLocaleString("id-ID")}
+</td>
+
+
+<td>
+Rp ${sellEarnings.toLocaleString("id-ID")}
+</td>
+
+</tr>
+`;
+
+        }).join("");
+
+
+    }else{
+
+
+        sellReportTable.innerHTML=`
+
+<tr>
+
+<td colspan="5">
+Belum ada data report.
+</td>
+
+</tr>
+
+`;
+
+    }
+
+}
+
 // ===========================
 // ANNOUNCEMENT
 // ===========================
