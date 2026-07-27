@@ -1,47 +1,29 @@
-/* ==========================================
-   CLICK2PAY DASHBOARD CSS
-   CLEAN FINAL VERSION
-========================================== */
-
-
-/* =========================
-   BASE
-========================= */
+/* CLICK2PAY DASHBOARD FINAL CLEAN PART 1 */
 
 .dash-body{
-    margin:0;
-    padding-top:90px;
-    min-height:100vh;
-    font-family:'Poppins',sans-serif;
-    background:#f8fbff;
-    color:#111827;
+margin:0;
+padding-top:90px;
+min-height:100vh;
+font-family:'Poppins',sans-serif;
+background:#f8fbff;
+color:#111827;
 }
 
 .dash-bg{
-    position:fixed;
-    inset:0;
-    z-index:-1;
-    background:
-    radial-gradient(circle at 20% 20%,rgba(37,99,235,.15),transparent 30%),
-    radial-gradient(circle at 80% 80%,rgba(0,184,255,.15),transparent 30%),
-    linear-gradient(120deg,#fff,#eff6ff);
+position:fixed;
+inset:0;
+z-index:-1;
+background:
+radial-gradient(circle at 20% 20%,rgba(37,99,235,.15),transparent 30%),
+radial-gradient(circle at 80% 80%,rgba(0,184,255,.15),transparent 30%),
+linear-gradient(120deg,#fff,#eff6ff);
 }
-
-
-/* =========================
-   CONTAINER
-========================= */
 
 .dash-container{
-    max-width:1200px;
-    margin:auto;
-    padding:20px;
+max-width:1150px;
+margin:auto;
+padding:15px;
 }
-
-
-/* =========================
-   GLOBAL CARD
-========================= */
 
 .dash-welcome,
 .dash-box,
@@ -50,11 +32,11 @@
 .report-card,
 .cpm-market,
 .guide-card{
-    background:#fff;
-    border:1px solid #e2e8f0;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(15,23,42,.06);
-    transition:.25s;
+background:#fff;
+border:1px solid #e2e8f0;
+border-radius:16px;
+box-shadow:0 8px 25px rgba(15,23,42,.06);
+transition:.25s;
 }
 
 .dash-welcome:hover,
@@ -63,154 +45,143 @@
 .stats-box:hover,
 .report-card:hover,
 .guide-card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 18px 40px rgba(15,23,42,.12);
+transform:translateY(-3px);
+box-shadow:0 15px 35px rgba(15,23,42,.12);
 }
 
 
-/* =========================
-   WELCOME
-========================= */
+/* WELCOME */
 
 .dash-welcome{
-    padding:25px;
-    margin-bottom:25px;
+padding:20px;
+margin-bottom:18px;
 }
 
 .dash-welcome h1{
-    margin:0;
-    font-size:28px;
-    color:#2563eb;
+margin:0;
+font-size:22px;
+color:#2563eb;
 }
 
 .dash-welcome p{
-    margin-top:8px;
-    color:#64748b;
+margin:7px 0 0;
+font-size:13px;
+color:#64748b;
 }
 
 
-/* =========================
-   BOX
-========================= */
+/* BOX */
 
 .dash-box{
-    padding:30px;
-    margin-top:25px;
+padding:22px;
+margin-top:18px;
 }
 
 .dash-box h2{
-    margin:0 0 15px;
-    color:#2563eb;
+margin:0 0 15px;
+font-size:18px;
+color:#2563eb;
 }
 
 
-/* =========================
-   STAT CARD
-========================= */
+/* STAT CARD */
 
 .dash-stats{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:20px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:14px;
 }
 
 .dash-card{
-    padding:25px;
+padding:18px;
 }
 
 .dash-icon{
-    width:50px;
-    height:50px;
-    margin-bottom:15px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:15px;
-    background:#eff6ff;
-    color:#2563eb;
-    font-size:24px;
+width:42px;
+height:42px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:12px;
+background:#eff6ff;
+color:#2563eb;
+font-size:18px;
+margin-bottom:10px;
 }
 
 .dash-card h3{
-    margin:0;
-    font-size:14px;
-    color:#64748b;
+margin:0;
+font-size:12px;
+color:#64748b;
 }
 
 .dash-card h2{
-    margin:8px 0 0;
-    font-size:28px;
+margin:7px 0 0;
+font-size:24px;
 }
 
 
-/* =========================
-   BUTTON
-========================= */
+/* BUTTON */
 
 .dash-buttons{
-    display:flex;
-    gap:15px;
-    flex-wrap:wrap;
+display:flex;
+gap:12px;
+flex-wrap:wrap;
 }
 
 .dash-btn{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:14px 25px;
-    border:none;
-    border-radius:15px;
-    font-weight:700;
-    cursor:pointer;
+display:flex;
+align-items:center;
+gap:8px;
+padding:12px 20px;
+border:0;
+border-radius:12px;
+font-weight:700;
+cursor:pointer;
 }
 
 .dash-primary{
-    background:#2563eb;
-    color:#fff;
+background:#2563eb;
+color:#fff;
 }
 
 .dash-secondary{
-    background:#eff6ff;
-    color:#2563eb;
+background:#eff6ff;
+color:#2563eb;
 }
 
 
-/* =========================
-   PROGRESS
-========================= */
+/* PROGRESS */
 
 .dash-progress{
-    height:12px;
-    margin-top:15px;
-    overflow:hidden;
-    border-radius:20px;
-    background:#e2e8f0;
+height:10px;
+margin-top:15px;
+overflow:hidden;
+border-radius:20px;
+background:#e2e8f0;
 }
 
 .dash-progress span{
-    display:block;
-    height:100%;
-    width:70%;
-    background:linear-gradient(90deg,#2563eb,#00b8ff);
+display:block;
+height:100%;
+width:70%;
+background:linear-gradient(90deg,#2563eb,#00b8ff);
 }
 
 
-/* =========================
-   DARK MODE
-========================= */
+/* DARK MODE */
 
 html.dark{
-    background:#020617;
-    color:#f8fafc;
+background:#020617;
+color:#f8fafc;
 }
 
 html.dark .dash-bg{
-    background:
-    radial-gradient(circle at 20% 20%,rgba(37,99,235,.25),transparent 30%),
-    radial-gradient(circle at 80% 80%,rgba(0,184,255,.15),transparent 30%),
-    linear-gradient(120deg,#020617,#0f172a);
+background:
+radial-gradient(circle at 20% 20%,rgba(37,99,235,.25),transparent 30%),
+radial-gradient(circle at 80% 80%,rgba(0,184,255,.15),transparent 30%),
+linear-gradient(120deg,#020617,#0f172a);
 }
-
 
 html.dark .dash-welcome,
 html.dark .dash-box,
@@ -219,1403 +190,914 @@ html.dark .stats-box,
 html.dark .report-card,
 html.dark .cpm-market,
 html.dark .guide-card{
-    background:#0f172a;
-    border-color:#1e293b;
-    box-shadow:0 10px 30px rgba(0,0,0,.4);
+background:#0f172a;
+border-color:#1e293b;
+box-shadow:0 10px 30px rgba(0,0,0,.4);
 }
-
-
-html.dark .dash-card:hover,
-html.dark .dash-box:hover{
-    box-shadow:0 18px 40px rgba(0,0,0,.55);
-}
-
 
 html.dark .dash-welcome h1,
 html.dark .dash-box h2{
-    color:#60a5fa;
+color:#60a5fa;
 }
 
-
-html.dark .dash-welcome p,
-html.dark .dash-card h3,
-html.dark p{
-    color:#94a3b8;
+html.dark p,
+html.dark .dash-card h3{
+color:#94a3b8;
 }
-
 
 html.dark .dash-card h2,
 html.dark b{
-    color:#f8fafc;
+color:#fff;
 }
 
-
-body.dark .dash-icon{
-    background:#1e293b;
-    color:#60a5fa;
+html.dark .dash-icon{
+background:#1e293b;
+color:#60a5fa;
 }
-
-
-html.dark .dash-primary{
-    background:#2563eb;
-}
-
 
 html.dark .dash-secondary{
-    background:#1e293b;
-    color:#60a5fa;
+background:#1e293b;
+color:#60a5fa;
 }
-
 
 html.dark .dash-progress{
-    background:#1e293b;
+background:#1e293b;
 }
 
 
-/* =========================
-   RESPONSIVE BASE
-========================= */
+/* RESPONSIVE */
 
 @media(max-width:900px){
 
 .dash-stats{
-    grid-template-columns:repeat(2,1fr);
+grid-template-columns:repeat(2,1fr);
 }
 
 }
-
 
 @media(max-width:600px){
 
 .dash-container{
-    padding:15px;
+padding:10px;
 }
 
 .dash-stats{
-    grid-template-columns:1fr;
+grid-template-columns:1fr;
 }
 
 .dash-welcome,
-.dash-card,
-.dash-box{
-    padding:18px;
-    border-radius:18px;
+.dash-box,
+.dash-card{
+padding:16px;
 }
 
 .dash-welcome h1{
-    font-size:24px;
+font-size:20px;
 }
 
 .dash-card h2{
-    font-size:24px;
+font-size:22px;
 }
 
 }
 
 
-/* =========================
-   REPORT PENDAPATAN
-========================= */
+/* CLICK2PAY DASHBOARD FINAL CLEAN PART 2 */
+
+
+/* REPORT */
 
 .report-section{
-    margin-top:20px;
+margin-top:18px;
 }
 
 .report-title{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:14px 20px;
-    margin-bottom:16px;
-    border-radius:16px;
-    background:linear-gradient(135deg,#2563eb,#1d4ed8);
-    color:#fff;
-    font-size:18px;
-    font-weight:700;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px 16px;
+margin-bottom:14px;
+border-radius:14px;
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+color:#fff;
+font-size:15px;
+font-weight:700;
 }
 
 .report-title div{
-    display:flex;
-    align-items:center;
-    gap:10px;
+display:flex;
+align-items:center;
+gap:8px;
 }
 
 .report-title small{
-    font-size:12px;
-    opacity:.9;
+font-size:11px;
+opacity:.9;
 }
 
 
 .report-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:16px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px;
 }
 
 
 .report-card{
-    position:relative;
-    padding:18px;
-    min-height:105px;
-    overflow:hidden;
+position:relative;
+padding:15px;
+min-height:90px;
+overflow:hidden;
 }
 
 
 .report-icon{
-    position:absolute;
-    top:16px;
-    right:16px;
-    width:42px;
-    height:42px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:50%;
-    color:#fff;
-    font-size:17px;
+position:absolute;
+right:14px;
+top:14px;
+width:36px;
+height:36px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:50%;
+color:#fff;
+font-size:14px;
 }
 
 
 .report-green{
-    background:linear-gradient(135deg,#34d399,#14b8a6);
+background:linear-gradient(135deg,#34d399,#14b8a6);
 }
 
 .report-blue{
-    background:linear-gradient(135deg,#38bdf8,#2563eb);
+background:linear-gradient(135deg,#38bdf8,#2563eb);
 }
 
 .report-orange{
-    background:linear-gradient(135deg,#fb923c,#f97316);
+background:linear-gradient(135deg,#fb923c,#f97316);
 }
 
 .report-purple{
-    background:linear-gradient(135deg,#a855f7,#8b5cf6);
+background:linear-gradient(135deg,#a855f7,#8b5cf6);
 }
 
 
 .report-card h4{
-    margin:0;
-    font-size:13px;
-    font-weight:600;
-    color:#64748b;
+margin:0;
+font-size:11px;
+color:#64748b;
 }
-
 
 .report-card h2{
-    margin-top:10px;
-    font-size:24px;
-    font-weight:800;
-    color:#0f172a;
+margin:8px 0 0;
+font-size:21px;
+color:#0f172a;
+font-weight:800;
 }
 
-
 html.dark .report-card h4{
-    color:#94a3b8;
+color:#94a3b8;
 }
 
 html.dark .report-card h2{
-    color:#fff;
+color:#fff;
 }
 
 
-/* =========================
-   REPORT RESPONSIVE
-========================= */
-
-@media(max-width:992px){
-
-.report-grid{
-    grid-template-columns:repeat(2,1fr);
-}
-
-}
-
-
-@media(max-width:600px){
-
-.report-title{
-    padding:12px 16px;
-    font-size:16px;
-}
-
-.report-grid{
-    gap:12px;
-}
-
-.report-card{
-    padding:14px;
-    min-height:90px;
-}
-
-.report-icon{
-    width:36px;
-    height:36px;
-    font-size:14px;
-}
-
-.report-card h4{
-    font-size:11px;
-}
-
-.report-card h2{
-    font-size:18px;
-}
-
-}
-
-
-/* =========================
-   STATISTIK
-========================= */
+/* STATISTIK */
 
 .stats-container{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:18px;
-    margin-top:22px;
+display:grid;
+grid-template-columns:1fr;
+gap:15px;
+margin-top:18px;
 }
 
 
 .stats-box{
-    padding:18px;
-    min-height:360px;
-    overflow:hidden;
+padding:16px;
+min-height:330px;
+overflow:hidden;
 }
 
 
 .stats-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:12px;
-    margin-bottom:16px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+margin-bottom:15px;
 }
 
 
 .stats-head h2{
-    margin:0;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:19px;
-    color:#2563eb;
+margin:0;
+display:flex;
+align-items:center;
+gap:8px;
+font-size:17px;
+color:#2563eb;
 }
 
 
 .stats-head select{
-    height:36px;
-    padding:0 14px;
-    border:1px solid #dbeafe;
-    border-radius:10px;
-    background:#f8fafc;
-    font:600 13px Poppins,sans-serif;
-    cursor:pointer;
+height:34px;
+padding:0 12px;
+border:1px solid #dbeafe;
+border-radius:10px;
+background:#f8fafc;
+font:600 12px Poppins,sans-serif;
+cursor:pointer;
 }
 
 
 .chart-wrapper{
-    width:100%;
-    height:230px;
+width:100%;
+height:220px;
 }
 
 
 .stats-box canvas{
-    width:100%!important;
-    height:100%!important;
+width:100%!important;
+height:100%!important;
 }
 
 
 .stats-info{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin-top:16px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-top:15px;
 }
 
 
 .stats-info div{
-    padding:12px;
-    border-radius:14px;
-    background:#f8fafc;
-    text-align:center;
+padding:10px;
+border-radius:12px;
+background:#f8fafc;
+text-align:center;
 }
 
 
 .stats-info span{
-    display:block;
-    margin-bottom:4px;
-    font-size:12px;
-    color:#64748b;
+display:block;
+font-size:11px;
+color:#64748b;
+margin-bottom:4px;
 }
 
 
 .stats-info b{
-    font-size:18px;
-    color:#2563eb;
+font-size:16px;
+color:#2563eb;
 }
 
 
 .stats-note{
-    margin-top:14px;
-    text-align:center;
-    font-size:12px;
-    color:#64748b;
+margin-top:12px;
+text-align:center;
+font-size:11px;
+color:#64748b;
 }
 
-
-/* DARK STAT */
 
 html.dark .stats-head h2{
-    color:#60a5fa;
+color:#60a5fa;
 }
-
 
 html.dark .stats-head select{
-    background:#1e293b;
-    border-color:#334155;
-    color:#fff;
+background:#1e293b;
+border-color:#334155;
+color:#fff;
 }
-
 
 html.dark .stats-info div{
-    background:#1e293b;
+background:#1e293b;
 }
-
 
 html.dark .stats-info span,
 html.dark .stats-note{
-    color:#94a3b8;
+color:#94a3b8;
 }
-
 
 html.dark .stats-info b{
-    color:#60a5fa;
+color:#60a5fa;
 }
 
 
-/* MOBILE STAT */
-
-@media(max-width:600px){
-
-.stats-box{
-    padding:15px;
-    min-height:330px;
-}
-
-.stats-head{
-    flex-direction:column;
-    align-items:flex-start;
-}
-
-.stats-head select{
-    width:100%;
-}
-
-.stats-head h2{
-    font-size:17px;
-}
-
-.chart-wrapper{
-    height:200px;
-}
-
-.stats-info{
-    grid-template-columns:1fr;
-}
-
-}
-
-
-/* =========================
-   REPORT TABLE
-========================= */
+/* REPORT TABLE */
 
 .report-header{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:18px;
-    font-size:22px;
-    font-weight:700;
-    color:#2563eb;
+display:flex;
+align-items:center;
+gap:8px;
+margin-bottom:15px;
+font-size:18px;
+font-weight:700;
+color:#2563eb;
 }
 
 
 .report-table{
-    overflow-x:auto;
-    border-radius:14px;
+overflow-x:auto;
+border-radius:12px;
 }
 
 
 .report-table table{
-    width:100%;
-    min-width:650px;
-    border-collapse:collapse;
+width:100%;
+min-width:650px;
+border-collapse:collapse;
 }
 
 
 .report-table th,
 .report-table td{
-    padding:12px 10px;
-    font-size:13px;
-    text-align:center;
-    white-space:nowrap;
+padding:10px;
+font-size:12px;
+text-align:center;
+white-space:nowrap;
 }
 
 
 .report-table th{
-    background:#eff6ff;
-    color:#1e293b;
-    border-bottom:1px solid #dbeafe;
+background:#eff6ff;
+color:#1e293b;
+border-bottom:1px solid #dbeafe;
 }
 
 
 .report-table td{
-    background:#fff;
-    border-bottom:1px solid #eef2f7;
+background:#fff;
+border-bottom:1px solid #eef2f7;
 }
 
 
 .report-table tbody tr:hover td{
-    background:#f8fbff;
+background:#f8fbff;
 }
 
 
 .report-table .earning{
-    font-weight:700;
-    color:#2563eb;
+font-weight:700;
+color:#2563eb;
 }
 
 
 html.dark .report-table th{
-    background:#162033;
-    color:#fff;
+background:#162033;
+color:#fff;
 }
 
 
 html.dark .report-table td{
-    background:#0f172a;
-    color:#fff;
-    border-color:#1e293b;
+background:#0f172a;
+color:#fff;
+border-color:#1e293b;
 }
 
 
 html.dark .report-table tbody tr:hover td{
-    background:#162033;
+background:#162033;
+}
+
+
+/* RESPONSIVE */
+
+@media(max-width:992px){
+
+.report-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
 }
 
 
 @media(max-width:600px){
 
+.report-grid{
+gap:8px;
+}
+
+.report-card{
+padding:12px;
+min-height:80px;
+}
+
+.report-card h2{
+font-size:17px;
+}
+
+.report-icon{
+width:32px;
+height:32px;
+font-size:12px;
+}
+
+.stats-box{
+padding:12px;
+}
+
+.stats-head{
+flex-direction:column;
+align-items:flex-start;
+}
+
+.stats-head select{
+width:100%;
+}
+
+.chart-wrapper{
+height:190px;
+}
+
+.stats-info{
+grid-template-columns:1fr;
+}
+
 .report-header{
-    font-size:18px;
+font-size:16px;
 }
 
 .report-table th,
 .report-table td{
-    padding:8px;
-    font-size:11px;
+padding:8px;
+font-size:11px;
 }
 
 }
 
-/* =========================
-   SELL LINK LOCK
-========================= */
+
+/* CLICK2PAY DASHBOARD FINAL CLEAN PART 3 */
+
+
+/* SELL LINK LOCK */
 
 .sell-card{
-    position:relative;
+position:relative;
 }
 
 .sell-card.locked{
-    opacity:.85;
-    filter:grayscale(.2);
+opacity:.85;
+filter:grayscale(.2);
 }
 
 .sell-card.locked::after{
-    content:"🔒 Sell Link Terkunci";
-    position:absolute;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:rgba(255,255,255,.72);
-    backdrop-filter:blur(5px);
-    border-radius:18px;
-    color:#475569;
-    font-size:14px;
-    font-weight:700;
+content:"🔒 Sell Link Terkunci";
+position:absolute;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(255,255,255,.75);
+backdrop-filter:blur(5px);
+border-radius:16px;
+color:#475569;
+font-size:12px;
+font-weight:700;
 }
 
-body.dark .sell-card.locked::after{
-    background:rgba(15,23,42,.78);
-    color:#cbd5e1;
-}
-
-
-/* =========================
-   GUIDE CLICK2PAY
-========================= */
-
-.guide-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:14px;
-    margin-top:18px;
-}
-
-.guide-card{
-    padding:14px;
-    min-height:180px;
-    display:flex;
-    flex-direction:column;
-}
-
-.guide-icon{
-    width:38px;
-    height:38px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin-bottom:10px;
-    border-radius:12px;
-    background:#2563eb;
-    color:#fff;
-    font-size:16px;
-}
-
-.guide-icon.green{
-    background:#10b981;
-}
-
-.guide-icon.orange{
-    background:#f97316;
-}
-
-.guide-icon.purple{
-    background:#8b5cf6;
-}
-
-.guide-icon.red{
-    background:#ef4444;
-}
-
-.guide-icon.cyan{
-    background:#06b6d4;
-}
-
-.guide-icon.pink{
-    background:#ec4899;
-}
-
-.guide-icon.yellow{
-    background:#eab308;
-}
-
-
-.guide-card h3{
-    margin:0;
-    font-size:14px;
-    color:#0f172a;
-}
-
-
-.guide-card p{
-    flex:1;
-    margin:7px 0 12px;
-    font-size:11px;
-    line-height:1.5;
-    color:#64748b;
-}
-
-
-.guide-btn{
-    height:34px;
-    border:none;
-    border-radius:10px;
-    background:#2563eb;
-    color:#fff;
-    font:600 11px Poppins,sans-serif;
-    cursor:pointer;
-}
-
-
-.guide-btn:hover{
-    background:#1d4ed8;
-}
-
-
-html.dark .guide-card h3{
-    color:#fff;
-}
-
-html.dark .guide-card p{
-    color:#94a3b8;
-}
-
-
-@media(max-width:992px){
-
-.guide-grid{
-    grid-template-columns:repeat(2,1fr);
-}
-
-}
-
-
-@media(max-width:600px){
-
-.guide-grid{
-    gap:10px;
-}
-
-.guide-card{
-    padding:11px;
-    min-height:150px;
-}
-
-.guide-icon{
-    width:34px;
-    height:34px;
-    font-size:14px;
-}
-
-.guide-card h3{
-    font-size:12px;
-}
-
-.guide-card p{
-    font-size:10px;
-}
-
-.guide-btn{
-    height:32px;
-    font-size:10px;
-}
-
-}
-
-
-/* =========================
-   CPM MARKET
-========================= */
-
-.cpm-market{
-    margin-top:18px;
-    padding:16px;
-}
-
-
-.cpm-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:20px;
-    margin-bottom:18px;
-}
-
-
-.cpm-header h2{
-    margin:0;
-    font-size:18px;
-    color:#2563eb;
-}
-
-
-.cpm-header p{
-    margin:6px 0 0;
-    font-size:12px;
-    color:#64748b;
-}
-
-
-.market-live{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    color:#16a34a;
-    font-size:13px;
-    font-weight:700;
-}
-
-
-.live-dot{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:#16a34a;
-    animation:livePulse 1.2s infinite;
-}
-
-
-@keyframes livePulse{
-
-0%{
-transform:scale(1);
-opacity:1;
-}
-
-50%{
-transform:scale(1.5);
-opacity:.35;
-}
-
-100%{
-transform:scale(1);
-opacity:1;
-}
-
-}
-
-
-.market-row{
-    display:grid;
-    grid-template-columns:40px 1fr auto;
-    align-items:center;
-    gap:15px;
-    padding:10px 0;
-    border-bottom:1px solid #eef2f7;
-    cursor:pointer;
-    transition:.25s;
-}
-
-
-.market-row:last-child{
-    border-bottom:none;
-}
-
-
-.market-row:hover,
-.market-row.active{
-    background:rgba(37,99,235,.05);
-    border-radius:12px;
-    padding-left:10px;
-}
-
-
-.flag{
-    font-size:26px;
-}
-
-
-.country{
-    font-size:14px;
-    font-weight:600;
-}
-
-
-.spark{
-    height:5px;
-    margin-top:8px;
-    background:#e5e7eb;
-    border-radius:999px;
-    overflow:hidden;
-}
-
-
-.spark span{
-    display:block;
-    height:100%;
-    width:60%;
-    background:linear-gradient(90deg,#2563eb,#22c55e);
-}
-
-
-.market-price{
-    text-align:right;
-}
-
-
-.market-price b{
-    display:block;
-    font-size:14px;
-}
-
-
-.market-change{
-    margin-top:5px;
-    font-size:13px;
-    font-weight:700;
-}
-
-
-.up{
-    color:#16a34a;
-}
-
-
-.down{
-    color:#ef4444;
-}
-
-
-html.dark .cpm-header p{
-    color:#94a3b8;
-}
-
-
-html.dark .market-row{
-    border-color:#1e293b;
-}
-
-
-html.dark .spark{
-    background:#1e293b;
-}
-
-
-html.dark .country,
-html.dark .market-price b{
-    color:#fff;
-}
-
-
-@media(max-width:700px){
-
-.market-row{
-    grid-template-columns:35px 1fr;
-}
-
-.market-price{
-    grid-column:2;
-    text-align:left;
-    margin-top:8px;
-}
-
-.cpm-header{
-    flex-direction:column;
-}
-
-}
-
-/* =====================================
-   CLICK2PAY CLEAN COMPACT DASHBOARD
-===================================== */
-
-
-/* GLOBAL */
-
-.dash-body{
-    font-size:14px;
-}
-
-
-.dash-container{
-    max-width:1150px;
-    padding:15px;
-}
-
-
-/* ALL CARD CLEAN */
-
-.dash-welcome,
-.dash-box,
-.stats-box,
-.report-card,
-.cpm-market,
-.guide-card{
-    border-radius:16px;
-    box-shadow:0 6px 20px rgba(15,23,42,.05);
-}
-
-
-/* WELCOME */
-
-.dash-welcome{
-    padding:20px;
-    margin-bottom:18px;
-}
-
-
-.dash-welcome h1{
-    font-size:22px;
-}
-
-
-/* BOX */
-
-.dash-box{
-    padding:22px;
-    margin-top:18px;
-}
-
-
-.dash-box h2{
-    font-size:18px;
+html.dark .sell-card.locked::after{
+background:rgba(15,23,42,.8);
+color:#cbd5e1;
 }
 
 
 /* GUIDE */
 
 .guide-grid{
-    gap:12px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px;
+margin-top:16px;
 }
 
 
 .guide-card{
-    padding:12px;
-    min-height:155px;
+padding:12px;
+min-height:150px;
+display:flex;
+flex-direction:column;
 }
 
 
 .guide-icon{
-    width:34px;
-    height:34px;
-    border-radius:10px;
-    font-size:14px;
+width:34px;
+height:34px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:10px;
+background:#2563eb;
+color:#fff;
+font-size:14px;
+margin-bottom:8px;
+}
+
+
+.guide-icon.green{
+background:#10b981;
+}
+
+.guide-icon.orange{
+background:#f97316;
+}
+
+.guide-icon.purple{
+background:#8b5cf6;
+}
+
+.guide-icon.red{
+background:#ef4444;
+}
+
+.guide-icon.cyan{
+background:#06b6d4;
+}
+
+.guide-icon.pink{
+background:#ec4899;
+}
+
+.guide-icon.yellow{
+background:#eab308;
 }
 
 
 .guide-card h3{
-    font-size:13px;
+margin:0;
+font-size:13px;
+color:#0f172a;
 }
 
 
 .guide-card p{
-    font-size:10px;
-    margin:5px 0 10px;
+flex:1;
+margin:5px 0 10px;
+font-size:10px;
+line-height:1.5;
+color:#64748b;
 }
 
 
 .guide-btn{
-    height:30px;
-    font-size:10px;
+height:30px;
+border:0;
+border-radius:10px;
+background:#2563eb;
+color:#fff;
+font:600 10px Poppins,sans-serif;
+cursor:pointer;
 }
 
 
-
-/* REPORT */
-
-.report-section{
-    margin-top:16px;
+.guide-btn:hover{
+background:#1d4ed8;
 }
 
 
-.report-title{
-    padding:11px 16px;
-    border-radius:12px;
-    font-size:15px;
+html.dark .guide-card h3{
+color:#fff;
+}
+
+html.dark .guide-card p{
+color:#94a3b8;
 }
 
 
-.report-grid{
-    gap:12px;
+/* GUIDE TOGGLE */
+
+.guide-toggle{
+display:flex;
+justify-content:space-between;
+align-items:center;
+cursor:pointer;
 }
 
-
-.report-card{
-    padding:15px;
-    min-height:90px;
+.guide-toggle h2{
+margin:0;
 }
 
-
-.report-card h4{
-    font-size:11px;
+.guide-toggle i{
+transition:.3s;
 }
 
-
-.report-card h2{
-    font-size:20px;
-    margin-top:8px;
+.guide-content{
+max-height:2000px;
+overflow:hidden;
+transition:.4s ease;
 }
 
-
-.report-icon{
-    width:34px;
-    height:34px;
-    font-size:13px;
+.guide-content.hide{
+max-height:0;
 }
 
-
-
-/* STAT */
-
-.stats-container{
-    margin-top:18px;
-    gap:14px;
+.guide-toggle.active #guideArrow{
+transform:rotate(180deg);
 }
-
-
-.stats-box{
-    padding:15px;
-    min-height:330px;
-}
-
-
-.stats-head h2{
-    font-size:16px;
-}
-
-
-.stats-head select{
-    height:32px;
-    font-size:11px;
-}
-
-
-.chart-wrapper{
-    height:210px;
-}
-
-
-.stats-info div{
-    padding:10px;
-}
-
-
-.stats-info b{
-    font-size:16px;
-}
-
-
-.stats-note{
-    font-size:11px;
-}
-
-
-
-/* TABLE */
-
-.report-header{
-    font-size:17px;
-}
-
-
-.report-table th,
-.report-table td{
-    padding:9px;
-    font-size:12px;
-}
-
 
 
 /* CPM MARKET */
 
 .cpm-market{
-    padding:14px;
+margin-top:18px;
+padding:15px;
+}
+
+
+.cpm-header{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:15px;
+margin-bottom:15px;
 }
 
 
 .cpm-header h2{
-    font-size:16px;
+margin:0;
+font-size:17px;
+color:#2563eb;
 }
 
 
 .cpm-header p{
-    font-size:11px;
+margin:5px 0 0;
+font-size:11px;
+color:#64748b;
+}
+
+
+.market-live{
+display:flex;
+align-items:center;
+gap:7px;
+color:#16a34a;
+font-size:12px;
+font-weight:700;
+}
+
+
+.live-dot{
+width:9px;
+height:9px;
+border-radius:50%;
+background:#16a34a;
+animation:livePulse 1.2s infinite;
+}
+
+
+@keyframes livePulse{
+50%{
+transform:scale(1.5);
+opacity:.4;
+}
 }
 
 
 .market-row{
-    padding:8px 0;
+display:grid;
+grid-template-columns:35px 1fr auto;
+align-items:center;
+gap:12px;
+padding:9px 0;
+border-bottom:1px solid #eef2f7;
+cursor:pointer;
+transition:.25s;
+}
+
+
+.market-row:last-child{
+border-bottom:0;
+}
+
+
+.market-row:hover,
+.market-row.active{
+background:rgba(37,99,235,.05);
+border-radius:12px;
+padding-left:8px;
 }
 
 
 .flag{
-    font-size:22px;
+font-size:22px;
 }
 
 
 .country{
-    font-size:12px;
+font-size:12px;
+font-weight:600;
+}
+
+
+.spark{
+height:5px;
+margin-top:7px;
+background:#e5e7eb;
+border-radius:999px;
+overflow:hidden;
+}
+
+
+.spark span{
+display:block;
+height:100%;
+width:60%;
+background:linear-gradient(90deg,#2563eb,#22c55e);
+}
+
+
+.market-price{
+text-align:right;
 }
 
 
 .market-price b{
-    font-size:12px;
+font-size:13px;
+display:block;
 }
 
 
-
-/* SELL LOCK */
-
-.sell-card.locked::after{
-    font-size:12px;
+.market-change{
+margin-top:4px;
+font-size:12px;
+font-weight:700;
 }
 
 
-/* MOBILE */
+.up{
+color:#16a34a;
+}
 
-@media(max-width:600px){
-
-.dash-container{
-    padding:10px;
+.down{
+color:#ef4444;
 }
 
 
-.dash-welcome{
-    padding:16px;
+html.dark .cpm-header p{
+color:#94a3b8;
+}
+
+html.dark .market-row{
+border-color:#1e293b;
+}
+
+html.dark .spark{
+background:#1e293b;
+}
+
+html.dark .country,
+html.dark .market-price b{
+color:#fff;
 }
 
 
-.dash-welcome h1{
-    font-size:20px;
-}
-
-
-.dash-box{
-    padding:16px;
-}
-
-
-.guide-grid{
-    gap:8px;
-}
-
-
-.guide-card{
-    min-height:135px;
-}
-
-
-.report-grid{
-    gap:8px;
-}
-
-
-.report-card{
-    padding:12px;
-}
-
-
-.report-card h2{
-    font-size:17px;
-}
-
-
-.stats-box{
-    padding:12px;
-}
-
-
-}
-
-
-/* =========================
-   DAILY REPORT TABLE
-========================= */
-
-.daily-report-section{
-    margin-top:35px;
-}
-
-
-.daily-report-card{
-    padding:22px;
-}
-
-
-.sell-report{
-    margin-top:10px;
-}
-
-
-.daily-report-card .report-header{
-    margin-bottom:20px;
-}
-
-
-@media(max-width:600px){
-
-.daily-report-section{
-    margin-top:25px;
-}
-
-
-.daily-report-card{
-    padding:15px;
-}
-
-}
-
-
-.guide-toggle{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    cursor:pointer;
-}
-
-
-.guide-toggle h2{
-    margin:0;
-}
-
-
-.guide-toggle i{
-    transition:.3s;
-}
-
-
-.guide-content{
-    max-height:2000px;
-    overflow:hidden;
-    transition:.4s ease;
-}
-
-
-.guide-content.hide{
-    max-height:0;
-}
-
-
-.guide-toggle.active #guideArrow{
-    transform:rotate(180deg);
-}
+/* NOTICE BAR */
 
 .notice-bar{
-
 display:flex;
 align-items:center;
-gap:14px;
-
-padding:14px 18px;
-
-border-radius:20px;
-
-background:
-linear-gradient(
-135deg,
-rgba(37,99,235,.12),
-rgba(139,92,246,.08)
-);
-
+gap:12px;
+padding:12px 16px;
+border-radius:18px;
+margin-bottom:22px;
+background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(139,92,246,.08));
 border:1px solid rgba(148,163,184,.25);
-
-backdrop-filter:blur(14px);
-
-box-shadow:
-0 10px 30px rgba(15,23,42,.08);
-
+backdrop-filter:blur(12px);
+box-shadow:0 8px 25px rgba(15,23,42,.08);
 overflow:hidden;
-
-margin-bottom:28px;
-
 }
 
 
 .notice-icon,
 .notice-status{
-
-width:42px;
-height:42px;
-
+width:38px;
+height:38px;
 display:flex;
 align-items:center;
 justify-content:center;
-
-border-radius:14px;
-
+border-radius:12px;
 flex-shrink:0;
-
 }
 
 
 .notice-icon{
-
-background:
-linear-gradient(
-135deg,
-#2563eb,
-#4f46e5
-);
-
-color:white;
-
-box-shadow:
-0 0 20px rgba(37,99,235,.45);
-
+background:linear-gradient(135deg,#2563eb,#4f46e5);
+color:#fff;
 animation:pulseBell 2s infinite;
-
 }
 
 
 .notice-status{
-
 background:rgba(34,197,94,.12);
-
 color:#22c55e;
-
 }
 
 
 .notice-content{
-
 flex:1;
-
 overflow:hidden;
-
 white-space:nowrap;
-
 }
 
 
 .notice-track{
-
 display:inline-block;
-
 padding-left:100%;
-
-animation:
-noticeMove 22s linear infinite;
-
+animation:noticeMove 22s linear infinite;
 }
 
 
 .notice-track span{
-
-font-size:14px;
-
+font-size:13px;
 font-weight:600;
-
 color:#334155;
-
 }
 
 
 @keyframes noticeMove{
-
 from{
 transform:translateX(0);
 }
-
 to{
 transform:translateX(-100%);
 }
-
 }
 
 
 @keyframes pulseBell{
-
-0%,100%{
-transform:scale(1);
-}
-
 50%{
 transform:scale(1.08);
 }
-
 }
 
 
-.dark .notice-track span{
-
+html.dark .notice-track span{
 color:#e2e8f0;
-
 }
 
 
-.dark .notice-bar{
-
-background:
-linear-gradient(
-135deg,
-rgba(37,99,235,.18),
-rgba(15,23,42,.6)
-);
-
+html.dark .notice-bar{
+background:linear-gradient(135deg,rgba(37,99,235,.18),rgba(15,23,42,.6));
 border-color:rgba(255,255,255,.08);
+}
+
+
+/* MOBILE */
+
+@media(max-width:992px){
+
+.guide-grid{
+grid-template-columns:repeat(2,1fr);
+}
 
 }
+
+
+@media(max-width:700px){
+
+.guide-grid{
+gap:8px;
+}
+
+.guide-card{
+padding:10px;
+min-height:130px;
+}
+
+.guide-card h3{
+font-size:12px;
+}
+
+.guide-card p{
+font-size:10px;
+}
+
+.cpm-header{
+flex-direction:column;
+}
+
+.market-row{
+grid-template-columns:30px 1fr;
+}
+
+.market-price{
+grid-column:2;
+text-align:left;
+margin-top:6px;
+}
+
+.notice-bar{
+padding:10px 12px;
+}
+
+.notice-track span{
+font-size:12px;
+}
+
+}
+
+
 
