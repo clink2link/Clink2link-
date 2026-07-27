@@ -1,6 +1,12 @@
 /* ==========================================
    CLICK2PAY DASHBOARD CSS
+   CLEAN FINAL VERSION
 ========================================== */
+
+
+/* =========================
+   BASE
+========================= */
 
 .dash-body{
     margin:0;
@@ -21,11 +27,21 @@
     linear-gradient(120deg,#fff,#eff6ff);
 }
 
+
+/* =========================
+   CONTAINER
+========================= */
+
 .dash-container{
-    max-width:1100px;
+    max-width:1200px;
     margin:auto;
-    padding:15px;
+    padding:20px;
 }
+
+
+/* =========================
+   GLOBAL CARD
+========================= */
 
 .dash-welcome,
 .dash-box,
@@ -36,8 +52,8 @@
 .guide-card{
     background:#fff;
     border:1px solid #e2e8f0;
-    border-radius:18px;
-    box-shadow:0 8px 24px rgba(15,23,42,.06);
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(15,23,42,.06);
     transition:.25s;
 }
 
@@ -47,18 +63,23 @@
 .stats-box:hover,
 .report-card:hover,
 .guide-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 15px 35px rgba(15,23,42,.1);
+    transform:translateY(-5px);
+    box-shadow:0 18px 40px rgba(15,23,42,.12);
 }
 
+
+/* =========================
+   WELCOME
+========================= */
+
 .dash-welcome{
-    padding:18px;
-    margin-bottom:18px;
+    padding:25px;
+    margin-bottom:25px;
 }
 
 .dash-welcome h1{
     margin:0;
-    font-size:22px;
+    font-size:28px;
     color:#2563eb;
 }
 
@@ -67,16 +88,64 @@
     color:#64748b;
 }
 
+
+/* =========================
+   BOX
+========================= */
+
 .dash-box{
-    padding:20px;
-    margin-top:18px;
+    padding:30px;
+    margin-top:25px;
 }
 
 .dash-box h2{
     margin:0 0 15px;
-    font-size:18px;
     color:#2563eb;
 }
+
+
+/* =========================
+   STAT CARD
+========================= */
+
+.dash-stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+
+.dash-card{
+    padding:25px;
+}
+
+.dash-icon{
+    width:50px;
+    height:50px;
+    margin-bottom:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:15px;
+    background:#eff6ff;
+    color:#2563eb;
+    font-size:24px;
+}
+
+.dash-card h3{
+    margin:0;
+    font-size:14px;
+    color:#64748b;
+}
+
+.dash-card h2{
+    margin:8px 0 0;
+    font-size:28px;
+}
+
+
+/* =========================
+   BUTTON
+========================= */
 
 .dash-buttons{
     display:flex;
@@ -88,9 +157,9 @@
     display:flex;
     align-items:center;
     gap:10px;
-    padding:12px 22px;
+    padding:14px 25px;
     border:none;
-    border-radius:14px;
+    border-radius:15px;
     font-weight:700;
     cursor:pointer;
 }
@@ -105,27 +174,24 @@
     color:#2563eb;
 }
 
-.dash-icon{
-    width:50px;
-    height:50px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:15px;
-    background:#eff6ff;
-    color:#2563eb;
-    font-size:22px;
+
+/* =========================
+   PROGRESS
+========================= */
+
+.dash-progress{
+    height:12px;
+    margin-top:15px;
+    overflow:hidden;
+    border-radius:20px;
+    background:#e2e8f0;
 }
 
-.dash-card h3{
-    margin:0;
-    font-size:14px;
-    color:#64748b;
-}
-
-.dash-card h2{
-    margin:8px 0 0;
-    font-size:26px;
+.dash-progress span{
+    display:block;
+    height:100%;
+    width:70%;
+    background:linear-gradient(90deg,#2563eb,#00b8ff);
 }
 
 
@@ -145,6 +211,7 @@ body.dark .dash-bg{
     linear-gradient(120deg,#020617,#0f172a);
 }
 
+
 body.dark .dash-welcome,
 body.dark .dash-box,
 body.dark .dash-card,
@@ -154,31 +221,95 @@ body.dark .cpm-market,
 body.dark .guide-card{
     background:#0f172a;
     border-color:#1e293b;
-    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    box-shadow:0 10px 30px rgba(0,0,0,.4);
 }
+
+
+body.dark .dash-card:hover,
+body.dark .dash-box:hover{
+    box-shadow:0 18px 40px rgba(0,0,0,.55);
+}
+
 
 body.dark .dash-welcome h1,
 body.dark .dash-box h2{
     color:#60a5fa;
 }
 
+
+body.dark .dash-welcome p,
+body.dark .dash-card h3,
 body.dark p{
     color:#94a3b8;
 }
 
+
 body.dark .dash-card h2,
 body.dark b{
-    color:#fff;
+    color:#f8fafc;
 }
+
 
 body.dark .dash-icon{
     background:#1e293b;
     color:#60a5fa;
 }
 
+
+body.dark .dash-primary{
+    background:#2563eb;
+}
+
+
 body.dark .dash-secondary{
     background:#1e293b;
     color:#60a5fa;
+}
+
+
+body.dark .dash-progress{
+    background:#1e293b;
+}
+
+
+/* =========================
+   RESPONSIVE BASE
+========================= */
+
+@media(max-width:900px){
+
+.dash-stats{
+    grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+
+@media(max-width:600px){
+
+.dash-container{
+    padding:15px;
+}
+
+.dash-stats{
+    grid-template-columns:1fr;
+}
+
+.dash-welcome,
+.dash-card,
+.dash-box{
+    padding:18px;
+    border-radius:18px;
+}
+
+.dash-welcome h1{
+    font-size:24px;
+}
+
+.dash-card h2{
+    font-size:24px;
+}
+
 }
 
 
@@ -187,19 +318,19 @@ body.dark .dash-secondary{
 ========================= */
 
 .report-section{
-    margin-top:18px;
+    margin-top:20px;
 }
 
 .report-title{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:12px 18px;
-    margin-bottom:15px;
-    border-radius:14px;
+    padding:14px 20px;
+    margin-bottom:16px;
+    border-radius:16px;
     background:linear-gradient(135deg,#2563eb,#1d4ed8);
     color:#fff;
-    font-size:17px;
+    font-size:18px;
     font-weight:700;
 }
 
@@ -214,31 +345,36 @@ body.dark .dash-secondary{
     opacity:.9;
 }
 
+
 .report-grid{
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    gap:14px;
+    gap:16px;
 }
+
 
 .report-card{
     position:relative;
-    padding:16px;
-    min-height:95px;
+    padding:18px;
+    min-height:105px;
     overflow:hidden;
 }
 
+
 .report-icon{
     position:absolute;
-    top:14px;
-    right:14px;
-    width:38px;
-    height:38px;
+    top:16px;
+    right:16px;
+    width:42px;
+    height:42px;
     display:flex;
     align-items:center;
     justify-content:center;
     border-radius:50%;
     color:#fff;
+    font-size:17px;
 }
+
 
 .report-green{
     background:linear-gradient(135deg,#34d399,#14b8a6);
@@ -256,18 +392,22 @@ body.dark .dash-secondary{
     background:linear-gradient(135deg,#a855f7,#8b5cf6);
 }
 
+
 .report-card h4{
     margin:0;
-    font-size:12px;
+    font-size:13px;
+    font-weight:600;
     color:#64748b;
 }
 
+
 .report-card h2{
     margin-top:10px;
-    font-size:22px;
+    font-size:24px;
     font-weight:800;
     color:#0f172a;
 }
+
 
 body.dark .report-card h4{
     color:#94a3b8;
@@ -276,6 +416,7 @@ body.dark .report-card h4{
 body.dark .report-card h2{
     color:#fff;
 }
+
 
 /* =========================
    REPORT RESPONSIVE
@@ -293,31 +434,23 @@ body.dark .report-card h2{
 @media(max-width:600px){
 
 .report-title{
-    padding:10px 14px;
-    font-size:15px;
-}
-
-.report-title small{
-    font-size:11px;
+    padding:12px 16px;
+    font-size:16px;
 }
 
 .report-grid{
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
+    gap:12px;
 }
 
 .report-card{
-    padding:12px;
-    min-height:85px;
-    border-radius:14px;
+    padding:14px;
+    min-height:90px;
 }
 
 .report-icon{
-    width:34px;
-    height:34px;
-    font-size:13px;
-    top:10px;
-    right:10px;
+    width:36px;
+    height:36px;
+    font-size:14px;
 }
 
 .report-card h4{
@@ -325,7 +458,7 @@ body.dark .report-card h2{
 }
 
 .report-card h2{
-    font-size:17px;
+    font-size:18px;
 }
 
 }
@@ -339,89 +472,103 @@ body.dark .report-card h2{
     display:grid;
     grid-template-columns:1fr;
     gap:18px;
-    margin-top:20px;
+    margin-top:22px;
 }
+
 
 .stats-box{
     padding:18px;
-    min-height:330px;
+    min-height:360px;
     overflow:hidden;
 }
+
 
 .stats-head{
     display:flex;
     justify-content:space-between;
     align-items:center;
     gap:12px;
-    margin-bottom:15px;
+    margin-bottom:16px;
 }
+
 
 .stats-head h2{
     margin:0;
     display:flex;
     align-items:center;
     gap:8px;
-    font-size:18px;
+    font-size:19px;
     color:#2563eb;
 }
 
+
 .stats-head select{
     height:36px;
-    padding:0 12px;
+    padding:0 14px;
     border:1px solid #dbeafe;
     border-radius:10px;
     background:#f8fafc;
     font:600 13px Poppins,sans-serif;
+    cursor:pointer;
 }
+
 
 .chart-wrapper{
     width:100%;
-    height:220px;
+    height:230px;
 }
+
 
 .stats-box canvas{
     width:100%!important;
     height:100%!important;
 }
 
+
 .stats-info{
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:10px;
-    margin-top:15px;
+    margin-top:16px;
 }
 
+
 .stats-info div{
-    padding:10px;
-    border-radius:12px;
+    padding:12px;
+    border-radius:14px;
     background:#f8fafc;
     text-align:center;
 }
 
+
 .stats-info span{
     display:block;
+    margin-bottom:4px;
     font-size:12px;
     color:#64748b;
 }
 
+
 .stats-info b{
-    font-size:17px;
+    font-size:18px;
     color:#2563eb;
 }
 
+
 .stats-note{
-    margin-top:12px;
+    margin-top:14px;
     text-align:center;
     font-size:12px;
     color:#64748b;
 }
 
 
-/* DARK STATISTIK */
+/* DARK STAT */
 
 body.dark .stats-head h2{
     color:#60a5fa;
 }
+
 
 body.dark .stats-head select{
     background:#1e293b;
@@ -429,27 +576,30 @@ body.dark .stats-head select{
     color:#fff;
 }
 
+
 body.dark .stats-info div{
     background:#1e293b;
 }
+
 
 body.dark .stats-info span,
 body.dark .stats-note{
     color:#94a3b8;
 }
 
+
 body.dark .stats-info b{
     color:#60a5fa;
 }
 
 
-/* MOBILE STATISTIK */
+/* MOBILE STAT */
 
 @media(max-width:600px){
 
 .stats-box{
     padding:15px;
-    min-height:280px;
+    min-height:330px;
 }
 
 .stats-head{
@@ -462,11 +612,11 @@ body.dark .stats-info b{
 }
 
 .stats-head h2{
-    font-size:16px;
+    font-size:17px;
 }
 
 .chart-wrapper{
-    height:170px;
+    height:200px;
 }
 
 .stats-info{
@@ -474,6 +624,7 @@ body.dark .stats-info b{
 }
 
 }
+
 
 /* =========================
    REPORT TABLE
@@ -483,20 +634,18 @@ body.dark .stats-info b{
     display:flex;
     align-items:center;
     gap:10px;
-    margin-bottom:15px;
-    font-size:20px;
+    margin-bottom:18px;
+    font-size:22px;
     font-weight:700;
     color:#2563eb;
 }
 
-.report-header i{
-    font-size:20px;
-}
 
 .report-table{
     overflow-x:auto;
     border-radius:14px;
 }
+
 
 .report-table table{
     width:100%;
@@ -504,45 +653,52 @@ body.dark .stats-info b{
     border-collapse:collapse;
 }
 
+
 .report-table th,
 .report-table td{
-    padding:10px;
+    padding:12px 10px;
+    font-size:13px;
     text-align:center;
     white-space:nowrap;
-    font-size:13px;
 }
+
 
 .report-table th{
     background:#eff6ff;
     color:#1e293b;
-    font-weight:700;
     border-bottom:1px solid #dbeafe;
 }
+
 
 .report-table td{
     background:#fff;
     border-bottom:1px solid #eef2f7;
 }
 
+
 .report-table tbody tr:hover td{
     background:#f8fbff;
 }
+
 
 .report-table .earning{
     font-weight:700;
     color:#2563eb;
 }
 
+
 body.dark .report-table th{
     background:#162033;
     color:#fff;
 }
+
 
 body.dark .report-table td{
     background:#0f172a;
     color:#fff;
     border-color:#1e293b;
 }
+
 
 body.dark .report-table tbody tr:hover td{
     background:#162033;
@@ -552,7 +708,7 @@ body.dark .report-table tbody tr:hover td{
 @media(max-width:600px){
 
 .report-header{
-    font-size:17px;
+    font-size:18px;
 }
 
 .report-table th,
@@ -563,9 +719,8 @@ body.dark .report-table tbody tr:hover td{
 
 }
 
-
 /* =========================
-   SELL LOCK
+   SELL LINK LOCK
 ========================= */
 
 .sell-card{
@@ -605,20 +760,20 @@ body.dark .sell-card.locked::after{
 .guide-grid{
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    gap:12px;
+    gap:14px;
     margin-top:18px;
 }
 
 .guide-card{
     padding:14px;
-    min-height:160px;
+    min-height:180px;
     display:flex;
     flex-direction:column;
 }
 
 .guide-icon{
-    width:36px;
-    height:36px;
+    width:38px;
+    height:38px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -626,6 +781,7 @@ body.dark .sell-card.locked::after{
     border-radius:12px;
     background:#2563eb;
     color:#fff;
+    font-size:16px;
 }
 
 .guide-icon.green{
@@ -656,11 +812,13 @@ body.dark .sell-card.locked::after{
     background:#eab308;
 }
 
+
 .guide-card h3{
     margin:0;
-    font-size:13px;
+    font-size:14px;
     color:#0f172a;
 }
+
 
 .guide-card p{
     flex:1;
@@ -670,8 +828,9 @@ body.dark .sell-card.locked::after{
     color:#64748b;
 }
 
+
 .guide-btn{
-    height:32px;
+    height:34px;
     border:none;
     border-radius:10px;
     background:#2563eb;
@@ -679,6 +838,12 @@ body.dark .sell-card.locked::after{
     font:600 11px Poppins,sans-serif;
     cursor:pointer;
 }
+
+
+.guide-btn:hover{
+    background:#1d4ed8;
+}
+
 
 body.dark .guide-card h3{
     color:#fff;
@@ -697,15 +862,22 @@ body.dark .guide-card p{
 
 }
 
+
 @media(max-width:600px){
 
 .guide-grid{
-    gap:8px;
+    gap:10px;
 }
 
 .guide-card{
     padding:11px;
-    min-height:145px;
+    min-height:150px;
+}
+
+.guide-icon{
+    width:34px;
+    height:34px;
+    font-size:14px;
 }
 
 .guide-card h3{
@@ -716,7 +888,13 @@ body.dark .guide-card p{
     font-size:10px;
 }
 
+.guide-btn{
+    height:32px;
+    font-size:10px;
 }
+
+}
+
 
 /* =========================
    CPM MARKET
@@ -727,6 +905,7 @@ body.dark .guide-card p{
     padding:16px;
 }
 
+
 .cpm-header{
     display:flex;
     justify-content:space-between;
@@ -735,11 +914,13 @@ body.dark .guide-card p{
     margin-bottom:18px;
 }
 
+
 .cpm-header h2{
     margin:0;
     font-size:18px;
     color:#2563eb;
 }
+
 
 .cpm-header p{
     margin:6px 0 0;
@@ -747,14 +928,16 @@ body.dark .guide-card p{
     color:#64748b;
 }
 
+
 .market-live{
     display:flex;
     align-items:center;
     gap:8px;
+    color:#16a34a;
     font-size:13px;
     font-weight:700;
-    color:#16a34a;
 }
+
 
 .live-dot{
     width:10px;
@@ -764,38 +947,43 @@ body.dark .guide-card p{
     animation:livePulse 1.2s infinite;
 }
 
+
 @keyframes livePulse{
-    50%{
-        transform:scale(1.5);
-        opacity:.4;
-    }
+
+0%{
+transform:scale(1);
+opacity:1;
 }
 
-.market-layout{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:15px;
+50%{
+transform:scale(1.5);
+opacity:.35;
 }
 
-.market-list{
-    display:flex;
-    flex-direction:column;
+100%{
+transform:scale(1);
+opacity:1;
 }
+
+}
+
 
 .market-row{
     display:grid;
     grid-template-columns:40px 1fr auto;
     align-items:center;
-    gap:12px;
+    gap:15px;
     padding:10px 0;
     border-bottom:1px solid #eef2f7;
     cursor:pointer;
     transition:.25s;
 }
 
+
 .market-row:last-child{
     border-bottom:none;
 }
+
 
 .market-row:hover,
 .market-row.active{
@@ -804,117 +992,85 @@ body.dark .guide-card p{
     padding-left:10px;
 }
 
+
 .flag{
-    font-size:25px;
+    font-size:26px;
 }
+
 
 .country{
     font-size:14px;
     font-weight:600;
 }
 
+
 .spark{
     height:5px;
-    margin-top:7px;
+    margin-top:8px;
     background:#e5e7eb;
     border-radius:999px;
     overflow:hidden;
 }
+
 
 .spark span{
     display:block;
     height:100%;
     width:60%;
     background:linear-gradient(90deg,#2563eb,#22c55e);
-    border-radius:999px;
 }
+
 
 .market-price{
     text-align:right;
 }
+
 
 .market-price b{
     display:block;
     font-size:14px;
 }
 
+
 .market-change{
-    margin-top:4px;
-    font-size:12px;
+    margin-top:5px;
+    font-size:13px;
     font-weight:700;
 }
+
 
 .up{
     color:#16a34a;
 }
 
+
 .down{
     color:#ef4444;
 }
 
-body.dark .market-row{
-    border-color:#1e293b;
-}
-
-body.dark .spark{
-    background:#1e293b;
-}
-
-body.dark .country,
-body.dark .market-price b{
-    color:#fff;
-}
 
 body.dark .cpm-header p{
     color:#94a3b8;
 }
 
 
-/* =========================
-   MARKET DETAIL
-========================= */
-
-.market-detail{
-    padding:18px;
-    border-radius:18px;
-    background:#f8fafc;
-    border:1px solid #e5e7eb;
-}
-
-.market-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
-}
-
-.market-top h3{
-    margin:0;
-    font-size:20px;
-}
-
-.market-price-big span{
-    display:block;
-    font-size:28px;
-    font-weight:700;
-}
-
-.market-price-big div{
-    margin-top:5px;
-    font-weight:700;
-}
-
-body.dark .market-detail{
-    background:#111827;
+body.dark .market-row{
     border-color:#1e293b;
 }
 
 
-@media(max-width:700px){
-
-.cpm-header{
-    flex-direction:column;
+body.dark .spark{
+    background:#1e293b;
 }
+
+
+body.dark .country,
+body.dark .market-price b{
+    color:#fff;
+}
+
+
+@media(max-width:700px){
 
 .market-row{
     grid-template-columns:35px 1fr;
@@ -923,50 +1079,11 @@ body.dark .market-detail{
 .market-price{
     grid-column:2;
     text-align:left;
-    margin-top:5px;
+    margin-top:8px;
 }
 
-}
-
-
-/* =========================
-   FINAL MOBILE
-========================= */
-
-@media(max-width:600px){
-
-.dash-container{
-    padding:10px;
-}
-
-.dash-welcome,
-.dash-box,
-.dash-card,
-.stats-box,
-.report-card,
-.cpm-market,
-.guide-card{
-    border-radius:15px;
-}
-
-.dash-welcome h1{
-    font-size:20px;
-}
-
-.dash-box{
-    padding:16px;
-}
-
-.guide-grid{
-    gap:8px;
-}
-
-.report-grid{
-    gap:8px;
-}
-
-.chart-wrapper{
-    height:160px;
+.cpm-header{
+    flex-direction:column;
 }
 
 }
