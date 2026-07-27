@@ -1315,6 +1315,225 @@ grid-template-columns:1fr;
 }
 
 }
+
+/* =====================================
+   COMPACT DASHBOARD MODE
+===================================== */
+
+.dash-container{
+    max-width:1100px;
+    padding:15px;
+}
+
+
+/* Semua box lebih kecil */
+.dash-welcome,
+.dash-box,
+.dash-card,
+.report-card,
+.stats-box,
+.cpm-market{
+    border-radius:16px;
+}
+
+
+/* Welcome */
+.dash-welcome{
+    padding:18px;
+    margin-bottom:18px;
+}
+
+.dash-welcome h1{
+    font-size:22px;
+}
+
+
+/* Box */
+.dash-box{
+    padding:20px;
+    margin-top:18px;
+}
+
+.dash-box h2{
+    font-size:18px;
+}
+
+
+/* Guide lebih compact */
+.guide-grid{
+    gap:10px;
+}
+
+.guide-card{
+    min-height:150px;
+    padding:12px;
+}
+
+.guide-icon{
+    width:34px;
+    height:34px;
+    font-size:14px;
+}
+
+.guide-card h3{
+    font-size:13px;
+}
+
+.guide-card p{
+    font-size:10px;
+}
+
+
+/* CPM Market */
+.cpm-market{
+    padding:16px;
+}
+
+.cpm-header h2{
+    font-size:18px;
+}
+
+.cpm-header p{
+    font-size:12px;
+}
+
+.market-row{
+    padding:10px 0;
+}
+
+.country{
+    font-size:13px;
+}
+
+.market-price b{
+    font-size:15px;
+}
+
+
+/* Report */
+.report-section{
+    margin-top:16px;
+}
+
+.report-title{
+    padding:10px 15px;
+    border-radius:12px;
+    font-size:15px;
+}
+
+.report-grid{
+    gap:10px;
+}
+
+.report-card{
+    padding:14px;
+    min-height:85px;
+}
+
+.report-icon{
+    width:34px;
+    height:34px;
+    font-size:13px;
+}
+
+.report-card h4{
+    font-size:11px;
+}
+
+.report-card h2{
+    font-size:20px;
+}
+
+
+/* Statistik */
+.stats-box{
+    padding:15px;
+    min-height:300px;
+}
+
+.stats-head h2{
+    font-size:16px;
+}
+
+.chart-wrapper{
+    height:180px;
+}
+
+
+.stats-info div{
+    padding:8px;
+}
+
+.stats-info b{
+    font-size:15px;
+}
+
+
+/* Table */
+.report-card{
+    margin-top:16px;
+}
+
+.report-header{
+    font-size:18px;
+}
+
+.report-table th,
+.report-table td{
+    padding:8px;
+    font-size:11px;
+}
+
+
+/* Mobile lebih rapat */
+@media(max-width:600px){
+
+.dash-container{
+    padding:10px;
+}
+
+
+.dash-welcome h1{
+    font-size:20px;
+}
+
+
+.guide-grid{
+    gap:8px;
+}
+
+
+.guide-card{
+    min-height:145px;
+}
+
+
+.report-grid{
+    gap:8px;
+}
+
+
+.report-card{
+    padding:12px;
+}
+
+
+.report-card h2{
+    font-size:17px;
+}
+
+
+.stats-box{
+    min-height:280px;
+}
+
+
+.chart-wrapper{
+    height:160px;
+}
+
+
+}
 </style>
 
 </head>
