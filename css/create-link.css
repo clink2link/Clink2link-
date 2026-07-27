@@ -83,7 +83,7 @@ max-width:1200px;
 
 margin:auto;
 
-padding:100px 20px 50px;
+padding:75px 20px 50px;
 
 }
 
@@ -1318,7 +1318,13 @@ color:#f8fafc;
 }
 
 
+html.dark body{
 
+background:#020617;
+
+color:#f8fafc;
+
+}
 html.dark .info-box,
 html.dark .create-form,
 html.dark .stat-card,
@@ -1334,7 +1340,19 @@ border-color:#1f2937;
 
 }
 
+html.dark .input-box input,
+html.dark .search-box input{
 
+color:#f8fafc;
+
+}
+
+html.dark .input-box input::placeholder,
+html.dark .search-box input::placeholder{
+
+color:#94a3b8;
+
+}
 
 html.dark .page-title h1,
 html.dark .create-header h2,
@@ -1378,7 +1396,45 @@ color:#fff;
 
 }
 
+html.dark .link-card .copy,
+html.dark .link-card .btn-copy{
 
+background:#1e3a8a;
+
+color:#bfdbfe;
+
+}
+html.dark .advanced-box h3{
+
+color:#f8fafc;
+
+}
+
+
+html.dark .advanced-box label{
+
+color:#f8fafc;
+
+}
+
+html.dark .link-card .edit,
+html.dark .link-card .btn-edit{
+
+background:#78350f;
+
+color:#fde68a;
+
+}
+
+
+html.dark .link-card .delete,
+html.dark .link-card .btn-delete{
+
+background:#7f1d1d;
+
+color:#fecaca;
+
+}
 
 html.dark .copy-box{
 
@@ -1386,7 +1442,13 @@ border-color:#334155;
 
 }
 
+html.dark .create-icon{
 
+background:#1e3a8a;
+
+color:#bfdbfe;
+
+}
 
 html.dark .copy-box input{
 
@@ -1432,7 +1494,14 @@ background:#1e293b;
 
 }
 
+html.dark .advanced-modal{
+background:rgba(2,6,23,.75);
+}
 
+
+html.dark .advanced-header button{
+color:#f8fafc;
+}
 
 html.dark .info-note{
 
@@ -1450,7 +1519,248 @@ color:#f8fafc;
 
 }
 
+/* EXTRA DARK FIX */
 
+html.dark .app-body{
+background:#020617;
+color:#f8fafc;
+}
+
+
+html.dark .page-title p,
+html.dark .create-header p,
+html.dark .stat-card h4{
+
+color:#94a3b8;
+
+}
+
+
+/* =====================================================
+   FINAL SPACING ADJUSTMENT
+===================================================== */
+
+
+/* Naikkan content dekat navbar */
+.app-container{
+
+    padding-top:65px;
+
+}
+
+
+/* =========================
+   CREATE ADS LINK RAPAT
+========================= */
+
+
+.create-form{
+
+    padding:25px;
+
+    margin-bottom:25px;
+
+}
+
+
+.create-header{
+
+    margin-bottom:20px;
+
+}
+
+
+.create-header h2{
+
+    font-size:22px;
+
+}
+
+
+.create-header p{
+
+    font-size:13px;
+
+}
+
+
+label{
+
+    margin:12px 0 6px;
+
+}
+
+
+.input-box{
+
+    height:52px;
+
+}
+
+
+.btn-group{
+
+    margin-top:20px;
+
+}
+
+
+
+/* =========================
+   DAFTAR LINK LEBIH COMPACT
+========================= */
+
+
+.link-card{
+
+    padding:15px;
+
+    border-radius:16px;
+
+    margin-bottom:12px;
+
+}
+
+
+.link-card h3{
+
+    font-size:18px;
+
+    margin-bottom:8px;
+
+}
+
+
+.link-meta{
+
+    font-size:12px;
+
+    gap:8px;
+
+}
+
+
+.created{
+
+    font-size:12px;
+
+}
+
+
+.destination-link{
+
+    font-size:12px;
+
+    margin-bottom:8px;
+
+}
+
+
+
+/* tombol link */
+.link-card button{
+
+    height:34px;
+
+    padding:0 10px;
+
+    font-size:12px;
+
+}
+
+
+
+/* =========================
+   SEARCH LEBIH BESAR
+========================= */
+
+
+.search-box{
+
+    height:60px;
+
+    padding:0 20px;
+
+}
+
+
+.search-box input{
+
+    font-size:16px;
+
+}
+
+
+
+/* =========================
+   TIPS KECIL MERAH
+========================= */
+
+
+.info-note{
+
+    padding:10px 14px;
+
+    border-radius:14px;
+
+    background:#fef2f2;
+
+    border-color:#fecaca;
+
+}
+
+
+.info-note i{
+
+    font-size:15px;
+
+    color:#ef4444;
+
+}
+
+
+.info-note h4{
+
+    font-size:13px;
+
+    color:#dc2626;
+
+}
+
+
+.info-note p{
+
+    font-size:11px;
+
+    color:#b91c1c;
+
+}
+
+
+
+/* Dark mode tips */
+html.dark .info-note{
+
+    background:#450a0a;
+
+    border-color:#7f1d1d;
+
+}
+
+
+html.dark .info-note h4,
+html.dark .info-note i{
+
+    color:#fca5a5;
+
+}
+
+
+html.dark .info-note p{
+
+    color:#fecaca;
+
+}
 
 /* =========================
    MOBILE
@@ -1491,7 +1801,7 @@ overflow-x:auto;
 @media(max-width:600px){
 
 
-.container{
+.app-container{
 
 padding:90px 15px 40px;
 
