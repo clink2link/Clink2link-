@@ -33,7 +33,7 @@ async function loadLoginActivity() {
 
   try {
 
-    const { data, error } = await database.supabase
+    const { data, error } = await window.database.supabase
       .from("login_activity")
       .select("*")
       .eq("user_id", userId)
@@ -127,9 +127,9 @@ async function trackLoginActivity(userId) {
 
   try {
 
-    const ipData = await ipPromise;
+    const ipData = await getIP();
 
-    await database.supabase
+    await window.database.supabase
       .from("login_activity")
       .insert({
         user_id: userId,
@@ -172,30 +172,49 @@ function getDevice() {
 // IP INFO
 // =========================
 
-async function getIPInfo() {
-  try {
-    const res = await fetch("https://ipapi.co/json/");
-    const data = await res.json();
+let ipPromise = null;
 
-    return {
-      ip: data.ip,
-      city: data.city,
-      region: data.region,
-      country: data.country_name,
-      org: data.org,
-      lat: data.latitude,
-      lon: data.longitude
-    };
 
-  } catch (e) {
-    return {
-      ip: "Unknown",
-      city: "-",
-      region: "-",
-      country: "-",
-      org: "-",
-      lat: null,
-      lon: null
-    };
-  }
+function getIP(){
+
+    if(!ipPromise){
+        ipPromise = getIPInfo();
+    }
+
+    return ipPromise;
+}
+
+
+async function getIPInfo(){
+
+    try {
+
+        const res = await fetch("https://ipapi.co/json/");
+
+        const data = await res.json();
+
+        return {
+            ip: data.ip,
+            city: data.city,
+            region: data.region,
+            country: data.country_name,
+            org: data.org,
+            lat: data.latitude,
+            lon: data.longitude
+        };
+
+    } catch(e){
+
+        return {
+            ip:"Unknown",
+            city:"-",
+            region:"-",
+            country:"-",
+            org:"-",
+            lat:null,
+            lon:null
+        };
+
+    }
+
 }
