@@ -1389,3 +1389,41 @@ html.dark .market-price b{
 
 
 }
+
+
+/* =========================
+   DAILY REPORT TABLE
+========================= */
+
+.daily-report-section{
+    margin-top:35px;
+}
+
+
+.daily-report-card{
+    padding:22px;
+}
+
+
+.sell-report{
+    margin-top:10px;
+}
+
+
+.daily-report-card .report-header{
+    margin-bottom:20px;
+}
+
+
+@media(max-width:600px){
+
+.daily-report-section{
+    margin-top:25px;
+}
+
+
+.daily-report-card{
+    padding:15px;
+}
+
+}
