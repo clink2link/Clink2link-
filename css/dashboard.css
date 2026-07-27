@@ -1427,3 +1427,38 @@ html.dark .market-price b{
 }
 
 }
+
+
+.guide-toggle{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    cursor:pointer;
+}
+
+
+.guide-toggle h2{
+    margin:0;
+}
+
+
+.guide-toggle i{
+    transition:.3s;
+}
+
+
+.guide-content{
+    max-height:2000px;
+    overflow:hidden;
+    transition:.4s ease;
+}
+
+
+.guide-content.hide{
+    max-height:0;
+}
+
+
+.guide-toggle.active #guideArrow{
+    transform:rotate(180deg);
+}
