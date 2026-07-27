@@ -63,6 +63,15 @@ border-radius:12px;
 
 window.debug=log;
 
+
+const PAGE = location.pathname
+.split("/")
+.pop()
+.replace(".html","")
+||"index";
+
+log("CURRENT PAGE", PAGE);
+
 // =========================================
 // PAGE
 // =========================================
@@ -155,27 +164,42 @@ document.addEventListener("DOMContentLoaded",()=>{
 
     log("DOM","READY");
 
+    // =========================================
+    // CURRENT PAGE
+    // =========================================
+
+    const PAGE = location.pathname
+        .split("/")
+        .pop()
+        .replace(".html","") || "index";
+
+    log("CURRENT PAGE", PAGE);
+
+    // =========================================
     // SCRIPT
+    // =========================================
 
-    const scripts=[...document.scripts];
+    const scripts = [...document.scripts];
 
-    log("SCRIPT COUNT",scripts.length);
+    log("SCRIPT COUNT", scripts.length);
 
     scripts.forEach((s,i)=>{
 
         log("SCRIPT "+i,{
-            src:s.src||"INLINE",
+            src:s.src || "INLINE",
             async:s.async,
             defer:s.defer
         });
 
     });
 
+    // =========================================
     // CSS
+    // =========================================
 
-    const css=[...document.querySelectorAll('link[rel="stylesheet"]')];
+    const css = [...document.querySelectorAll('link[rel="stylesheet"]')];
 
-    log("CSS LINK COUNT",css.length);
+    log("CSS LINK COUNT", css.length);
 
     css.forEach((c,i)=>{
 
@@ -186,24 +210,64 @@ document.addEventListener("DOMContentLoaded",()=>{
 
     });
 
+    // =========================================
     // INLINE STYLE
+    // =========================================
 
-    const styles=[...document.querySelectorAll("style")];
+    const styles = [...document.querySelectorAll("style")];
 
-    log("INLINE STYLE",styles.length);
+    log("INLINE STYLE", styles.length);
 
-    // data-debug
+    // =========================================
+    // PAGE ELEMENT CHECK
+    // =========================================
 
-    const debugElements=document.querySelectorAll("[data-debug]");
+    const PAGE_ELEMENTS = {
 
-    log("DEBUG ELEMENT COUNT",debugElements.length);
+        dashboard:[
+            "adsToday",
+            "adsMonth",
+            "currentCpm",
+            "adsChart",
+            "sellChart",
+            "reportTable",
+            "announcementBox",
+            "cpmMarketList"
+        ],
 
-    debugElements.forEach(el=>{
+        payment:[
+            "balance",
+            "withdrawService",
+            "manualWithdrawBtn",
+            "instantWithdrawBtn",
+            "paymentWarning"
+        ],
 
-        log("ELEMENT",{
-            id:el.id,
-            tag:el.tagName
-        });
+        profile:[
+            "profileName",
+            "profileEmail",
+            "saveProfile"
+        ],
+
+        withdraw:[
+            "withdrawAmount",
+            "withdrawBtn",
+            "withdrawHistory"
+        ]
+
+    };
+
+    const ids = PAGE_ELEMENTS[PAGE] || [];
+
+    log("PAGE ELEMENT COUNT", ids.length);
+
+    ids.forEach(id=>{
+
+        log(id,
+            document.getElementById(id)
+            ? "FOUND"
+            : "MISSING"
+        );
 
     });
 
