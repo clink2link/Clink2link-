@@ -115,43 +115,67 @@ function formatDate(dateStr) {
 
 const ipPromise = getIPInfo();
 
-window.trackLoginActivity = async function(userId) {
+async function trackLoginActivity(userId){
 
-  if (!userId) return;
+    if(!userId) return;
 
-  if (sessionStorage.getItem("login_tracked") || window.__loginTracking) {
-    return;
-  }
+    if(
+        sessionStorage.getItem("login_tracked") ||
+        window.__loginTracking
+    ){
+        return;
+    }
 
-  window.__loginTracking = true;
+    window.__loginTracking=true;
 
-  try {
+    try{
 
-    const ipData = await getIP();
+        const ipData = await getIP();
 
-    await window.database.supabase
-      .from("login_activity")
-      .insert({
-        user_id: userId,
-        device: getDevice(),
-        user_agent: navigator.userAgent,
-        ip: ipData.ip,
-        city: ipData.city,
-        region: ipData.region,
-        country: ipData.country,
-        org: ipData.org,
-        latitude: ipData.lat,
-        longitude: ipData.lon
-      });
+        const {error}=await window.database.supabase
+        .from("login_activity")
+        .insert({
+            user_id:userId,
+            device:getDevice(),
+            user_agent:navigator.userAgent,
+            ip:ipData.ip,
+            city:ipData.city,
+            country:ipData.country,
+            region:ipData.region,
+            org:ipData.org,
+            latitude:ipData.lat,
+            longitude:ipData.lon
+        });
 
-    sessionStorage.setItem("login_tracked", "true");
 
-    console.log("✅ Login activity saved");
+        if(error) throw error;
 
-  } catch (e) {
-    console.warn("⚠️ Activity tracking gagal:", e);
-  }
+
+        sessionStorage.setItem(
+            "login_tracked",
+            "true"
+        );
+
+
+        console.log(
+            "✅ Login activity saved"
+        );
+
+
+    }catch(e){
+
+        console.warn(
+            "Activity tracking gagal:",
+            e
+        );
+
+    }
+
 }
+
+
+// EXPORT
+window.trackLoginActivity = trackLoginActivity;
 
 // =========================
 // DEVICE
