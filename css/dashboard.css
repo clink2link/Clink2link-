@@ -784,17 +784,17 @@ transition:.3s;
 }
 
 .guide-content{
-max-height:2000px;
-overflow:hidden;
-transition:.4s ease;
+    max-height:0;
+    overflow:hidden;
+    transition:.4s ease;
 }
 
-.guide-content.hide{
-max-height:0;
+.guide-content.show{
+    max-height:2000px;
 }
 
 .guide-toggle.active #guideArrow{
-transform:rotate(180deg);
+    transform:rotate(180deg);
 }
 
 
