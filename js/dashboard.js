@@ -129,8 +129,8 @@ const links=await database.getLinks(authId);
 
 let adsViews=0;
 let adsClicks=0;
-let sellViews=0;
-let sellClicks=0;
+let totalSellViews=0;
+let totalSellClicks=0;
 let totalSell=0;
 
 if(Array.isArray(links)){
@@ -239,15 +239,15 @@ month:"short"
 });
 
 adsViewsChart = chartData.map(item =>
-Number(item.ads_views || 0)
+    Number(item.ads_views || 0)
+);
+
+earnings = chartData.map(item =>
+    Number(item.ads_earnings || 0)
 );
 
 sellViewsChart = chartData.map(item =>
-Number(item.sell_views || 0)
-);
-
-sellViews=chartData.map(item=>
-Number(item.sell_views||0)
+    Number(item.sell_views || 0)
 );
 
 }else{
@@ -467,7 +467,7 @@ data: {
 labels,
 datasets:[{
 label:"Views",
-data:sellViews,
+data:sellViewsChart,
 
 borderColor: "#8b5cf6",
 backgroundColor: "rgba(139,92,246,.12)",
@@ -538,45 +538,45 @@ if (sellCpm) {
 
 const reportTable = document.getElementById("reportTable");
 
-if(reportTable){
+if (reportTable) {
 
-    if(reports.length){
+    if (reports.length) {
 
         reportTable.innerHTML = reports.map(row => {
 
-            const cpm =
-                Number(row.ads_views || 0) > 0
-                ? Math.round(
-                    (Number(row.ads_earnings || 0) /
-                    Number(row.ads_views || 0)) * 1000
-                )
+            const adsViews = Number(row.ads_views || 0);
+            const adsEarnings = Number(row.ads_earnings || 0);
+            const totalEarnings = Number(
+                row.total_earnings ?? row.ads_earnings ?? 0
+            );
+
+            const cpm = adsViews > 0
+                ? Math.round((adsEarnings * 1000) / adsViews)
                 : 0;
 
             return `
 <tr>
-<td>
-${new Date(row.report_date).toLocaleDateString("id-ID")}
-</td>
-<td>${Number(row.ads_views || 0).toLocaleString("id-ID")}</td>
-<td class="earning">
-Rp ${Number(row.ads_earnings || 0).toLocaleString("id-ID")}
-</td>
-<td>${cpm.toLocaleString("id-ID")}</td>
-<td>
-Rp ${Number(row.ads_earnings || 0).toLocaleString("id-ID")}
-</td>
+    <td>${new Date(row.report_date).toLocaleDateString("id-ID")}</td>
+    <td>${adsViews.toLocaleString("id-ID")}</td>
+    <td class="earning">
+        Rp ${adsEarnings.toLocaleString("id-ID")}
+    </td>
+    <td>${cpm.toLocaleString("id-ID")}</td>
+    <td>
+        Rp ${totalEarnings.toLocaleString("id-ID")}
+    </td>
 </tr>
 `;
 
         }).join("");
 
-    }else{
+    } else {
 
         reportTable.innerHTML = `
 <tr>
-<td colspan="5">
-Belum ada data report.
-</td>
+    <td colspan="5">
+        Belum ada data report.
+    </td>
 </tr>
 `;
 
@@ -792,590 +792,3 @@ err
 
 }
 
-
-const commonOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-
-    interaction: {
-        mode: "index",
-        intersect: false
-    },
-
-    plugins: {
-
-        legend: {
-            display: false
-        },
-
-        tooltip: {
-
-            backgroundColor: "#0f172a",
-
-            padding: 12,
-
-            callbacks: {
-
-                label(context) {
-
-                    const value = Number(context.parsed.y || 0);
-
-                    if (context.dataset.label === "Pendapatan") {
-
-                        return "Rp " + value.toLocaleString("id-ID");
-
-                    }
-
-                    return value.toLocaleString("id-ID") + " Views";
-
-                }
-
-            }
-
-        }
-
-    },
-
-    scales: {
-
-        x: {
-
-            grid: {
-                display: false
-            }
-
-        },
-
-        y: {
-
-            beginAtZero: true,
-
-            grid: {
-                color: "rgba(148,163,184,.15)"
-            },
-
-            ticks: {
-
-                callback(value) {
-
-                    return Number(value).toLocaleString("id-ID");
-
-                }
-
-            }
-
-        }
-
-    }
-
-};
-
-// ===========================
-// ADS CHART
-// ===========================
-
-const adsCanvas = document.getElementById("adsChart");
-
-if (adsCanvas) {
-
-    if (adsChartInstance) {
-        adsChartInstance.destroy();
-    }
-
-    adsChartInstance = new Chart(adsCanvas, {
-
-        type: "line",
-
-        data: {
-
-            labels,
-
-            datasets: [
-
-                {
-
-                    label: "Pendapatan",
-
-                    data: earnings,
-
-                    borderColor: "#2563eb",
-
-                    backgroundColor: "rgba(37,99,235,.12)",
-
-                    borderWidth: 3,
-
-                    fill: true,
-
-                    tension: .45,
-
-                    pointRadius: 5,
-
-                    pointHoverRadius: 8,
-
-                    pointBackgroundColor: "#2563eb",
-
-                    pointBorderWidth: 2,
-
-                    pointHoverBorderWidth: 3
-
-                }
-
-            ]
-
-        },
-
-        options: commonOptions
-
-    });
-
-}
-
-// ===========================
-// SELL CHART
-// ===========================
-
-const sellCanvas = document.getElementById("sellChart");
-
-if (sellCanvas) {
-
-    if (sellChartInstance) {
-        sellChartInstance.destroy();
-    }
-
-    sellChartInstance = new Chart(sellCanvas, {
-
-        type: "line",
-
-        data: {
-
-            labels,
-
-            datasets: [
-
-                {
-
-                    label: "Views",
-
-                    data: sellViewsChart,
-
-                    borderColor: "#8b5cf6",
-
-                    backgroundColor: "rgba(139,92,246,.12)",
-
-                    borderWidth: 3,
-
-                    fill: true,
-
-                    tension: .45,
-
-                    pointRadius: 5,
-
-                    pointHoverRadius: 8,
-
-                    pointBackgroundColor: "#8b5cf6",
-
-                    pointBorderWidth: 2
-
-                }
-
-            ]
-
-        },
-
-        options: commonOptions
-
-    });
-
-}
-
-// ===========================
-// CPM MARKET
-// ===========================
-
-const marketList = document.getElementById("cpmMarketList");
-
-if (marketList) {
-
-    const market = await database.getCPMMarket();
-
-    if (Array.isArray(market) && market.length) {
-
-        marketList.innerHTML = market.map(item => `
-
-<div class="market-row">
-
-<div class="flag">
-${item.flag || "🌍"}
-</div>
-
-<div>
-
-<div class="country">
-${item.country || "Unknown"}
-</div>
-
-<div class="spark">
-<span style="width:${item.trend || 50}%"></span>
-</div>
-
-</div>
-
-<div class="market-price">
-
-<b>
-Rp ${Number(item.cpm || 0).toLocaleString("id-ID")}
-</b>
-
-<div class="market-change ${Number(item.change)>=0?"up":"down"}">
-
-${Number(item.change)>=0?"▲":"▼"}
-
-${Math.abs(Number(item.change||0)).toFixed(1)}%
-
-</div>
-
-</div>
-
-</div>
-
-`).join("");
-
-    } else {
-
-        marketList.innerHTML = `
-
-<div class="empty-market">
-Belum ada data CPM Market.
-</div>
-
-`;
-
-    }
-
-}
-
-
-// ===========================
-// CPM REPORT
-// ===========================
-
-const adsCpm = document.getElementById("adsCpm");
-const sellCpm = document.getElementById("sellCpm");
-
-const lastReport =
-    reports.length > 0
-        ? reports[reports.length - 1]
-        : null;
-
-if (adsCpm) {
-
-    let cpm = 0;
-
-    if (
-        lastReport &&
-        Number(lastReport.ads_views || 0) > 0
-    ) {
-
-        cpm = Math.round(
-            (Number(lastReport.ads_earnings || 0) * 1000) /
-            Number(lastReport.ads_views)
-        );
-
-    }
-
-    adsCpm.textContent =
-        cpm.toLocaleString("id-ID");
-
-}
-
-if (sellCpm) {
-
-    let cpm = 0;
-
-    if (
-        lastReport &&
-        Number(lastReport.sell_views || 0) > 0
-    ) {
-
-        cpm = Math.round(
-            (Number(lastReport.sell_earnings || 0) * 1000) /
-            Number(lastReport.sell_views)
-        );
-
-    }
-
-    sellCpm.textContent =
-        cpm.toLocaleString("id-ID");
-
-}
-
-// ===========================
-// REPORT TABLE
-// ===========================
-
-const reportTable =
-document.getElementById("reportTable");
-
-if (reportTable) {
-
-    if (reports.length) {
-
-        reportTable.innerHTML =
-            reports.map(row => {
-
-                const cpm =
-                    Number(row.ads_views || 0) > 0
-                        ? Math.round(
-                            (Number(row.ads_earnings || 0) * 1000) /
-                            Number(row.ads_views || 0)
-                        )
-                        : 0;
-
-                return `
-
-<tr>
-
-<td>
-${new Date(row.report_date)
-.toLocaleDateString("id-ID")}
-</td>
-
-<td>
-${Number(row.ads_views || 0)
-.toLocaleString("id-ID")}
-</td>
-
-<td class="earning">
-Rp ${Number(row.ads_earnings || 0)
-.toLocaleString("id-ID")}
-</td>
-
-<td>
-${cpm.toLocaleString("id-ID")}
-</td>
-
-<td>
-Rp ${Number(
-row.total_earnings ??
-row.ads_earnings ??
-0
-).toLocaleString("id-ID")}
-</td>
-
-</tr>
-
-`;
-
-            }).join("");
-
-    } else {
-
-        reportTable.innerHTML = `
-
-<tr>
-<td colspan="5">
-Belum ada data report.
-</td>
-</tr>
-
-`;
-
-    }
-
-}
-
-// ===========================
-// ANNOUNCEMENT
-// ===========================
-
-const news =
-await database.getAnnouncements();
-
-const announcementBox =
-document.getElementById("announcementBox");
-
-if (announcementBox) {
-
-    if (
-        Array.isArray(news) &&
-        news.length
-    ) {
-
-        announcementBox.innerHTML =
-            news.map(item => `
-
-<div style="margin-bottom:18px">
-
-<b>
-${item.title || "Pengumuman"}
-</b>
-
-<p style="margin:8px 0 0">
-${item.content || ""}
-</p>
-
-</div>
-
-`).join("");
-
-    } else {
-
-        announcementBox.innerHTML =
-            "Belum ada pengumuman.";
-
-    }
-
-}
-
-} catch (error) {
-
-    console.error(
-        "Dashboard Error:",
-        error
-    );
-
-}
-
-}
-
-
-// ===========================
-// ANIMATION
-// ===========================
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    const cards = document.querySelectorAll(
-        ".dash-card,.dash-box,.report-card,.stats-box,.create-form"
-    );
-
-    cards.forEach((item, index) => {
-
-        item.style.opacity = "0";
-        item.style.transform = "translateY(30px)";
-
-        setTimeout(() => {
-
-            item.style.transition = ".6s ease";
-            item.style.opacity = "1";
-            item.style.transform = "translateY(0)";
-
-        }, index * 80);
-
-    });
-
-});
-
-// ===========================
-// AUTO DARK MODE
-// ===========================
-
-function autoTheme() {
-
-    const theme = localStorage.getItem("theme");
-
-    if (theme === "dark") {
-        document.body.classList.add("dark");
-        return;
-    }
-
-    if (theme === "light") {
-        document.body.classList.remove("dark");
-        return;
-    }
-
-    const hour = new Date().getHours();
-
-    if (hour >= 18 || hour < 6) {
-        document.body.classList.add("dark");
-    } else {
-        document.body.classList.remove("dark");
-    }
-
-}
-
-autoTheme();
-setInterval(autoTheme, 60000);
-
-// ===========================
-// LOAD
-// ===========================
-
-document.addEventListener("DOMContentLoaded", async () => {
-
-    await loadDashboard();
-    await checkSellStatus();
-
-    const params = new URLSearchParams(location.search);
-
-    if (params.get("tab") === "statistics") {
-
-        setTimeout(() => {
-
-            const section =
-                document.getElementById("statistics");
-
-            if (section) {
-
-                section.scrollIntoView({
-
-                    behavior: "smooth",
-                    block: "start"
-
-                });
-
-            }
-
-        }, 700);
-
-    }
-
-});
-
-// ===========================
-// CHECK SELL STATUS
-// ===========================
-
-async function checkSellStatus() {
-
-    try {
-
-        const user = await database.getUser();
-
-        if (!user) return;
-
-        const profile =
-            await database.getProfile(user.id);
-
-        if (!profile) return;
-
-        const enabled =
-            Boolean(profile.sell_link_enabled);
-
-        document
-            .querySelectorAll(".sell-card")
-            .forEach(card => {
-
-                card.classList.toggle(
-                    "locked",
-                    !enabled
-                );
-
-            });
-
-        console.log(
-            enabled
-                ? "✅ SELL LINK AKTIF"
-                : "🔒 SELL LINK TERKUNCI"
-        );
-
-    } catch (err) {
-
-        console.error(
-            "CHECK SELL ERROR:",
-            err
-        );
-
-    }
-
-}
