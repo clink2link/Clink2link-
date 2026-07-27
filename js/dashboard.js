@@ -747,7 +747,11 @@ console.log("PROFILE:",profile);
 
 
 // cek status sell
-const enabled = profile.sell_link_enabled === true;
+const enabled =
+    profile.sell_link_enabled === true ||
+    user.sell_unlocked === true ||
+    Number(user.withdraw_count || 0) >= 3 ||
+    Number(profile.withdraw_count || 0) >= 3;
 
 
 const cards=document.querySelectorAll(".sell-card");
