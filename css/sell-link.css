@@ -569,3 +569,41 @@ padding:18px;
 }
 
 }
+
+/* =========================
+   INFO BOX COMPACT
+========================= */
+
+.info-box{
+    padding:14px 16px;
+    border-radius:16px;
+    margin-bottom:16px;
+}
+
+
+.info-header{
+    gap:8px;
+    margin-bottom:8px;
+}
+
+
+.info-header i{
+    font-size:14px;
+}
+
+
+.info-header h3{
+    font-size:14px;
+}
+
+
+.info-box li{
+    font-size:11px;
+    margin:5px 0;
+    line-height:1.4;
+}
+
+
+.info-box li i{
+    font-size:11px;
+}
