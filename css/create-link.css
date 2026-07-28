@@ -973,12 +973,18 @@ html.dark::-webkit-scrollbar-thumb{
         height:42px;
     }
 
+    /* FIX BUTTON COPY EDIT DELETE */
     .link-actions{
+        display:flex;
+        justify-content:flex-end;
+        gap:8px;
         flex-wrap:wrap;
     }
 
     .link-card button{
-        flex:1;
+        flex:none;
+        width:auto;
+        min-width:85px;
     }
 
     .advanced-box{
