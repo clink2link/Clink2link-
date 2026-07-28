@@ -246,31 +246,37 @@ Buka
 
 <div class="cpm-market">
 
-    <div class="cpm-header">
+    <div class="guide-toggle" onclick="toggleMarket()">
 
-        <div>
-            <h2>
-                <i class="fa-solid fa-earth-asia"></i>
-                Global CPM Market
-            </h2>
+        <h2>
+            <i class="fa-solid fa-earth-asia"></i>
+            Global CPM Market
+        </h2>
+
+        <i id="marketArrow" class="fa-solid fa-chevron-down"></i>
+
+    </div>
+
+    <div id="marketContent" class="guide-content">
+
+        <div class="cpm-header">
 
             <p id="countryNotice">
                 Memuat CPM negara...
             </p>
+
+            <div class="market-live">
+                <span class="live-dot"></span>
+                LIVE
+            </div>
+
         </div>
 
-        <div class="market-live">
-            <span class="live-dot"></span>
-            LIVE
+        <div class="market-layout">
+            <div class="market-list" id="cpmMarketList"></div>
         </div>
 
     </div>
-
-    <div class="market-layout">
-
-    <div class="market-list" id="cpmMarketList"></div>
-
-</div>
 
 </div>
 
