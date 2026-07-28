@@ -52,7 +52,7 @@ img{
 .app-container{
     max-width:1200px;
     margin:auto;
-    padding:45px 20px 40px;
+    padding:8px 20px 40px;
 }
 
 /* =========================
@@ -62,7 +62,7 @@ img{
     display:flex;
     align-items:center;
     gap:16px;
-    margin:0 0 18px;
+    margin:0 0 16px;
 }
 
 .page-title>i{
