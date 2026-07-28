@@ -984,3 +984,25 @@ html.dark::-webkit-scrollbar-thumb{
         width:92%;
     }
 }
+
+/* FORCE LIGHT MODE INFO BOX */
+html:not(.dark) .info-box{
+    background:#fff !important;
+    border:1px solid #e2e8f0 !important;
+}
+
+html:not(.dark) .info-header h3{
+    color:#dc2626 !important;
+}
+
+html:not(.dark) .info-header i{
+    color:#ef4444 !important;
+}
+
+html:not(.dark) .info-box li{
+    color:#b91c1c !important;
+}
+
+html:not(.dark) .info-box li i{
+    color:#ef4444 !important;
+}
