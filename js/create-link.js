@@ -170,7 +170,9 @@ ${status?"Aktif":"Nonaktif"}
 readonly
 value="${url}">
 
-<button onclick="copyLink('${url}')">
+<button
+class="btn-copy"
+onclick="copyLink('${url}')">
 
 <i class="fa-regular fa-copy"></i>
 
@@ -180,16 +182,20 @@ value="${url}">
 
 <div class="action-btn">
 
-<button class="btn-blue"
+<button
+class="btn-edit"
 onclick="editLink('${link.id}')">
 
+<i class="fa-solid fa-pen"></i>
 Edit
 
 </button>
 
-<button class="btn-orange"
+<button
+class="btn-delete"
 onclick="deleteLink('${link.id}')">
 
+<i class="fa-solid fa-eye-slash"></i>
 Hide
 
 </button>
