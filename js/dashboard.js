@@ -850,6 +850,16 @@ arrow.classList.toggle("active");
 
 }
 
+function toggleMarket(){
+
+const content=document.getElementById("marketContent");
+const arrow=document.getElementById("marketArrow");
+
+content.classList.toggle("show");
+arrow.classList.toggle("active");
+
+}
+
 // ===========================
 // CHECK SELL LINK STATUS
 // ===========================
