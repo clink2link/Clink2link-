@@ -1483,3 +1483,15 @@ html.dark .btn-secondary{
 }
 
 }
+
+html:not(.dark) .link-meta span{
+    background:#f8fafc;
+    padding:4px 10px;
+    border-radius:8px;
+    border:1px solid #e2e8f0;
+    color:#334155 !important;
+}
+
+html:not(.dark) .link-meta i{
+    color:#2563eb !important;
+}
