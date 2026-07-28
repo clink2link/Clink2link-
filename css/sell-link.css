@@ -797,3 +797,19 @@ html.dark .stat-card h2{
     }
 
 }
+
+@media(max-width:420px){
+
+.quick-stats{
+    grid-template-columns:1fr 1fr;
+}
+
+.stat-card h2{
+    font-size:18px;
+}
+
+.stat-card h4{
+    font-size:11px;
+}
+
+}
