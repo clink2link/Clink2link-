@@ -52,7 +52,7 @@ img{
 .app-container{
     max-width:1200px;
     margin:auto;
-    padding:65px 20px 40px;
+    padding:45px 20px 40px;
 }
 
 /* =========================
@@ -62,7 +62,7 @@ img{
     display:flex;
     align-items:center;
     gap:16px;
-    margin-bottom:24px;
+    margin:0 0 18px;
 }
 
 .page-title>i{
@@ -86,9 +86,10 @@ img{
 }
 
 .page-title p{
-    margin-top:4px;
+    margin-top:2px;
     font-size:13px;
     color:var(--cl-muted);
+    line-height:1.4;
 }
 
 /* =========================
@@ -97,27 +98,28 @@ img{
 .info-box{
     background:var(--cl-card);
     border:1px solid var(--cl-border);
-    border-radius:16px;
-    padding:18px;
-    margin-bottom:18px;
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:16px;
     box-shadow:var(--cl-shadow);
 }
 
 .info-header{
     display:flex;
     align-items:center;
-    gap:10px;
-    margin-bottom:12px;
+    gap:8px;
+    margin-bottom:8px;
 }
 
 .info-header i{
-    color:var(--cl-primary);
-    font-size:18px;
+    color:#dc2626;
+    font-size:15px;
 }
 
 .info-header h3{
-    font-size:16px;
+    font-size:14px;
     font-weight:700;
+    color:#dc2626;
 }
 
 .info-box ul{
@@ -126,15 +128,18 @@ img{
 
 .info-box li{
     display:flex;
-    align-items:center;
-    gap:8px;
-    margin:8px 0;
-    font-size:13px;
-    color:var(--cl-muted);
+    align-items:flex-start;
+    gap:7px;
+    margin:6px 0;
+    font-size:11px;
+    line-height:1.5;
+    color:#b91c1c;
 }
 
 .info-box li i{
-    color:var(--cl-success);
+    color:#ef4444;
+    font-size:11px;
+    margin-top:3px;
 }
 
 /* =========================
@@ -360,30 +365,33 @@ label{
 ========================= */
 .info-note{
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     gap:10px;
-    padding:10px 14px;
-    margin-bottom:20px;
+    margin-bottom:18px;
+    padding:10px 12px;
     background:#fef2f2;
     border:1px solid #fecaca;
-    border-radius:14px;
+    border-left:4px solid #ef4444;
+    border-radius:12px;
 }
 
 .info-note i{
+    margin-top:2px;
+    font-size:14px;
     color:#ef4444;
-    font-size:15px;
 }
 
 .info-note h4{
-    font-size:13px;
-    color:#dc2626;
     margin-bottom:2px;
+    font-size:12px;
+    font-weight:700;
+    color:#dc2626;
 }
 
 .info-note p{
     font-size:11px;
-    color:#b91c1c;
     line-height:1.5;
+    color:#b91c1c;
 }
 
 /* =========================
@@ -713,6 +721,21 @@ html.dark .btn-edit{
 
 html.dark .btn-delete{
     background:#7f1d1d;
+    color:#fecaca;
+}
+
+html.dark .info-note{
+    background:#450a0a;
+    border-color:#7f1d1d;
+    border-left-color:#ef4444;
+}
+
+html.dark .info-note i,
+html.dark .info-note h4{
+    color:#fca5a5;
+}
+
+html.dark .info-note p{
     color:#fecaca;
 }
 
