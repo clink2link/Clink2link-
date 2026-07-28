@@ -1107,3 +1107,14 @@ transition:.3s;
 #marketArrow.active{
 transform:rotate(180deg);
 }
+
+/* DETAIL REPORT */
+
+.daily-report-section{
+    margin-top:24px;
+    margin-bottom:24px;
+}
+
+.daily-report-card{
+    padding:20px;
+}
