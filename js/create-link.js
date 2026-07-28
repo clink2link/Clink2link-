@@ -180,7 +180,7 @@ onclick="copyLink('${url}')">
 
 </div>
 
-<div class="action-btn">
+<div class="link-actions">
 
 <button
 class="btn-edit"
