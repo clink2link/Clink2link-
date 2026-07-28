@@ -537,29 +537,29 @@ label{
 .copy-box{
     display:flex;
     align-items:center;
-    border:1px solid var(--cl-border);
-    border-radius:12px;
+    gap:0;
     overflow:hidden;
-    margin-bottom:12px;
+    border:1px solid var(--cl-border);
+    border-radius:14px;
 }
 
 .copy-box input{
     flex:1;
-    border:0;
-    outline:0;
-    padding:12px 14px;
+    height:52px;
+    padding:0 16px;
+    border:none;
     background:#f8fafc;
-    font-size:13px;
-    color:var(--cl-text);
 }
 
 .copy-box button{
-    width:46px;
-    border:0;
+    width:52px;
+    height:52px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:none;
     background:#fff;
-    color:var(--cl-primary);
-    cursor:pointer;
-    transition:.25s;
 }
 
 .copy-box button:hover{
@@ -607,6 +607,20 @@ label{
 .btn-delete{
     background:#fee2e2;
     color:#dc2626;
+}
+
+.btn-hide{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.btn-hide:hover{
+    background:#fecaca;
+}
+
+html.dark .btn-hide{
+    background:#7f1d1d;
+    color:#fecaca;
 }
 
 /* =========================
@@ -958,19 +972,6 @@ html.dark::-webkit-scrollbar-thumb{
 
     .stat-card h2{
         font-size:20px;
-    }
-
-    .copy-box{
-        flex-direction:column;
-    }
-
-    .copy-box input,
-    .copy-box button{
-        width:100%;
-    }
-
-    .copy-box button{
-        height:42px;
     }
 
     /* FIX BUTTON COPY EDIT DELETE */
