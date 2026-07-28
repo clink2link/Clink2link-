@@ -28,18 +28,43 @@ const totalClick=document.getElementById("totalClick");
 const totalEarning=document.getElementById("totalEarning");
 
 async function getCurrentUser(){
+
 try{
+
 const user=await database.getUser();
+
 if(!user){
 location.replace("index.html");
 return null;
 }
+
+
+const {data:profile,error}=await database.supabase
+.from("profiles")
+.select("*")
+.eq("id",user.id)
+.single();
+
+
+if(error) throw error;
+
+
+window.currentProfile=profile;
+
+
 return user;
+
+
 }catch(err){
+
 console.error("USER ERROR:",err);
+
 location.replace("index.html");
+
 return null;
+
 }
+
 }
 
 async function loadLinks(){
@@ -91,7 +116,14 @@ earnings+=getValue(link,"total_earnings","earnings");
 
 totalView.textContent=views.toLocaleString("id-ID");
 totalClick.textContent=clicks.toLocaleString("id-ID");
-totalEarning.textContent="Rp "+earnings.toLocaleString("id-ID");
+const adsIncome =
+Number(
+window.currentProfile?.ads_earning_total || 0
+);
+
+
+totalEarning.textContent =
+"Rp " + adsIncome.toLocaleString("id-ID");
 
 }
 
