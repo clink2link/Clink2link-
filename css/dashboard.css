@@ -1100,4 +1100,10 @@ font-size:12px;
 }
 
 
+#marketArrow{
+transition:.3s;
+}
 
+#marketArrow.active{
+transform:rotate(180deg);
+}
