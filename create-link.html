@@ -411,169 +411,89 @@ Gunakan traffic berkualitas agar CPM tetap optimal.
 
     <div class="section-title">
 
-        <h2>
-
+        <div class="title-left">
             <i class="fa-solid fa-list"></i>
 
-            Daftar Ads Link
+            <div>
+                <h2>Daftar Ads Link</h2>
+                <p>Kelola semua shortlink iklan Anda.</p>
+            </div>
+        </div>
 
-        </h2>
-
-        <a href="dashboard.html">
-
+        <a href="dashboard.html" class="back-btn">
             <i class="fa-solid fa-arrow-left"></i>
-
             Dashboard
-
         </a>
 
     </div>
 
-    <!-- Semua card akan dibuat otomatis oleh JavaScript -->
     <div id="linkList"></div>
 
 </section>
 
-<section 
-id="editModal"
-class="advanced-modal">
 
-
-<div class="advanced-box">
-
-
-
-<div class="advanced-header">
-
-
-<h3>
-
-<i class="fa-solid fa-pen-to-square"></i>
-
-Edit Ads Link
-
-</h3>
-
-
-
-<button 
-type="button"
-onclick="closeEdit()">
-
-<i class="fa-solid fa-xmark"></i>
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-<input 
-type="hidden"
-id="editId">
-
-
-
-
-
-
-<label>
-Nama Link
-</label>
-
-
-<div class="input-box">
-
-
-<i class="fa-solid fa-tag"></i>
-
-
-<input
-type="text"
-id="editTitle"
-placeholder="Nama Link">
-
-
-</div>
-
-
-
-
-
-
-
-<label>
-Destination URL
-</label>
-
-
-<div class="input-box">
-
-
-<i class="fa-solid fa-globe"></i>
-
-
-<input
-type="url"
-id="editUrl"
-placeholder="https://example.com">
-
-
-</div>
-
-
-
-
-
-
-
-<div class="btn-group">
-
-
-<button
-type="button"
-class="btn-primary"
-onclick="saveEdit()">
-
-
-<i class="fa-solid fa-floppy-disk"></i>
-
-
-Simpan
-
-
-</button>
-
-
-
-
-
-<button
-type="button"
-class="btn-secondary"
-onclick="closeEdit()">
-
-
-<i class="fa-solid fa-ban"></i>
-
-
-Batal
-
-
-</button>
-
-
-
-</div>
-
-
-
-</div>
-
+<section id="editModal" class="advanced-modal">
+
+    <div class="advanced-box">
+
+        <div class="advanced-header">
+
+            <div>
+                <h3>
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Edit Ads Link
+                </h3>
+
+                <p>Perbarui nama dan tujuan link.</p>
+            </div>
+
+            <button type="button" onclick="closeEdit()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <input type="hidden" id="editId">
+
+        <label>Nama Link</label>
+
+        <div class="input-box">
+            <i class="fa-solid fa-tag"></i>
+            <input
+                type="text"
+                id="editTitle"
+                placeholder="Contoh: Promo Produk">
+        </div>
+
+        <label>Destination URL</label>
+
+        <div class="input-box">
+            <i class="fa-solid fa-globe"></i>
+            <input
+                type="url"
+                id="editUrl"
+                placeholder="https://example.com">
+        </div>
+
+        <div class="btn-group">
+            <button
+                type="button"
+                class="btn-primary"
+                onclick="saveEdit()">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Simpan Perubahan
+            </button>
+
+            <button
+                type="button"
+                class="btn-secondary"
+                onclick="closeEdit()">
+                <i class="fa-solid fa-xmark"></i>
+                Batal
+            </button>
+        </div>
+
+    </div>
 
 </section>
 
