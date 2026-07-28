@@ -327,6 +327,33 @@ label{
 }
 
 /* =========================
+   SEARCH FIX
+========================= */
+
+.search-area{
+    display:flex;
+    gap:20px;
+    align-items:center;
+}
+
+.search-box{
+    flex:1 1 auto !important;
+    width:100% !important;
+    max-width:none !important;
+    min-width:650px !important;
+    height:60px !important;
+    padding:0 22px !important;
+}
+
+.search-box input{
+    font-size:16px !important;
+}
+
+.link-filter{
+    flex:none;
+}
+
+/* =========================
    FILTER
 ========================= */
 .link-filter{
