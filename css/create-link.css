@@ -1166,3 +1166,177 @@ html.dark .title-left p{
 html.dark .back-btn{
     background:linear-gradient(135deg,#2563eb,#3b82f6);
 }
+
+/* =====================================================
+   FINAL CLEAN FIX
+===================================================== */
+
+
+/* =========================
+   SEARCH WIDTH FIX
+========================= */
+
+.search-area{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    width:100%;
+}
+
+.search-box{
+    flex:0 1 420px !important;
+    width:420px !important;
+    min-width:0 !important;
+    max-width:420px !important;
+    height:48px !important;
+}
+
+
+.search-box input{
+    width:100%;
+    font-size:14px !important;
+}
+
+
+/* MOBILE SEARCH */
+
+@media(max-width:900px){
+
+.search-area{
+    flex-direction:column;
+    align-items:stretch;
+}
+
+.search-box{
+    width:100% !important;
+    max-width:none !important;
+}
+
+}
+
+
+/* =========================
+   LIGHT MODE TEXT FIX
+========================= */
+
+
+html:not(.dark) body{
+    color:#0f172a;
+}
+
+
+html:not(.dark) .create-header h2,
+html:not(.dark) .page-title h1,
+html:not(.dark) .section-title h2,
+html:not(.dark) .title-left h2,
+html:not(.dark) .stat-card h2,
+html:not(.dark) .link-card h3,
+html:not(.dark) .empty h3,
+html:not(.dark) label,
+html:not(.dark) .advanced-header h3{
+    color:#0f172a !important;
+}
+
+
+
+html:not(.dark) .create-header p,
+html:not(.dark) .page-title p,
+html:not(.dark) .title-left p,
+html:not(.dark) .stat-card h4,
+html:not(.dark) .link-meta,
+html:not(.dark) .created,
+html:not(.dark) .empty p,
+html:not(.dark) .advanced-header p{
+    color:#64748b !important;
+}
+
+
+/* INPUT */
+
+html:not(.dark) input{
+    color:#0f172a;
+    background:#fff;
+}
+
+
+/* COPY INPUT */
+
+html:not(.dark) .copy-box input{
+    color:#0f172a;
+    background:#f8fafc;
+}
+
+
+/* FILTER */
+
+html:not(.dark) .link-filter button{
+    color:#64748b;
+}
+
+
+html:not(.dark) .link-filter button.active{
+    color:#fff;
+}
+
+
+/* CARD BACKGROUND */
+
+html:not(.dark) .create-form,
+html:not(.dark) .card-section,
+html:not(.dark) .section-title,
+html:not(.dark) .link-card,
+html:not(.dark) .stat-card,
+html:not(.dark) .empty{
+    background:#ffffff;
+    color:#0f172a;
+}
+
+
+/* =========================
+   DARK MODE FINAL
+========================= */
+
+html.dark .search-box input,
+html.dark input{
+    color:#f8fafc;
+}
+
+
+html.dark .create-header h2,
+html.dark .page-title h1,
+html.dark .section-title h2,
+html.dark .title-left h2,
+html.dark .stat-card h2,
+html.dark .link-card h3,
+html.dark label,
+html.dark .empty h3,
+html.dark .advanced-header h3{
+    color:#f8fafc !important;
+}
+
+
+html.dark .create-header p,
+html.dark .page-title p,
+html.dark .title-left p,
+html.dark .stat-card h4,
+html.dark .link-meta,
+html.dark .created,
+html.dark .empty p,
+html.dark .advanced-header p{
+    color:#94a3b8 !important;
+}
+
+
+
+/* =========================
+   TIPS POSITION FIX
+========================= */
+
+.info-note{
+    margin-top:20px !important;
+}
+
+
+.card-section .info-note{
+    margin-top:24px !important;
+}
