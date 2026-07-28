@@ -46,6 +46,7 @@ item.link_type==="sell" ||
 item.type==="sell"
 );
 renderLinks();
+renderSellStats();
 }catch(e){
 console.error(
 "LOAD SELL LINK ERROR:",
@@ -54,7 +55,61 @@ e
 }
 }
 
+function renderSellStats(){
 
+let totalAds =
+document.getElementById("totalSellAds");
+
+let totalView =
+document.getElementById("totalSellView");
+
+let totalClick =
+document.getElementById("totalSellClick");
+
+let totalEarn =
+document.getElementById("totalSellEarn");
+
+
+if(!totalAds) return;
+
+
+let ads =
+sellLinks.length;
+
+
+let view =
+sellLinks.reduce(
+(a,b)=>a + Number(b.views || 0),
+0
+);
+
+
+let click =
+sellLinks.reduce(
+(a,b)=>a + Number(b.clicks || 0),
+0
+);
+
+
+let earn =
+sellLinks.reduce(
+(a,b)=>a + Number(b.earnings || 0),
+0
+);
+
+
+
+totalAds.innerText = ads;
+
+totalView.innerText = view;
+
+totalClick.innerText = click;
+
+totalEarn.innerText =
+"Rp " + earn.toLocaleString("id-ID");
+
+
+}
   
 /* CEK AKSES */
 
