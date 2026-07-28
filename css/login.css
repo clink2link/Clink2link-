@@ -277,3 +277,96 @@ font-size:24px;
 }
 
 }
+
+
+/* =========================
+   LOGIN TOAST
+========================= */
+
+.login-toast{
+    position:fixed;
+    top:25px;
+    right:25px;
+    z-index:9999;
+    min-width:280px;
+    padding:14px 18px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-left:5px solid #22c55e;
+    border-radius:14px;
+    box-shadow:0 15px 40px rgba(0,0,0,.15);
+    animation:toastShow .35s ease;
+}
+
+.login-toast i{
+    width:35px;
+    height:35px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#dcfce7;
+    color:#16a34a;
+}
+
+.login-toast h4{
+    margin:0;
+    font-size:14px;
+    font-weight:700;
+    color:#0f172a;
+}
+
+.login-toast p{
+    margin:2px 0 0;
+    font-size:12px;
+    color:#64748b;
+}
+
+
+@keyframes toastShow{
+
+from{
+    opacity:0;
+    transform:translateY(-20px);
+}
+
+to{
+    opacity:1;
+    transform:translateY(0);
+}
+
+}
+
+
+.login-toast.hide{
+    animation:toastHide .3s ease forwards;
+}
+
+
+@keyframes toastHide{
+
+to{
+    opacity:0;
+    transform:translateY(-20px);
+}
+
+}
+
+
+/* DARK MODE */
+
+html.dark .login-toast{
+    background:#111827;
+    border-color:#1f2937;
+}
+
+html.dark .login-toast h4{
+    color:#fff;
+}
+
+html.dark .login-toast p{
+    color:#94a3b8;
+}
