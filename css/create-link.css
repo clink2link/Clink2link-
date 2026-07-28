@@ -1340,3 +1340,146 @@ html.dark .advanced-header p{
 .card-section .info-note{
     margin-top:24px !important;
 }
+
+
+/* =====================================================
+   FINAL PATCH CLEAN
+===================================================== */
+
+
+/* =========================
+   SEARCH PERFECT SIZE
+========================= */
+
+.search-area{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+
+.search-box{
+    width:360px !important;
+    max-width:360px !important;
+    flex:none !important;
+    height:46px !important;
+}
+
+
+.search-box input{
+    color:#0f172a;
+}
+
+
+@media(max-width:900px){
+
+.search-area{
+    flex-direction:column;
+    align-items:stretch;
+}
+
+
+.search-box{
+    width:100% !important;
+    max-width:none !important;
+}
+
+}
+
+
+/* =========================
+   TIPS SPACING
+========================= */
+
+.info-note{
+    margin-top:28px !important;
+    margin-bottom:22px !important;
+}
+
+
+.card-section .info-note{
+    margin-top:28px !important;
+}
+
+
+/* =========================
+   LIGHT MODE COMPLETE TEXT
+========================= */
+
+
+html:not(.dark) .info-note h4{
+    color:#dc2626 !important;
+}
+
+
+html:not(.dark) .info-note p{
+    color:#7f1d1d !important;
+}
+
+
+html:not(.dark) .destination-link,
+html:not(.dark) .destination-link a{
+    color:#334155;
+}
+
+
+html:not(.dark) .copy-box button{
+    color:#2563eb;
+}
+
+
+html:not(.dark) .advanced-header button{
+    color:#0f172a;
+}
+
+
+html:not(.dark) .btn-secondary{
+    color:#0f172a;
+}
+
+
+/* =========================
+   DARK MODE COMPLETE
+========================= */
+
+
+html.dark .destination-link,
+html.dark .destination-link a{
+    color:#cbd5e1;
+}
+
+
+html.dark .copy-box button{
+    color:#fff;
+}
+
+
+html.dark .advanced-header button{
+    color:#f8fafc;
+}
+
+
+html.dark .btn-secondary{
+    color:#fff;
+}
+
+
+/* =========================
+   FILTER MOBILE FIX
+========================= */
+
+
+@media(max-width:600px){
+
+.link-filter{
+    overflow-x:auto;
+    justify-content:flex-start;
+}
+
+
+.link-filter button{
+    white-space:nowrap;
+}
+
+}
