@@ -993,6 +993,25 @@ html.dark::-webkit-scrollbar-thumb{
     }
 }
 
+.copy-box{
+    flex-direction:row;
+}
+
+.copy-box input{
+    width:auto;
+    flex:1;
+}
+
+.copy-box button{
+    width:52px;
+    height:52px;
+    flex:none;
+}
+
+.advanced-modal.show{
+    display:flex;
+}
+
 @media(max-width:600px){
 
     .section-title{
