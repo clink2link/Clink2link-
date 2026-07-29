@@ -112,29 +112,26 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
 <!-- CREATE -->
 
-<section class="sell-card card-section">
+<section class="create-form">
 
-    <div class="section-title">
+    <div class="create-header">
 
-        <div class="title-left">
-
+        <div class="create-icon">
             <i class="fa-solid fa-plus"></i>
+        </div>
 
-            <div>
-
-                <h2>Buat Sell Link</h2>
-
-                <p>Buat link penjualan digital dengan harga yang Anda tentukan.</p>
-
-            </div>
-
+        <div>
+            <h2>Buat Sell Link Baru</h2>
+            <p>Masukkan link yang ingin dijual kepada pembeli.</p>
         </div>
 
     </div>
 
-    <div class="form-group">
+    <label>Judul Link</label>
 
-        <label>Judul Link</label>
+    <div class="input-box">
+
+        <i class="fa-solid fa-tag"></i>
 
         <input
             id="sellTitle"
@@ -143,9 +140,11 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
     </div>
 
-    <div class="form-group">
+    <label>URL Tujuan</label>
 
-        <label>URL Tujuan</label>
+    <div class="input-box">
+
+        <i class="fa-solid fa-globe"></i>
 
         <input
             id="sellUrl"
@@ -154,9 +153,11 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
     </div>
 
-    <div class="form-group">
+    <label>Harga Jual</label>
 
-        <label>Harga Jual</label>
+    <div class="input-box">
+
+        <i class="fa-solid fa-wallet"></i>
 
         <input
             id="sellPrice"
@@ -167,17 +168,31 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
     </div>
 
-    <button
-        id="createSellBtn"
-        type="button"
-        class="btn-sell"
-        disabled>
+    <div class="btn-group">
 
-        <i class="fa-solid fa-spinner fa-spin"></i>
+        <button
+            id="createSellBtn"
+            type="button"
+            class="btn-primary"
+            disabled>
 
-        Memeriksa Status...
+            <i class="fa-solid fa-spinner fa-spin"></i>
 
-    </button>
+            Memeriksa Status...
+
+        </button>
+
+    </div>
+
+    <div id="createResult" class="create-result"></div>
+
+    <div class="create-note">
+
+        <i class="fa-solid fa-shield-halved"></i>
+
+        Pastikan URL tujuan benar dan harga yang ditentukan sudah sesuai sebelum membuat Sell Link.
+
+    </div>
 
 </section>
 
@@ -209,7 +224,7 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
     <div class="stat-card">
 
-        <i class="fa-solid fa-mouse-pointer"></i>
+        <i class="fa-solid fa-hand-pointer"></i>
 
         <h4>Total Click</h4>
 
@@ -223,7 +238,57 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
         <h4>Total Earnings</h4>
 
-        <h2 id="sellTotalEarning">Rp 0</h2>
+        <h2 id="sellTotalEarning">Rp0</h2>
+
+    </div>
+
+</section>
+
+
+<!-- SEARCH -->
+
+<section class="search-area">
+
+    <div class="search-box">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Cari judul atau URL...">
+
+    </div>
+
+    <div class="link-filter">
+
+        <button
+            class="active"
+            data-filter="all">
+
+            <i class="fa-solid fa-layer-group"></i>
+
+            Semua
+
+        </button>
+
+        <button
+            data-filter="active">
+
+            <i class="fa-solid fa-circle-check"></i>
+
+            Aktif
+
+        </button>
+
+        <button
+            data-filter="inactive">
+
+            <i class="fa-solid fa-circle-xmark"></i>
+
+            Nonaktif
+
+        </button>
 
     </div>
 
@@ -232,7 +297,7 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
 <!-- LIST -->
 
-<section class="sell-card card-section">
+<section class="link-section card-section">
 
     <div class="section-title">
 
@@ -242,74 +307,13 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
             <div>
 
-                <h2>Link Saya</h2>
+                <h2>Daftar Sell Link</h2>
 
                 <p>Kelola seluruh Sell Link yang telah Anda buat.</p>
 
             </div>
 
         </div>
-
-        <div class="section-stats">
-
-            <div class="mini-stat">
-
-                <span id="totalLink">0</span>
-
-                <small>Total Link</small>
-
-            </div>
-
-            <div class="mini-stat">
-
-                <span id="totalSold">0</span>
-
-                <small>Terjual</small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- SEARCH -->
-
-    <div class="search-box">
-
-        <i class="fa-solid fa-magnifying-glass"></i>
-
-        <input
-            id="searchInput"
-            type="text"
-            placeholder="Cari Sell Link...">
-
-    </div>
-
-    <!-- FILTER -->
-
-    <div class="link-filter">
-
-        <button
-            class="active"
-            data-filter="all">
-
-            Semua
-
-        </button>
-
-        <button
-            data-filter="active">
-
-            Aktif
-
-        </button>
-
-        <button
-            data-filter="inactive">
-
-            Nonaktif
-
-        </button>
 
     </div>
 
@@ -320,7 +324,7 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
 <!-- GENERATED -->
 
-<section class="sell-card card-section">
+<section class="link-section card-section">
 
     <div class="section-title">
 
@@ -332,7 +336,7 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
                 <h2>Link Generated</h2>
 
-                <p>Link berhasil dibuat dan siap dibagikan.</p>
+                <p>Link Buy dan Link Ads yang berhasil dibuat akan muncul di sini.</p>
 
             </div>
 
@@ -349,7 +353,7 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
             <h3>Belum Ada Link</h3>
 
             <p>
-                Setelah membuat Sell Link, hasil link Buy dan Ads akan muncul di sini.
+                Setelah membuat Sell Link, hasil Link Buy dan Link Ads akan ditampilkan di bagian ini.
             </p>
 
         </div>
@@ -359,8 +363,6 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
     <div id="sellNotice"></div>
 
 </section>
-
-
 
 </div>
 
