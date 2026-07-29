@@ -813,3 +813,221 @@ html.dark .stat-card h2{
 }
 
 }
+
+/* =====================================================
+   SELL LINK PREMIUM SECTION
+===================================================== */
+
+.card-section{
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:22px;
+    box-shadow:0 8px 24px rgba(15,23,42,.08);
+}
+
+.section-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    padding-bottom:16px;
+    margin-bottom:20px;
+    border-bottom:1px solid #eef2f7;
+}
+
+.title-left{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.title-left>i{
+    width:48px;
+    height:48px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#eff6ff;
+    color:#2563eb;
+    font-size:18px;
+}
+
+.title-left h2{
+    margin:0;
+    font-size:22px;
+    font-weight:700;
+    color:#0f172a;
+}
+
+.title-left p{
+    margin-top:3px;
+    font-size:12px;
+    color:#64748b;
+}
+
+.section-stats{
+    display:flex;
+    gap:12px;
+}
+
+.mini-stat{
+    min-width:95px;
+    padding:10px 14px;
+    text-align:center;
+    border-radius:12px;
+    background:#eff6ff;
+    border:1px solid #bfdbfe;
+}
+
+.mini-stat span{
+    display:block;
+    font-size:22px;
+    font-weight:800;
+    color:#2563eb;
+}
+
+.mini-stat small{
+    display:block;
+    margin-top:3px;
+    font-size:11px;
+    color:#64748b;
+}
+
+
+/* =====================================================
+   GENERATED BOX
+===================================================== */
+
+#generatedBox{
+    margin-top:16px;
+}
+
+#generatedBox .copy-box{
+    display:flex;
+    overflow:hidden;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+}
+
+#generatedBox input{
+    flex:1;
+    height:52px;
+    padding:0 16px;
+    border:0;
+    background:#f8fafc;
+}
+
+#generatedBox button{
+    width:54px;
+    border:0;
+    background:#2563eb;
+    color:#fff;
+    cursor:pointer;
+    transition:.25s;
+}
+
+#generatedBox button:hover{
+    background:#1d4ed8;
+}
+
+#sellNotice{
+    margin-top:14px;
+}
+
+
+/* =====================================================
+   DARK MODE
+===================================================== */
+
+html.dark .card-section{
+    background:#111827;
+    border-color:#1f2937;
+}
+
+html.dark .section-title{
+    border-color:#1f2937;
+}
+
+html.dark .title-left h2{
+    color:#fff;
+}
+
+html.dark .title-left p{
+    color:#94a3b8;
+}
+
+html.dark .title-left>i{
+    background:#1e3a8a;
+    color:#bfdbfe;
+}
+
+html.dark .mini-stat{
+    background:#1e293b;
+    border-color:#334155;
+}
+
+html.dark .mini-stat span{
+    color:#60a5fa;
+}
+
+html.dark .mini-stat small{
+    color:#94a3b8;
+}
+
+html.dark #generatedBox .copy-box{
+    border-color:#334155;
+}
+
+html.dark #generatedBox input{
+    background:#020617;
+    color:#fff;
+}
+
+html.dark #generatedBox button{
+    background:#2563eb;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:600px){
+
+    .card-section{
+        padding:16px;
+    }
+
+    .section-title{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:14px;
+    }
+
+    .title-left>i{
+        width:42px;
+        height:42px;
+        font-size:16px;
+    }
+
+    .title-left h2{
+        font-size:19px;
+    }
+
+    .section-stats{
+        width:100%;
+    }
+
+    .mini-stat{
+        flex:1;
+        min-width:0;
+    }
+
+    .mini-stat span{
+        font-size:18px;
+    }
+
+}
