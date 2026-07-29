@@ -223,12 +223,18 @@ destination,
 destination_url,
 price,
 status,
+
 views,
 clicks,
 earnings,
+
 total_views,
 total_clicks,
 total_earnings,
+
+sales,
+sold,
+
 created_at
 
 `)
@@ -283,6 +289,8 @@ user_id:payload.user_id,
 
 type:payload.type || "ads",
 
+link_type:payload.link_type || "ads",
+
 title:payload.title,
 
 destination:payload.destination,
@@ -293,21 +301,18 @@ price:payload.price || 0,
 
 short_code:payload.short_code,
 
-status:"active",
+status:payload.status || "active",
 
 views:0,
-
 clicks:0,
-
 earnings:0,
 
 total_views:0,
-
 total_clicks:0,
-
 total_earnings:0,
 
-link_type:payload.link_type || "ads"
+sales:0,
+sold:0
 
 })
 
