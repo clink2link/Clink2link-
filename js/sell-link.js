@@ -19,25 +19,47 @@ let currentFilter = "all";
 
 async function loadUser(){
 
-    try{
+try{
 
-        if(!window.database) return;
+if(!window.database){
+console.error("DATABASE BELUM READY");
+return;
+}
 
-        currentUser = await database.getUser();
 
-        if(!currentUser) return;
+currentUser =
+await database.getUser();
 
-        sellActive =
-            currentUser.sell_unlocked ||
-            currentUser.withdraw_count >= 3;
 
-    }catch(err){
+if(!currentUser){
 
-        console.error("LOAD USER ERROR:",err);
+console.log("USER BELUM LOGIN");
 
-    }
+return;
 
-    checkAccess();
+}
+
+
+const profile =
+await database.getProfile(
+currentUser.id
+);
+
+
+sellActive =
+profile?.sell_link_enabled ||
+profile?.withdraw_count >= 3 ||
+false;
+
+
+}catch(err){
+
+console.error(
+"LOAD USER ERROR:",
+err
+);
+
+}
 
 }
 
@@ -48,40 +70,103 @@ async function loadUser(){
 
 async function loadSellLinks(){
 
-    try{
+try{
 
-        if(!currentUser){
+if(!window.database){
 
-            currentUser = await database.getUser();
+console.error(
+"DATABASE BELUM READY"
+);
 
-        }
+return;
 
-        if(!currentUser) return;
+}
 
-        const data =
-            await database.getLinks(currentUser.id);
 
-        sellLinks = data.filter(link=>
+if(!currentUser){
 
-            link.type==="sell" ||
-            link.link_type==="sell"
+currentUser =
+await database.getUser();
 
-        );
+}
 
-        filteredLinks = [...sellLinks];
 
-        renderSellStats();
+if(!currentUser){
 
-        applyFilter();
+console.log(
+"USER BELUM LOGIN"
+);
 
-    }catch(err){
+return;
 
-        console.error(
-            "LOAD SELL LINK ERROR:",
-            err
-        );
+}
 
-    }
+
+
+const data =
+await database.getLinks(
+currentUser.id
+);
+
+
+
+console.log(
+"ALL LINKS:",
+data
+);
+
+
+
+sellLinks =
+(data || []).filter(link=>{
+
+
+const type =
+(link.type || "")
+.toLowerCase();
+
+
+const linkType =
+(link.link_type || "")
+.toLowerCase();
+
+
+return (
+type==="sell" ||
+linkType==="sell"
+);
+
+
+});
+
+
+
+console.log(
+"SELL LINKS:",
+sellLinks
+);
+
+
+
+filteredLinks =
+[...sellLinks];
+
+
+renderSellStats();
+
+
+applyFilter();
+
+
+
+}catch(err){
+
+console.error(
+"LOAD SELL LINK ERROR:",
+err
+);
+
+}
 
 }
 
