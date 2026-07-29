@@ -184,6 +184,30 @@
     line-height:1.6;
 }
 
+/* =========================
+   STATUS SELL LINK
+========================= */
+
+#sellStatus{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    font-weight:600;
+}
+
+#sellStatus.active{
+    color:#2563eb;
+}
+
+#sellStatus.inactive{
+    color:#ef4444;
+}
+
+#sellStatus i{
+    font-size:13px;
+}
+
 /* =====================================================
    6. CREATE FORM
 ===================================================== */
