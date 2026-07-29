@@ -1,6 +1,6 @@
 /* =====================================================
    CLICK2PAY SELL LINK
-   PREMIUM UI
+   PREMIUM UI CLEAN v3
 ===================================================== */
 
 
@@ -10,8 +10,8 @@
 
 .app-container{
     max-width:1200px;
-    margin:0 auto;
-    padding:8px 20px 40px;
+    margin:auto;
+    padding:4px 18px 30px;
 }
 
 
@@ -22,55 +22,57 @@
 .page-title{
     display:flex;
     align-items:center;
-    gap:16px;
-    margin-bottom:20px;
+    gap:12px;
+    margin-bottom:14px;
 }
 
 .page-title > i{
-    width:58px;
-    height:58px;
+    width:48px;
+    height:48px;
     display:flex;
     align-items:center;
     justify-content:center;
-    border-radius:16px;
+    border-radius:14px;
     background:linear-gradient(135deg,#2563eb,#3b82f6);
     color:#fff;
-    font-size:24px;
-    box-shadow:0 10px 22px rgba(37,99,235,.25);
+    font-size:20px;
+    box-shadow:0 8px 18px rgba(37,99,235,.22);
     flex-shrink:0;
 }
 
 .page-title h1{
     margin:0;
-    font-size:28px;
+    font-size:24px;
     font-weight:800;
     color:#0f172a;
 }
 
 .page-title p{
-    margin:4px 0 0;
-    font-size:13px;
+    margin:3px 0 0;
+    font-size:12px;
     color:#64748b;
-    line-height:1.5;
 }
+
 
 /* =====================================================
    3. CARD
 ===================================================== */
 
 .card-section,
-.info-box{
+.info-box,
+.stat-card{
     background:#fff;
     border:1px solid #e2e8f0;
-    border-radius:18px;
-    padding:20px;
-    margin-bottom:20px;
-    box-shadow:0 8px 24px rgba(15,23,42,.08);
-    transition:.25s;
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:14px;
+    box-shadow:0 6px 18px rgba(15,23,42,.06);
+    transition:.2s;
 }
 
 .card-section:hover,
-.info-box:hover{
+.info-box:hover,
+.stat-card:hover{
     transform:translateY(-2px);
 }
 
@@ -83,116 +85,91 @@
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:16px;
-    padding-bottom:16px;
-    margin-bottom:20px;
+    gap:12px;
+    padding-bottom:12px;
+    margin-bottom:14px;
     border-bottom:1px solid #eef2f7;
 }
 
 .title-left{
     display:flex;
     align-items:center;
-    gap:14px;
+    gap:10px;
 }
 
-.title-left>i{
-    width:48px;
-    height:48px;
+.title-left > i{
+    width:40px;
+    height:40px;
     display:flex;
-    align-items:center;
     justify-content:center;
-    border-radius:14px;
+    align-items:center;
+    border-radius:12px;
     background:#eff6ff;
     color:#2563eb;
-    font-size:18px;
-    flex-shrink:0;
+    font-size:16px;
 }
 
 .title-left h2{
     margin:0;
-    font-size:22px;
+    font-size:19px;
     font-weight:700;
     color:#0f172a;
 }
 
 .title-left p{
-    margin:4px 0 0;
-    font-size:12px;
+    margin:3px 0 0;
+    font-size:11px;
     color:#64748b;
-    line-height:1.5;
 }
 
 
 /* =====================================================
-   4. INFO BOX
+   INFO BOX
 ===================================================== */
 
 .info-header{
     display:flex;
     align-items:center;
-    gap:10px;
-    margin-bottom:12px;
-}
-
-.info-header i{
-    color:#2563eb;
-    font-size:15px;
+    gap:8px;
+    margin-bottom:8px;
 }
 
 .info-header h3{
     margin:0;
-    font-size:15px;
+    font-size:14px;
     font-weight:700;
-    color:#0f172a;
 }
 
 .info-box ul{
-    list-style:none;
-    margin:0;
     padding:0;
+    margin:0;
+    list-style:none;
 }
 
 .info-box li{
     display:flex;
-    align-items:flex-start;
-    gap:10px;
-    margin:8px 0;
-    font-size:13px;
-    line-height:1.6;
+    gap:8px;
+    margin:6px 0;
+    font-size:12px;
+    line-height:1.5;
     color:#64748b;
 }
 
 .info-box li i{
-    margin-top:2px;
     color:#22c55e;
-    font-size:12px;
-    flex-shrink:0;
+    margin-top:3px;
 }
 
 
 /* =====================================================
-   5. STATUS
+   STATUS
 ===================================================== */
 
 #sellStatus{
     display:flex;
     align-items:center;
-    gap:8px;
-    margin:0;
-    font-size:13px;
-    color:#64748b;
-    line-height:1.6;
-}
-
-/* =========================
-   STATUS SELL LINK
-========================= */
-
-#sellStatus{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:13px;
+    gap:7px;
+    font-size:12px;
     font-weight:600;
 }
 
@@ -204,152 +181,115 @@
     color:#ef4444;
 }
 
-#sellStatus i{
-    font-size:13px;
-}
 
 /* =====================================================
-   6. CREATE FORM
+   CREATE FORM
 ===================================================== */
 
 .create-form{
-    position:relative;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
 }
 
 .form-group{
-    margin-bottom:18px;
-}
-
-.form-group:last-of-type{
-    margin-bottom:20px;
+    margin:0;
 }
 
 .form-group label{
     display:block;
-    margin-bottom:8px;
-    font-size:13px;
+    margin-bottom:6px;
+    font-size:12px;
     font-weight:600;
     color:#334155;
 }
 
 
-/* =====================================================
-   7. FORM INPUT
-===================================================== */
-
 .form-group input{
     width:100%;
-    height:52px;
-    padding:0 16px;
+    height:46px;
+    padding:0 14px;
+    border-radius:12px;
     border:1px solid #e2e8f0;
-    border-radius:14px;
     background:#fff;
     outline:none;
-    font-size:14px;
-    color:#0f172a;
-    transition:.25s;
-}
-
-.form-group input::placeholder{
-    color:#94a3b8;
+    font-size:13px;
 }
 
 .form-group input:focus{
     border-color:#2563eb;
-    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+    box-shadow:0 0 0 3px rgba(37,99,235,.12);
 }
 
 
 /* =====================================================
-   8. BUTTON
+   CREATE BUTTON
 ===================================================== */
 
 .btn-sell{
     width:100%;
-    height:52px;
+    height:46px;
     display:flex;
-    align-items:center;
     justify-content:center;
-    gap:10px;
+    align-items:center;
+    gap:8px;
     border:none;
-    border-radius:14px;
+    border-radius:12px;
     background:linear-gradient(135deg,#2563eb,#3b82f6);
-    color:#fff;
-    font-size:14px;
+    color:white;
+    font-size:13px;
     font-weight:700;
     cursor:pointer;
-    transition:.25s;
-}
-
-.btn-sell:hover:not(:disabled){
-    transform:translateY(-2px);
-    box-shadow:0 12px 24px rgba(37,99,235,.28);
-}
-
-.btn-sell:active:not(:disabled){
-    transform:scale(.98);
 }
 
 .btn-sell:disabled{
     background:#94a3b8;
-    box-shadow:none;
     cursor:not-allowed;
 }
 
-.btn-sell i{
-    font-size:14px;
-}
-
 /* =====================================================
-   9. QUICK STATS
+   QUICK STATS
 ===================================================== */
 
 .quick-stats{
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    gap:16px;
-    margin-bottom:20px;
+    gap:12px;
+    margin-bottom:14px;
 }
+
 
 .stat-card{
-    background:#fff;
-    border:1px solid #e2e8f0;
-    border-radius:18px;
-    padding:18px;
-    box-shadow:0 8px 24px rgba(15,23,42,.08);
-    transition:.25s;
-}
-
-.stat-card:hover{
-    transform:translateY(-3px);
+    padding:14px;
 }
 
 .stat-card i{
-    width:44px;
-    height:44px;
+    width:38px;
+    height:38px;
     display:flex;
     align-items:center;
     justify-content:center;
-    margin-bottom:14px;
-    border-radius:12px;
+    border-radius:10px;
     background:#eff6ff;
     color:#2563eb;
-    font-size:18px;
+    font-size:16px;
+    margin-bottom:10px;
 }
 
+
 .stat-card h4{
-    margin:0 0 6px;
-    font-size:13px;
+    margin:0 0 4px;
+    font-size:11px;
     font-weight:500;
     color:#64748b;
 }
 
+
 .stat-card h2{
     margin:0;
-    font-size:24px;
+    font-size:21px;
     font-weight:800;
     color:#0f172a;
-    line-height:1.2;
 }
 
 
@@ -359,39 +299,31 @@
 
 .section-stats{
     display:flex;
-    gap:12px;
+    gap:8px;
 }
 
+
 .mini-stat{
-    min-width:95px;
-    padding:10px 14px;
+    min-width:85px;
+    padding:8px 10px;
     text-align:center;
+    border-radius:10px;
     background:#eff6ff;
     border:1px solid #bfdbfe;
-    border-radius:12px;
 }
+
 
 .mini-stat span{
     display:block;
-    font-size:22px;
+    font-size:18px;
     font-weight:800;
     color:#2563eb;
-    line-height:1;
 }
+
 
 .mini-stat small{
-    display:block;
-    margin-top:4px;
-    font-size:11px;
+    font-size:10px;
     color:#64748b;
-}
-
-/* =====================================================
-   10. LIST SECTION
-===================================================== */
-
-.list-section{
-    position:relative;
 }
 
 
@@ -401,73 +333,65 @@
 
 .search-box{
     position:relative;
-    margin-bottom:16px;
+    margin-bottom:12px;
 }
+
 
 .search-box i{
     position:absolute;
-    left:16px;
+    left:14px;
     top:50%;
     transform:translateY(-50%);
     color:#94a3b8;
-    font-size:14px;
-    pointer-events:none;
+    font-size:13px;
 }
+
 
 .search-box input{
     width:100%;
-    height:52px;
-    padding:0 16px 0 46px;
+    height:46px;
+    padding:0 14px 0 40px;
+    border-radius:12px;
     border:1px solid #e2e8f0;
-    border-radius:14px;
-    background:#fff;
     outline:none;
-    font-size:14px;
-    color:#0f172a;
-    transition:.25s;
+    background:#fff;
+    font-size:13px;
 }
 
-.search-box input::placeholder{
-    color:#94a3b8;
-}
 
 .search-box input:focus{
     border-color:#2563eb;
-    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+    box-shadow:0 0 0 3px rgba(37,99,235,.12);
 }
 
 
 /* =====================================================
-   FILTER
+   FILTER BUTTON
 ===================================================== */
 
 .link-filter{
     display:flex;
     flex-wrap:wrap;
-    gap:10px;
-    margin-bottom:20px;
+    gap:8px;
+    margin-bottom:14px;
 }
+
 
 .link-filter button{
-    height:40px;
-    padding:0 18px;
+    height:36px;
+    padding:0 14px;
+    border-radius:10px;
     border:1px solid #dbeafe;
-    border-radius:12px;
     background:#eff6ff;
     color:#2563eb;
-    font-size:13px;
+    font-size:12px;
     font-weight:600;
     cursor:pointer;
-    transition:.25s;
 }
 
-.link-filter button:hover{
-    background:#dbeafe;
-}
 
 .link-filter button.active{
     background:#2563eb;
-    border-color:#2563eb;
     color:#fff;
 }
 
@@ -479,99 +403,100 @@
 #sellList{
     display:flex;
     flex-direction:column;
-    gap:16px;
+    gap:12px;
 }
 
+
 /* =====================================================
-   11. LINK CARD
+   LINK CARD
 ===================================================== */
 
 .link-card{
     background:#fff;
     border:1px solid #e2e8f0;
-    border-radius:16px;
-    padding:18px;
-    box-shadow:0 6px 20px rgba(15,23,42,.06);
-    transition:.25s;
+    border-radius:14px;
+    padding:14px;
+    box-shadow:0 5px 16px rgba(15,23,42,.05);
 }
 
-.link-card:hover{
-    transform:translateY(-2px);
-    box-shadow:0 12px 28px rgba(15,23,42,.10);
-}
 
 .link-top{
     display:flex;
     justify-content:space-between;
-    align-items:flex-start;
-    gap:12px;
-    margin-bottom:14px;
+    gap:10px;
+    margin-bottom:10px;
 }
+
 
 .link-top h3{
     margin:0;
-    font-size:18px;
+    font-size:15px;
     font-weight:700;
     color:#0f172a;
     word-break:break-word;
 }
 
+
 .link-meta{
     display:flex;
     flex-wrap:wrap;
-    gap:14px;
-    margin-bottom:14px;
+    gap:10px;
+    margin-bottom:10px;
 }
+
 
 .link-meta span{
     display:flex;
     align-items:center;
-    gap:6px;
-    font-size:13px;
+    gap:5px;
+    font-size:12px;
     color:#64748b;
 }
 
+
 .link-meta i{
     color:#2563eb;
-    font-size:12px;
+    font-size:11px;
 }
 
 
 /* =====================================================
-   12. BADGE
+   BADGE
 ===================================================== */
 
 .badge-group{
     display:flex;
     flex-wrap:wrap;
-    gap:8px;
-    margin-bottom:14px;
+    gap:6px;
+    margin-bottom:10px;
 }
 
+
 .badge{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    padding:6px 12px;
+    padding:4px 10px;
     border-radius:999px;
-    font-size:11px;
+    font-size:10px;
     font-weight:700;
 }
+
 
 .badge.green{
     background:#dcfce7;
     color:#166534;
 }
 
+
 .badge.red{
     background:#fee2e2;
     color:#b91c1c;
 }
 
+
 .badge.blue{
     background:#dbeafe;
     color:#1d4ed8;
 }
+
 
 .badge.orange{
     background:#fef3c7;
@@ -585,109 +510,41 @@
 
 .link-actions{
     display:flex;
-    gap:10px;
-    margin-top:16px;
+    gap:8px;
+    margin-top:12px;
 }
+
 
 .link-actions button{
     flex:1;
-    height:44px;
+    height:40px;
     border:none;
-    border-radius:12px;
-    font-size:13px;
-    font-weight:600;
-    cursor:pointer;
-    transition:.25s;
-}
-
-.link-actions button:hover{
-    transform:translateY(-2px);
-}
-
-/* ===================================
-   ACTION BUTTONS
-=================================== */
-
-.link-actions{
-    display:flex;
-    gap:10px;
-    margin-top:14px;
-}
-
-.link-actions button{
-    flex:1;
-    height:44px;
-    border:none;
-    border-radius:12px;
-    font-size:13px;
-    font-weight:600;
-    cursor:pointer;
+    border-radius:10px;
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:8px;
-    transition:.25s;
+    gap:6px;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
 }
+
 
 .btn-edit{
     background:#2563eb;
     color:#fff;
 }
 
-.btn-edit:hover{
-    background:#1d4ed8;
-}
 
 .btn-delete{
     background:#ef4444;
     color:#fff;
 }
 
-.btn-delete:hover{
-    background:#dc2626;
-}
 
 .btn-copy{
-    width:52px;
-    border:none;
+    width:44px;
     background:#2563eb;
-    color:#fff;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition:.25s;
-}
-
-.btn-copy:hover{
-    background:#1d4ed8;
-}
-
-.link-actions{
-    display:flex;
-    gap:10px;
-}
-
-.link-actions button{
-    flex:1;
-    height:46px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    border:none;
-    border-radius:12px;
-    font-size:13px;
-    font-weight:600;
-}
-
-.btn-edit{
-    background:#2563eb;
-    color:#fff;
-}
-
-.btn-delete{
-    background:#ef4444;
     color:#fff;
 }
 
@@ -698,36 +555,29 @@
 
 .copy-box{
     display:flex;
-    align-items:center;
     overflow:hidden;
     border:1px solid #e2e8f0;
-    border-radius:14px;
-    margin-bottom:14px;
+    border-radius:12px;
+    margin:12px 0;
 }
+
 
 .copy-box input{
     flex:1;
-    height:50px;
-    padding:0 16px;
+    height:44px;
     border:none;
     outline:none;
+    padding:0 12px;
     background:#f8fafc;
-    color:#0f172a;
-    font-size:13px;
+    font-size:12px;
 }
+
 
 .copy-box button{
-    width:52px;
-    height:50px;
+    width:44px;
     border:none;
     background:#2563eb;
-    color:#fff;
-    cursor:pointer;
-    transition:.25s;
-}
-
-.copy-box button:hover{
-    background:#1d4ed8;
+    color:white;
 }
 
 
@@ -736,52 +586,77 @@
 ===================================================== */
 
 .empty{
-    padding:50px 20px;
     text-align:center;
+    padding:35px 15px;
 }
+
 
 .empty i{
-    font-size:46px;
+    font-size:38px;
     color:#cbd5e1;
-    margin-bottom:14px;
 }
+
 
 .empty h3{
-    margin:0;
-    font-size:18px;
-    color:#0f172a;
+    margin:10px 0 5px;
+    font-size:16px;
 }
 
+
 .empty p{
-    margin:8px auto 0;
-    max-width:380px;
-    font-size:13px;
-    line-height:1.6;
+    margin:0 auto;
+    font-size:12px;
     color:#64748b;
 }
 
 /* =====================================================
-   18. DARK MODE
+   TIPS BOX
+===================================================== */
+
+.tips-box{
+    background:#fff7ed;
+    border:1px solid #fed7aa;
+    border-radius:12px;
+    padding:10px 12px;
+    color:#c2410c;
+    font-size:11px;
+    line-height:1.5;
+}
+
+
+.tips-box strong{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    margin-bottom:3px;
+}
+
+
+/* =====================================================
+   DARK MODE
 ===================================================== */
 
 html.dark .page-title h1,
 html.dark .title-left h2,
-html.dark .info-header h3,
 html.dark .link-top h3,
-html.dark .empty h3{
+html.dark .empty h3,
+html.dark .info-header h3{
     color:#f8fafc;
 }
+
 
 html.dark .page-title p,
 html.dark .title-left p,
 html.dark .info-box li,
 html.dark #sellStatus,
-html.dark .link-meta,
-html.dark .mini-stat small,
+html.dark .link-meta span,
 html.dark .stat-card h4,
+html.dark .mini-stat small,
 html.dark .empty p{
     color:#94a3b8;
 }
+
 
 html.dark .card-section,
 html.dark .info-box,
@@ -791,47 +666,49 @@ html.dark .link-card{
     border-color:#1f2937;
 }
 
+
 html.dark .section-title{
     border-color:#1f2937;
 }
 
-html.dark .title-left>i,
+
+html.dark .title-left > i,
 html.dark .stat-card i{
     background:#1e3a8a;
     color:#bfdbfe;
 }
+
 
 html.dark .mini-stat{
     background:#1e293b;
     border-color:#334155;
 }
 
+
 html.dark .mini-stat span,
 html.dark .stat-card h2{
     color:#60a5fa;
 }
 
+
 html.dark .form-group label{
     color:#cbd5e1;
 }
 
+
 html.dark .form-group input,
 html.dark .search-box input,
-html.dark .copy-box input,
-html.dark #generatedBox input{
+html.dark .copy-box input{
     background:#020617;
     border-color:#334155;
     color:#fff;
 }
 
+
 html.dark .copy-box{
     border-color:#334155;
 }
 
-html.dark .copy-box button,
-html.dark #generatedBox button{
-    background:#2563eb;
-}
 
 html.dark .link-filter button{
     background:#1e293b;
@@ -839,32 +716,34 @@ html.dark .link-filter button{
     color:#cbd5e1;
 }
 
+
 html.dark .link-filter button.active{
     background:#2563eb;
-    border-color:#2563eb;
     color:#fff;
 }
 
 
 /* =====================================================
-   19. RESPONSIVE
+   RESPONSIVE TABLET
 ===================================================== */
 
-@media (max-width:900px){
+@media(max-width:900px){
 
     .quick-stats{
         grid-template-columns:repeat(2,1fr);
-        gap:14px;
     }
+
 
     .section-title{
         flex-direction:column;
         align-items:flex-start;
     }
 
+
     .section-stats{
         width:100%;
     }
+
 
     .mini-stat{
         flex:1;
@@ -872,105 +751,147 @@ html.dark .link-filter button.active{
 
 }
 
-@media (max-width:600px){
+
+/* =====================================================
+   RESPONSIVE MOBILE
+===================================================== */
+
+@media(max-width:600px){
 
     .app-container{
-        padding:0 14px 30px;
+        padding:2px 12px 25px;
     }
+
 
     .page-title{
-        gap:12px;
+        gap:10px;
+        margin-bottom:12px;
     }
 
-    .page-title>i{
-        width:50px;
-        height:50px;
-        font-size:20px;
+
+    .page-title > i{
+        width:44px;
+        height:44px;
+        font-size:18px;
     }
+
 
     .page-title h1{
-        font-size:23px;
+        font-size:21px;
     }
+
 
     .card-section,
-    .info-box{
-        padding:16px;
+    .info-box,
+    .stat-card{
+        padding:14px;
+        border-radius:14px;
     }
 
-    .title-left>i{
-        width:42px;
-        height:42px;
-        font-size:16px;
-    }
 
     .title-left h2{
-        font-size:19px;
+        font-size:17px;
     }
 
-    .search-box input,
-    .form-group input,
-    .btn-sell{
-        height:48px;
+
+    .title-left > i{
+        width:38px;
+        height:38px;
+        font-size:14px;
     }
 
-    .link-actions{
-        flex-direction:row;
-    }
-
-    .copy-box{
-        flex-direction:column;
-    }
-
-    .copy-box input{
-        flex:1;
-        width:auto;
-        border-bottom:none;
-    }
-
-    .copy-box button{
-        width:52px;
-        height:50px;
-        flex-shrink:0;
-    }
-
-}
-
-@media (max-width:420px){
 
     .quick-stats{
-        grid-template-columns:repeat(2,1fr);
         gap:10px;
     }
 
-    .stat-card{
-        padding:14px;
-    }
-
-    .stat-card i{
-        width:38px;
-        height:38px;
-        font-size:15px;
-    }
-
-    .stat-card h4{
-        font-size:11px;
-    }
 
     .stat-card h2{
         font-size:18px;
     }
 
-    .mini-stat span{
-        font-size:18px;
+
+    .stat-card i{
+        width:34px;
+        height:34px;
+        font-size:14px;
     }
+
+
+    .link-top h3{
+        font-size:14px;
+    }
+
 
     .link-meta{
         flex-direction:column;
+        gap:6px;
+    }
+
+
+    .link-actions button{
+        height:38px;
+        font-size:11px;
+    }
+
+
+    .copy-box input{
+        height:42px;
+    }
+
+
+    .copy-box button{
+        width:42px;
+    }
+
+}
+
+
+/* =====================================================
+   SMALL DEVICE 360px
+===================================================== */
+
+@media(max-width:380px){
+
+    .page-title h1{
+        font-size:19px;
+    }
+
+
+    .page-title p{
+        font-size:11px;
+    }
+
+
+    .quick-stats{
         gap:8px;
     }
 
+
+    .stat-card{
+        padding:12px;
+    }
+
+
+    .stat-card h4{
+        font-size:10px;
+    }
+
+
+    .stat-card h2{
+        font-size:16px;
+    }
+
+
     .link-filter button{
         flex:1;
-        justify-content:center;
+        padding:0 8px;
+        font-size:11px;
     }
+
+
+    .badge{
+        font-size:9px;
+    }
+
 }
