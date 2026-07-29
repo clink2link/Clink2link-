@@ -454,8 +454,6 @@ filterButtons.forEach(btn=>{
 
 });
 
-});
-
 /* =========================
    GENERATE SHORT CODE
 ========================= */
@@ -1308,3 +1306,5 @@ function checkAccess(){
     }
 
 })();
+
+}); // Penutup document.addEventListener("DOMContentLoaded", ...)
