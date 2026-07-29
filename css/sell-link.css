@@ -1031,3 +1031,269 @@ html.dark #generatedBox button{
     }
 
 }
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.search-box{
+    position:relative;
+    margin-bottom:16px;
+}
+
+.search-box i{
+    position:absolute;
+    left:16px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#94a3b8;
+}
+
+.search-box input{
+    width:100%;
+    height:52px;
+    padding:0 16px 0 46px;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    background:#fff;
+    font-size:14px;
+    transition:.25s;
+}
+
+.search-box input:focus{
+    outline:none;
+    border-color:#2563eb;
+    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+}
+
+
+/* =====================================================
+   FILTER
+===================================================== */
+
+.link-filter{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+}
+
+.link-filter button{
+    height:40px;
+    padding:0 18px;
+    border:1px solid #dbeafe;
+    background:#eff6ff;
+    color:#2563eb;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+    transition:.25s;
+}
+
+.link-filter button:hover,
+.link-filter button.active{
+    background:#2563eb;
+    border-color:#2563eb;
+    color:#fff;
+}
+
+
+/* =====================================================
+   LINK CARD
+===================================================== */
+
+.link-card{
+    margin-bottom:16px;
+}
+
+.link-card h3{
+    margin:0 0 12px;
+    font-size:18px;
+    font-weight:700;
+}
+
+.link-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px;
+    margin-bottom:14px;
+    font-size:13px;
+    color:#64748b;
+}
+
+.link-meta span{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+
+/* =====================================================
+   BADGE GROUP
+===================================================== */
+
+.badge-group{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:14px;
+}
+
+.badge.green{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.badge.pink{
+    background:#fce7f3;
+    color:#be185d;
+}
+
+
+/* =====================================================
+   LINK ACTIONS
+===================================================== */
+
+.link-actions{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+}
+
+.link-actions button{
+    flex:1;
+}
+
+
+/* =====================================================
+   COPY BOX
+===================================================== */
+
+.copy-box{
+    display:flex;
+    overflow:hidden;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    margin-bottom:14px;
+}
+
+.copy-box input{
+    flex:1;
+    border:0;
+    height:50px;
+    padding:0 16px;
+    background:#f8fafc;
+}
+
+.copy-box button{
+    width:52px;
+    border:0;
+    background:#2563eb;
+    color:#fff;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.copy-box button:hover{
+    background:#1d4ed8;
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.empty{
+    padding:50px 20px;
+    text-align:center;
+}
+
+.empty i{
+    font-size:46px;
+    color:#cbd5e1;
+    margin-bottom:14px;
+}
+
+.empty h3{
+    margin:0;
+    font-size:18px;
+    color:#0f172a;
+}
+
+.empty p{
+    margin-top:8px;
+    color:#64748b;
+    font-size:13px;
+}
+
+
+/* =====================================================
+   DARK
+===================================================== */
+
+html.dark .search-box input,
+html.dark .copy-box{
+    background:#020617;
+    border-color:#334155;
+}
+
+html.dark .copy-box input{
+    background:#020617;
+    color:#fff;
+}
+
+html.dark .link-filter button{
+    background:#1e293b;
+    border-color:#334155;
+    color:#cbd5e1;
+}
+
+html.dark .link-filter button.active{
+    background:#2563eb;
+    border-color:#2563eb;
+    color:#fff;
+}
+
+html.dark .link-meta{
+    color:#94a3b8;
+}
+
+html.dark .empty h3{
+    color:#fff;
+}
+
+html.dark .empty p{
+    color:#94a3b8;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:600px){
+
+    .link-actions{
+        flex-direction:column;
+    }
+
+    .copy-box{
+        flex-direction:column;
+    }
+
+    .copy-box input,
+    .copy-box button{
+        width:100%;
+    }
+
+    .copy-box button{
+        height:44px;
+    }
+
+    .search-box input{
+        height:48px;
+    }
+
+}
