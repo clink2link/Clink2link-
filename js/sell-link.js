@@ -17,10 +17,11 @@ try{
 if(window.database){
 currentUser =
 await database.getUser();
-if(currentUser){
+if(!currentUser) return;
+
 sellActive =
-currentUser.sell_unlocked ||
-currentUser.withdraw_count >= 3;
+    currentUser.sell_unlocked ||
+    currentUser.withdraw_count >= 3;
 }
 }
 }catch(e){
@@ -57,57 +58,23 @@ e
 
 function renderSellStats(){
 
-let totalAds =
-document.getElementById("totalSellAds");
+    const totalLink = document.getElementById("totalLink");
+    const totalSold = document.getElementById("totalSold");
 
-let totalView =
-document.getElementById("totalSellView");
+    if(totalLink){
+        totalLink.textContent = sellLinks.length;
+    }
 
-let totalClick =
-document.getElementById("totalSellClick");
+    if(totalSold){
 
-let totalEarn =
-document.getElementById("totalSellEarn");
+        const sold = sellLinks.reduce(
+            (a,b)=>a + Number(b.sales || b.sold || 0),
+            0
+        );
 
+        totalSold.textContent = sold;
 
-if(!totalAds) return;
-
-
-let ads =
-sellLinks.length;
-
-
-let view =
-sellLinks.reduce(
-(a,b)=>a + Number(b.views || 0),
-0
-);
-
-
-let click =
-sellLinks.reduce(
-(a,b)=>a + Number(b.clicks || 0),
-0
-);
-
-
-let earn =
-sellLinks.reduce(
-(a,b)=>a + Number(b.earnings || 0),
-0
-);
-
-
-
-totalAds.innerText = ads;
-
-totalView.innerText = view;
-
-totalClick.innerText = click;
-
-totalEarn.innerText =
-"Rp " + earn.toLocaleString("id-ID");
-
+    }
 
 }
   
@@ -219,7 +186,10 @@ short_code:code
 if(saved){
 await loadSellLinks();
 }
-
+if(saved){
+    await loadSellLinks();
+    generateLink(saved.id || code);
+}
 
 document.getElementById("sellTitle").value="";
 document.getElementById("sellUrl").value="";
@@ -241,73 +211,81 @@ alert("Sell Link berhasil dibuat");
 
 function renderLinks(){
 
-let box=document.getElementById("sellList");
+    const box = document.getElementById("sellList");
 
+    if(!box) return;
 
-if(!box)return;
+    box.innerHTML = "";
 
+    if(sellLinks.length===0){
 
-box.innerHTML="";
+        box.innerHTML = `
+        <div class="empty">
+            <i class="fa-solid fa-box-open"></i>
+            <h3>Belum Ada Sell Link</h3>
+            <p>Buat Sell Link pertama Anda.</p>
+        </div>
+        `;
 
+        return;
 
-if(sellLinks.length===0){
+    }
 
-box.innerHTML=`
-<div style="text-align:center;padding:20px;color:#64748b">
-Belum ada Sell Link
-</div>
-`;
+    sellLinks.forEach(item=>{
 
-return;
+        const sold = Number(item.sales || item.sold || 0);
 
-}
+        const code = item.short_code || item.id;
 
+        box.innerHTML += `
 
+        <div class="link-card">
 
-sellLinks.forEach(item=>{
+            <h3>${item.title}</h3>
 
+            <div class="badge-group">
+                <span class="badge green">
+                    AKTIF
+                </span>
 
-box.innerHTML+=`
+                <span class="badge pink">
+                    Terjual ${sold}x
+                </span>
+            </div>
 
-<div class="link-card">
+            <div class="link-meta">
 
-<div class="link-top">
+                <span>
+                    <i class="fa-solid fa-tag"></i>
+                    Rp ${Number(item.price).toLocaleString("id-ID")}
+                </span>
 
-<h3>${item.title}</h3>
+                <span>
+                    <i class="fa-solid fa-link"></i>
+                    ${code}
+                </span>
 
-<span class="badge success">
-AKTIF
-</span>
+            </div>
 
-</div>
+            <div class="link-actions">
 
+                <button
+                    class="btn-copy"
+                    onclick="generateLink('${item.id}')">
 
-<div class="link-mid">
+                    <i class="fa-solid fa-qrcode"></i>
 
-<span>
-Harga
-</span>
+                    Generate Link
 
-<strong>
-Rp ${Number(item.price).toLocaleString("id-ID")}
-</strong>
+                </button>
 
-</div>
+            </div>
 
+        </div>
 
-<button class="btn-sell"
-onclick="generateLink('${item.id}')">
-<i class="fa-solid fa-qrcode"></i>
-QR / Link Buy
-</button>
+        `;
 
-
-</div>
-
-`;
-
-});
-
+    });
 
 }
 
@@ -316,70 +294,72 @@ QR / Link Buy
 
 /* GENERATE LINK ADS BUY */
 
-window.generateLink=function(id){
+window.generateLink = function(id){
 
+    const item = sellLinks.find(x=>x.id===id);
 
-let item =
-sellLinks.find(x=>x.id===id);
+    if(!item) return;
 
+    const code = item.short_code || item.id;
 
-if(!item){
-return;
-}
+    const buy = `https://click2pay.my.id/b/${code}`;
+    const ads = `https://click2pay.my.id/a/${code}`;
 
+    document.getElementById("generatedBox").innerHTML = `
 
-let code =
-item.short_code || item.id;
+    <div class="link-card">
 
+        <h3>${item.title}</h3>
 
-let buy=`https://click2pay.my.id/b/${code}`;
-let ads=`https://click2pay.my.id/a/${code}`;
+        <div class="badge-group">
 
+            <span class="badge green">
+                Link Siap Digunakan
+            </span>
 
+        </div>
 
-let box=document.getElementById("generatedBox");
+        <label>Ads Link</label>
 
+        <div class="copy-box">
 
-box.innerHTML=`
+            <input
+                id="adsLink"
+                readonly
+                value="${ads}">
 
-<section class="sell-card">
+            <button
+                onclick="copySell('${ads}')">
 
-<h3>
-<i class="fa-solid fa-link"></i>
-Link Otomatis
-</h3>
+                <i class="fa-solid fa-copy"></i>
 
+            </button>
 
-<label>
-Link Ads
-</label>
+        </div>
 
-<input readonly value="${ads}">
+        <label>Buy Link</label>
 
+        <div class="copy-box">
 
-<label>
-Link Buy
-</label>
+            <input
+                id="buyLink"
+                readonly
+                value="${buy}">
 
-<input readonly value="${buy}">
+            <button
+                onclick="copySell('${buy}')">
 
+                <i class="fa-solid fa-copy"></i>
 
-<button class="btn-sell"
-onclick="copySell('${buy}')">
+            </button>
 
-<i class="fa-solid fa-copy"></i>
+        </div>
 
-Copy Link Buy
+    </div>
 
-</button>
+    `;
 
-
-</section>
-
-`;
-
-
-}
+};
 
 
 
