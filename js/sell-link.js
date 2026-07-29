@@ -541,11 +541,11 @@ if(createBtn){
         if(
             !title ||
             !destination ||
-            price <= 0
+            price < 10000
         ){
 
             alert(
-                "Lengkapi data Sell Link."
+                "Lengkapi data dengan benar.\nHarga minimal Rp10.000."
             );
 
             return;
@@ -554,9 +554,7 @@ if(createBtn){
 
         try{
 
-            new URL(
-                destination
-            );
+            new URL(destination);
 
         }catch{
 
@@ -567,6 +565,13 @@ if(createBtn){
             return;
 
         }
+
+        createBtn.disabled = true;
+
+        createBtn.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Membuat Sell Link...
+        `;
 
         try{
 
@@ -606,11 +611,9 @@ if(createBtn){
 
                     price,
 
-                    status:
-                        "active",
+                    status:"active",
 
                     sold:0,
-
                     views:0,
                     clicks:0,
                     earnings:0,
@@ -621,22 +624,9 @@ if(createBtn){
 
                 });
 
-            document
-                .getElementById("sellTitle")
-                .value = "";
-
-            document
-                .getElementById("sellUrl")
-                .value = "";
-
-            document
-                .getElementById("sellPrice")
-                .value = "";
-
-            console.log(
-                "SELL LINK CREATED:",
-                newLink
-            );
+            document.getElementById("sellTitle").value = "";
+            document.getElementById("sellUrl").value = "";
+            document.getElementById("sellPrice").value = "";
 
             await loadSellLinks();
 
@@ -658,8 +648,13 @@ if(createBtn){
             );
 
             alert(
-                err.message
+                err.message ||
+                "Gagal membuat Sell Link."
             );
+
+        }finally{
+
+            checkAccess();
 
         }
 
@@ -1260,7 +1255,16 @@ function checkAccess(){
 
     if(!btn || !status) return;
 
+    status.classList.remove(
+        "active",
+        "inactive"
+    );
+
     if(sellActive){
+
+        status.classList.add(
+            "active"
+        );
 
         btn.disabled = false;
 
@@ -1271,20 +1275,24 @@ function checkAccess(){
 
         status.innerHTML = `
         <i class="fa-solid fa-circle-check"></i>
-        Sell Link aktif
+        Sell Link Aktif
         `;
 
     }else{
+
+        status.classList.add(
+            "inactive"
+        );
 
         btn.disabled = true;
 
         btn.innerHTML = `
         <i class="fa-solid fa-lock"></i>
-        Sell Link terkunci
+        Sell Link Terkunci
         `;
 
         status.innerHTML = `
-        <i class="fa-solid fa-lock"></i>
+        <i class="fa-solid fa-circle-xmark"></i>
         Aktifkan Sell Link terlebih dahulu
         `;
 
