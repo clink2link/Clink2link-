@@ -10,32 +10,489 @@
 
 <link rel="stylesheet" href="../css/theme.css">
 <link rel="stylesheet" href="../css/app-ui.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+body{
+background:#f5f8ff;
+font-family:Inter,Arial,sans-serif;
+}
+
+.buy-wrapper{
+max-width:600px;
+margin:auto;
+padding:20px;
+}
+
+
+/* NAVBAR */
+
+.buy-nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px;
+background:white;
+border-radius:14px;
+box-shadow:0 5px 20px #0001;
+}
+
+.logo{
+font-weight:800;
+color:#2563eb;
+font-size:20px;
+}
+
+.nav-btn a{
+text-decoration:none;
+padding:8px 14px;
+border-radius:10px;
+font-size:14px;
+margin-left:5px;
+}
+
+.login{
+color:#2563eb;
+border:1px solid #2563eb;
+}
+
+.register{
+background:#2563eb;
+color:white;
+}
+
+
+/* RUNNING TEXT */
+
+.running-box{
+margin-top:15px;
+overflow:hidden;
+background:#2563eb;
+color:white;
+border-radius:12px;
+padding:10px;
+}
+
+.running-text{
+white-space:nowrap;
+animation:running 12s linear infinite;
+}
+
+@keyframes running{
+
+from{
+transform:translateX(100%);
+}
+
+to{
+transform:translateX(-100%);
+}
+
+}
+
+
+/* CARD */
+
+.sell-card{
+
+margin-top:20px;
+background:white;
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 30px #0001;
+text-align:center;
+
+}
+
+
+.sell-card h2{
+margin-bottom:10px;
+}
+
+
+.price{
+font-size:22px;
+color:#2563eb;
+font-weight:800;
+}
+
+
+.sold{
+font-size:14px;
+color:#666;
+}
+
+
+
+.qr-box{
+
+margin:20px auto;
+padding:15px;
+width:230px;
+height:230px;
+border-radius:15px;
+background:#fff;
+box-shadow:0 5px 20px #0002;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+}
+
+
+
+.qr-box img{
+
+max-width:100%;
+}
+
+
+
+.buy-btn{
+
+width:100%;
+border:none;
+padding:14px;
+border-radius:12px;
+background:#2563eb;
+color:white;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+
+}
+
+
+
+/* NOTE */
+
+.note{
+
+margin-top:20px;
+font-size:13px;
+color:red;
+background:#fff1f1;
+padding:12px;
+border-radius:10px;
+
+}
+
+
+
+/* INFO */
+
+.info-card{
+
+margin-top:20px;
+background:white;
+padding:20px;
+border-radius:15px;
+
+}
+
+
+.info-card h3{
+
+font-size:18px;
+margin-bottom:10px;
+
+}
+
+
+.info-card li{
+
+margin-bottom:8px;
+font-size:14px;
+
+}
+
+
+/* FOOTER */
+
+footer{
+
+margin-top:30px;
+text-align:center;
+font-size:13px;
+color:#777;
+
+}
+
+.info-card li{
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+.info-card li i{
+width:18px;
+color:#2563eb;
+}
+
+.nav-btn i{
+margin-right:5px;
+}
+
+.running-text i{
+margin:0 8px;
+}
+
+
+</style>
 
 </head>
 
+
 <body>
 
-<div class="app-container">
+<div class="buy-wrapper">
 
-<h1>
-<i class="fa-solid fa-cart-shopping"></i>
-Pembelian
-</h1>
+
+<!-- NAVBAR -->
+
+<div class="buy-nav">
+
+<div class="logo">
+<i class="fa-solid fa-hand-pointer"></i>
+CLICK2PAY
+</div>
+
+
+<div class="nav-btn">
+
+<a class="login" href="../login.html">
+<i class="fa-solid fa-right-to-bracket"></i>
+Login
+</a>
+
+
+<a class="register" href="../register.html">
+<i class="fa-solid fa-user-plus"></i>
+Registrasi
+</a>
+
+</div>
+
+</div>
+
+
+
+<!-- RUNNING TEXT -->
+
+<div class="running-box">
+
+<div class="running-text">
+
+<i class="fa-solid fa-bolt"></i>
+Daftar sekarang dan dapatkan CPM tertinggi dan bonus yang menarik.
+<i class="fa-solid fa-gift"></i>
+
+</div>
+
+</div>
+
+
+
+
+<!-- CONTENT -->
 
 <div id="buyBox">
-Loading...
-</div>
+
+
+<div class="sell-card">
+
+
+<h2>
+
+<i class="fa-solid fa-link"></i>
+
+Loading Sell Link...
+
+</h2>
+
 
 </div>
+
+
+</div>
+
+
+
+
+<!-- NOTE -->
+
+<div class="note">
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+<b>Perhatian:</b>
+
+Utamakan lihat dulu link yang mau anda beli supaya tidak ada kendala kesalahpahaman antara penjual dan pembeli.
+
+</div>
+
+
+
+
+
+<!-- CARA PEMBAYARAN -->
+
+<div class="info-card">
+
+
+<h3>
+
+<i class="fa-solid fa-qrcode"></i>
+
+Cara Pembayaran Pembeli
+
+</h3>
+
+
+
+<ul>
+
+
+<li>
+<i class="fa-solid fa-mobile-screen-button"></i>
+Scan QR otomatis dari BayarGG.
+</li>
+
+
+<li>
+<i class="fa-solid fa-building-columns"></i>
+Masuk ke Mobile Banking atau E-Wallet.
+</li>
+
+
+<li>
+<i class="fa-solid fa-camera"></i>
+Pilih menu Scan QR.
+</li>
+
+
+<li>
+<i class="fa-solid fa-qrcode"></i>
+Scan QR pembayaran.
+</li>
+
+
+<li>
+<i class="fa-solid fa-money-bill-transfer"></i>
+Lakukan pembayaran dan tunggu konfirmasi.
+</li>
+
+
+</ul>
+
+
+</div>
+
+
+
+
+
+<!-- CARA BUAT SELL LINK -->
+
+<div class="info-card">
+
+
+<h3>
+
+<i class="fa-solid fa-link-circle"></i>
+
+Cara Membuat Sell Link
+
+</h3>
+
+
+
+<ul>
+
+
+<li>
+<i class="fa-solid fa-user-plus"></i>
+Daftar atau login terlebih dahulu.
+</li>
+
+
+<li>
+<i class="fa-solid fa-plus-circle"></i>
+Pilih menu Create Sell Link.
+</li>
+
+
+<li>
+<i class="fa-solid fa-heading"></i>
+Masukkan judul link.
+</li>
+
+
+<li>
+<i class="fa-solid fa-globe"></i>
+Masukkan link tujuan.
+</li>
+
+
+<li>
+<i class="fa-solid fa-money-bill-wave"></i>
+Masukkan nominal harga.
+</li>
+
+
+<li>
+<i class="fa-solid fa-circle-check"></i>
+Tekan tombol Create.
+</li>
+
+
+<li>
+<i class="fa-solid fa-share-nodes"></i>
+Link siap dibagikan atau di-share.
+</li>
+
+
+</ul>
+
+
+</div>
+
+
+
+
+<!-- FOOTER -->
+
+<footer>
+
+<i class="fa-solid fa-shield-halved"></i>
+
+© 2026 Click2Pay • Smart Link Platform
+
+<i class="fa-solid fa-bolt"></i>
+
+</footer>
+
+
+
+</div>
+
+
 
 <script>
 window.BUY_CODE=location.pathname.split("/").pop();
 </script>
 
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
 <script src="../js/database.js"></script>
+
 <script src="../js/buy.js"></script>
+
 
 </body>
 
