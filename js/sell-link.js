@@ -162,7 +162,6 @@ async function loadSellLinks(){
 
         sellLinks = data.filter(link=>
 
-            link.type === "sell" ||
             link.link_type === "sell"
 
         );
@@ -898,9 +897,6 @@ window.generateLink = function(id){
 
     }
 
-    const adsLink =
-        `${location.origin}/a/${shortCode}`;
-
     const buyLink =
         `${location.origin}/b/${shortCode}`;
 
@@ -921,24 +917,6 @@ window.generateLink = function(id){
                 Link Siap Digunakan
 
             </span>
-
-        </div>
-
-        <label>Ads Link</label>
-
-        <div class="copy-box">
-
-            <input
-                readonly
-                value="${adsLink}">
-
-            <button
-                class="btn-copy"
-                onclick="copySell('${adsLink}')">
-
-                <i class="fa-regular fa-copy"></i>
-
-            </button>
 
         </div>
 
