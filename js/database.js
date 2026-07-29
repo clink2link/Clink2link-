@@ -212,7 +212,6 @@ error
 .from("links")
 
 .select(`
-
 id,
 user_id,
 type,
@@ -223,20 +222,13 @@ destination,
 destination_url,
 price,
 status,
-
 views,
 clicks,
 earnings,
-
 total_views,
 total_clicks,
 total_earnings,
-
-sales,
-sold,
-
 created_at
-
 `)
 
 .eq(
