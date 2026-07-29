@@ -70,94 +70,74 @@ err
 
 async function loadSellLinks(){
 
-    try{
+try{
 
-        console.log("CURRENT USER:",currentUser);
+if(!currentUser){
 
+currentUser =
+await database.getUser();
 
-        if(!currentUser){
-
-            currentUser =
-            await database.getUser();
-
-        }
+}
 
 
-        console.log("USER:",currentUser);
+if(!currentUser){
+
+console.log("USER TIDAK ADA");
+
+return;
+
+}
 
 
-
-        if(!currentUser){
-
-            console.error(
-                "USER TIDAK ADA"
-            );
-
-            return;
-
-        }
+console.log(
+"LOAD LINK USER:",
+currentUser.id
+);
 
 
-
-        const data =
-        await database.getLinks(
-            currentUser.id
-        );
-
+const data =
+await database.getLinks(
+currentUser.id
+);
 
 
-        console.log(
-            "SEMUA LINKS:",
-            data
-        );
+console.log(
+"SEMUA LINK:",
+data
+);
 
 
+sellLinks =
+data.filter(link=>
 
-        sellLinks =
-        data.filter(link=>{
+link.type==="sell" ||
+link.link_type==="sell"
 
-            console.log(
-                "CHECK LINK:",
-                link.title,
-                link.type,
-                link.link_type
-            );
+);
 
 
-            return (
-                link.type==="sell" ||
-                link.link_type==="sell"
-            );
-
-        });
+console.log(
+"SELL LINK:",
+sellLinks
+);
 
 
-
-        console.log(
-            "SELL LINKS:",
-            sellLinks
-        );
+filteredLinks=[...sellLinks];
 
 
+renderSellStats();
 
-        filteredLinks =
-        [...sellLinks];
-
-
-        renderSellStats();
-
-        applyFilter();
+applyFilter();
 
 
+}catch(err){
 
-    }catch(err){
+console.error(
+"LOAD SELL LINK ERROR:",
+err
+);
 
-        console.error(
-            "LOAD SELL LINK ERROR:",
-            err
-        );
-
-    }
+}
 
 }
 
@@ -932,7 +912,50 @@ window.addEventListener("keydown",e=>{
 
 });
 
+function checkAccess(){
 
+const btn =
+document.getElementById("createSellBtn");
+
+const status =
+document.getElementById("sellStatus");
+
+
+if(!btn || !status) return;
+
+
+if(sellActive){
+
+btn.disabled=false;
+
+btn.innerHTML=`
+<i class="fa-solid fa-plus"></i>
+Create Sell Link
+`;
+
+status.innerHTML=`
+<i class="fa-solid fa-circle-check"></i>
+Sell Link aktif
+`;
+
+}else{
+
+btn.disabled=true;
+
+btn.innerHTML=`
+<i class="fa-solid fa-lock"></i>
+Sell Link terkunci
+`;
+
+status.innerHTML=`
+<i class="fa-solid fa-lock"></i>
+Aktifkan Sell Link terlebih dahulu
+`;
+
+}
+
+
+}
 /* =========================
    INIT
 ========================= */
