@@ -195,6 +195,29 @@ return [];
 return data || [];
 }
 
+// ===============================
+// SELL FEE SYSTEM
+// ===============================
+
+function calculateSellPayment(price){
+
+    const amount = Number(price || 0);
+
+    const fee = Math.floor(
+        amount * 0.20
+    );
+
+    const seller_receive =
+        amount - fee;
+
+
+    return {
+        fee,
+        seller_receive
+    };
+
+}
+
 
 // ===============================
 // LINKS
@@ -228,6 +251,7 @@ earnings,
 total_views,
 total_clicks,
 total_earnings,
+sold,
 created_at
 `)
 
@@ -303,7 +327,6 @@ total_views:0,
 total_clicks:0,
 total_earnings:0,
 
-sales:0,
 sold:0
 
 })
@@ -670,6 +693,95 @@ async function getMenusByRole(role){
 
 }
 
+
+// ===============================
+// SELL ORDERS
+// ===============================
+
+async function createSellOrder(payload){
+
+
+const payment = calculateSellPayment(
+    payload.price
+);
+
+
+const {
+data,
+error
+}=await supabaseClient
+.from("sell_orders")
+.insert({
+
+link_id:payload.link_id,
+
+seller_id:payload.seller_id,
+
+buyer_id:payload.buyer_id || null,
+
+price:payload.price,
+
+fee:payment.fee,
+
+seller_receive:payment.seller_receive,
+
+status:"pending"
+
+})
+.select()
+.single();
+
+
+if(error){
+
+console.error(
+"CREATE SELL ORDER ERROR:",
+error
+);
+
+throw error;
+
+}
+
+
+return data;
+
+}
+
+
+
+async function getSellOrders(userId){
+
+const {
+data,
+error
+}=await supabaseClient
+.from("sell_orders")
+.select("*")
+.eq("seller_id",userId)
+.order(
+"created_at",
+{
+ascending:false
+}
+);
+
+
+if(error){
+
+console.error(
+"GET SELL ORDERS ERROR:",
+error
+);
+
+return [];
+
+}
+
+return data || [];
+
+}
+
 // ===============================
 // EXPORT
 // ===============================
@@ -698,9 +810,13 @@ createLink,
 updateLink,
 deleteLink,
 
+createSellOrder,
+getSellOrders,
+
 getShortlinks,
 
 getClicks,
+calculateSellPayment,
 
 getTransactions,
 
