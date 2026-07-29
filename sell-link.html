@@ -91,73 +91,93 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
 <section class="info-box">
 
-<div class="info-header">
-<i class="fa-solid fa-shield-halved"></i>
-<h3>Status Sell Link</h3>
-</div>
+    <div class="info-header">
 
-<p id="sellStatus">
-Memeriksa akun...
-</p>
+        <i class="fa-solid fa-shield-halved"></i>
+
+        <h3>Status Sell Link</h3>
+
+    </div>
+
+    <p id="sellStatus">
+
+        <i class="fa-solid fa-spinner fa-spin"></i>
+
+        Memeriksa status akun...
+
+    </p>
 
 </section>
 
+
 <!-- CREATE -->
 
-<section class="sell-card">
+<section class="sell-card card-section">
 
-<h3>
-<i class="fa-solid fa-plus"></i>
-Buat Sell Link
-</h3>
+    <div class="section-title">
 
+        <div class="title-left">
 
-<div class="form-group">
+            <i class="fa-solid fa-plus"></i>
 
-<label>Judul Link</label>
+            <div>
 
-<input
-id="sellTitle"
-placeholder="Contoh: Premium File, Course, Template">
+                <h2>Buat Sell Link</h2>
 
-</div>
+                <p>Buat link penjualan digital dengan harga yang Anda tentukan.</p>
 
+            </div>
 
+        </div>
 
-<div class="form-group">
+    </div>
 
-<label>URL Tujuan</label>
+    <div class="form-group">
 
-<input
-id="sellUrl"
-placeholder="https://website.com/file">
+        <label>Judul Link</label>
 
-</div>
+        <input
+            id="sellTitle"
+            type="text"
+            placeholder="Contoh: Premium File, Course, Template">
 
+    </div>
 
+    <div class="form-group">
 
-<div class="form-group">
+        <label>URL Tujuan</label>
 
-<label>Harga Jual</label>
+        <input
+            id="sellUrl"
+            type="url"
+            placeholder="https://website.com/file">
 
-<input
-id="sellPrice"
-type="number"
-placeholder="Minimal Rp10.000">
+    </div>
 
-</div>
+    <div class="form-group">
 
+        <label>Harga Jual</label>
 
+        <input
+            id="sellPrice"
+            type="number"
+            min="10000"
+            step="1000"
+            placeholder="Minimal Rp10.000">
 
-<button
-type="button"
-class="btn-sell"
-id="createSellBtn"
-disabled>
+    </div>
 
-Memeriksa Status...
+    <button
+        id="createSellBtn"
+        type="button"
+        class="btn-sell"
+        disabled>
 
-</button>
+        <i class="fa-solid fa-spinner fa-spin"></i>
+
+        Memeriksa Status...
+
+    </button>
 
 </section>
 
@@ -167,62 +187,48 @@ Memeriksa Status...
 
 <section class="quick-stats">
 
-<div class="stat-card">
+    <div class="stat-card">
 
-<i class="fa-solid fa-link"></i>
+        <i class="fa-solid fa-link"></i>
 
-<h4>Total Sell Link</h4>
+        <h4>Total Sell Link</h4>
 
-<h2 id="sellTotalLink">
-0
-</h2>
+        <h2 id="sellTotalLink">0</h2>
 
-</div>
+    </div>
 
+    <div class="stat-card">
 
+        <i class="fa-solid fa-eye"></i>
 
-<div class="stat-card">
+        <h4>Total View</h4>
 
-<i class="fa-solid fa-eye"></i>
+        <h2 id="sellTotalView">0</h2>
 
-<h4>Total View</h4>
+    </div>
 
-<h2 id="sellTotalView">
-0
-</h2>
+    <div class="stat-card">
 
-</div>
+        <i class="fa-solid fa-mouse-pointer"></i>
 
+        <h4>Total Click</h4>
 
+        <h2 id="sellTotalClick">0</h2>
 
-<div class="stat-card">
+    </div>
 
-<i class="fa-solid fa-mouse-pointer"></i>
+    <div class="stat-card">
 
-<h4>Total Click</h4>
+        <i class="fa-solid fa-wallet"></i>
 
-<h2 id="sellTotalClick">
-0
-</h2>
+        <h4>Total Earnings</h4>
 
-</div>
+        <h2 id="sellTotalEarning">Rp 0</h2>
 
-
-
-<div class="stat-card">
-
-<i class="fa-solid fa-wallet"></i>
-
-<h4>Total Earnings</h4>
-
-<h2 id="sellTotalEarning">
-Rp 0
-</h2>
-
-</div>
-
+    </div>
 
 </section>
+
 
 <!-- LIST -->
 
@@ -235,8 +241,11 @@ Rp 0
             <i class="fa-solid fa-list"></i>
 
             <div>
+
                 <h2>Link Saya</h2>
-                <p>Kelola seluruh link yang telah Anda buat.</p>
+
+                <p>Kelola seluruh Sell Link yang telah Anda buat.</p>
+
             </div>
 
         </div>
@@ -244,16 +253,63 @@ Rp 0
         <div class="section-stats">
 
             <div class="mini-stat">
+
                 <span id="totalLink">0</span>
+
                 <small>Total Link</small>
+
             </div>
 
             <div class="mini-stat">
+
                 <span id="totalSold">0</span>
+
                 <small>Terjual</small>
+
             </div>
 
         </div>
+
+    </div>
+
+    <!-- SEARCH -->
+
+    <div class="search-box">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Cari Sell Link...">
+
+    </div>
+
+    <!-- FILTER -->
+
+    <div class="link-filter">
+
+        <button
+            class="active"
+            data-filter="all">
+
+            Semua
+
+        </button>
+
+        <button
+            data-filter="active">
+
+            Aktif
+
+        </button>
+
+        <button
+            data-filter="inactive">
+
+            Nonaktif
+
+        </button>
 
     </div>
 
@@ -273,15 +329,32 @@ Rp 0
             <i class="fa-solid fa-circle-check"></i>
 
             <div>
+
                 <h2>Link Generated</h2>
+
                 <p>Link berhasil dibuat dan siap dibagikan.</p>
+
             </div>
 
         </div>
 
     </div>
 
-    <div id="generatedBox"></div>
+    <div id="generatedBox">
+
+        <div class="empty">
+
+            <i class="fa-solid fa-link"></i>
+
+            <h3>Belum Ada Link</h3>
+
+            <p>
+                Setelah membuat Sell Link, hasil link Buy dan Ads akan muncul di sini.
+            </p>
+
+        </div>
+
+    </div>
 
     <div id="sellNotice"></div>
 
