@@ -97,105 +97,141 @@ return null;
 
 async function loadSellLinks(){
 
-try{
+    try{
 
-console.log(
-"START LOAD SELL LINK"
-);
-
-
-if(!currentUser){
-
-await loadUser();
-
-}
+        console.log(
+            "=== START LOAD SELL LINK ==="
+        );
 
 
-if(!currentUser){
+        // Pastikan user tersedia
+        if(!currentUser){
 
-console.log(
-"USER KOSONG"
-);
+            currentUser =
+                await database.getUser();
 
-return;
-
-}
+        }
 
 
-console.log(
-"REQUEST LINK USER:",
-currentUser.id
-);
+        if(!currentUser){
+
+            console.error(
+                "USER BELUM LOGIN"
+            );
+
+            return;
+
+        }
 
 
-
-const data =
-await database.getLinks(
-currentUser.id
-);
-
+        console.log(
+            "USER ID:",
+            currentUser.id
+        );
 
 
-console.log(
-"ALL LINKS:",
-data
-);
+        // Ambil semua link user
+        const data =
+            await database.getLinks(
+                currentUser.id
+            );
 
 
-
-if(!Array.isArray(data)){
-
-console.error(
-"DATA LINK BUKAN ARRAY"
-);
-
-return;
-
-}
+        console.log(
+            "ALL USER LINKS:",
+            data
+        );
 
 
+        if(!Array.isArray(data)){
 
-sellLinks =
-data.filter(link=>{
+            console.error(
+                "DATA LINKS INVALID:",
+                data
+            );
 
-return (
+            sellLinks=[];
+            filteredLinks=[];
 
-link.type === "sell" ||
+            renderLinks();
 
-link.link_type === "sell"
+            return;
 
-);
-
-});
-
+        }
 
 
-console.log(
-"HASIL SELL LINK:",
-sellLinks
-);
+        // Ambil hanya sell link
+        sellLinks =
+            data.filter(link=>{
+
+                return (
+                    link.type === "sell" ||
+                    link.link_type === "sell"
+                );
+
+            });
 
 
 
-filteredLinks=[
-...sellLinks
-];
+        console.log(
+            "FILTER SELL LINK:",
+            sellLinks
+        );
 
 
-renderSellStats();
+        console.log(
+            "TOTAL SELL:",
+            sellLinks.length
+        );
 
-applyFilter();
+
+        filteredLinks =
+            [...sellLinks];
+
+
+        renderSellStats();
+
+        applyFilter();
 
 
 
-}catch(err){
+    }catch(err){
 
-console.error(
-"LOAD SELL LINK ERROR:",
-err
-);
 
-}
+        console.error(
+            "LOAD SELL LINK ERROR:",
+            err
+        );
+
+
+        const box =
+            document.getElementById(
+                "sellList"
+            );
+
+
+        if(box){
+
+            box.innerHTML=`
+
+            <div class="empty">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <h3>Gagal Memuat Sell Link</h3>
+
+                <p>
+                    ${err.message}
+                </p>
+
+            </div>
+
+            `;
+
+        }
+
+
+    }
 
 }
 
@@ -224,8 +260,65 @@ function renderSellStats(){
     const totalLink =
         document.getElementById("totalLink");
 
+
     const totalSold =
         document.getElementById("totalSold");
+
+
+    const totalView =
+        document.getElementById("sellTotalView");
+
+
+    const totalClick =
+        document.getElementById("sellTotalClick");
+
+
+    const totalEarning =
+        document.getElementById("sellTotalEarning");
+
+
+
+    let sold = 0;
+    let views = 0;
+    let clicks = 0;
+    let earnings = 0;
+
+
+
+    sellLinks.forEach(link=>{
+
+
+        sold += getValue(
+            link,
+            "sold",
+            "sales"
+        );
+
+
+        views += getValue(
+            link,
+            "total_views",
+            "views"
+        );
+
+
+        clicks += getValue(
+            link,
+            "total_clicks",
+            "clicks"
+        );
+
+
+        earnings += getValue(
+            link,
+            "total_earnings",
+            "earnings"
+        );
+
+
+    });
+
+
 
     if(totalLink){
 
@@ -234,24 +327,56 @@ function renderSellStats(){
 
     }
 
+
+
     if(totalSold){
-
-        let sold = 0;
-
-        sellLinks.forEach(link=>{
-
-            sold += getValue(
-                link,
-                "sales",
-                "sold"
-            );
-
-        });
 
         totalSold.textContent =
             sold.toLocaleString("id-ID");
 
     }
+
+
+
+    if(totalView){
+
+        totalView.textContent =
+            views.toLocaleString("id-ID");
+
+    }
+
+
+
+    if(totalClick){
+
+        totalClick.textContent =
+            clicks.toLocaleString("id-ID");
+
+    }
+
+
+
+    if(totalEarning){
+
+        totalEarning.textContent =
+            "Rp " +
+            earnings.toLocaleString("id-ID");
+
+    }
+
+
+
+    console.log(
+        "SELL STATS:",
+        {
+            total:sellLinks.length,
+            sold,
+            views,
+            clicks,
+            earnings
+        }
+    );
+
 
 }
 
@@ -374,19 +499,28 @@ function generateCode(length = 8){
     const chars =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+
     let result = "";
 
-    const array =
+
+    const randomBytes =
         new Uint8Array(length);
 
-    crypto.getRandomValues(array);
 
-    for(let i=0;i<length;i++){
+    crypto.getRandomValues(
+        randomBytes
+    );
+
+
+    for(let i = 0; i < length; i++){
 
         result +=
-            chars[array[i] % chars.length];
+            chars[
+                randomBytes[i] % chars.length
+            ];
 
     }
+
 
     return result;
 
@@ -400,27 +534,51 @@ function generateCode(length = 8){
 const createBtn =
     document.getElementById("createSellBtn");
 
+
 if(createBtn){
 
     createBtn.onclick = async()=>{
 
+
         if(!sellActive){
 
-            alert("Sell Link belum aktif.");
+            alert(
+                "Sell Link belum aktif."
+            );
 
             return;
 
         }
 
+
+
+        if(!currentUser){
+
+            alert(
+                "User belum login."
+            );
+
+            return;
+
+        }
+
+
+
         const title =
-            document.getElementById("sellTitle")
+            document
+            .getElementById("sellTitle")
             .value
             .trim();
 
+
+
         const destination =
-            document.getElementById("sellUrl")
+            document
+            .getElementById("sellUrl")
             .value
             .trim();
+
+
 
         const price =
             Number(
@@ -429,100 +587,193 @@ if(createBtn){
                 .value
             );
 
-        if(!title || !destination || !price){
 
-            alert("Lengkapi semua data.");
+
+        if(
+            !title ||
+            !destination ||
+            price <= 0
+        ){
+
+            alert(
+                "Lengkapi data Sell Link."
+            );
 
             return;
 
         }
+
+
 
         try{
 
             new URL(destination);
 
+
         }catch{
 
-            alert("URL tidak valid.");
+
+            alert(
+                "URL tidak valid."
+            );
 
             return;
 
+
         }
+
+
+
 
         try{
 
+
             let short_code;
 
+
             do{
+
 
                 short_code =
                     generateCode(8);
 
+
             }while(
-                await database.getLinkByCode(short_code)
+
+                await database.getLinkByCode(
+                    short_code
+                )
+
             );
 
+
+
+
+
             const newLink =
+
                 await database.createLink({
 
                     user_id:
                         currentUser.id,
 
-                    type:"sell",
 
-                    link_type:"sell",
+                    type:
+                        "sell",
+
+
+                    link_type:
+                        "sell",
+
 
                     title,
 
+
                     destination,
+
 
                     destination_url:
                         destination,
 
+
                     short_code,
+
 
                     price,
 
-                    status:"active",
 
-                    sales:0,
+                    status:
+                        "active",
 
-                    sold:0
+
+
+                    views:0,
+
+                    clicks:0,
+
+                    earnings:0,
+
+
+                    total_views:0,
+
+                    total_clicks:0,
+
+                    total_earnings:0,
+
+
+                    sold:0,
+
+                    sales:0
 
                 });
 
-            document
-                .getElementById("sellTitle")
-                .value="";
+
+
+
 
             document
-                .getElementById("sellUrl")
-                .value="";
+            .getElementById("sellTitle")
+            .value="";
+
+
 
             document
-                .getElementById("sellPrice")
-                .value="";
+            .getElementById("sellUrl")
+            .value="";
+
+
+
+            document
+            .getElementById("sellPrice")
+            .value="";
+
+
+
+
+
+            console.log(
+                "SELL LINK CREATED:",
+                newLink
+            );
+
+
 
             await loadSellLinks();
 
+
+
             applyFilter();
+
+
 
             generateLink(
                 newLink.id
             );
 
+
+
+            alert(
+                "Sell Link berhasil dibuat."
+            );
+
+
+
         }catch(err){
+
 
             console.error(
                 "CREATE SELL ERROR:",
                 err
             );
 
+
             alert(
                 err.message
             );
 
+
         }
+
 
     };
 
@@ -538,23 +789,40 @@ function renderLinks(){
     const box =
         document.getElementById("sellList");
 
+
     if(!box) return;
+
+
 
     if(!filteredLinks.length){
 
         box.innerHTML = `
+
         <div class="empty">
+
             <i class="fa-solid fa-box-open"></i>
-            <h3>Belum Ada Sell Link</h3>
-            <p>Silakan buat Sell Link pertama Anda.</p>
+
+            <h3>
+                Belum Ada Sell Link
+            </h3>
+
+            <p>
+                Silakan buat Sell Link pertama Anda.
+            </p>
+
         </div>
+
         `;
 
         return;
 
     }
 
+
+
+
     box.innerHTML = filteredLinks.map(link=>{
+
 
         const shortCode =
             link.short_code ||
@@ -562,8 +830,17 @@ function renderLinks(){
             link.code ||
             "";
 
+
+
+        const sellUrl =
+            `${location.origin}/b/${shortCode}`;
+
+
+
         const status =
             link.status === "active";
+
+
 
         const sold =
             Number(
@@ -572,89 +849,203 @@ function renderLinks(){
                 0
             );
 
+
+
+        const price =
+            Number(
+                link.price || 0
+            );
+
+
+
+        const date =
+            link.created_at
+            ?
+            new Date(
+                link.created_at
+            ).toLocaleDateString("id-ID")
+            :
+            "-";
+
+
+
+
         return `
 
+
         <div class="link-card">
+
 
             <h3>
                 ${link.title || "Tanpa Judul"}
             </h3>
 
+
+
             <div class="link-meta">
 
-                <span>
-                    <i class="fa-regular fa-calendar"></i>
-                    ${new Date(
-                        link.created_at
-                    ).toLocaleDateString("id-ID")}
-                </span>
 
                 <span>
-                    <i class="fa-solid fa-tag"></i>
-                    Rp ${Number(
-                        link.price || 0
-                    ).toLocaleString("id-ID")}
+
+                    <i class="fa-regular fa-calendar"></i>
+
+                    ${date}
+
                 </span>
+
+
+
+                <span>
+
+                    <i class="fa-solid fa-tag"></i>
+
+                    Rp ${price.toLocaleString("id-ID")}
+
+                </span>
+
 
             </div>
+
+
+
+
+
+            <div class="destination-link">
+
+                <i class="fa-solid fa-link"></i>
+
+                ${
+                    link.destination_url ||
+                    link.destination ||
+                    "-"
+                }
+
+            </div>
+
+
+
+
 
             <div class="badge-group">
 
+
                 <span class="badge pink">
+
                     Sell Link
+
                 </span>
+
+
 
                 <span class="badge ${status ? "green" : "pink"}">
-                    ${status ? "Aktif" : "Nonaktif"}
+
+                    ${
+                        status
+                        ?
+                        "Aktif"
+                        :
+                        "Nonaktif"
+                    }
+
                 </span>
+
+
+
 
                 <span class="badge blue">
+
                     Terjual ${sold}x
+
                 </span>
 
+
             </div>
+
+
+
+
+
 
             <div class="copy-box">
 
+
                 <input
+
                     readonly
-                    value="https://click2pay.my.id/b/${shortCode}">
+
+                    value="${sellUrl}"
+
+                >
+
+
 
                 <button
-                    class="btn-copy"
-                    onclick="generateLink('${link.id}')">
 
-                    <i class="fa-solid fa-qrcode"></i>
+                    class="btn-copy"
+
+                    onclick="copySell('${sellUrl}')"
+
+                >
+
+                    <i class="fa-regular fa-copy"></i>
+
 
                 </button>
 
+
             </div>
+
+
+
+
+
 
             <div class="link-actions">
 
+
                 <button
+
                     class="btn-edit"
-                    onclick="editSell('${link.id}')">
+
+                    onclick="editSell('${link.id}')"
+
+                >
 
                     <i class="fa-solid fa-pen"></i>
+
                     Edit
 
                 </button>
 
+
+
+
+
                 <button
+
                     class="btn-delete"
-                    onclick="deleteSell('${link.id}')">
+
+                    onclick="deleteSell('${link.id}')"
+
+                >
 
                     <i class="fa-solid fa-eye-slash"></i>
+
                     Hide
 
                 </button>
 
+
+
             </div>
+
+
 
         </div>
 
+
         `;
+
 
     }).join("");
 
@@ -667,11 +1058,43 @@ function renderLinks(){
 
 window.generateLink = function(id){
 
-    const link = sellLinks.find(
-        item => item.id === id
-    );
+    const link =
+        sellLinks.find(
+            item => item.id === id
+        );
 
-    if(!link) return;
+
+    if(!link){
+
+        console.error(
+            "SELL LINK TIDAK DITEMUKAN:",
+            id
+        );
+
+        return;
+
+    }
+
+
+
+    const box =
+        document.getElementById(
+            "generatedBox"
+        );
+
+
+    if(!box){
+
+        console.error(
+            "GENERATED BOX TIDAK ADA"
+        );
+
+        return;
+
+    }
+
+
+
 
     const shortCode =
         link.short_code ||
@@ -679,72 +1102,177 @@ window.generateLink = function(id){
         link.code ||
         "";
 
+
+
+
+    if(!shortCode){
+
+        alert(
+            "Short code tidak ditemukan."
+        );
+
+        return;
+
+    }
+
+
+
+
+
     const adsLink =
         `${location.origin}/a/${shortCode}`;
+
+
 
     const buyLink =
         `${location.origin}/b/${shortCode}`;
 
-    document.getElementById("generatedBox").innerHTML = `
+
+
+
+
+    box.innerHTML = `
+
 
     <div class="link-card">
 
-        <h3>${link.title}</h3>
+
+        <h3>
+            ${link.title || "Sell Link"}
+        </h3>
+
+
 
         <div class="badge-group">
 
             <span class="badge green">
+
+                <i class="fa-solid fa-circle-check"></i>
+
                 Link Siap Digunakan
+
             </span>
 
+
         </div>
 
-        <label>Ads Link</label>
+
+
+
+
+        <label>
+            Ads Link
+        </label>
+
+
 
         <div class="copy-box">
 
+
             <input
+
                 readonly
-                value="${adsLink}">
+
+                value="${adsLink}"
+
+            >
+
+
 
             <button
+
                 class="btn-copy"
-                onclick="copySell('${adsLink}')">
+
+                onclick="copySell('${adsLink}')"
+
+            >
 
                 <i class="fa-regular fa-copy"></i>
 
+
             </button>
+
 
         </div>
 
-        <label>Buy Link</label>
+
+
+
+
+
+
+        <label>
+
+            Buy Link
+
+        </label>
+
+
 
         <div class="copy-box">
 
+
             <input
+
                 readonly
-                value="${buyLink}">
+
+                value="${buyLink}"
+
+            >
+
+
 
             <button
+
                 class="btn-copy"
-                onclick="copySell('${buyLink}')">
+
+                onclick="copySell('${buyLink}')"
+
+            >
 
                 <i class="fa-regular fa-copy"></i>
 
+
             </button>
 
+
         </div>
+
+
+
+
+
+        <div class="link-info">
+
+            <small>
+
+                Short Code:
+                <b>${shortCode}</b>
+
+            </small>
+
+        </div>
+
+
 
     </div>
 
+
+
     `;
 
-    document
-        .getElementById("generatedBox")
-        .scrollIntoView({
-            behavior:"smooth",
-            block:"start"
-        });
+
+
+
+    box.scrollIntoView({
+
+        behavior:"smooth",
+
+        block:"start"
+
+    });
+
+
 
 };
 
