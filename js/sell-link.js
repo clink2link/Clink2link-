@@ -70,103 +70,94 @@ err
 
 async function loadSellLinks(){
 
-try{
+    try{
 
-if(!window.database){
-
-console.error(
-"DATABASE BELUM READY"
-);
-
-return;
-
-}
+        console.log("CURRENT USER:",currentUser);
 
 
-if(!currentUser){
+        if(!currentUser){
 
-currentUser =
-await database.getUser();
+            currentUser =
+            await database.getUser();
 
-}
+        }
 
 
-if(!currentUser){
-
-console.log(
-"USER BELUM LOGIN"
-);
-
-return;
-
-}
+        console.log("USER:",currentUser);
 
 
 
-const data =
-await database.getLinks(
-currentUser.id
-);
+        if(!currentUser){
+
+            console.error(
+                "USER TIDAK ADA"
+            );
+
+            return;
+
+        }
 
 
 
-console.log(
-"ALL LINKS:",
-data
-);
+        const data =
+        await database.getLinks(
+            currentUser.id
+        );
 
 
 
-sellLinks =
-(data || []).filter(link=>{
-
-
-const type =
-(link.type || "")
-.toLowerCase();
-
-
-const linkType =
-(link.link_type || "")
-.toLowerCase();
-
-
-return (
-type==="sell" ||
-linkType==="sell"
-);
-
-
-});
+        console.log(
+            "SEMUA LINKS:",
+            data
+        );
 
 
 
-console.log(
-"SELL LINKS:",
-sellLinks
-);
+        sellLinks =
+        data.filter(link=>{
+
+            console.log(
+                "CHECK LINK:",
+                link.title,
+                link.type,
+                link.link_type
+            );
+
+
+            return (
+                link.type==="sell" ||
+                link.link_type==="sell"
+            );
+
+        });
 
 
 
-filteredLinks =
-[...sellLinks];
-
-
-renderSellStats();
-
-
-applyFilter();
+        console.log(
+            "SELL LINKS:",
+            sellLinks
+        );
 
 
 
-}catch(err){
+        filteredLinks =
+        [...sellLinks];
 
-console.error(
-"LOAD SELL LINK ERROR:",
-err
-);
 
-}
+        renderSellStats();
+
+        applyFilter();
+
+
+
+    }catch(err){
+
+        console.error(
+            "LOAD SELL LINK ERROR:",
+            err
+        );
+
+    }
 
 }
 
