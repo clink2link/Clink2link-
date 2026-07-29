@@ -580,6 +580,93 @@
     transform:translateY(-2px);
 }
 
+/* ===================================
+   ACTION BUTTONS
+=================================== */
+
+.link-actions{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+}
+
+.link-actions button{
+    flex:1;
+    height:44px;
+    border:none;
+    border-radius:12px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition:.25s;
+}
+
+.btn-edit{
+    background:#2563eb;
+    color:#fff;
+}
+
+.btn-edit:hover{
+    background:#1d4ed8;
+}
+
+.btn-delete{
+    background:#ef4444;
+    color:#fff;
+}
+
+.btn-delete:hover{
+    background:#dc2626;
+}
+
+.btn-copy{
+    width:52px;
+    border:none;
+    background:#2563eb;
+    color:#fff;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.25s;
+}
+
+.btn-copy:hover{
+    background:#1d4ed8;
+}
+
+.link-actions{
+    display:flex;
+    gap:10px;
+}
+
+.link-actions button{
+    flex:1;
+    height:46px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border:none;
+    border-radius:12px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.btn-edit{
+    background:#2563eb;
+    color:#fff;
+}
+
+.btn-delete{
+    background:#ef4444;
+    color:#fff;
+}
+
 
 /* =====================================================
    COPY BOX
@@ -803,7 +890,7 @@ html.dark .link-filter button.active{
     }
 
     .link-actions{
-        flex-direction:column;
+        flex-direction:row;
     }
 
     .copy-box{
@@ -811,13 +898,15 @@ html.dark .link-filter button.active{
     }
 
     .copy-box input{
-        width:100%;
-        border-bottom:1px solid #e2e8f0;
+        flex:1;
+        width:auto;
+        border-bottom:none;
     }
 
     .copy-box button{
-        width:100%;
-        height:44px;
+        width:52px;
+        height:50px;
+        flex-shrink:0;
     }
 
 }
