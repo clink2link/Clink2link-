@@ -244,85 +244,95 @@ function getValue(link,key1,key2){
 function renderSellStats(){
 
     const totalLink =
-        document.getElementById("totalLink");
+        document.getElementById("sellTotalLink");
 
-    const totalSold =
-        document.getElementById("totalSold");
+    const totalPrice =
+        document.getElementById("sellTotalPrice");
 
     const totalView =
         document.getElementById("sellTotalView");
 
-    const totalClick =
-        document.getElementById("sellTotalClick");
-
-    const totalEarning =
-        document.getElementById("sellTotalEarning");
+    const totalSold =
+        document.getElementById("sellTotalSold");
 
 
+    let totalHarga = 0;
     let sold = 0;
     let views = 0;
-    let clicks = 0;
-    let earnings = 0;
 
 
     for(const link of sellLinks){
 
+
+        // total harga semua sell link
+        totalHarga += getValue(
+            link,
+            "price"
+        );
+
+
+        // jumlah terjual
         sold += getValue(
             link,
             "sold"
         );
 
+
+        // total view
         views += getValue(
             link,
             "total_views",
             "views"
         );
 
-        clicks += getValue(
-            link,
-            "total_clicks",
-            "clicks"
-        );
-
-        earnings += getValue(
-            link,
-            "total_earnings",
-            "earnings"
-        );
 
     }
 
 
-    totalLink &&
-        (totalLink.textContent =
-            sellLinks.length);
+    if(totalLink){
 
-    totalSold &&
-        (totalSold.textContent =
-            sold.toLocaleString("id-ID"));
+        totalLink.textContent =
+            sellLinks.length;
 
-    totalView &&
-        (totalView.textContent =
-            views.toLocaleString("id-ID"));
+    }
 
-    totalClick &&
-        (totalClick.textContent =
-            clicks.toLocaleString("id-ID"));
 
-    totalEarning &&
-        (totalEarning.textContent =
+    if(totalPrice){
+
+        totalPrice.textContent =
             "Rp " +
-            earnings.toLocaleString("id-ID"));
+            totalHarga.toLocaleString("id-ID");
+
+    }
+
+
+    if(totalView){
+
+        totalView.textContent =
+            views.toLocaleString("id-ID");
+
+    }
+
+
+    if(totalSold){
+
+        totalSold.textContent =
+            sold.toLocaleString("id-ID");
+
+    }
 
 
     console.log(
         "SELL STATS:",
         {
-            total: sellLinks.length,
-            sold,
+            totalLink:
+                sellLinks.length,
+
+            totalHarga,
+
             views,
-            clicks,
-            earnings
+
+            sold
         }
     );
 
@@ -494,9 +504,11 @@ const createBtn =
         "createSellBtn"
     );
 
+
 if(createBtn){
 
     createBtn.onclick = async()=>{
+
 
         if(!sellActive){
 
@@ -508,6 +520,7 @@ if(createBtn){
 
         }
 
+
         if(!currentUser){
 
             alert(
@@ -518,11 +531,13 @@ if(createBtn){
 
         }
 
+
         const title =
             document
             .getElementById("sellTitle")
             .value
             .trim();
+
 
         const destination =
             document
@@ -530,12 +545,15 @@ if(createBtn){
             .value
             .trim();
 
+
         const price =
             Number(
                 document
                 .getElementById("sellPrice")
                 .value
             );
+
+
 
         if(
             !title ||
@@ -551,9 +569,12 @@ if(createBtn){
 
         }
 
+
+
         try{
 
             new URL(destination);
+
 
         }catch{
 
@@ -565,99 +586,210 @@ if(createBtn){
 
         }
 
+
+
+
         createBtn.disabled = true;
 
+
         createBtn.innerHTML = `
+
         <i class="fa-solid fa-spinner fa-spin"></i>
+
         Membuat Sell Link...
+
         `;
+
+
 
         try{
 
+
             let short_code;
 
+
             do{
+
 
                 short_code =
                     generateCode(8);
 
+
             }while(
+
                 await database.getLinkByCode(
                     short_code
                 )
+
             );
 
+
+
+
+
             const newLink =
-                await database.createLink({
 
-                    user_id:
-                        currentUser.id,
+            await database.createLink({
 
-                    type:
-                        "sell",
+                user_id:
+                    currentUser.id,
 
-                    link_type:
-                        "sell",
 
-                    title,
+                type:
+                    "sell",
 
+
+                link_type:
+                    "sell",
+
+
+
+                title,
+
+
+                destination,
+
+
+                destination_url:
                     destination,
 
-                    destination_url:
-                        destination,
 
-                    short_code,
 
-                    price,
+                short_code,
 
-                    status:"active",
 
-                    sold:0,
-                    views:0,
-                    clicks:0,
-                    earnings:0,
+                price,
 
-                    total_views:0,
-                    total_clicks:0,
-                    total_earnings:0
 
-                });
 
-            document.getElementById("sellTitle").value = "";
-            document.getElementById("sellUrl").value = "";
-            document.getElementById("sellPrice").value = "";
+                status:
+                    "active",
+
+
+
+
+                // Statistik awal
+
+                sold:
+                    0,
+
+
+                sales:
+                    0,
+
+
+                views:
+                    0,
+
+
+                total_views:
+                    0
+
+
+            });
+
+
+
+
+
+            document
+            .getElementById("sellTitle")
+            .value = "";
+
+
+
+            document
+            .getElementById("sellUrl")
+            .value = "";
+
+
+
+            document
+            .getElementById("sellPrice")
+            .value = "";
+
+
+
+
 
             await loadSellLinks();
 
-            generateLink(
-                newLink.id
-            );
+
+
+            if(newLink?.id){
+
+                generateLink(
+                    newLink.id
+                );
+
+            }
+
+
+
 
             applyFilter();
 
-            alert(
-                "Sell Link berhasil dibuat."
-            );
+
+
+
+
+            const result =
+                document.getElementById(
+                    "createResult"
+                );
+
+
+            if(result){
+
+                result.innerHTML = `
+
+                <div class="success-box">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    Sell Link berhasil dibuat.
+
+                </div>
+
+                `;
+
+            }
+
+
 
         }catch(err){
+
 
             console.error(
                 "CREATE SELL ERROR:",
                 err
             );
 
+
             alert(
+
                 err.message ||
+
                 "Gagal membuat Sell Link."
+
             );
+
+
 
         }finally{
 
+
+            createBtn.disabled = false;
+
+
             checkAccess();
+
 
         }
 
+
     };
+
 
 }
 
@@ -673,9 +805,13 @@ function renderLinks(){
             "sellList"
         );
 
+
     if(!box) return;
 
+
+
     if(!filteredLinks.length){
+
 
         box.innerHTML = `
 
@@ -695,11 +831,16 @@ function renderLinks(){
 
         `;
 
+
         return;
 
     }
 
+
+
+
     box.innerHTML = filteredLinks.map(link=>{
+
 
         const shortCode =
             link.short_code ||
@@ -707,11 +848,17 @@ function renderLinks(){
             link.code ||
             "";
 
+
+
         const sellUrl =
             `${location.origin}/b/${shortCode}`;
 
+
+
         const status =
             link.status === "active";
+
+
 
         const sold =
             Number(
@@ -720,32 +867,67 @@ function renderLinks(){
                 0
             );
 
+
+
+        const views =
+            Number(
+                link.total_views ??
+                link.views ??
+                0
+            );
+
+
+
         const price =
             Number(
                 link.price ?? 0
             );
+
+
 
         const destination =
             link.destination_url ||
             link.destination ||
             "-";
 
+
+
         const date =
             link.created_at
-                ? new Date(
-                    link.created_at
-                ).toLocaleDateString("id-ID")
-                : "-";
+
+            ?
+
+            new Date(
+                link.created_at
+            )
+            .toLocaleDateString("id-ID")
+
+            :
+
+            "-";
+
+
+
 
         return `
 
+
         <div class="link-card">
 
-            <h3>
-                ${link.title || "Tanpa Judul"}
-            </h3>
+
+            <div class="link-top">
+
+                <h3>
+                    ${link.title || "Tanpa Judul"}
+                </h3>
+
+            </div>
+
+
+
 
             <div class="link-meta">
+
 
                 <span>
 
@@ -755,15 +937,32 @@ function renderLinks(){
 
                 </span>
 
+
+
                 <span>
 
-                    <i class="fa-solid fa-tag"></i>
+                    <i class="fa-solid fa-money-bill"></i>
 
                     Rp ${price.toLocaleString("id-ID")}
 
                 </span>
 
+
+
+                <span>
+
+                    <i class="fa-solid fa-eye"></i>
+
+                    ${views} View
+
+                </span>
+
+
             </div>
+
+
+
+
 
             <div class="destination-link">
 
@@ -773,71 +972,122 @@ function renderLinks(){
 
             </div>
 
+
+
+
+
             <div class="badge-group">
 
-                <span class="badge pink">
+
+                <span class="badge blue">
+
+                    <i class="fa-solid fa-tag"></i>
 
                     Sell Link
 
                 </span>
 
-                <span class="badge ${status ? "green" : "pink"}">
+
+
+                <span class="badge ${status ? "green" : "red"}">
+
+                    <i class="fa-solid fa-circle"></i>
 
                     ${status ? "Aktif" : "Nonaktif"}
 
                 </span>
 
-                <span class="badge blue">
+
+
+                <span class="badge orange">
+
+                    <i class="fa-solid fa-cart-shopping"></i>
 
                     Terjual ${sold}x
 
                 </span>
 
+
             </div>
+
+
+
+
 
             <div class="copy-box">
 
+
                 <input
+
                     readonly
+
                     value="${sellUrl}">
 
+
                 <button
+
                     class="btn-copy"
+
                     onclick="copySell('${sellUrl}')">
+
 
                     <i class="fa-regular fa-copy"></i>
 
+
                 </button>
+
 
             </div>
 
+
+
+
+
             <div class="link-actions">
 
+
                 <button
+
                     class="btn-edit"
+
                     onclick="editSell('${link.id}')">
+
 
                     <i class="fa-solid fa-pen"></i>
 
                     Edit
 
+
                 </button>
 
+
+
+
+
                 <button
+
                     class="btn-delete"
+
                     onclick="deleteSell('${link.id}')">
+
 
                     <i class="fa-solid fa-eye-slash"></i>
 
                     Hide
 
+
                 </button>
+
 
             </div>
 
+
+
         </div>
 
+
         `;
+
 
     }).join("");
 
@@ -855,6 +1105,7 @@ window.generateLink = function(id){
             item => item.id === id
         );
 
+
     if(!link){
 
         console.error(
@@ -866,10 +1117,13 @@ window.generateLink = function(id){
 
     }
 
+
+
     const box =
         document.getElementById(
             "generatedBox"
         );
+
 
     if(!box){
 
@@ -881,11 +1135,16 @@ window.generateLink = function(id){
 
     }
 
+
+
+
     const shortCode =
         link.short_code ||
         link.shortcode ||
         link.code ||
         "";
+
+
 
     if(!shortCode){
 
@@ -897,68 +1156,141 @@ window.generateLink = function(id){
 
     }
 
+
+
+
     const buyLink =
         `${location.origin}/b/${shortCode}`;
 
+
+
+    const price =
+        Number(
+            link.price || 0
+        );
+
+
+
+
     box.innerHTML = `
+
 
     <div class="link-card">
 
-        <h3>
-            ${link.title || "Sell Link"}
-        </h3>
+
+        <div class="link-top">
+
+            <h3>
+
+                ${link.title || "Sell Link"}
+
+            </h3>
+
+        </div>
+
+
+
 
         <div class="badge-group">
+
 
             <span class="badge green">
 
                 <i class="fa-solid fa-circle-check"></i>
 
-                Link Siap Digunakan
+                Link Aktif
 
             </span>
 
+
+
+            <span class="badge blue">
+
+                <i class="fa-solid fa-money-bill"></i>
+
+                Rp ${price.toLocaleString("id-ID")}
+
+            </span>
+
+
         </div>
 
-        <label>Buy Link</label>
+
+
+
+
+        <label>
+
+            Buy Link
+
+        </label>
+
+
 
         <div class="copy-box">
 
+
             <input
+
                 readonly
+
                 value="${buyLink}">
 
+
+
             <button
+
                 class="btn-copy"
+
                 onclick="copySell('${buyLink}')">
+
 
                 <i class="fa-regular fa-copy"></i>
 
+
             </button>
+
 
         </div>
 
+
+
+
+
         <div class="link-info">
+
 
             <small>
 
                 Short Code:
-                <b>${shortCode}</b>
+
+                <b>
+                    ${shortCode}
+                </b>
+
 
             </small>
 
+
         </div>
+
+
 
     </div>
 
+
     `;
+
+
 
     box.scrollIntoView({
 
         behavior:"smooth",
+
         block:"start"
 
     });
+
 
 };
 
