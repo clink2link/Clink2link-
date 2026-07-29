@@ -448,7 +448,7 @@ padding-bottom:0;
 ========================= */
 
 
-.dark{
+html.dark{
 
 background:#020617;
 
@@ -457,7 +457,7 @@ color:#e2e8f0;
 }
 
 
-.dark body{
+html.dark body{
 
 background:#020617;
 
@@ -465,9 +465,9 @@ background:#020617;
 
 
 
-.dark .c2p-navbar,
-.dark .c2p-sidebar,
-.dark .c2p-bottom-nav{
+html.dark .c2p-navbar,
+html.dark .c2p-sidebar,
+html.dark .c2p-bottom-nav{
 
 background:#0f172a;
 
@@ -477,8 +477,8 @@ border-color:#1e293b;
 
 
 
-.dark .c2p-side-logo,
-.dark .c2p-search-box{
+html.dark .c2p-side-logo,
+html.dark .c2p-search-box{
 
 background:#0f172a;
 
@@ -486,7 +486,7 @@ background:#0f172a;
 
 
 
-.dark .c2p-sidebar a{
+html.dark .c2p-sidebar a{
 
 color:#cbd5e1;
 
@@ -494,8 +494,8 @@ color:#cbd5e1;
 
 
 
-.dark .c2p-sidebar a:hover,
-.dark .c2p-sidebar a.active{
+html.dark .c2p-sidebar a:hover,
+html.dark .c2p-sidebar a.active{
 
 background:#1e293b;
 
@@ -505,7 +505,7 @@ color:#22c55e;
 
 
 
-.dark .c2p-search-box input{
+html.dark .c2p-search-box input{
 
 background:#1e293b;
 
@@ -517,7 +517,7 @@ border-color:#334155;
 
 
 
-.dark .c2p-theme-btn{
+html.dark .c2p-theme-btn{
 
 background:#1e293b;
 
@@ -529,7 +529,7 @@ border-color:#334155;
 
 
 
-.dark .c2p-lang{
+html.dark .c2p-lang{
 
 background:#1e293b;
 
@@ -539,7 +539,7 @@ color:#e2e8f0;
 
 
 
-.dark .c2p-menu-btn{
+html.dark .c2p-menu-btn{
 
 color:#e2e8f0;
 
@@ -547,7 +547,7 @@ color:#e2e8f0;
 
 
 
-.dark .c2p-bottom-nav a{
+html.dark .c2p-bottom-nav a{
 
 color:#cbd5e1;
 
@@ -557,9 +557,9 @@ color:#cbd5e1;
 
 /* CARD / CONTENT */
 
-.dark .container,
-.dark .info-box,
-.dark .pay-card{
+html.dark .container,
+html.dark .info-box,
+html.dark .pay-card{
 
 background:#0f172a;
 
@@ -568,11 +568,11 @@ color:#e2e8f0;
 }
 
 
-.dark h1,
-.dark h2,
-.dark h3,
-.dark p,
-.dark span{
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark p,
+html.dark span{
 
 color:#e2e8f0;
 
