@@ -21,26 +21,35 @@ async function loadUser(){
 
 try{
 
+
 if(!window.database){
-console.error("DATABASE BELUM READY");
+
+console.error(
+"DATABASE BELUM READY"
+);
+
 return null;
+
 }
+
 
 
 const user =
 await database.getUser();
 
 
+
 console.log(
-"USER LOGIN:",
+"CURRENT USER:",
 user
 );
 
 
+
 if(!user){
 
-console.log(
-"TIDAK ADA USER LOGIN"
+console.error(
+"USER TIDAK DITEMUKAN"
 );
 
 return null;
@@ -48,7 +57,9 @@ return null;
 }
 
 
-currentUser=user;
+
+currentUser = user;
+
 
 
 const profile =
@@ -57,33 +68,60 @@ user.id
 );
 
 
+
 console.log(
-"PROFILE:",
+"CURRENT PROFILE:",
 profile
 );
 
 
+
+if(!profile){
+
+console.error(
+"PROFILE KOSONG"
+);
+
+return user;
+
+}
+
+
+
 sellActive =
 Boolean(
-profile?.sell_link_enabled ||
-Number(profile?.withdraw_count || 0) >= 3
+profile.sell_link_enabled === true ||
+Number(profile.withdraw_count || 0) >= 3
 );
+
+
+
+console.log(
+"SELL ACCESS:",
+sellActive
+);
+
 
 
 checkAccess();
 
 
+
 return user;
 
 
+
 }catch(err){
+
 
 console.error(
 "LOAD USER ERROR:",
 err
 );
 
+
 return null;
+
 
 }
 
@@ -290,8 +328,7 @@ function renderSellStats(){
 
         sold += getValue(
             link,
-            "sold",
-            "sales"
+            "sold"
         );
 
 
@@ -701,9 +738,7 @@ if(createBtn){
                     total_earnings:0,
 
 
-                    sold:0,
-
-                    sales:0
+                    sold:0
 
                 });
 
