@@ -23,33 +23,57 @@ try{
 
 if(!window.database){
 console.error("DATABASE BELUM READY");
-return;
+return null;
 }
 
 
-currentUser =
+const user =
 await database.getUser();
 
 
-if(!currentUser){
+console.log(
+"USER LOGIN:",
+user
+);
 
-console.log("USER BELUM LOGIN");
 
-return;
+if(!user){
+
+console.log(
+"TIDAK ADA USER LOGIN"
+);
+
+return null;
 
 }
+
+
+currentUser=user;
 
 
 const profile =
 await database.getProfile(
-currentUser.id
+user.id
+);
+
+
+console.log(
+"PROFILE:",
+profile
 );
 
 
 sellActive =
+Boolean(
 profile?.sell_link_enabled ||
-profile?.withdraw_count >= 3 ||
-false;
+Number(profile?.withdraw_count || 0) >= 3
+);
+
+
+checkAccess();
+
+
+return user;
 
 
 }catch(err){
@@ -59,9 +83,12 @@ console.error(
 err
 );
 
+return null;
+
 }
 
 }
+
 
 
 /* =========================
@@ -72,17 +99,23 @@ async function loadSellLinks(){
 
 try{
 
+console.log(
+"START LOAD SELL LINK"
+);
+
+
 if(!currentUser){
 
-currentUser =
-await database.getUser();
+await loadUser();
 
 }
 
 
 if(!currentUser){
 
-console.log("USER TIDAK ADA");
+console.log(
+"USER KOSONG"
+);
 
 return;
 
@@ -90,9 +123,10 @@ return;
 
 
 console.log(
-"LOAD LINK USER:",
+"REQUEST LINK USER:",
 currentUser.id
 );
+
 
 
 const data =
@@ -101,33 +135,57 @@ currentUser.id
 );
 
 
+
 console.log(
-"SEMUA LINK:",
+"ALL LINKS:",
 data
 );
 
 
-sellLinks =
-data.filter(link=>
 
-link.type==="sell" ||
-link.link_type==="sell"
+if(!Array.isArray(data)){
+
+console.error(
+"DATA LINK BUKAN ARRAY"
+);
+
+return;
+
+}
+
+
+
+sellLinks =
+data.filter(link=>{
+
+return (
+
+link.type === "sell" ||
+
+link.link_type === "sell"
 
 );
 
+});
+
+
 
 console.log(
-"SELL LINK:",
+"HASIL SELL LINK:",
 sellLinks
 );
 
 
-filteredLinks=[...sellLinks];
+
+filteredLinks=[
+...sellLinks
+];
 
 
 renderSellStats();
 
 applyFilter();
+
 
 
 }catch(err){
@@ -962,8 +1020,14 @@ Aktifkan Sell Link terlebih dahulu
 
 (async()=>{
 
-    await loadUser();
+const user =
+await loadUser();
 
-    await loadSellLinks();
+
+if(user){
+
+await loadSellLinks();
+
+}
 
 })();
