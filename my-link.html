@@ -40,10 +40,13 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
      PAGE TITLE
 ========================= -->
 
-<div class="page-title">
-    <i class="fa-solid fa-wand-magic-sparkles"></i>
-    <span>My Smart Link</span>
-</div>
+<section class="page-title">
+    <i class="fa-solid fa-link"></i>
+    <div>
+        <h1>My Link</h1>
+        <p>Kelola seluruh Smart Link, Ads Link, dan Sell Link.</p>
+    </div>
+</section>
 
 <!-- =========================
      INFO BOX
@@ -250,105 +253,94 @@ Optimalkan traffic berkualitas untuk meningkatkan pendapatan Ads Link dan Sell L
 <div id="linkList">
 
     <!-- SMART LINK -->
-    <div id="smartPanel" class="link-panel">
+    <section id="smartPanel" class="link-panel" data-type="smart">
 
         <div class="panel-header">
-            <i class="fa-solid fa-link"></i>
-            <h3>Smart Link</h3>
-            <span id="smartCount">0 Link</span>
-        </div>
-
-        <div id="smartLinkList" class="panel-list">
-
-            <div class="empty">
-                <i class="fa-solid fa-link-slash"></i>
-                <h3>Belum Ada Smart Link</h3>
-                <p>Smart Link kamu akan tampil di sini.</p>
+            <div class="panel-title">
+                <i class="fa-solid fa-link"></i>
+                <h3>Smart Link</h3>
             </div>
 
+            <span id="smartCount" class="panel-count">0 Link</span>
         </div>
 
+        <div id="smartLinkList" class="panel-list"></div>
+
         <div class="panel-pagination">
-            <button id="smartPrev">
+
+            <button type="button" id="smartPrev">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
 
-            <span id="smartPage">1 / 1</span>
+            <span id="smartPage" class="page-number">1 / 1</span>
 
-            <button id="smartNext">
+            <button type="button" id="smartNext">
                 <i class="fa-solid fa-chevron-right"></i>
             </button>
+
         </div>
 
-    </div>
-
+    </section>
 
     <!-- SELL LINK -->
-    <div id="sellPanel" class="link-panel sell-panel">
+    <section id="sellPanel" class="link-panel sell-panel" data-type="sell">
 
         <div class="panel-header">
-            <i class="fa-solid fa-store"></i>
-            <h3>Sell Link</h3>
-            <span id="sellCount">0 Link</span>
-        </div>
-
-        <div id="sellLinkList" class="panel-list">
-
-            <div class="empty">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <h3>Belum Ada Sell Link</h3>
-                <p>Link penjualan kamu akan tampil di sini.</p>
+            <div class="panel-title">
+                <i class="fa-solid fa-store"></i>
+                <h3>Sell Link</h3>
             </div>
 
+            <span id="sellCount" class="panel-count">0 Link</span>
         </div>
 
+        <div id="sellLinkList" class="panel-list"></div>
+
         <div class="panel-pagination">
-            <button id="sellPrev">
+
+            <button type="button" id="sellPrev">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
 
-            <span id="sellPage">1 / 1</span>
+            <span id="sellPage" class="page-number">1 / 1</span>
 
-            <button id="sellNext">
+            <button type="button" id="sellNext">
                 <i class="fa-solid fa-chevron-right"></i>
             </button>
+
         </div>
 
-    </div>
-
+    </section>
 
     <!-- ADS LINK -->
-    <div id="adsPanel" class="link-panel ads-panel">
+    <section id="adsPanel" class="link-panel ads-panel" data-type="ads">
 
         <div class="panel-header">
-            <i class="fa-solid fa-rectangle-ad"></i>
-            <h3>Ads Link</h3>
-            <span id="adsCount">0 Link</span>
-        </div>
-
-        <div id="adsLinkList" class="panel-list">
-
-            <div class="empty">
-                <i class="fa-solid fa-bullhorn"></i>
-                <h3>Belum Ada Ads Link</h3>
-                <p>Link iklan kamu akan tampil di sini.</p>
+            <div class="panel-title">
+                <i class="fa-solid fa-rectangle-ad"></i>
+                <h3>Ads Link</h3>
             </div>
 
+            <span id="adsCount" class="panel-count">0 Link</span>
         </div>
 
+        <div id="adsLinkList" class="panel-list"></div>
+
         <div class="panel-pagination">
-            <button id="adsPrev">
+
+            <button type="button" id="adsPrev">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
 
-            <span id="adsPage">1 / 1</span>
+            <span id="adsPage" class="page-number">1 / 1</span>
 
-            <button id="adsNext">
+            <button type="button" id="adsNext">
                 <i class="fa-solid fa-chevron-right"></i>
             </button>
+
         </div>
 
-    </div>
+    </section>
 
 </div>
 
@@ -358,76 +350,83 @@ Optimalkan traffic berkualitas untuk meningkatkan pendapatan Ads Link dan Sell L
 
 <div id="editModal" class="advanced-modal">
 
-<div class="advanced-box">
+    <div class="advanced-box">
 
-<div class="advanced-header">
+        <div class="advanced-header">
 
-<h3>
-<i class="fa-solid fa-pen"></i>
-Edit Smart Link
-</h3>
+            <h3>
+                <i class="fa-solid fa-pen"></i>
+                Edit Smart Link
+            </h3>
 
-<button onclick="closeEdit()">
-<i class="fa-solid fa-xmark"></i>
-</button>
+            <button
+                type="button"
+                id="closeEditBtn"
+                aria-label="Tutup">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
 
-</div>
+        </div>
 
+        <input
+            type="hidden"
+            id="editId">
 
-<input type="hidden" id="editId">
+        <label for="editTitle">
+            Judul Link
+        </label>
 
+        <div class="input-box">
 
-<label>Judul Link</label>
+            <i class="fa-solid fa-heading"></i>
 
-<div class="input-box">
+            <input
+                id="editTitle"
+                type="text"
+                placeholder="Judul Smart Link">
 
-<i class="fa-solid fa-heading"></i>
+        </div>
 
-<input
-id="editTitle"
-type="text"
-placeholder="Judul Smart Link">
+        <label for="editUrl">
+            Destination URL
+        </label>
 
-</div>
+        <div class="input-box">
 
+            <i class="fa-solid fa-globe"></i>
 
-<label>Destination URL</label>
+            <input
+                id="editUrl"
+                type="url"
+                placeholder="https://example.com">
 
-<div class="input-box">
+        </div>
 
-<i class="fa-solid fa-globe"></i>
+        <div class="btn-group">
 
-<input
-id="editUrl"
-type="url"
-placeholder="https://example.com">
+            <button
+                type="button"
+                id="saveEditBtn"
+                class="btn-primary">
 
-</div>
+                <i class="fa-solid fa-floppy-disk"></i>
+                Simpan
 
+            </button>
 
-<div class="btn-group">
+            <button
+                type="button"
+                id="cancelEditBtn"
+                class="btn-secondary">
 
-<button class="btn-primary" onclick="saveEdit()">
+                <i class="fa-solid fa-xmark"></i>
+                Batal
 
-<i class="fa-solid fa-floppy-disk"></i>
+            </button>
 
-Simpan
+        </div>
 
-</button>
-
-
-<button class="btn-secondary" onclick="closeEdit()">
-
-<i class="fa-solid fa-xmark"></i>
-
-Batal
-
-</button>
-
-</div>
-
-
-</div>
+    </div>
 
 </div>
 
@@ -437,131 +436,89 @@ Batal
 
 <div id="advancedModal" class="advanced-modal">
 
-<div class="advanced-box">
+    <div class="advanced-box">
 
-<div class="advanced-header">
+        <div class="advanced-header">
 
-<h3>
-<i class="fa-solid fa-sliders"></i>
-Advanced Settings
-</h3>
+            <h3>
+                <i class="fa-solid fa-sliders"></i>
+                Advanced Settings
+            </h3>
 
-<button id="closeAdvanced">
-<i class="fa-solid fa-xmark"></i>
-</button>
+            <button id="closeAdvanced">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
 
-</div>
+        </div>
 
-<p class="create-note">
-Pengaturan tambahan untuk Smart Link.
-</p>
+        <p class="create-note">
+            Pengaturan tambahan untuk Smart Link.
+        </p>
 
+        <label>Custom Alias</label>
 
-<label>Custom Alias</label>
+        <div class="input-box">
+            <i class="fa-solid fa-tag"></i>
 
-<div class="input-box">
+            <input
+                id="customAlias"
+                type="text"
+                placeholder="contoh: promo-juli">
+        </div>
 
-<i class="fa-solid fa-tag"></i>
+        <label>Expired Link</label>
 
-<input
-id="customAlias"
-placeholder="contoh: promo-juli">
+        <div class="input-box">
+            <i class="fa-solid fa-clock"></i>
 
-</div>
+            <select id="expiredLink">
+                <option value="never">Tidak Pernah</option>
+                <option value="1">1 Hari</option>
+                <option value="7">7 Hari</option>
+                <option value="30">30 Hari</option>
+            </select>
+        </div>
 
+        <label>Campaign</label>
 
-<label>Expired Link</label>
+        <div class="input-box">
+            <i class="fa-solid fa-bullseye"></i>
 
-<div class="input-box">
+            <input
+                id="campaignName"
+                type="text"
+                placeholder="Nama Campaign">
+        </div>
 
-<i class="fa-solid fa-clock"></i>
+        <label>Target Device</label>
 
-<select id="expiredLink">
+        <div class="input-box">
+            <i class="fa-solid fa-mobile-screen"></i>
 
-<option value="never">
-Tidak Pernah
-</option>
+            <select id="targetDevice">
+                <option value="all">Semua Device</option>
+                <option value="android">Android</option>
+                <option value="ios">iPhone / iOS</option>
+                <option value="desktop">Desktop</option>
+            </select>
+        </div>
 
-<option value="1">
-1 Hari
-</option>
+        <button
+            id="saveAdvanced"
+            class="btn-primary"
+            style="width:100%;margin-top:18px">
 
-<option value="7">
-7 Hari
-</option>
+            <i class="fa-solid fa-check"></i>
+            Simpan Pengaturan
 
-<option value="30">
-30 Hari
-</option>
+        </button>
 
-</select>
+        <div class="create-note">
+            Setting akan digunakan saat membuat Smart Link baru.
+        </div>
 
-</div>
+    </div>
 
-
-<label>Campaign</label>
-
-<div class="input-box">
-
-<i class="fa-solid fa-bullseye"></i>
-
-<input
-id="campaignName"
-placeholder="Nama Campaign">
-
-</div>
-
-
-<label>Target Device</label>
-
-<div class="input-box">
-
-<i class="fa-solid fa-mobile-screen"></i>
-
-<select id="targetDevice">
-
-<option value="all">
-Semua Device
-</option>
-
-<option value="android">
-Android
-</option>
-
-<option value="ios">
-iPhone / iOS
-</option>
-
-<option value="desktop">
-Desktop
-</option>
-
-</select>
-
-</div>
-
-
-<button id="saveAdvanced" class="btn-primary" style="width:100%;margin-top:18px">
-
-<i class="fa-solid fa-check"></i>
-
-Simpan Pengaturan
-
-</button>
-
-
-<div class="create-note">
-
-Setting akan digunakan saat membuat Smart Link baru.
-
-</div>
-
-
-</div>
-
-</div>
-
-</main>
 </div> <!-- TAMBAHAN (nutup app-container) -->
 
 <div id="footer"></div>
@@ -578,119 +535,111 @@ Setting akan digunakan saat membuat Smart Link baru.
 <script src="js/my-link.js"></script>
 
 <script>
-// ===========================================
-// LOAD NAVBAR
-// ===========================================
 
-fetch("components/navbar.html")
-.then(res => res.text())
-.then(html => {
+document.addEventListener("DOMContentLoaded", async () => {
 
-    document.getElementById("navbar").innerHTML = html;
+    // ===========================================
+    // LOAD NAVBAR
+    // ===========================================
 
-    if (typeof c2pInit === "function") {
-        c2pInit();
-    }
+    try {
 
-    const logoutBtn = document.getElementById("logoutBtn");
+        const html = await fetch("components/navbar.html").then(r => r.text());
 
-    if (logoutBtn) {
+        document.getElementById("navbar").innerHTML = html;
 
-        logoutBtn.onclick = async () => {
+        if (typeof c2pInit === "function") {
+            c2pInit();
+        }
 
-            try {
+        const logoutBtn = document.getElementById("logoutBtn");
 
-                await database.logout();
+        if (logoutBtn) {
 
-            } catch (e) {}
+            logoutBtn.onclick = async () => {
 
-            localStorage.clear();
-            sessionStorage.clear();
+                try {
+                    await database.logout();
+                } catch (e) {
+                    console.error(e);
+                }
 
-            window.location.replace("index.html");
+                localStorage.clear();
+                sessionStorage.clear();
 
-        };
+                window.location.replace("index.html");
 
-    }
+            };
 
-});
+        }
 
-// ===========================================
-// LOAD FOOTER
-// ===========================================
+    } catch (err) {
 
-fetch("components/footer.html")
-.then(res => res.text())
-.then(html => {
-
-    document.getElementById("footer").innerHTML = html;
-
-    if (typeof c2pFooterInit === "function") {
-        c2pFooterInit();
-    }
-
-});
-
-// ===========================================
-// ELEMENT
-// ===========================================
-
-const advanceBtn = document.getElementById("advanceBtn");
-const advancedModal = document.getElementById("advancedModal");
-const closeAdvanced = document.getElementById("closeAdvanced");
-const saveAdvanced = document.getElementById("saveAdvanced");
-const shortenBtn = document.getElementById("shortenBtn");
-
-// ===========================================
-// ADVANCED MODAL
-// ===========================================
-
-if (advanceBtn) {
-
-    advanceBtn.onclick = () => {
-
-        advancedModal.classList.add("active");
-
-    };
-
-}
-
-if (closeAdvanced) {
-
-    closeAdvanced.onclick = () => {
-
-        advancedModal.classList.remove("active");
-
-    };
-
-}
-
-window.addEventListener("click", (e) => {
-
-    if (e.target === advancedModal) {
-
-        advancedModal.classList.remove("active");
+        console.error("Navbar:", err);
 
     }
 
-});
+    // ===========================================
+    // LOAD FOOTER
+    // ===========================================
 
-// ===========================================
-// SAVE ADVANCED
-// ===========================================
+    try {
 
-if (saveAdvanced) {
+        const html = await fetch("components/footer.html").then(r => r.text());
 
-    saveAdvanced.onclick = () => {
+        document.getElementById("footer").innerHTML = html;
+
+        if (typeof c2pFooterInit === "function") {
+            c2pFooterInit();
+        }
+
+    } catch (err) {
+
+        console.error("Footer:", err);
+
+    }
+
+    // ===========================================
+    // ELEMENT
+    // ===========================================
+
+    const advanceBtn = document.getElementById("advanceBtn");
+    const advancedModal = document.getElementById("advancedModal");
+    const closeAdvanced = document.getElementById("closeAdvanced");
+    const saveAdvanced = document.getElementById("saveAdvanced");
+    const shortenBtn = document.getElementById("shortenBtn");
+
+    // ===========================================
+    // ADVANCED MODAL
+    // ===========================================
+
+    advanceBtn?.addEventListener("click", () => {
+        advancedModal?.classList.add("active");
+    });
+
+    closeAdvanced?.addEventListener("click", () => {
+        advancedModal?.classList.remove("active");
+    });
+
+    window.addEventListener("click", (e) => {
+
+        if (e.target === advancedModal) {
+            advancedModal.classList.remove("active");
+        }
+
+    });
+
+    // ===========================================
+    // SAVE ADVANCED
+    // ===========================================
+
+    saveAdvanced?.addEventListener("click", () => {
 
         const data = {
 
             alias: document.getElementById("customAlias").value.trim(),
-
             expired: document.getElementById("expiredLink").value,
-
             campaign: document.getElementById("campaignName").value.trim(),
-
             device: document.getElementById("targetDevice").value
 
         };
@@ -704,44 +653,44 @@ if (saveAdvanced) {
 
         alert("Advanced Settings berhasil disimpan.");
 
-    };
+    });
 
-}
-
-// ===========================================
-// SELL LINK CHECK
-// ===========================================
-
-(async () => {
-
-    const sellInfo = document.getElementById("sellInfo");
-    const linkType = document.getElementById("linkType");
-
-    if (!sellInfo || !linkType) return;
+    // ===========================================
+    // SELL LINK CHECK
+    // ===========================================
 
     try {
 
-        const user = await database.getUser();
+        const sellInfo = document.getElementById("sellInfo");
+        const linkType = document.getElementById("linkType");
 
-        if (!user) return;
+        if (sellInfo && linkType) {
 
-        const withdraws = await database.getWithdraws(user.id);
+            const user = await database.getUser();
 
-        if (withdraws && withdraws.length > 0) {
+            if (user) {
 
-            linkType.querySelector("option[value='sell']").disabled = false;
+                const withdraws = await database.getWithdraws(user.id);
 
-            sellInfo.innerHTML =
-                '<i class="fa-solid fa-circle-check"></i> Sell Link sudah aktif';
+                if (withdraws && withdraws.length > 0) {
 
-        } else {
+                    linkType.querySelector("option[value='sell']").disabled = false;
 
-            linkType.value = "ads";
+                    sellInfo.innerHTML =
+                        '<i class="fa-solid fa-circle-check"></i> Sell Link sudah aktif';
 
-            linkType.querySelector("option[value='sell']").disabled = true;
+                } else {
 
-            sellInfo.innerHTML =
-                '<i class="fa-solid fa-lock"></i> Sell Link aktif setelah minimal 1 Withdraw';
+                    linkType.value = "ads";
+
+                    linkType.querySelector("option[value='sell']").disabled = true;
+
+                    sellInfo.innerHTML =
+                        '<i class="fa-solid fa-lock"></i> Sell Link aktif setelah minimal 1 Withdraw';
+
+                }
+
+            }
 
         }
 
@@ -751,17 +700,14 @@ if (saveAdvanced) {
 
     }
 
-})();
+    // ===========================================
+    // CREATE LINK
+    // ===========================================
 
-// ===========================================
-// CREATE LINK
-// ===========================================
-
-if (shortenBtn) {
-
-    shortenBtn.onclick = async () => {
+    shortenBtn?.addEventListener("click", async () => {
 
         const url = document.getElementById("urlInput").value.trim();
+
         const type = document.getElementById("linkType").value;
 
         if (!url) {
@@ -784,59 +730,49 @@ if (shortenBtn) {
 
             }
 
-            const advanced = JSON.parse(
-                localStorage.getItem("advanced_settings") || "{}"
-            );
+            let advanced = {};
 
-            const code = Math.random()
-                .toString(36)
-                .substring(2,8);
+            try {
 
-            const payload = {
+                advanced = JSON.parse(
+                    localStorage.getItem("advanced_settings")
+                ) || {};
+
+            } catch {
+
+                advanced = {};
+
+            }
+
+            const code = Math.random().toString(36).substring(2,8);
+
+            await database.createLink({
 
                 user_id: user.id,
-
                 title: advanced.campaign || "Short Link",
-
-                url: url,
-
-                short_url:
-                    "https://click2pay.id/" +
-                    (advanced.alias || code),
-
+                url,
+                short_url: `${window.location.origin}/${advanced.alias || code}`,
                 alias: advanced.alias || null,
-
                 campaign: advanced.campaign || null,
-
                 expired: advanced.expired || "never",
-
                 device: advanced.device || "all",
-
-                type: type,
-
+                type,
                 total_views: 0,
-
                 total_clicks: 0,
-
                 total_earnings: 0,
-
                 created_at: new Date().toISOString()
 
-            };
-
-            await database.createLink(payload);
-
-            alert("Link berhasil dibuat.");
+            });
 
             document.getElementById("urlInput").value = "";
 
             localStorage.removeItem("advanced_settings");
 
             if (typeof loadMyLinks === "function") {
-
-                loadMyLinks();
-
+                await loadMyLinks();
             }
+
+            alert("Link berhasil dibuat.");
 
         } catch (err) {
 
@@ -846,9 +782,17 @@ if (shortenBtn) {
 
         }
 
-    };
+    });
 
-}
+    // ===========================================
+    // LOAD MY LINKS
+    // ===========================================
+
+    if (typeof loadMyLinks === "function") {
+        await loadMyLinks();
+    }
+
+});
 
 // ===========================================
 // EDIT LINK
@@ -856,29 +800,25 @@ if (shortenBtn) {
 
 function editLink(id){
 
-    const link = allLinks.find(item => item.id === id);
+    const list = window.allLinks || [];
+
+    const link = list.find(item => item.id === id);
 
     if(!link) return;
 
-    document
-        .getElementById("editModal")
-        .classList.add("active");
+    document.getElementById("editModal").classList.add("active");
 
     document.getElementById("editId").value = link.id;
 
-    document.getElementById("editTitle").value =
-        link.title || "";
+    document.getElementById("editTitle").value = link.title || "";
 
-    document.getElementById("editUrl").value =
-        link.url || "";
+    document.getElementById("editUrl").value = link.url || "";
 
 }
 
 function closeEdit(){
 
-    document
-        .getElementById("editModal")
-        .classList.remove("active");
+    document.getElementById("editModal").classList.remove("active");
 
 }
 
@@ -892,11 +832,9 @@ async function saveEdit(){
 
             {
 
-                title:
-                document.getElementById("editTitle").value,
+                title: document.getElementById("editTitle").value,
 
-                url:
-                document.getElementById("editUrl").value
+                url: document.getElementById("editUrl").value
 
             }
 
@@ -905,9 +843,7 @@ async function saveEdit(){
         closeEdit();
 
         if(typeof loadMyLinks==="function"){
-
-            loadMyLinks();
-
+            await loadMyLinks();
         }
 
         alert("Link berhasil diperbarui.");
@@ -922,24 +858,16 @@ async function saveEdit(){
 
 }
 
-// ===========================================
-// DELETE LINK
-// ===========================================
-
 async function deleteLink(id){
 
-    const ok = confirm("Yakin ingin menghapus link ini?");
-
-    if(!ok) return;
+    if(!confirm("Yakin ingin menghapus link ini?")) return;
 
     try{
 
         await database.deleteLink(id);
 
-        if(typeof loadMyLinks === "function"){
-
-            loadMyLinks();
-
+        if(typeof loadMyLinks==="function"){
+            await loadMyLinks();
         }
 
         alert("Link berhasil dihapus.");
@@ -954,10 +882,6 @@ async function deleteLink(id){
 
 }
 
-// ===========================================
-// COPY SHORT LINK
-// ===========================================
-
 async function copyLink(url){
 
     try{
@@ -968,53 +892,19 @@ async function copyLink(url){
 
     }catch(err){
 
-        const input = document.createElement("input");
-
-        input.value = url;
-
-        document.body.appendChild(input);
-
-        input.select();
-
-        document.execCommand("copy");
-
-        input.remove();
-
-        alert("Link berhasil disalin.");
+        console.error(err);
 
     }
 
 }
 
-// ===========================================
-// CLOSE MODAL WITH ESC
-// ===========================================
-
 window.addEventListener("keydown",(e)=>{
 
     if(e.key==="Escape"){
 
-        document
-            .getElementById("editModal")
-            ?.classList.remove("active");
+        document.getElementById("editModal")?.classList.remove("active");
 
-        document
-            .getElementById("advancedModal")
-            ?.classList.remove("active");
-
-    }
-
-});
-
-// ===========================================
-// LOAD DATA
-// ===========================================
-
-window.addEventListener("load",()=>{
-
-    if(typeof loadMyLinks==="function"){
-
-        loadMyLinks();
+        document.getElementById("advancedModal")?.classList.remove("active");
 
     }
 
