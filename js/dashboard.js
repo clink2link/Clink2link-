@@ -157,9 +157,9 @@ if(
         0
     );
 
-    totalSellClicks += Number(
-        link.total_clicks ??
-        link.clicks ??
+    totalSold += Number(
+        link.sold ??
+        link.sales ??
         0
     );
 
@@ -286,8 +286,12 @@ month:"short"
 });
 });
 
-adsViewsChart = chartData.map(item =>
-    Number(item.ads_views || 0)
+sellViewsChart = chartData.map(item =>
+    Number(
+        item.sell_total_views ??
+        item.sell_views ??
+        0
+    )
 );
 
 earnings = chartData.map(item =>
@@ -612,36 +616,32 @@ if (reportTable) {
 // SELL REPORT TABLE
 // ===========================
 
-const sellReportTable = document.getElementById("sellReportTable");
-
+const sellReportTable =
+document.getElementById("sellReportTable");
 
 if(sellReportTable){
 
     if(reports.length){
 
-        sellReportTable.innerHTML = reports.map(row=>{
-
+        sellReportTable.innerHTML =
+        reports.map(row=>{
 
             const sellViews = Number(
                 row.sell_views || 0
             );
 
+            const sellSold = Number(
+                row.sell_sold ??
+                row.sell_orders ??
+                0
+            );
 
-            const sellEarnings = Number(
+            const sellRevenue = Number(
                 row.sell_earnings || 0
             );
 
-
-            const sellCpm = sellViews > 0
-            ?
-            Math.round(
-                (sellEarnings * 1000) / sellViews
-            )
-            :
-            0;
-
-
             return `
+
 <tr>
 
 <td>
@@ -649,36 +649,31 @@ ${new Date(row.report_date)
 .toLocaleDateString("id-ID")}
 </td>
 
+<td>
+${sellSold.toLocaleString("id-ID")}x
+</td>
+
+<td class="earning">
+Rp ${sellRevenue.toLocaleString("id-ID")}
+</td>
 
 <td>
 ${sellViews.toLocaleString("id-ID")}
 </td>
 
-
-<td class="earning">
-Rp ${sellEarnings.toLocaleString("id-ID")}
-</td>
-
-
 <td>
-${sellCpm.toLocaleString("id-ID")}
-</td>
-
-
-<td>
-Rp ${sellEarnings.toLocaleString("id-ID")}
+Rp ${sellRevenue.toLocaleString("id-ID")}
 </td>
 
 </tr>
+
 `;
 
         }).join("");
 
-
     }else{
 
-
-        sellReportTable.innerHTML=`
+        sellReportTable.innerHTML = `
 
 <tr>
 
