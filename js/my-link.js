@@ -520,18 +520,37 @@ function applyCurrentFilter(){
 
     }
 
-    // Filter Type
-    if(currentFilter !== "all"){
-
-        data = data.filter(link =>
-            getLinkType(link) === currentFilter
-        );
-
-    }
-
     filteredLinks = data;
 
     renderAllLinks();
+
+    // =========================
+    // SHOW / HIDE PANEL
+    // =========================
+
+    const smartPanel = document.getElementById("smartPanel");
+    const adsPanel = document.getElementById("adsPanel");
+    const sellPanel = document.getElementById("sellPanel");
+
+    if(!smartPanel || !adsPanel || !sellPanel) return;
+
+    smartPanel.style.display = "";
+    adsPanel.style.display = "";
+    sellPanel.style.display = "";
+
+    if(currentFilter === "ads"){
+
+        smartPanel.style.display = "none";
+        sellPanel.style.display = "none";
+
+    }
+
+    else if(currentFilter === "sell"){
+
+        smartPanel.style.display = "none";
+        adsPanel.style.display = "none";
+
+    }
 
 }
 
