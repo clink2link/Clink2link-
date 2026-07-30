@@ -967,7 +967,14 @@ function renderLinks(){
 
                 <i class="fa-solid fa-link"></i>
 
-                ${destination}
+                <a
+                    href="${destination}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="destination-url"
+                >
+                    ${destination}
+                </a>
 
             </div>
 
