@@ -266,8 +266,7 @@ function renderSellStats(){
 
         // total harga semua sell link
         totalHarga += getValue(
-            link,
-            "price"
+            link.price || 0
         );
 
 
