@@ -128,11 +128,14 @@ Number(profile.total_views||0).toLocaleString("id-ID");
 
 const links=await database.getLinks(authId);
 
-let adsViews=0;
-let adsClicks=0;
-let totalSellViews=0;
-let totalSellClicks=0;
-let totalSell=0;
+let adsViews = 0;
+let adsClicks = 0;
+
+let totalSellViews = 0;
+let totalSellClicks = 0;
+let totalSell = 0;
+let totalSellPrice = 0;
+let totalSold = 0;
 
 if(Array.isArray(links)){
 
@@ -143,10 +146,33 @@ adsViews+=Number(link.total_views||0);
 adsClicks+=Number(link.total_clicks||0);
 }
 
-if (link.type === "sell") {
-    totalSellViews += Number(link.total_views || 0);
-    totalSellClicks += Number(link.total_clicks || 0);
+if(
+    link.type === "sell" ||
+    link.link_type === "sell"
+){
+
+    totalSellViews += Number(
+        link.total_views ??
+        link.views ??
+        0
+    );
+
+    totalSellClicks += Number(
+        link.total_clicks ??
+        link.clicks ??
+        0
+    );
+
+    totalSellPrice += Number(
+        link.price || 0
+    );
+
+    totalSold += Number(
+        link.sold || 0
+    );
+
     totalSell++;
+
 }
 
 });
@@ -189,6 +215,27 @@ const sellTotalLink=document.getElementById("sellTotalLink");
 if(sellTotalLink){
 sellTotalLink.textContent=
 totalSell.toLocaleString("id-ID");
+}
+
+const sellTotalPrice =
+    document.getElementById("sellTotalPrice");
+
+if(sellTotalPrice){
+
+    sellTotalPrice.textContent =
+        "Rp " +
+        totalSellPrice.toLocaleString("id-ID");
+
+}
+
+const sellTotalSold =
+    document.getElementById("sellTotalSold");
+
+if(sellTotalSold){
+
+    sellTotalSold.textContent =
+        totalSold.toLocaleString("id-ID");
+
 }
 
 // ===========================
