@@ -41,8 +41,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 ========================= -->
 
 <div class="page-title">
-    <i class="fa-solid fa-link"></i>
-    <span>My Link</span>
+    <i class="fa-solid fa-wand-magic-sparkles"></i>
+    <span>My Smart Link</span>
 </div>
 
 <!-- =========================
@@ -53,22 +53,21 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
     <div class="info-header">
         <i class="fa-solid fa-circle-info"></i>
-        <h3>Panduan Membuat Link</h3>
+        <h3>Smart Link Management</h3>
     </div>
 
     <ul>
-        <li>Masukkan URL tujuan yang valid.</li>
-        <li>Pilih Ads Link atau Sell Link.</li>
-        <li>Gunakan Advanced untuk Custom Alias.</li>
-        <li>Alias hanya boleh huruf, angka dan "-".</li>
-        <li>Sell Link aktif setelah minimal 1 withdraw berhasil.</li>
-        <li>Statistik akan tampil otomatis.</li>
+        <li>Buat link pendek dengan sistem Ads Link.</li>
+        <li>Pantau view, click, dan pendapatan secara real-time.</li>
+        <li>Gunakan Advanced Settings untuk Custom Alias.</li>
+        <li>Link berkualitas mendapatkan performa lebih baik.</li>
+        <li>Sell Link tersedia setelah memenuhi syarat akun.</li>
     </ul>
 
 </div>
 
 <!-- =========================
-     CREATE FORM
+     CREATE SMART LINK
 ========================= -->
 
 <div class="create-form">
@@ -76,12 +75,12 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     <div class="create-header">
 
         <div class="create-icon">
-            <i class="fa-solid fa-bolt"></i>
+            <i class="fa-solid fa-link"></i>
         </div>
 
         <div>
-            <h2>Buat Link Baru</h2>
-            <p>Shortlink dengan Ads ataupun Sell.</p>
+            <h2>Buat Smart Link Baru</h2>
+            <p>Ubah URL biasa menjadi link pintar Click2Pay.</p>
         </div>
 
     </div>
@@ -90,19 +89,16 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
     <div class="input-box">
         <i class="fa-solid fa-globe"></i>
-
-        <input
+        <input 
             type="url"
             id="urlInput"
-            placeholder="https://example.com">
-
+            placeholder="https://website-kamu.com">
     </div>
 
-    <label>Tipe Link</label>
+    <label>Link Type</label>
 
     <div class="input-box">
-
-        <i class="fa-solid fa-link"></i>
+        <i class="fa-solid fa-layer-group"></i>
 
         <select id="linkType">
 
@@ -110,46 +106,28 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                 Ads Link
             </option>
 
-            <option
-                value="sell"
-                disabled>
-
+            <option value="sell" disabled>
                 Sell Link 🔒
-
             </option>
 
         </select>
-
     </div>
 
     <div id="sellInfo" class="create-note">
-
         <i class="fa-solid fa-lock"></i>
-
         Sell Link belum aktif.
-
     </div>
 
     <div class="btn-group">
 
-        <button
-            id="shortenBtn"
-            class="btn-primary">
-
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-
-            Create Link
-
+        <button id="shortenBtn" class="btn-primary">
+            <i class="fa-solid fa-bolt"></i>
+            Create Smart Link
         </button>
 
-        <button
-            id="advanceBtn"
-            class="btn-secondary">
-
+        <button id="advanceBtn" class="btn-secondary">
             <i class="fa-solid fa-sliders"></i>
-
             Advanced
-
         </button>
 
     </div>
@@ -162,53 +140,53 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
 <div class="quick-stats">
 
-    <div class="stat-card">
+<div class="stat-card">
+<i class="fa-solid fa-link"></i>
+<h4>Total Link</h4>
+<h2 id="totalLink">0</h2>
+</div>
 
-        <i class="fa-solid fa-link"></i>
+<div class="stat-card">
+<i class="fa-solid fa-eye"></i>
+<h4>Total View</h4>
+<h2 id="totalView">0</h2>
+</div>
 
-        <h4>Total Link</h4>
+<div class="stat-card">
+<i class="fa-solid fa-computer-mouse"></i>
+<h4>Total Click</h4>
+<h2 id="totalClick">0</h2>
+</div>
 
-        <h2 id="totalLink">
-            0
-        </h2>
+<div class="stat-card">
+<i class="fa-solid fa-wallet"></i>
+<h4>Total Earnings</h4>
+<h2 id="totalEarning">Rp0</h2>
+</div>
 
-    </div>
+<div class="stat-card ads-card">
+<i class="fa-solid fa-rectangle-ad"></i>
+<h4>Ads Link</h4>
+<h2 id="totalAdsLink">0</h2>
+</div>
 
-    <div class="stat-card">
+<div class="stat-card ads-card">
+<i class="fa-solid fa-chart-line"></i>
+<h4>Ads Views</h4>
+<h2 id="totalAdsView">0</h2>
+</div>
 
-        <i class="fa-solid fa-eye"></i>
+<div class="stat-card sell-card">
+<i class="fa-solid fa-store"></i>
+<h4>Sell Link</h4>
+<h2 id="totalSellLink">0</h2>
+</div>
 
-        <h4>Total View</h4>
-
-        <h2 id="totalView">
-            0
-        </h2>
-
-    </div>
-
-    <div class="stat-card">
-
-        <i class="fa-solid fa-computer-mouse"></i>
-
-        <h4>Total Click</h4>
-
-        <h2 id="totalClick">
-            0
-        </h2>
-
-    </div>
-
-    <div class="stat-card">
-
-        <i class="fa-solid fa-wallet"></i>
-
-        <h4>Total Earnings</h4>
-
-        <h2 id="totalEarning">
-            Rp0
-        </h2>
-
-    </div>
+<div class="stat-card sell-card">
+<i class="fa-solid fa-money-bill-transfer"></i>
+<h4>Sell Revenue</h4>
+<h2 id="totalSellRevenue">Rp0</h2>
+</div>
 
 </div>
 
@@ -218,23 +196,20 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
 <div class="link-filter">
 
-    <button
-        class="active"
-        onclick="filterLink('all',this)">
-        Semua
-    </button>
+<button class="active" onclick="filterLink('all',this)">
+Semua
+</button>
 
-    <button
-        onclick="filterLink('ads',this)">
-        Ads
-    </button>
+<button onclick="filterLink('ads',this)">
+Ads Link
+</button>
 
-    <button
-        onclick="filterLink('sell',this)">
-        Sell
-    </button>
+<button onclick="filterLink('sell',this)">
+Sell Link
+</button>
 
 </div>
+
 
 <!-- =========================
      SEARCH
@@ -242,53 +217,148 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
 <div class="search-box">
 
-    <i class="fa-solid fa-search"></i>
+<i class="fa-solid fa-search"></i>
 
-    <input
-        id="searchLink"
-        type="text"
-        placeholder="Cari judul atau URL..."
-        onkeyup="searchLinks()">
+<input
+id="searchLink"
+type="text"
+placeholder="Cari judul atau URL..."
+onkeyup="searchLinks()">
 
 </div>
 
+
 <!-- =========================
-     NOTE
+     INFO NOTE
 ========================= -->
 
 <div class="info-note">
 
-    <i class="fa-solid fa-lightbulb"></i>
+<i class="fa-solid fa-lightbulb"></i>
 
-    <div>
-
-        Semakin banyak traffic berkualitas,
-        semakin besar peluang mendapatkan
-        pendapatan dari Ads Link.
-
-    </div>
+<div>
+Optimalkan traffic berkualitas untuk meningkatkan pendapatan Ads Link dan Sell Link.
+</div>
 
 </div>
 
+
 <!-- =========================
-     LINK LIST
+     SMART LINK LIST
 ========================= -->
 
 <div id="linkList">
 
-    <div class="empty">
 
-        <i class="fa-solid fa-link-slash"></i>
+<!-- SMART LINK PANEL -->
 
-        <h3>Belum Ada Link</h3>
+<div class="link-panel">
 
-        <p>
+<div class="panel-header">
 
-            Link yang sudah dibuat akan muncul di sini.
+<i class="fa-solid fa-link"></i>
 
-        </p>
+<h3>Smart Link</h3>
 
-    </div>
+<span id="smartCount">
+0 Link
+</span>
+
+</div>
+
+
+<div id="smartLinkList" class="panel-list">
+
+<div class="empty">
+
+<i class="fa-solid fa-link-slash"></i>
+
+<h3>Belum Ada Smart Link</h3>
+
+<p>
+Semua link yang dibuat akan tampil di sini.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- SELL LINK PANEL -->
+
+<div class="link-panel sell-panel">
+
+<div class="panel-header">
+
+<i class="fa-solid fa-store"></i>
+
+<h3>Sell Link</h3>
+
+<span id="sellCount">
+0 Link
+</span>
+
+</div>
+
+
+<div id="sellLinkList" class="panel-list">
+
+<div class="empty">
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+<h3>Belum Ada Sell Link</h3>
+
+<p>
+Link jualan kamu akan tampil di sini.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- ADS LINK PANEL -->
+
+<div class="link-panel ads-panel">
+
+<div class="panel-header">
+
+<i class="fa-solid fa-rectangle-ad"></i>
+
+<h3>Ads Link</h3>
+
+<span id="adsCount">
+0 Link
+</span>
+
+</div>
+
+
+<div id="adsLinkList" class="panel-list">
+
+<div class="empty">
+
+<i class="fa-solid fa-bullhorn"></i>
+
+<h3>Belum Ada Ads Link</h3>
+
+<p>
+Link iklan kamu akan tampil di sini.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
 
 </div>
 
@@ -298,81 +368,76 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
 <div id="editModal" class="advanced-modal">
 
-    <div class="advanced-box">
+<div class="advanced-box">
 
-        <div class="advanced-header">
+<div class="advanced-header">
 
-            <h3>
+<h3>
+<i class="fa-solid fa-pen"></i>
+Edit Smart Link
+</h3>
 
-                <i class="fa-solid fa-pen"></i>
+<button onclick="closeEdit()">
+<i class="fa-solid fa-xmark"></i>
+</button>
 
-                Edit Link
+</div>
 
-            </h3>
 
-            <button onclick="closeEdit()">
+<input type="hidden" id="editId">
 
-                <i class="fa-solid fa-xmark"></i>
 
-            </button>
+<label>Judul Link</label>
 
-        </div>
+<div class="input-box">
 
-        <input
-            type="hidden"
-            id="editId">
+<i class="fa-solid fa-heading"></i>
 
-        <label>Judul</label>
+<input
+id="editTitle"
+type="text"
+placeholder="Judul Smart Link">
 
-        <div class="input-box">
+</div>
 
-            <i class="fa-solid fa-heading"></i>
 
-            <input
-                id="editTitle"
-                type="text"
-                placeholder="Judul Link">
+<label>Destination URL</label>
 
-        </div>
+<div class="input-box">
 
-        <label>Destination URL</label>
+<i class="fa-solid fa-globe"></i>
 
-        <div class="input-box">
+<input
+id="editUrl"
+type="url"
+placeholder="https://example.com">
 
-            <i class="fa-solid fa-globe"></i>
+</div>
 
-            <input
-                id="editUrl"
-                type="url"
-                placeholder="https://example.com">
 
-        </div>
+<div class="btn-group">
 
-        <div class="btn-group">
+<button class="btn-primary" onclick="saveEdit()">
 
-            <button
-                class="btn-primary"
-                onclick="saveEdit()">
+<i class="fa-solid fa-floppy-disk"></i>
 
-                <i class="fa-solid fa-floppy-disk"></i>
+Simpan
 
-                Simpan
+</button>
 
-            </button>
 
-            <button
-                class="btn-secondary"
-                onclick="closeEdit()">
+<button class="btn-secondary" onclick="closeEdit()">
 
-                <i class="fa-solid fa-xmark"></i>
+<i class="fa-solid fa-xmark"></i>
 
-                Batal
+Batal
 
-            </button>
+</button>
 
-        </div>
+</div>
 
-    </div>
+
+</div>
 
 </div>
 
@@ -380,135 +445,129 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
      ADVANCED SETTINGS
 =========================================== -->
 
-<div
-    id="advancedModal"
-    class="advanced-modal">
+<div id="advancedModal" class="advanced-modal">
 
-    <div class="advanced-box">
+<div class="advanced-box">
 
-        <div class="advanced-header">
+<div class="advanced-header">
 
-            <h3>
+<h3>
+<i class="fa-solid fa-sliders"></i>
+Advanced Settings
+</h3>
 
-                <i class="fa-solid fa-sliders"></i>
+<button id="closeAdvanced">
+<i class="fa-solid fa-xmark"></i>
+</button>
 
-                Advanced Settings
+</div>
 
-            </h3>
+<p class="create-note">
+Pengaturan tambahan untuk Smart Link.
+</p>
 
-            <button
-                id="closeAdvanced">
 
-                <i class="fa-solid fa-xmark"></i>
+<label>Custom Alias</label>
 
-            </button>
+<div class="input-box">
 
-        </div>
+<i class="fa-solid fa-tag"></i>
 
-        <p class="create-note">
+<input
+id="customAlias"
+placeholder="contoh: promo-juli">
 
-            Pengaturan ini bersifat opsional.
+</div>
 
-        </p>
 
-        <label>Custom Alias</label>
+<label>Expired Link</label>
 
-        <div class="input-box">
+<div class="input-box">
 
-            <i class="fa-solid fa-tag"></i>
+<i class="fa-solid fa-clock"></i>
 
-            <input
-                id="customAlias"
-                placeholder="contoh : promo-juli">
+<select id="expiredLink">
 
-        </div>
+<option value="never">
+Tidak Pernah
+</option>
 
-        <label>Expired Link</label>
+<option value="1">
+1 Hari
+</option>
 
-        <div class="input-box">
+<option value="7">
+7 Hari
+</option>
 
-            <i class="fa-solid fa-clock"></i>
+<option value="30">
+30 Hari
+</option>
 
-            <select id="expiredLink">
+</select>
 
-                <option value="never">
-                    Tidak Pernah
-                </option>
+</div>
 
-                <option value="1">
-                    1 Hari
-                </option>
 
-                <option value="7">
-                    7 Hari
-                </option>
+<label>Campaign</label>
 
-                <option value="30">
-                    30 Hari
-                </option>
+<div class="input-box">
 
-            </select>
+<i class="fa-solid fa-bullseye"></i>
 
-        </div>
+<input
+id="campaignName"
+placeholder="Nama Campaign">
 
-        <label>Campaign</label>
+</div>
 
-        <div class="input-box">
 
-            <i class="fa-solid fa-bullseye"></i>
+<label>Target Device</label>
 
-            <input
-                id="campaignName"
-                placeholder="Nama Campaign">
+<div class="input-box">
 
-        </div>
+<i class="fa-solid fa-mobile-screen"></i>
 
-        <label>Target Device</label>
+<select id="targetDevice">
 
-        <div class="input-box">
+<option value="all">
+Semua Device
+</option>
 
-            <i class="fa-solid fa-mobile-screen"></i>
+<option value="android">
+Android
+</option>
 
-            <select id="targetDevice">
+<option value="ios">
+iPhone / iOS
+</option>
 
-                <option value="all">
-                    Semua Device
-                </option>
+<option value="desktop">
+Desktop
+</option>
 
-                <option value="android">
-                    Android
-                </option>
+</select>
 
-                <option value="ios">
-                    iPhone / iOS
-                </option>
+</div>
 
-                <option value="desktop">
-                    Desktop
-                </option>
 
-            </select>
+<button id="saveAdvanced" class="btn-primary" style="width:100%;margin-top:18px">
 
-        </div>
+<i class="fa-solid fa-check"></i>
 
-        <button
-            id="saveAdvanced"
-            class="btn-primary"
-            style="width:100%;margin-top:18px">
+Simpan Pengaturan
 
-            <i class="fa-solid fa-check"></i>
+</button>
 
-            Simpan Pengaturan
 
-        </button>
+<div class="create-note">
 
-        <div class="create-note">
+Setting akan digunakan saat membuat Smart Link baru.
 
-            Pengaturan ini akan dipakai saat membuat link baru.
+</div>
 
-        </div>
 
-    </div>
+</div>
 
 </div>
 
