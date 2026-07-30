@@ -327,7 +327,8 @@ total_views:0,
 total_clicks:0,
 total_earnings:0,
 
-sold:0
+sold:0,
+sales:0
 
 })
 
