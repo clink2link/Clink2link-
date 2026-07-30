@@ -303,136 +303,145 @@ function renderLinkBox(box,list,message){
 
 function createLinkCard(link){
 
-    const type =
-    getLinkType(link);
+    const type = getLinkType(link);
 
-    const shortUrl =
-    getShortUrl(link);
+    const shortUrl = getShortUrl(link);
 
-    const destination =
-    getDestination(link);
+    const destination = getDestination(link);
 
 
-    const views =
-    Number(
-        link.total_views||
-        link.views||
+    const views = Number(
+        link.total_views ||
+        link.views ||
         0
     );
 
 
-    const clicks =
-    Number(
-        link.total_clicks||
-        link.clicks||
+    const clicks = Number(
+        link.total_clicks ||
+        link.clicks ||
         0
     );
 
 
-    const earning =
-    Number(
-        link.total_earnings||
-        link.earnings||
+    const earning = Number(
+        link.total_earnings ||
+        link.earnings ||
         0
     );
 
 
     return `
 
-    <div class="link-card">
-
-        <div class="link-top">
-
-            <div>
-
-                <div class="link-title">
-                    ${link.title||"Smart Link"}
-                </div>
-
-                <div class="link-url">
-                    ${shortUrl}
-                </div>
-
-            </div>
+<div class="link-card">
 
 
-            <span class="link-type ${type}">
-                ${type.toUpperCase()}
-            </span>
+    <div class="card-header">
 
-        </div>
+        <div class="card-title">
 
-
-        <div class="link-stats">
-
-            <div class="link-stat">
-                <h5>View</h5>
-                <span>${views}</span>
-            </div>
-
-            <div class="link-stat">
-                <h5>Click</h5>
-                <span>${clicks}</span>
-            </div>
-
-            <div class="link-stat">
-                <h5>Earning</h5>
-                <span>
-                Rp${earning.toLocaleString("id-ID")}
-                </span>
-            </div>
-
-        </div>
-
-
-        <div class="link-info">
+            <h3>
+                ${link.title || "Smart Link"}
+            </h3>
 
             <p>
-            <i class="fa-solid fa-globe"></i>
-            ${destination}
-            </p>
-
-            <p>
-            <i class="fa-solid fa-calendar"></i>
-            ${formatDate(link.created_at)}
+                <i class="fa-solid fa-link"></i>
+                ${shortUrl}
             </p>
 
         </div>
 
 
-        <div class="link-actions">
+        <span class="link-type ${type}">
+            ${type.toUpperCase()}
+        </span>
 
-            <button class="copy-btn"
-            onclick="copyLink('${shortUrl}')">
-
-                <i class="fa-solid fa-copy"></i>
-                Copy
-
-            </button>
-
-
-            <button class="edit-btn"
-            onclick="openLink('${shortUrl}')">
-
-                <i class="fa-solid fa-up-right-from-square"></i>
-                Open
-
-            </button>
-
-
-            <button class="delete-btn"
-            onclick="deleteLink('${link.id}')">
-
-                <i class="fa-solid fa-trash"></i>
-                Hapus
-
-            </button>
-
-        </div>
 
     </div>
 
-    `;
+
+
+    <div class="card-stats">
+
+
+        <div>
+            <small>Views</small>
+            <strong>${views}</strong>
+        </div>
+
+
+        <div>
+            <small>Clicks</small>
+            <strong>${clicks}</strong>
+        </div>
+
+
+        <div>
+            <small>Earning</small>
+            <strong>
+            Rp${earning.toLocaleString("id-ID")}
+            </strong>
+        </div>
+
+
+    </div>
+
+
+
+    <div class="card-detail">
+
+
+        <p>
+        <i class="fa-solid fa-globe"></i>
+        ${destination}
+        </p>
+
+
+        <p>
+        <i class="fa-solid fa-calendar"></i>
+        ${formatDate(link.created_at)}
+        </p>
+
+
+    </div>
+
+
+
+    <div class="link-actions">
+
+
+        <button onclick="copyLink('${shortUrl}')">
+
+            <i class="fa-solid fa-copy"></i>
+            Copy
+
+        </button>
+
+
+
+        <button onclick="openLink('${shortUrl}')">
+
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            Open
+
+        </button>
+
+
+
+        <button onclick="deleteLink('${link.id}')">
+
+            <i class="fa-solid fa-trash"></i>
+            Hapus
+
+        </button>
+
+
+    </div>
+
+
+</div>
+
+`;
 
 }
 
