@@ -586,8 +586,8 @@ body{
 ========================= */
 
 .link-card{
-  padding:14px;
-  border-radius:14px;
+  padding:20px;
+  border-radius:18px;
   animation:fadeUp .3s ease both;
 }
 
@@ -608,18 +608,19 @@ body{
 
 
 .link-title{
-  margin:0 0 5px;
+  margin:0 0 8px;
   color:var(--text);
-  font-size:15px;
-  font-weight:700;
-  word-break:break-word;
+  font-size:18px;
+  font-weight:800;
+  letter-spacing:-.2px;
 }
 
-
 .link-url{
-  color:var(--text2);
-  font-size:12px;
-  word-break:break-all;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  color:#64748b;
+  font-size:13px;
 }
 
 
@@ -630,10 +631,10 @@ body{
 .link-type{
   display:inline-flex;
   align-items:center;
-  gap:5px;
-  padding:5px 10px;
+  gap:6px;
+  padding:7px 14px;
   border-radius:999px;
-  font-size:10px;
+  font-size:17px;
   font-weight:700;
   white-space:nowrap;
 }
@@ -750,19 +751,21 @@ body{
 .link-info{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:8px;
-  margin-top:12px;
+  gap:10px;
+  margin-top:16px;
 }
 
 
 .link-info p{
+  padding:10px;
+  border-radius:10px;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
   display:flex;
   align-items:center;
-  gap:6px;
-  margin:0;
-  color:var(--text2);
-  font-size:11px;
-  word-break:break-word;
+  gap:8px;
+  color:#64748b;
+  font-size:12px;
 }
 
 
