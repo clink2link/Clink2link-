@@ -1,11 +1,18 @@
 // ======================================================
-// MY LINK
+// CLICK2PAY MY LINK SYSTEM
 // ======================================================
 
 let allLinks = [];
 let filteredLinks = [];
+let currentFilter = "all";
 
-const linkList = document.getElementById("linkList");
+// ======================================================
+// ELEMENT
+// ======================================================
+
+const smartList = document.getElementById("smartLinkList");
+const adsList = document.getElementById("adsLinkList");
+const sellList = document.getElementById("sellLinkList");
 
 const totalLink = document.getElementById("totalLink");
 const totalView = document.getElementById("totalView");
@@ -13,7 +20,7 @@ const totalClick = document.getElementById("totalClick");
 const totalEarning = document.getElementById("totalEarning");
 
 // ======================================================
-// LOAD LINK
+// LOAD MY LINKS
 // ======================================================
 
 async function loadMyLinks(){
@@ -23,40 +30,80 @@ async function loadMyLinks(){
         const user = await database.getUser();
 
         if(!user){
-
-            window.location.href = "index.html";
+            window.location.href="index.html";
             return;
-
         }
 
-        const { data, error } = await database.supabase
+        const {data,error}=await database.supabase
         .from("links")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("user_id",user.id)
         .order("created_at",{ascending:false});
 
         if(error) throw error;
 
-        allLinks = data || [];
-
-        filteredLinks = [...allLinks];
+        allLinks=data||[];
+        filteredLinks=[...allLinks];
 
         updateStats();
-
-        renderLinks(filteredLinks);
+        renderAllLinks();
 
     }catch(err){
 
-        console.error(err);
+        console.error("LOAD LINK ERROR:",err);
 
-        linkList.innerHTML = `
-        <div class="empty">
-            <i class="fa-solid fa-circle-xmark"></i>
-            <h3>Gagal memuat data</h3>
-            <p>${err.message}</p>
-        </div>`;
+        if(smartList){
+
+            smartList.innerHTML=`
+            <div class="empty">
+                <i class="fa-solid fa-circle-xmark"></i>
+                <h3>Gagal Memuat Link</h3>
+                <p>${err.message}</p>
+            </div>`;
+
+        }
 
     }
+
+}
+
+// ======================================================
+// HELPER
+// ======================================================
+
+function getLinkType(link){
+
+    return (
+        link.link_type ||
+        link.type ||
+        "ads"
+    ).toLowerCase();
+
+}
+
+function getShortUrl(link){
+
+    return (
+        link.short_url ||
+        (
+            link.short_code
+            ?
+            location.origin+"/s/"+link.short_code
+            :
+            "-"
+        )
+    );
+
+}
+
+function getDestination(link){
+
+    return (
+        link.destination_url ||
+        link.destination ||
+        link.url ||
+        "-"
+    );
 
 }
 
@@ -66,42 +113,131 @@ async function loadMyLinks(){
 
 function updateStats(){
 
-    totalLink.textContent = allLinks.length;
-
-    totalView.textContent = allLinks.reduce(
-        (a,b)=>a+(b.total_views||0),0
+    const views = allLinks.reduce(
+        (a,b)=>a+Number(b.total_views||b.views||0),
+        0
     );
 
-    totalClick.textContent = allLinks.reduce(
-        (a,b)=>a+(b.total_clicks||0),0
+    const clicks = allLinks.reduce(
+        (a,b)=>a+Number(b.total_clicks||b.clicks||0),
+        0
     );
 
     const earning = allLinks.reduce(
-        (a,b)=>a+(b.total_earnings||0),0
+        (a,b)=>a+Number(b.total_earnings||b.earnings||0),
+        0
     );
 
-    totalEarning.textContent =
+    if(totalLink)
+        totalLink.textContent=allLinks.length;
+
+    if(totalView)
+        totalView.textContent=views.toLocaleString("id-ID");
+
+    if(totalClick)
+        totalClick.textContent=clicks.toLocaleString("id-ID");
+
+    if(totalEarning)
+        totalEarning.textContent=
         "Rp"+earning.toLocaleString("id-ID");
 
 }
 
+
 // ======================================================
-// RENDER LINK
+// RENDER ALL LINK
 // ======================================================
 
-function renderLinks(list){
+function renderAllLinks(){
+
+    const smart = filteredLinks;
+
+    const ads = filteredLinks.filter(link=>
+        getLinkType(link)==="ads"
+    );
+
+    const sell = filteredLinks.filter(link=>
+        getLinkType(link)==="sell"
+    );
+
+
+    renderLinkBox(
+        smartList,
+        smart,
+        "Belum Ada Smart Link"
+    );
+
+
+    renderLinkBox(
+        adsList,
+        ads,
+        "Belum Ada Ads Link"
+    );
+
+
+    renderLinkBox(
+        sellList,
+        sell,
+        "Belum Ada Sell Link"
+    );
+
+
+    updateCount(
+        "smartCount",
+        smart.length
+    );
+
+    updateCount(
+        "adsCount",
+        ads.length
+    );
+
+    updateCount(
+        "sellCount",
+        sell.length
+    );
+
+}
+
+
+// ======================================================
+// COUNT
+// ======================================================
+
+function updateCount(id,total){
+
+    const el=document.getElementById(id);
+
+    if(el){
+
+        el.textContent=
+        total+" Link";
+
+    }
+
+}
+
+
+// ======================================================
+// RENDER BOX
+// ======================================================
+
+function renderLinkBox(box,list,message){
+
+    if(!box) return;
+
 
     if(!list.length){
 
-        linkList.innerHTML=`
+        box.innerHTML=`
 
         <div class="empty">
 
             <i class="fa-solid fa-link-slash"></i>
 
-            <h3>Belum Ada Link</h3>
+            <h3>${message}</h3>
 
-            <p>Silakan buat link pertama.</p>
+            <p>Link kamu akan tampil di sini.</p>
 
         </div>
 
@@ -111,247 +247,214 @@ function renderLinks(list){
 
     }
 
-    linkList.innerHTML=list.map(item=>{
 
-        const status=getStatus(item);
+    box.innerHTML=list.map(link=>
 
-        const ctr=calculateCTR(
-            item.total_views,
-            item.total_clicks
-        );
+        createLinkCard(link)
 
-        return `
+    ).join("");
 
-        <div class="link-card">
+}
 
-            <div class="link-top">
 
-                <div>
+// ======================================================
+// CREATE CARD
+// ======================================================
 
-                    <div class="link-title">
+function createLinkCard(link){
 
-                        ${item.title || "Short Link"}
+    const type =
+    getLinkType(link);
 
-                    </div>
+    const shortUrl =
+    getShortUrl(link);
 
-                    <div class="link-url">
+    const destination =
+    getDestination(link);
 
-                        ${item.short_url}
 
-                    </div>
+    const views =
+    Number(
+        link.total_views||
+        link.views||
+        0
+    );
 
+
+    const clicks =
+    Number(
+        link.total_clicks||
+        link.clicks||
+        0
+    );
+
+
+    const earning =
+    Number(
+        link.total_earnings||
+        link.earnings||
+        0
+    );
+
+
+    return `
+
+    <div class="link-card">
+
+        <div class="link-top">
+
+            <div>
+
+                <div class="link-title">
+                    ${link.title||"Smart Link"}
                 </div>
 
-                <div>
-
-                    <span class="link-type ${item.type}">
-
-                        ${item.type.toUpperCase()}
-
-                    </span>
-
-                </div>
-
-            </div>
-
-            <div class="link-stats">
-
-                <div class="link-stat">
-
-                    <h5>View</h5>
-
-                    <span>${item.total_views||0}</span>
-
-                </div>
-
-                <div class="link-stat">
-
-                    <h5>Click</h5>
-
-                    <span>${item.total_clicks||0}</span>
-
-                </div>
-
-                <div class="link-stat">
-
-                    <h5>CTR</h5>
-
-                    <span>${ctr}%</span>
-
-                </div>
-
-                <div class="link-stat">
-
-                    <h5>Earning</h5>
-
-                    <span>${rupiah(item.total_earnings)}</span>
-
+                <div class="link-url">
+                    ${shortUrl}
                 </div>
 
             </div>
 
-            <div class="link-info">
 
-                <p>
+            <span class="link-type ${type}">
+                ${type.toUpperCase()}
+            </span>
 
-                    <i class="fa-solid fa-calendar"></i>
+        </div>
 
-                    ${formatDate(item.created_at)}
 
-                </p>
+        <div class="link-stats">
 
-                <p>
-
-                    <i class="fa-solid fa-tag"></i>
-
-                    ${item.alias || "-"}
-
-                </p>
-
-                <p>
-
-                    <i class="fa-solid fa-bullseye"></i>
-
-                    ${item.campaign || "-"}
-
-                </p>
-
-                <p>
-
-                    <i class="fa-solid fa-mobile-screen"></i>
-
-                    ${item.device || "all"}
-
-                </p>
-
-                <p>
-
-                    <i class="fa-solid fa-circle"></i>
-
-                    <span class="status-${getStatusClass(status)}">
-
-                        ${status}
-
-                    </span>
-
-                </p>
-
+            <div class="link-stat">
+                <h5>View</h5>
+                <span>${views}</span>
             </div>
 
-            <div class="link-actions">
+            <div class="link-stat">
+                <h5>Click</h5>
+                <span>${clicks}</span>
+            </div>
 
-                <button
-                class="copy-btn"
-                onclick="copyLink('${item.short_url}')">
-
-                    <i class="fa-solid fa-copy"></i>
-
-                    Copy
-
-                </button>
-
-                <button
-                class="edit-btn"
-                onclick="openLink('${item.short_url}')">
-
-                    <i class="fa-solid fa-up-right-from-square"></i>
-
-                    Open
-
-                </button>
-
-                <button
-                class="edit-btn"
-                onclick="shareLink('${item.short_url}')">
-
-                    <i class="fa-solid fa-share-nodes"></i>
-
-                    Share
-
-                </button>
-
-                <button
-                class="edit-btn"
-                onclick="editLink('${item.id}')">
-
-                    <i class="fa-solid fa-pen"></i>
-
-                    Edit
-
-                </button>
-
-                <button
-                class="delete-btn"
-                onclick="deleteLink('${item.id}')">
-
-                    <i class="fa-solid fa-trash"></i>
-
-                    Hapus
-
-                </button>
-
+            <div class="link-stat">
+                <h5>Earning</h5>
+                <span>
+                Rp${earning.toLocaleString("id-ID")}
+                </span>
             </div>
 
         </div>
 
-        `;
 
-    }).join("");
+        <div class="link-info">
+
+            <p>
+            <i class="fa-solid fa-globe"></i>
+            ${destination}
+            </p>
+
+            <p>
+            <i class="fa-solid fa-calendar"></i>
+            ${formatDate(link.created_at)}
+            </p>
+
+        </div>
+
+
+        <div class="link-actions">
+
+            <button class="copy-btn"
+            onclick="copyLink('${shortUrl}')">
+
+                <i class="fa-solid fa-copy"></i>
+                Copy
+
+            </button>
+
+
+            <button class="edit-btn"
+            onclick="openLink('${shortUrl}')">
+
+                <i class="fa-solid fa-up-right-from-square"></i>
+                Open
+
+            </button>
+
+
+            <button class="delete-btn"
+            onclick="deleteLink('${link.id}')">
+
+                <i class="fa-solid fa-trash"></i>
+                Hapus
+
+            </button>
+
+        </div>
+
+    </div>
+
+    `;
 
 }
+
 // ======================================================
 // SEARCH LINK
 // ======================================================
 
 function searchLinks(){
 
-    const keyword = document
-        .getElementById("searchLink")
-        .value
-        .toLowerCase()
-        .trim();
+    const input =
+    document.getElementById("searchLink");
 
-    if(keyword===""){
+    const keyword =
+    (input?.value || "")
+    .toLowerCase()
+    .trim();
 
-        renderLinks(filteredLinks);
 
-        return;
+    if(!keyword){
+
+        filteredLinks=[...allLinks];
+
+    }else{
+
+        filteredLinks =
+        allLinks.filter(link=>{
+
+            return (
+
+                (link.title||"")
+                .toLowerCase()
+                .includes(keyword)
+
+                ||
+
+                getDestination(link)
+                .toLowerCase()
+                .includes(keyword)
+
+                ||
+
+                getShortUrl(link)
+                .toLowerCase()
+                .includes(keyword)
+
+                ||
+
+                getLinkType(link)
+                .toLowerCase()
+                .includes(keyword)
+
+            );
+
+        });
 
     }
 
-    const result = filteredLinks.filter(item=>{
 
-        return (
-
-            (item.title || "")
-            .toLowerCase()
-            .includes(keyword)
-
-            ||
-
-            (item.url || "")
-            .toLowerCase()
-            .includes(keyword)
-
-            ||
-
-            (item.short_url || "")
-            .toLowerCase()
-            .includes(keyword)
-
-            ||
-
-            (item.alias || "")
-            .toLowerCase()
-            .includes(keyword)
-
-        );
-
-    });
-
-    renderLinks(result);
+    applyCurrentFilter();
 
 }
+
 
 // ======================================================
 // FILTER LINK
@@ -359,9 +462,17 @@ function searchLinks(){
 
 function filterLink(type,button){
 
+    currentFilter=type;
+
+
     document
-        .querySelectorAll(".link-filter button")
-        .forEach(btn=>btn.classList.remove("active"));
+    .querySelectorAll(".link-filter button")
+    .forEach(btn=>{
+
+        btn.classList.remove("active");
+
+    });
+
 
     if(button){
 
@@ -369,43 +480,39 @@ function filterLink(type,button){
 
     }
 
-    if(type==="all"){
 
-        filteredLinks=[...allLinks];
+    applyCurrentFilter();
 
-    }else{
+}
 
-        filteredLinks=allLinks.filter(item=>
 
-            item.type===type
+// ======================================================
+// APPLY FILTER
+// ======================================================
+
+function applyCurrentFilter(){
+
+    let data=[...filteredLinks];
+
+
+    if(currentFilter!=="all"){
+
+        data =
+        data.filter(link=>
+
+            getLinkType(link)===currentFilter
 
         );
 
     }
 
-    searchLinks();
+
+    filteredLinks=data;
+
+    renderAllLinks();
 
 }
 
-// ======================================================
-// REFRESH DATA
-// ======================================================
-
-async function refreshLinks(){
-
-    await loadMyLinks();
-
-}
-
-// ======================================================
-// AUTO REFRESH
-// ======================================================
-
-setInterval(()=>{
-
-    refreshLinks();
-
-},30000);
 
 // ======================================================
 // FORMAT DATE
@@ -413,156 +520,120 @@ setInterval(()=>{
 
 function formatDate(date){
 
-    if(!date) return "-";
+    if(!date)
+        return "-";
+
 
     return new Date(date)
     .toLocaleString("id-ID",{
 
         day:"2-digit",
-
         month:"short",
-
         year:"numeric",
-
         hour:"2-digit",
-
         minute:"2-digit"
 
     });
 
 }
 
-// ======================================================
-// FORMAT RUPIAH
-// ======================================================
-
-function rupiah(value){
-
-    return "Rp"+Number(value||0)
-    .toLocaleString("id-ID");
-
-}
 
 // ======================================================
-// INIT
+// COPY LINK
 // ======================================================
 
-document.addEventListener("DOMContentLoaded",()=>{
+window.copyLink = async function(url){
 
-    loadMyLinks();
+    try{
 
-});
+        await navigator.clipboard.writeText(url);
+
+        alert(
+            "Link berhasil disalin."
+        );
+
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+};
+
 
 // ======================================================
 // OPEN LINK
 // ======================================================
 
-function openLink(url){
+window.openLink=function(url){
 
-    if(!url) return;
+    if(!url)
+        return;
 
-    window.open(url,"_blank");
 
-}
-
-// ======================================================
-// SHARE LINK
-// ======================================================
-
-async function shareLink(url){
-
-    if(!url) return;
-
-    if(navigator.share){
-
-        try{
-
-            await navigator.share({
-
-                title:"Click2Pay",
-
-                text:"Lihat link ini",
-
-                url:url
-
-            });
-
-            return;
-
-        }catch(e){}
-
-    }
-
-    copyLink(url);
-
-}
-
-// ======================================================
-// CALCULATE CTR
-// ======================================================
-
-function calculateCTR(view,click){
-
-    view = Number(view||0);
-    click = Number(click||0);
-
-    if(view===0) return 0;
-
-    return ((click/view)*100).toFixed(1);
-
-}
-
-// ======================================================
-// GET STATUS
-// ======================================================
-
-function getStatus(item){
-
-    if(item.expired==="never")
-        return "Aktif";
-
-    if(!item.created_at)
-        return "Aktif";
-
-    const created = new Date(item.created_at);
-
-    const expire = new Date(created);
-
-    expire.setDate(
-
-        expire.getDate() +
-
-        Number(item.expired)
-
+    window.open(
+        url,
+        "_blank"
     );
 
-    if(new Date()>expire){
+};
 
-        return "Expired";
+
+// ======================================================
+// DELETE LINK
+// ======================================================
+
+window.deleteLink=async function(id){
+
+    if(!confirm(
+        "Yakin ingin menghapus link ini?"
+    )) return;
+
+
+    try{
+
+        await database.deleteLink(id);
+
+        await loadMyLinks();
+
+
+        alert(
+            "Link berhasil dihapus."
+        );
+
+
+    }catch(err){
+
+        console.error(err);
+
+        alert(
+            err.message
+        );
 
     }
 
-    return "Aktif";
+};
 
-}
 
 // ======================================================
-// STATUS COLOR
+// AUTO REFRESH
 // ======================================================
 
-function getStatusClass(status){
+setInterval(()=>{
 
-    switch(status){
+    loadMyLinks();
 
-        case "Expired":
-            return "danger";
+},30000);
 
-        case "Aktif":
-            return "success";
 
-        default:
-            return "secondary";
+// ======================================================
+// INIT
+// ======================================================
 
-    }
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
 
-}
+    loadMyLinks();
+
+});
