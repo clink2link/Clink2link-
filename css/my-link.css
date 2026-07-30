@@ -388,20 +388,20 @@ body{
 
 .quick-stats{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:20px;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px;
   margin-bottom:30px;
 }
 
 .stat-card{
-  padding:24px;
+  padding:18px 12px;
   text-align:center;
   cursor:default;
 }
 
 .stat-card i{
-  width:60px;
-  height:60px;
+  width:48px;
+  height:48px;
   margin:0 auto 16px;
   display:flex;
   align-items:center;
@@ -420,9 +420,9 @@ body{
 }
 
 .stat-card h2{
-  margin-top:10px;
+  margin-top:8px;
   color:var(--text);
-  font-size:28px;
+  font-size:22px;
   font-weight:800;
 }
 
