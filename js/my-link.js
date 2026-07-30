@@ -14,6 +14,11 @@ const smartList = document.getElementById("smartLinkList");
 const adsList = document.getElementById("adsLinkList");
 const sellList = document.getElementById("sellLinkList");
 
+const totalAdsLink = document.getElementById("totalAdsLink");
+const totalAdsView = document.getElementById("totalAdsView");
+const totalSellLink = document.getElementById("totalSellLink");
+const totalSellRevenue = document.getElementById("totalSellRevenue");
+
 const totalLink = document.getElementById("totalLink");
 const totalView = document.getElementById("totalView");
 const totalClick = document.getElementById("totalClick");
@@ -43,10 +48,8 @@ async function loadMyLinks(){
         if(error) throw error;
 
         allLinks=data||[];
-        filteredLinks=[...allLinks];
-
         updateStats();
-        renderAllLinks();
+        applyCurrentFilter();
 
     }catch(err){
 
@@ -113,33 +116,77 @@ function getDestination(link){
 
 function updateStats(){
 
-    const views = allLinks.reduce(
+    const adsLinks = allLinks.filter(
+        link => getLinkType(link) === "ads"
+    );
+
+    const sellLinks = allLinks.filter(
+        link => getLinkType(link) === "sell"
+    );
+
+    const totalViews = allLinks.reduce(
         (a,b)=>a+Number(b.total_views||b.views||0),
         0
     );
 
-    const clicks = allLinks.reduce(
+    const totalClicks = allLinks.reduce(
         (a,b)=>a+Number(b.total_clicks||b.clicks||0),
         0
     );
 
-    const earning = allLinks.reduce(
-        (a,b)=>a+Number(b.total_earnings||b.earnings||0),
+    const totalEarnings = allLinks.reduce(
+        (a,b)=>a+Number(
+            b.total_earnings||
+            b.earnings||
+            0
+        ),
         0
     );
 
-    if(totalLink)
-        totalLink.textContent=allLinks.length;
+    const adsViews = adsLinks.reduce(
+        (a,b)=>a+Number(
+            b.total_views||
+            b.views||
+            0
+        ),
+        0
+    );
 
-    if(totalView)
-        totalView.textContent=views.toLocaleString("id-ID");
+    const sellRevenue = sellLinks.reduce(
+        (a,b)=>a+Number(
+            b.total_earnings||
+            b.earnings||
+            0
+        ),
+        0
+    );
 
-    if(totalClick)
-        totalClick.textContent=clicks.toLocaleString("id-ID");
+    totalLink.textContent = allLinks.length;
 
-    if(totalEarning)
-        totalEarning.textContent=
-        "Rp"+earning.toLocaleString("id-ID");
+    totalView.textContent =
+        totalViews.toLocaleString("id-ID");
+
+    totalClick.textContent =
+        totalClicks.toLocaleString("id-ID");
+
+    totalEarning.textContent =
+        "Rp"+totalEarnings.toLocaleString("id-ID");
+
+    if(totalAdsLink)
+        totalAdsLink.textContent =
+        adsLinks.length;
+
+    if(totalAdsView)
+        totalAdsView.textContent =
+        adsViews.toLocaleString("id-ID");
+
+    if(totalSellLink)
+        totalSellLink.textContent =
+        sellLinks.length;
+
+    if(totalSellRevenue)
+        totalSellRevenue.textContent =
+        "Rp"+sellRevenue.toLocaleString("id-ID");
 
 }
 
@@ -150,55 +197,48 @@ function updateStats(){
 
 function renderAllLinks(){
 
-    const smart = filteredLinks;
-
-    const ads = filteredLinks.filter(link=>
-        getLinkType(link)==="ads"
-    );
-
-    const sell = filteredLinks.filter(link=>
-        getLinkType(link)==="sell"
-    );
-
-
     renderLinkBox(
         smartList,
-        smart,
+        filteredLinks,
         "Belum Ada Smart Link"
     );
 
-
     renderLinkBox(
         adsList,
-        ads,
+        filteredLinks.filter(link =>
+            getLinkType(link) === "ads"
+        ),
         "Belum Ada Ads Link"
     );
 
-
     renderLinkBox(
         sellList,
-        sell,
+        filteredLinks.filter(link =>
+            getLinkType(link) === "sell"
+        ),
         "Belum Ada Sell Link"
     );
 
-
     updateCount(
         "smartCount",
-        smart.length
+        filteredLinks.length
     );
 
     updateCount(
         "adsCount",
-        ads.length
+        filteredLinks.filter(link =>
+            getLinkType(link) === "ads"
+        ).length
     );
 
     updateCount(
         "sellCount",
-        sell.length
+        filteredLinks.filter(link =>
+            getLinkType(link) === "sell"
+        ).length
     );
 
 }
-
 
 // ======================================================
 // COUNT
@@ -402,55 +442,6 @@ function createLinkCard(link){
 
 function searchLinks(){
 
-    const input =
-    document.getElementById("searchLink");
-
-    const keyword =
-    (input?.value || "")
-    .toLowerCase()
-    .trim();
-
-
-    if(!keyword){
-
-        filteredLinks=[...allLinks];
-
-    }else{
-
-        filteredLinks =
-        allLinks.filter(link=>{
-
-            return (
-
-                (link.title||"")
-                .toLowerCase()
-                .includes(keyword)
-
-                ||
-
-                getDestination(link)
-                .toLowerCase()
-                .includes(keyword)
-
-                ||
-
-                getShortUrl(link)
-                .toLowerCase()
-                .includes(keyword)
-
-                ||
-
-                getLinkType(link)
-                .toLowerCase()
-                .includes(keyword)
-
-            );
-
-        });
-
-    }
-
-
     applyCurrentFilter();
 
 }
@@ -492,22 +483,53 @@ function filterLink(type,button){
 
 function applyCurrentFilter(){
 
-    let data=[...filteredLinks];
+    const keyword = (
+        document.getElementById("searchLink")?.value || ""
+    ).toLowerCase().trim();
 
+    let data = [...allLinks];
 
-    if(currentFilter!=="all"){
+    // Search
+    if(keyword){
 
-        data =
-        data.filter(link=>
+        data = data.filter(link =>
 
-            getLinkType(link)===currentFilter
+            (link.title || "")
+            .toLowerCase()
+            .includes(keyword)
+
+            ||
+
+            getDestination(link)
+            .toLowerCase()
+            .includes(keyword)
+
+            ||
+
+            getShortUrl(link)
+            .toLowerCase()
+            .includes(keyword)
+
+            ||
+
+            getLinkType(link)
+            .toLowerCase()
+            .includes(keyword)
 
         );
 
     }
 
+    // Filter Type
+    if(currentFilter !== "all"){
 
-    filteredLinks=data;
+        data = data.filter(link =>
+            getLinkType(link) === currentFilter
+        );
+
+    }
+
+    filteredLinks = data;
 
     renderAllLinks();
 
