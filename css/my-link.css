@@ -869,11 +869,9 @@ html.dark .empty{
 
 @media(max-width:768px){
 
-    .link-actions{
-        grid-template-columns:repeat(3,1fr);
-    }
-
-}
+  .link-actions{
+    grid-template-columns:repeat(3,1fr);
+  }
 
   .app-container{
     padding:70px 14px 30px;
@@ -897,8 +895,14 @@ html.dark .empty{
     gap:8px;
   }
 
+  .copy-box{
+    flex-direction:row;
+  }
+
   .btn-copy{
-    width:100%;
+    width:36px;
+    height:36px;
+    flex:none;
   }
 
   .panel-pagination{
