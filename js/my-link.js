@@ -491,7 +491,7 @@ ${link.device}
 
 <input readonly value="${short}">
 
-<button onclick="copyLink('${short}')">
+<button class="btn-copy" onclick="copyLink('${short}')">
 <i class="fa-solid fa-copy"></i>
 </button>
 
