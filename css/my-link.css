@@ -64,7 +64,7 @@ body{
   width:100%;
   max-width:1250px;
   margin:auto;
-  padding:90px 18px 35px;
+  padding:75px 18px 35px;
 }
 
 /* ==========================
@@ -876,7 +876,7 @@ html.dark .empty{
 }
 
   .app-container{
-    padding:80px 14px 30px;
+    padding:70px 14px 30px;
   }
 
   .page-title{
