@@ -623,6 +623,94 @@ body{
   font-size:13px;
 }
 
+/* =========================
+   LINK PANEL
+========================= */
+
+.link-panel{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    padding:18px;
+}
+
+.panel-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+    gap:10px;
+}
+
+.panel-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.panel-title i{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#eff6ff;
+    color:var(--primary);
+}
+
+.panel-title h3{
+    margin:0;
+    font-size:18px;
+    font-weight:700;
+    color:var(--text);
+}
+
+.panel-count{
+    padding:6px 12px;
+    border-radius:999px;
+    background:#eff6ff;
+    color:var(--primary);
+    font-size:12px;
+    font-weight:700;
+}
+
+.panel-list{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(360px,1fr));
+    gap:16px;
+}
+
+.panel-pagination{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    margin-top:20px;
+}
+
+.panel-pagination button{
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:12px;
+    background:#eff6ff;
+    color:var(--primary);
+    cursor:pointer;
+    transition:.2s;
+}
+
+.panel-pagination button:hover{
+    background:var(--primary);
+    color:#fff;
+}
+
+.page-number{
+    font-size:13px;
+    font-weight:700;
+    color:var(--text2);
+}
 
 /* =========================
    TYPE BADGE
@@ -973,7 +1061,26 @@ html.dark .link-filter button.active{
   background:#2563eb;
   color:#fff;
 }
+html.dark .link-panel{
+    background:#111827;
+    border-color:#1f2937;
+}
 
+html.dark .panel-title h3{
+    color:#fff;
+}
+
+html.dark .panel-title i,
+html.dark .panel-count,
+html.dark .panel-pagination button{
+    background:#1e293b;
+    color:#cbd5e1;
+}
+
+html.dark .panel-pagination button:hover{
+    background:#2563eb;
+    color:#fff;
+}
 
 
 /* =========================
@@ -1095,5 +1202,18 @@ html.dark .link-filter button.active{
     transition:none!important;
     scroll-behavior:auto!important;
   }
+
+}
+
+@media(max-width:700px){
+
+    .panel-list{
+        grid-template-columns:1fr;
+    }
+
+    .panel-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
 
 }
