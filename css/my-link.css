@@ -58,10 +58,9 @@ body{
 ========================== */
 
 .app-container{
-  width:100%;
-  max-width:1250px;
-  margin:auto;
-  padding:8px 20px 40px;
+    max-width:1200px;
+    margin:auto;
+    padding:8px 20px 40px;
 }
 
 /* ==========================
