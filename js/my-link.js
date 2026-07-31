@@ -2,73 +2,147 @@
 // CLICK2PAY MY LINK SYSTEM
 // ======================================================
 
-let allLinks = [];
-let filteredLinks = [];
-let currentFilter = "all";
+let allLinks=[];
+let filteredLinks=[];
+let currentFilter="all";
+
+const smartList=document.getElementById("smartLinkList");
+const adsList=document.getElementById("adsLinkList");
+const sellList=document.getElementById("sellLinkList");
+
+const totalAdsLink=document.getElementById("totalAdsLink");
+const totalAdsView=document.getElementById("totalAdsView");
+const totalSellLink=document.getElementById("totalSellLink");
+const totalSellRevenue=document.getElementById("totalSellRevenue");
+
+const totalLink=document.getElementById("totalLink");
+const totalView=document.getElementById("totalView");
+const totalClick=document.getElementById("totalClick");
+const totalEarning=document.getElementById("totalEarning");
+
 
 // ======================================================
-// ELEMENT
-// ======================================================
-
-const smartList = document.getElementById("smartLinkList");
-const adsList = document.getElementById("adsLinkList");
-const sellList = document.getElementById("sellLinkList");
-
-const totalAdsLink = document.getElementById("totalAdsLink");
-const totalAdsView = document.getElementById("totalAdsView");
-const totalSellLink = document.getElementById("totalSellLink");
-const totalSellRevenue = document.getElementById("totalSellRevenue");
-
-const totalLink = document.getElementById("totalLink");
-const totalView = document.getElementById("totalView");
-const totalClick = document.getElementById("totalClick");
-const totalEarning = document.getElementById("totalEarning");
-
-// ======================================================
-// LOAD MY LINKS
+// LOAD LINKS
 // ======================================================
 
 async function loadMyLinks(){
 
-    try{
+try{
 
-        const user = await database.getUser();
+const user=await database.getUser();
 
-        if(!user){
-            window.location.href="index.html";
-            return;
-        }
+if(!user){
+window.location.href="index.html";
+return;
+}
 
-        const {data,error}=await database.supabase
-        .from("links")
-        .select("*")
-        .eq("user_id",user.id)
-        .order("created_at",{ascending:false});
+const {data,error}=await database.supabase
+.from("links")
+.select("*")
+.eq("user_id",user.id)
+.order("created_at",{ascending:false});
 
-        if(error) throw error;
+if(error)throw error;
 
-        allLinks=data||[];
-        updateStats();
-        applyCurrentFilter();
+allLinks=data||[];
 
-    }catch(err){
+window.allLinks=allLinks;
 
-        console.error("LOAD LINK ERROR:",err);
+await checkSellAccess(user);
 
-        if(smartList){
+updateStats();
 
-            smartList.innerHTML=`
-            <div class="empty">
-                <i class="fa-solid fa-circle-xmark"></i>
-                <h3>Gagal Memuat Link</h3>
-                <p>${err.message}</p>
-            </div>`;
+applyCurrentFilter();
 
-        }
+}catch(err){
 
-    }
+console.error("LOAD LINK ERROR:",err);
+
+if(smartList){
+
+smartList.innerHTML=`
+<div class="empty">
+<i class="fa-solid fa-circle-xmark"></i>
+<h3>Gagal Memuat Link</h3>
+<p>${err.message}</p>
+</div>`;
 
 }
+
+}
+
+}
+
+
+// ======================================================
+// CHECK SELL ACCESS
+// ======================================================
+
+async function checkSellAccess(user){
+
+try{
+
+const linkType=document.getElementById("linkType");
+const sellInfo=document.getElementById("sellInfo");
+
+if(!linkType||!sellInfo)return;
+
+
+const profile=await database.getProfile(user.id);
+
+
+const active=
+profile &&
+(
+profile.sell_link_enabled===true ||
+Number(profile.withdraw_count||0)>=3
+);
+
+
+const option=linkType.querySelector(
+"option[value='sell']"
+);
+
+
+if(active){
+
+if(option)
+option.disabled=false;
+
+
+sellInfo.innerHTML=`
+<i class="fa-solid fa-circle-check"></i>
+Sell Link sudah aktif
+`;
+
+}else{
+
+if(option)
+option.disabled=true;
+
+
+linkType.value="ads";
+
+
+sellInfo.innerHTML=`
+<i class="fa-solid fa-lock"></i>
+Sell Link belum aktif
+`;
+
+}
+
+
+}catch(err){
+
+console.error(
+"SELL ACCESS ERROR:",
+err
+);
+
+}
+
+}
+
 
 // ======================================================
 // HELPER
@@ -76,39 +150,42 @@ async function loadMyLinks(){
 
 function getLinkType(link){
 
-    return (
-        link.link_type ||
-        link.type ||
-        "ads"
-    ).toLowerCase();
+return(
+link.link_type||
+link.type||
+"ads"
+).toLowerCase();
 
 }
+
 
 function getShortUrl(link){
 
-    return (
-        link.short_url ||
-        (
-            link.short_code
-            ?
-            location.origin+"/s/"+link.short_code
-            :
-            "-"
-        )
-    );
+return(
+link.short_url||
+(
+link.short_code
+?
+location.origin+"/s/"+link.short_code
+:
+"-"
+)
+);
 
 }
+
 
 function getDestination(link){
 
-    return (
-        link.destination_url ||
-        link.destination ||
-        link.url ||
-        "-"
-    );
+return(
+link.destination_url||
+link.destination||
+link.url||
+"-"
+);
 
 }
+
 
 // ======================================================
 // UPDATE STATS
@@ -116,144 +193,113 @@ function getDestination(link){
 
 function updateStats(){
 
-    const adsLinks = allLinks.filter(
-        link => getLinkType(link) === "ads"
-    );
+const adsLinks=allLinks.filter(
+link=>getLinkType(link)==="ads"
+);
 
-    const sellLinks = allLinks.filter(
-        link => getLinkType(link) === "sell"
-    );
+const sellLinks=allLinks.filter(
+link=>getLinkType(link)==="sell"
+);
 
-    const totalViews = allLinks.reduce(
-        (a,b)=>a+Number(b.total_views||b.views||0),
-        0
-    );
+const views=allLinks.reduce(
+(a,b)=>a+Number(b.total_views||b.views||0),0
+);
 
-    const totalClicks = allLinks.reduce(
-        (a,b)=>a+Number(b.total_clicks||b.clicks||0),
-        0
-    );
+const clicks=allLinks.reduce(
+(a,b)=>a+Number(b.total_clicks||b.clicks||0),0
+);
 
-    const totalEarnings = allLinks.reduce(
-        (a,b)=>a+Number(
-            b.total_earnings||
-            b.earnings||
-            0
-        ),
-        0
-    );
+const earnings=allLinks.reduce(
+(a,b)=>a+Number(b.total_earnings||b.earnings||0),0
+);
 
-    const adsViews = adsLinks.reduce(
-        (a,b)=>a+Number(
-            b.total_views||
-            b.views||
-            0
-        ),
-        0
-    );
+const adsViews=adsLinks.reduce(
+(a,b)=>a+Number(b.total_views||b.views||0),0
+);
 
-    const sellRevenue = sellLinks.reduce(
-        (a,b)=>a+Number(
-            b.total_earnings||
-            b.earnings||
-            0
-        ),
-        0
-    );
+const sellRevenue=sellLinks.reduce(
+(a,b)=>a+Number(b.total_earnings||b.earnings||0),0
+);
 
-    totalLink.textContent = allLinks.length;
 
-    totalView.textContent =
-        totalViews.toLocaleString("id-ID");
+if(totalLink)
+totalLink.textContent=allLinks.length;
 
-    totalClick.textContent =
-        totalClicks.toLocaleString("id-ID");
+if(totalView)
+totalView.textContent=views.toLocaleString("id-ID");
 
-    totalEarning.textContent =
-        "Rp"+totalEarnings.toLocaleString("id-ID");
+if(totalClick)
+totalClick.textContent=clicks.toLocaleString("id-ID");
 
-    if(totalAdsLink)
-        totalAdsLink.textContent =
-        adsLinks.length;
+if(totalEarning)
+totalEarning.textContent=
+"Rp"+earnings.toLocaleString("id-ID");
 
-    if(totalAdsView)
-        totalAdsView.textContent =
-        adsViews.toLocaleString("id-ID");
 
-    if(totalSellLink)
-        totalSellLink.textContent =
-        sellLinks.length;
+if(totalAdsLink)
+totalAdsLink.textContent=adsLinks.length;
 
-    if(totalSellRevenue)
-        totalSellRevenue.textContent =
-        "Rp"+sellRevenue.toLocaleString("id-ID");
+if(totalAdsView)
+totalAdsView.textContent=
+adsViews.toLocaleString("id-ID");
+
+if(totalSellLink)
+totalSellLink.textContent=sellLinks.length;
+
+if(totalSellRevenue)
+totalSellRevenue.textContent=
+"Rp"+sellRevenue.toLocaleString("id-ID");
 
 }
 
 
 // ======================================================
-// RENDER ALL LINK
+// RENDER LINKS
 // ======================================================
 
 function renderAllLinks(){
 
-    renderLinkBox(
-        smartList,
-        filteredLinks,
-        "Belum Ada Smart Link"
-    );
+renderLinkBox(
+smartList,
+filteredLinks,
+"Belum Ada Smart Link"
+);
 
-    renderLinkBox(
-        adsList,
-        filteredLinks.filter(link =>
-            getLinkType(link) === "ads"
-        ),
-        "Belum Ada Ads Link"
-    );
+renderLinkBox(
+adsList,
+filteredLinks.filter(
+x=>getLinkType(x)==="ads"
+),
+"Belum Ada Ads Link"
+);
 
-    renderLinkBox(
-        sellList,
-        filteredLinks.filter(link =>
-            getLinkType(link) === "sell"
-        ),
-        "Belum Ada Sell Link"
-    );
+renderLinkBox(
+sellList,
+filteredLinks.filter(
+x=>getLinkType(x)==="sell"
+),
+"Belum Ada Sell Link"
+);
 
-    updateCount(
-        "smartCount",
-        filteredLinks.length
-    );
 
-    updateCount(
-        "adsCount",
-        filteredLinks.filter(link =>
-            getLinkType(link) === "ads"
-        ).length
-    );
+updateCount(
+"smartCount",
+filteredLinks.length
+);
 
-    updateCount(
-        "sellCount",
-        filteredLinks.filter(link =>
-            getLinkType(link) === "sell"
-        ).length
-    );
+updateCount(
+"adsCount",
+filteredLinks.filter(
+x=>getLinkType(x)==="ads"
+).length
+);
 
-}
-
-// ======================================================
-// COUNT
-// ======================================================
-
-function updateCount(id,total){
-
-    const el=document.getElementById(id);
-
-    if(el){
-
-        el.textContent=
-        total+" Link";
-
-    }
+updateCount(
+"sellCount",
+filteredLinks.filter(
+x=>getLinkType(x)==="sell"
+).length
+);
 
 }
 
@@ -262,37 +308,42 @@ function updateCount(id,total){
 // RENDER BOX
 // ======================================================
 
-function renderLinkBox(box,list,message){
+function renderLinkBox(box,list,msg){
 
-    if(!box) return;
-
-
-    if(!list.length){
-
-        box.innerHTML=`
-
-        <div class="empty">
-
-            <i class="fa-solid fa-link-slash"></i>
-
-            <h3>${message}</h3>
-
-            <p>Link kamu akan tampil di sini.</p>
-
-        </div>
-
-        `;
-
-        return;
-
-    }
+if(!box)return;
 
 
-    box.innerHTML=list.map(link=>
+if(!list.length){
 
-        createLinkCard(link)
+box.innerHTML=`
+<div class="empty">
+<i class="fa-solid fa-link-slash"></i>
+<h3>${msg}</h3>
+<p>Link kamu akan tampil disini.</p>
+</div>`;
 
-    ).join("");
+return;
+
+}
+
+
+box.innerHTML=list.map(
+link=>createLinkCard(link)
+).join("");
+
+}
+
+
+// ======================================================
+// COUNT
+// ======================================================
+
+function updateCount(id,total){
+
+const el=document.getElementById(id);
+
+if(el)
+el.textContent=total+" Link";
 
 }
 
@@ -303,219 +354,323 @@ function renderLinkBox(box,list,message){
 
 function createLinkCard(link){
 
-    const type = getLinkType(link);
+const type=getLinkType(link);
 
-    const shortUrl = getShortUrl(link);
+const short=getShortUrl(link);
 
-    const destination = getDestination(link);
+const destination=getDestination(link);
 
-    const views = Number(
-        link.total_views ||
-        link.views ||
-        0
-    );
+const views=Number(link.total_views||0);
 
-    const clicks = Number(
-        link.total_clicks ||
-        link.clicks ||
-        0
-    );
+const clicks=Number(link.total_clicks||0);
 
-    const earning = Number(
-        link.total_earnings ||
-        link.earnings ||
-        0
-    );
+const earn=Number(link.total_earnings||0);
 
-    const status =
-        (link.status || "active") === "active";
 
-    return `
+return`
 
-    <div class="link-card">
+<div class="link-card">
 
-        <div class="link-top">
+<div class="link-top">
+<h3>${link.title||"Smart Link"}</h3>
+</div>
 
-            <h3>
-                ${link.title || "Smart Link"}
-            </h3>
 
-        </div>
+<div class="link-meta">
 
-        <div class="link-meta">
+<span>
+<i class="fa-solid fa-eye"></i>
+${views.toLocaleString("id-ID")} View
+</span>
 
-            <span>
-                <i class="fa-regular fa-calendar"></i>
-                ${formatDate(link.created_at)}
-            </span>
+<span>
+<i class="fa-solid fa-computer-mouse"></i>
+${clicks.toLocaleString("id-ID")} Click
+</span>
 
-            <span>
-                <i class="fa-solid fa-eye"></i>
-                ${views.toLocaleString("id-ID")} View
-            </span>
+<span>
+<i class="fa-solid fa-calendar"></i>
+${formatDate(link.created_at)}
+</span>
 
-            <span>
-                <i class="fa-solid fa-computer-mouse"></i>
-                ${clicks.toLocaleString("id-ID")} Click
-            </span>
+</div>
 
-        </div>
 
-        <div class="destination-link">
+<div class="destination-link">
 
-            <i class="fa-solid fa-globe"></i>
+<i class="fa-solid fa-globe"></i>
 
-            <a
-                href="${destination}"
-                target="_blank"
-                class="destination-url">
+<a href="${destination}" target="_blank">
+${destination}
+</a>
 
-                ${destination}
+</div>
 
-            </a>
 
-        </div>
+<div class="badge-group">
 
-        <div class="badge-group">
+<span class="badge ${type==="ads"?"blue":"orange"}">
+${type.toUpperCase()} LINK
+</span>
 
-            <span class="badge ${type==="ads" ? "blue" : "orange"}">
+<span class="badge green">
+Rp ${earn.toLocaleString("id-ID")}
+</span>
 
-                <i class="fa-solid fa-link"></i>
+</div>
 
-                ${type.toUpperCase()} LINK
 
-            </span>
+<div class="copy-box">
 
-            <span class="badge ${status ? "green" : "red"}">
+<input readonly value="${short}">
 
-                <i class="fa-solid fa-circle"></i>
+<button onclick="copyLink('${short}')">
+<i class="fa-solid fa-copy"></i>
+</button>
 
-                ${status ? "Aktif" : "Nonaktif"}
+</div>
 
-            </span>
 
-            <span class="badge green">
+<div class="link-actions">
 
-                <i class="fa-solid fa-wallet"></i>
+<button class="btn-edit"
+onclick="editLink('${link.id}')">
 
-                Rp ${earning.toLocaleString("id-ID")}
+<i class="fa-solid fa-pen"></i>
+Edit
 
-            </span>
+</button>
 
-        </div>
 
-        <div class="copy-box">
+<button class="btn-delete"
+onclick="deleteLink('${link.id}')">
 
-            <input
-                readonly
-                value="${shortUrl}">
+<i class="fa-solid fa-trash"></i>
+Hapus
 
-            <button
-                class="btn-copy"
-                onclick="copyLink('${shortUrl}')">
+</button>
 
-                <i class="fa-regular fa-copy"></i>
+</div>
 
-            </button>
 
-        </div>
+</div>
 
-        <div class="link-actions">
-
-            <button
-                class="btn-edit"
-                onclick="editLink('${link.id}')">
-
-                <i class="fa-solid fa-pen"></i>
-
-                Edit
-
-            </button>
-
-            <button
-                class="btn-delete"
-                onclick="deleteLink('${link.id}')">
-
-                <i class="fa-solid fa-trash"></i>
-
-                Hapus
-
-            </button>
-
-        </div>
-
-    </div>
-
-    `;
+`;
 
 }
 
-window.editLink = function(id){
 
-    const link = allLinks.find(
-        item => item.id === id
-    );
+// ======================================================
+// EDIT LINK
+// ======================================================
 
-    if(!link) return;
+window.editLink=function(id){
 
+const link=allLinks.find(
+x=>x.id==id
+);
 
-    document
-    .getElementById("editModal")
-    .classList.add("active");
-
-
-    document.getElementById("editId").value =
-    link.id;
+if(!link)return;
 
 
-    document.getElementById("editTitle").value =
-    link.title || "";
+document.getElementById("editModal")
+.classList.add("active");
 
 
-    document.getElementById("editUrl").value =
-    link.url || "";
+document.getElementById("editId").value=link.id;
+
+document.getElementById("editTitle").value=
+link.title||"";
+
+document.getElementById("editUrl").value=
+getDestination(link);
 
 };
 
+
 // ======================================================
-// SEARCH LINK
+// SAVE EDIT
 // ======================================================
 
-function searchLinks(){
+window.saveEdit=async function(){
 
-    applyCurrentFilter();
+try{
+
+const id=document.getElementById("editId").value;
+
+await database.updateLink(
+id,
+{
+title:
+document.getElementById("editTitle").value.trim(),
+
+url:
+document.getElementById("editUrl").value.trim()
+}
+);
+
+
+closeEdit();
+
+await loadMyLinks();
+
+
+alert("Link berhasil diperbarui.");
+
+
+}catch(err){
+
+console.error(err);
+
+alert(
+"Gagal memperbarui link."
+);
 
 }
 
+};
+
 
 // ======================================================
-// FILTER LINK
+// CLOSE EDIT
 // ======================================================
 
-function filterLink(type,button){
+window.closeEdit=function(){
 
-    currentFilter=type;
+const modal=
+document.getElementById("editModal");
 
+if(modal)
+modal.classList.remove("active");
 
-    document
-    .querySelectorAll(".link-filter button")
-    .forEach(btn=>{
-
-        btn.classList.remove("active");
-
-    });
+};
 
 
-    if(button){
+// ======================================================
+// CANCEL EDIT
+// ======================================================
 
-        button.classList.add("active");
+document
+.getElementById("cancelEditBtn")
+?.addEventListener(
+"click",
+()=>{
 
-    }
-
-
-    applyCurrentFilter();
+closeEdit();
 
 }
+);
+
+
+document
+.getElementById("closeEditBtn")
+?.addEventListener(
+"click",
+()=>{
+
+closeEdit();
+
+}
+);
+
+
+// ======================================================
+// DELETE LINK
+// ======================================================
+
+window.deleteLink=async function(id){
+
+if(!confirm(
+"Yakin ingin menghapus link ini?"
+))
+return;
+
+
+try{
+
+await database.deleteLink(id);
+
+await loadMyLinks();
+
+
+alert(
+"Link berhasil dihapus."
+);
+
+
+}catch(err){
+
+console.error(err);
+
+alert(
+"Gagal menghapus link."
+);
+
+}
+
+};
+
+
+// ======================================================
+// COPY LINK
+// ======================================================
+
+window.copyLink=async function(url){
+
+try{
+
+await navigator.clipboard.writeText(url);
+
+alert(
+"Link berhasil disalin."
+);
+
+
+}catch(err){
+
+console.error(err);
+
+}
+
+};
+
+
+// ======================================================
+// SEARCH
+// ======================================================
+
+window.searchLinks=function(){
+
+applyCurrentFilter();
+
+};
+
+
+// ======================================================
+// FILTER
+// ======================================================
+
+window.filterLink=function(type,btn){
+
+currentFilter=type;
+
+
+document
+.querySelectorAll(".link-filter button")
+.forEach(x=>{
+
+x.classList.remove("active");
+
+});
+
+
+if(btn)
+btn.classList.add("active");
+
+
+applyCurrentFilter();
+
+};
 
 
 // ======================================================
@@ -524,74 +679,105 @@ function filterLink(type,button){
 
 function applyCurrentFilter(){
 
-    const keyword = (
-        document.getElementById("searchLink")?.value || ""
-    ).toLowerCase().trim();
+let data=[...allLinks];
 
-    let data = [...allLinks];
 
-    // Search
-    if(keyword){
+const keyword=
+(
+document.getElementById("searchLink")?.value||""
+)
+.toLowerCase()
+.trim();
 
-        data = data.filter(link =>
 
-            (link.title || "")
-            .toLowerCase()
-            .includes(keyword)
+if(keyword){
 
-            ||
+data=data.filter(link=>{
 
-            getDestination(link)
-            .toLowerCase()
-            .includes(keyword)
 
-            ||
+const title=
+(link.title||"")
+.toLowerCase();
 
-            getShortUrl(link)
-            .toLowerCase()
-            .includes(keyword)
 
-            ||
+const url=
+getDestination(link)
+.toLowerCase();
 
-            getLinkType(link)
-            .toLowerCase()
-            .includes(keyword)
 
-        );
+const short=
+getShortUrl(link)
+.toLowerCase();
 
-    }
 
-    filteredLinks = data;
+const type=
+getLinkType(link)
+.toLowerCase();
 
-    renderAllLinks();
 
-    // =========================
-    // SHOW / HIDE PANEL
-    // =========================
+return(
+title.includes(keyword) ||
+url.includes(keyword) ||
+short.includes(keyword) ||
+type.includes(keyword)
+);
 
-    const smartPanel = document.getElementById("smartPanel");
-    const adsPanel = document.getElementById("adsPanel");
-    const sellPanel = document.getElementById("sellPanel");
 
-    if(!smartPanel || !adsPanel || !sellPanel) return;
+});
 
-    smartPanel.style.display = "";
-    adsPanel.style.display = "";
-    sellPanel.style.display = "";
+}
 
-    if(currentFilter === "ads"){
 
-        smartPanel.style.display = "none";
-        sellPanel.style.display = "none";
+if(currentFilter!=="all"){
 
-    }
+data=data.filter(
+link=>getLinkType(link)===currentFilter
+);
 
-    else if(currentFilter === "sell"){
+}
 
-        smartPanel.style.display = "none";
-        adsPanel.style.display = "none";
 
-    }
+filteredLinks=data;
+
+
+renderAllLinks();
+
+
+const smartPanel=
+document.getElementById("smartPanel");
+
+const adsPanel=
+document.getElementById("adsPanel");
+
+const sellPanel=
+document.getElementById("sellPanel");
+
+
+if(!smartPanel||
+!adsPanel||
+!sellPanel)
+return;
+
+
+smartPanel.style.display="";
+adsPanel.style.display="";
+sellPanel.style.display="";
+
+
+if(currentFilter==="ads"){
+
+smartPanel.style.display="none";
+sellPanel.style.display="none";
+
+}
+
+
+if(currentFilter==="sell"){
+
+smartPanel.style.display="none";
+adsPanel.style.display="none";
+
+}
 
 }
 
@@ -602,110 +788,311 @@ function applyCurrentFilter(){
 
 function formatDate(date){
 
-    if(!date)
-        return "-";
+if(!date)
+return "-";
 
 
-    return new Date(date)
-    .toLocaleString("id-ID",{
-
-        day:"2-digit",
-        month:"short",
-        year:"numeric",
-        hour:"2-digit",
-        minute:"2-digit"
-
-    });
+return new Date(date)
+.toLocaleString(
+"id-ID",
+{
+day:"2-digit",
+month:"short",
+year:"numeric",
+hour:"2-digit",
+minute:"2-digit"
+}
+);
 
 }
 
 
 // ======================================================
-// COPY LINK
+// ADVANCED SETTINGS
 // ======================================================
 
-window.copyLink = async function(url){
+document
+.getElementById("saveAdvanced")
+?.addEventListener(
+"click",
+()=>{
 
-    try{
 
-        await navigator.clipboard.writeText(url);
+const data={
 
-        alert(
-            "Link berhasil disalin."
-        );
+alias:
+document.getElementById("customAlias").value.trim(),
 
-    }catch(err){
+expired:
+document.getElementById("expiredLink").value,
 
-        console.error(err);
+campaign:
+document.getElementById("campaignName").value.trim(),
 
-    }
+device:
+document.getElementById("targetDevice").value
 
 };
 
 
+localStorage.setItem(
+"advanced_settings",
+JSON.stringify(data)
+);
+
+
+document
+.getElementById("advancedModal")
+.classList.remove("active");
+
+
+alert(
+"Advanced Settings berhasil disimpan."
+);
+
+
+}
+);
+
+
 // ======================================================
-// OPEN LINK
+// OPEN ADVANCED MODAL
 // ======================================================
 
-window.openLink=function(url){
+document
+.getElementById("advanceBtn")
+?.addEventListener(
+"click",
+()=>{
 
-    if(!url)
-        return;
+document
+.getElementById("advancedModal")
+?.classList.add("active");
 
-
-    window.open(
-        url,
-        "_blank"
-    );
-
-};
+}
+);
 
 
 // ======================================================
-// DELETE LINK
+// CLOSE ADVANCED MODAL
 // ======================================================
 
-window.deleteLink=async function(id){
+document
+.getElementById("closeAdvanced")
+?.addEventListener(
+"click",
+()=>{
 
-    if(!confirm(
-        "Yakin ingin menghapus link ini?"
-    )) return;
+document
+.getElementById("advancedModal")
+?.classList.remove("active");
 
-
-    try{
-
-        await database.deleteLink(id);
-
-        await loadMyLinks();
-
-
-        alert(
-            "Link berhasil dihapus."
-        );
+}
+);
 
 
-    }catch(err){
+window.addEventListener(
+"click",
+e=>{
 
-        console.error(err);
+const modal=
+document.getElementById("advancedModal");
 
-        alert(
-            err.message
-        );
 
-    }
+if(e.target===modal){
 
-};
+modal.classList.remove("active");
+
+}
+
+});
+
+
+// ======================================================
+// CREATE SMART LINK
+// ======================================================
+
+document
+.getElementById("shortenBtn")
+?.addEventListener(
+"click",
+async()=>{
+
+
+const input=
+document.getElementById("urlInput");
+
+
+const url=
+input.value.trim();
+
+
+const type=
+document.getElementById("linkType").value;
+
+
+if(!url){
+
+alert(
+"Masukkan Destination URL."
+);
+
+return;
+
+}
+
+
+try{
+
+
+const user=
+await database.getUser();
+
+
+if(!user){
+
+window.location.href="index.html";
+
+return;
+
+}
+
+
+let advanced={};
+
+
+try{
+
+advanced=
+JSON.parse(
+localStorage.getItem("advanced_settings")
+)||{};
+
+}catch{
+
+advanced={};
+
+}
+
+
+
+const code=
+Math.random()
+.toString(36)
+.substring(2,8);
+
+
+
+await database.createLink({
+
+user_id:user.id,
+
+title:
+advanced.campaign ||
+"Smart Link",
+
+url:url,
+
+short_url:
+`${location.origin}/s/${code}`,
+
+short_code:code,
+
+alias:
+advanced.alias||null,
+
+campaign:
+advanced.campaign||null,
+
+expired:
+advanced.expired||"never",
+
+device:
+advanced.device||"all",
+
+type:type,
+
+total_views:0,
+
+total_clicks:0,
+
+total_earnings:0,
+
+created_at:
+new Date().toISOString()
+
+});
+
+
+
+input.value="";
+
+
+localStorage.removeItem(
+"advanced_settings"
+);
+
+
+await loadMyLinks();
+
+
+alert(
+"Smart Link berhasil dibuat."
+);
+
+
+}catch(err){
+
+console.error(err);
+
+
+alert(
+"Gagal membuat link."
+);
+
+
+}
+
+
+});
+
+
+// ======================================================
+// ESC CLOSE MODAL
+// ======================================================
+
+window.addEventListener(
+"keydown",
+e=>{
+
+if(e.key==="Escape"){
+
+document
+.getElementById("editModal")
+?.classList.remove("active");
+
+
+document
+.getElementById("advancedModal")
+?.classList.remove("active");
+
+}
+
+});
 
 
 // ======================================================
 // AUTO REFRESH
 // ======================================================
 
-setInterval(()=>{
+setInterval(
+()=>{
 
-    loadMyLinks();
+loadMyLinks();
 
-},30000);
+},
+30000
+);
 
 
 // ======================================================
@@ -714,8 +1101,9 @@ setInterval(()=>{
 
 document.addEventListener(
 "DOMContentLoaded",
-()=>{
+async()=>{
 
-    loadMyLinks();
+await loadMyLinks();
 
-});
+}
+);
