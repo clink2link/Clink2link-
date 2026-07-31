@@ -60,7 +60,7 @@ body{
 .app-container{
     max-width:1200px;
     margin:auto;
-    padding:8px 20px 40px;
+    padding:4px 18px 30px;
 }
 
 /* ==========================
@@ -408,32 +408,37 @@ body{
 ========================== */
 
 .destination-link{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:12px;
-  background:#f8fafc;
-  border:1px solid var(--border);
-  border-radius:12px;
-  margin-bottom:15px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px;
+    background:#f8fafc;
+    border:1px solid var(--border);
+    border-radius:12px;
+    margin-bottom:15px;
+    overflow:hidden;
 }
 
 .destination-link i{
-  color:var(--primary);
+    flex-shrink:0;
+    color:var(--primary);
 }
 
 .destination-url{
-  color:var(--primary-dark);
-  text-decoration:none;
-  font-size:13px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  flex:1;
+    flex:1;
+    min-width:0;
+    display:block;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+
+    color:var(--primary-dark);
+    text-decoration:none;
+    font-size:13px;
 }
 
 .destination-url:hover{
-  text-decoration:underline;
+    text-decoration:underline;
 }
 
 /* ==========================
@@ -482,22 +487,21 @@ body{
 ========================== */
 
 .copy-box{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
 }
 
 .copy-box input{
-  flex:1;
-  height:36px;
-  padding:0 12px;
-  border:1px solid var(--border);
-  border-radius:10px;
-  background:#f8fafc;
-  color:var(--text);
-  font-size:12px;
-  outline:none;
+    flex:1;
+    min-width:0;
+    height:42px;
+    padding:0 14px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:#f8fafc;
+    font-size:13px;
 }
 
 .copy-box input:focus{
@@ -505,23 +509,24 @@ body{
 }
 
 .btn-copy{
-  width:36px;
-  height:36px;
-  flex:none;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border:none;
-  border-radius:10px;
-  background:linear-gradient(135deg,var(--primary),var(--primary-light));
-  color:#fff;
-  cursor:pointer;
-  transition:.25s;
+    width:48px;
+    height:42px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,var(--primary),var(--primary-light));
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+    transition:.25s;
 }
 
 .btn-copy:hover{
-  transform:translateY(-2px);
-  box-shadow:0 6px 15px rgba(37,99,235,.2);
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(37,99,235,.25);
 }
 
 /* ==========================
@@ -834,7 +839,7 @@ html.dark .empty{
   }
 
   .app-container{
-    padding:70px 14px 30px;
+    padding:8px 14px 30px;
   }
 
   .page-title{
