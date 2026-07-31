@@ -108,35 +108,38 @@ body{
 ========================== */
 
 .info-box{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:18px;
-  box-shadow:var(--shadow);
+  background:#fff5f5;
+  border:1px solid #fecaca;
+  border-left:4px solid #ef4444;
+  border-radius:14px;
+  padding:12px 14px;
+  margin-bottom:15px;
+  box-shadow:0 4px 14px rgba(239,68,68,.08);
 }
 
 .info-header{
   display:flex;
   align-items:center;
-  gap:10px;
-  margin-bottom:10px;
+  gap:8px;
+  margin-bottom:7px;
 }
 
 .info-header i{
-  width:42px;
-  height:42px;
+  width:34px;
+  height:34px;
   display:flex;
   align-items:center;
   justify-content:center;
-  background:#eff6ff;
-  border-radius:12px;
-  color:var(--primary);
+  background:#fee2e2;
+  border-radius:10px;
+  color:#ef4444;
+  font-size:14px;
 }
 
 .info-header h3{
-  font-size:16px;
+  font-size:14px;
   font-weight:700;
+  color:#dc2626;
 }
 
 .info-box ul{
@@ -145,14 +148,17 @@ body{
 
 .info-box li{
   display:flex;
-  gap:10px;
-  margin:8px 0;
-  color:var(--text2);
-  font-size:13px;
+  align-items:center;
+  gap:7px;
+  margin:4px 0;
+  color:#64748b;
+  font-size:12px;
+  line-height:1.4;
 }
 
 .info-box li i{
-  color:var(--success);
+  color:#ef4444;
+  font-size:11px;
 }
 
 /* ==========================
@@ -162,54 +168,55 @@ body{
 .quick-stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:15px;
-  margin-bottom:20px;
+  gap:12px;
+  margin-bottom:15px;
 }
 
 .stat-card{
   background:#fff;
   border:1px solid var(--border);
-  border-radius:18px;
-  padding:20px;
+  border-radius:15px;
+  padding:14px;
   text-align:center;
   transition:var(--transition);
   box-shadow:var(--shadow);
 }
 
 .stat-card:hover{
-  transform:translateY(-4px);
+  transform:translateY(-3px);
   box-shadow:var(--shadow-hover);
 }
 
 .stat-card i{
-  width:48px;
-  height:48px;
-  margin:0 auto 12px;
+  width:38px;
+  height:38px;
+  margin:0 auto 8px;
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:14px;
+  border-radius:11px;
   background:#eff6ff;
   color:var(--primary);
-  font-size:20px;
+  font-size:16px;
 }
 
 .stat-card h4{
   color:var(--text2);
-  font-size:12px;
-  margin-bottom:5px;
+  font-size:11px;
+  margin-bottom:3px;
 }
 
 .stat-card h2{
-  font-size:25px;
+  font-size:21px;
   font-weight:800;
   color:var(--text);
 }
 
 .stat-card small{
   display:block;
-  margin-top:6px;
+  margin-top:4px;
   color:var(--success);
+  font-size:11px;
 }
 
 /* ==========================
