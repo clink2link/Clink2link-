@@ -252,6 +252,10 @@ total_views,
 total_clicks,
 total_earnings,
 sold,
+alias,
+campaign,
+expired,
+device,
 created_at
 `)
 
@@ -318,6 +322,18 @@ price:payload.price || 0,
 short_code:payload.short_code,
 
 status:payload.status || "active",
+
+alias:
+payload.alias || null,
+
+campaign:
+payload.campaign || null,
+
+expired:
+payload.expired || "never",
+
+device:
+payload.device || "all",
 
 views:0,
 clicks:0,
