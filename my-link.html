@@ -70,7 +70,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 </div>
 
 <!-- =========================
-     CREATE SMART LINK
+CREATE SMART LINK
 ========================= -->
 
 <div class="create-form">
@@ -78,7 +78,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     <div class="create-header">
 
         <div class="create-icon">
-            <i class="fa-solid fa-link"></i>
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
         </div>
 
         <div>
@@ -88,52 +88,118 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
     </div>
 
-    <label>Destination URL</label>
 
-    <div class="input-box">
-        <i class="fa-solid fa-globe"></i>
-        <input 
-            type="url"
-            id="urlInput"
-            placeholder="https://website-kamu.com">
+    <div class="form-group">
+
+        <label>
+            <i class="fa-solid fa-globe"></i>
+            Destination URL
+        </label>
+
+        <div class="input-box">
+
+            <i class="fa-solid fa-link"></i>
+
+            <input
+                type="url"
+                id="urlInput"
+                placeholder="https://website-kamu.com">
+
+        </div>
+
     </div>
 
-    <label>Link Type</label>
 
-    <div class="input-box">
-        <i class="fa-solid fa-layer-group"></i>
 
-        <select id="linkType">
+    <div class="form-group">
 
-            <option value="ads">
-                Ads Link
-            </option>
+        <label>
+            <i class="fa-solid fa-layer-group"></i>
+            Link Type
+        </label>
 
-            <option value="sell" disabled>
-                Sell Link 🔒
-            </option>
+        <div class="input-box">
 
-        </select>
+            <i class="fa-solid fa-list"></i>
+
+            <select id="linkType">
+
+                <option value="ads">
+                    Ads Link
+                </option>
+
+
+                <option value="sell" disabled>
+                    Sell Link 🔒
+                </option>
+
+            </select>
+
+        </div>
+
     </div>
+
+
 
     <div id="sellInfo" class="create-note">
+
         <i class="fa-solid fa-lock"></i>
+
         Sell Link belum aktif.
+
     </div>
+
+
+
+    <div class="link-preview">
+
+        <div class="preview-title">
+
+            <i class="fa-solid fa-eye"></i>
+
+            Preview Smart Link
+
+        </div>
+
+
+        <div id="previewUrl">
+
+            Link akan dibuat otomatis
+
+        </div>
+
+    </div>
+
+
 
     <div class="btn-group">
 
-        <button id="shortenBtn" class="btn-primary">
+
+        <button 
+            id="shortenBtn"
+            class="btn-primary">
+
             <i class="fa-solid fa-bolt"></i>
+
             Create Smart Link
+
         </button>
 
-        <button id="advanceBtn" class="btn-secondary">
+
+
+        <button 
+            id="advanceBtn"
+            class="btn-secondary">
+
             <i class="fa-solid fa-sliders"></i>
+
             Advanced
+
         </button>
+
 
     </div>
+
 
 </div>
 
