@@ -533,45 +533,27 @@ Optimalkan traffic berkualitas untuk meningkatkan pendapatan Ads Link dan Sell L
 <script src="js/my-link.js"></script>
 
 <script>
-async function loadComponents(){
-try{
-const navbar=await fetch("components/navbar.html").then(res=>res.text());
-const nav=document.getElementById("navbar");
-if(nav){
-nav.innerHTML=navbar;
-}
-if(typeof c2pInit==="function"){
-c2pInit();
-}
-const logoutBtn=document.getElementById("logoutBtn");
-if(logoutBtn){
-logoutBtn.onclick=async()=>{
-try{
-await database.logout();
-}catch(err){
-console.error(err);
-}
-localStorage.clear();
-sessionStorage.clear();
-window.location.replace("index.html");
-};
-}
-}catch(err){
-console.error("NAVBAR ERROR:",err);
-}
-try{
-const footer=await fetch("components/footer.html").then(res=>res.text());
-const foot=document.getElementById("footer");
-if(foot){
-foot.innerHTML=footer;
-}
-if(typeof c2pFooterInit==="function"){
-c2pFooterInit();
-}
-}catch(err){
-console.error("FOOTER ERROR:",err);
-}
-}
+fetch("components/navbar.html")
+.then(res=>{
+if(!res.ok)throw new Error("Navbar tidak ditemukan");
+return res.text();
+})
+.then(html=>{
+document.getElementById("navbar").innerHTML=html;
+if(typeof c2pInit==="function")c2pInit();
+})
+.catch(err=>console.error("NAVBAR ERROR:",err));
+
+fetch("components/footer.html")
+.then(res=>{
+if(!res.ok)throw new Error("Footer tidak ditemukan");
+return res.text();
+})
+.then(html=>{
+document.getElementById("footer").innerHTML=html;
+if(typeof c2pFooterInit==="function")c2pFooterInit();
+})
+.catch(err=>console.error("FOOTER ERROR:",err));
 </script>
 <script src="assets/js/debug.js"></script>
 </body>
