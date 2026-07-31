@@ -392,14 +392,14 @@ function createLinkCard(link){
 
 
         <p>
-        <i class="fa-solid fa-globe"></i>
-        ${destination}
+            <i class="fa-solid fa-globe"></i>
+            ${destination}
         </p>
 
 
         <p>
-        <i class="fa-solid fa-calendar"></i>
-        ${formatDate(link.created_at)}
+            <i class="fa-solid fa-calendar"></i>
+            ${formatDate(link.created_at)}
         </p>
 
 
@@ -410,7 +410,8 @@ function createLinkCard(link){
     <div class="link-actions">
 
 
-        <button onclick="copyLink('${shortUrl}')">
+        <button class="copy-btn"
+        onclick="copyLink('${shortUrl}')">
 
             <i class="fa-solid fa-copy"></i>
             Copy
@@ -419,16 +420,18 @@ function createLinkCard(link){
 
 
 
-        <button onclick="openLink('${shortUrl}')">
+        <button class="edit-btn"
+        onclick="editLink('${link.id}')">
 
-            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            Open
+            <i class="fa-solid fa-pen"></i>
+            Edit
 
         </button>
 
 
 
-        <button onclick="deleteLink('${link.id}')">
+        <button class="delete-btn"
+        onclick="deleteLink('${link.id}')">
 
             <i class="fa-solid fa-trash"></i>
             Hapus
@@ -444,6 +447,33 @@ function createLinkCard(link){
 `;
 
 }
+
+window.editLink = function(id){
+
+    const link = allLinks.find(
+        item => item.id === id
+    );
+
+    if(!link) return;
+
+
+    document
+    .getElementById("editModal")
+    .classList.add("active");
+
+
+    document.getElementById("editId").value =
+    link.id;
+
+
+    document.getElementById("editTitle").value =
+    link.title || "";
+
+
+    document.getElementById("editUrl").value =
+    link.url || "";
+
+};
 
 // ======================================================
 // SEARCH LINK
