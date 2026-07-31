@@ -69,7 +69,7 @@ async function loadUser(){
 
             sellActive = Boolean(
                 currentProfile.sell_link_enabled === true ||
-                Number(currentProfile.withdraw_count || 0) >= 3
+                Number(currentProfile.withdraw_count || 0) >= 1
             );
 
         }else{
