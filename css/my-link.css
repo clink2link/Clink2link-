@@ -407,42 +407,6 @@ body{
 }
 
 
-/* COPY BOX */
-
-.copy-box{
-  display:flex;
-  gap:8px;
-  margin-bottom:10px;
-}
-
-
-.copy-box input{
-  height:36px;
-  font-size:12px;
-}
-
-
-/* BUTTON 3 SEJAJAR */
-
-.link-actions{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-top:10px;
-}
-
-
-.link-actions button{
-  height:36px;
-  border-radius:10px;
-  font-size:12px;
-}
-
-
-.btn-copy{
-  width:100%;
-}
-
 /* ==========================
    DESTINATION
 ========================== */
@@ -942,3 +906,4 @@ html.dark .empty{
   }
 
 }
+
