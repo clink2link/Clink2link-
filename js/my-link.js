@@ -304,143 +304,97 @@ function renderLinkBox(box,list,message){
 function createLinkCard(link){
 
     const type = getLinkType(link);
-
     const shortUrl = getShortUrl(link);
-
     const destination = getDestination(link);
 
-
-    const views = Number(
-        link.total_views ||
-        link.views ||
-        0
-    );
-
-
-    const clicks = Number(
-        link.total_clicks ||
-        link.clicks ||
-        0
-    );
-
-
-    const earning = Number(
-        link.total_earnings ||
-        link.earnings ||
-        0
-    );
-
+    const views = Number(link.total_views || link.views || 0);
+    const clicks = Number(link.total_clicks || link.clicks || 0);
+    const earning = Number(link.total_earnings || link.earnings || 0);
 
     return `
 
 <div class="link-card">
 
+    <div class="link-top">
 
-    <div class="card-header">
+        <div class="link-left">
 
-        <div class="card-title">
-
-            <h3>
+            <h3 class="link-title">
                 ${link.title || "Smart Link"}
             </h3>
 
-            <p>
+            <div class="link-url">
                 <i class="fa-solid fa-link"></i>
-                ${shortUrl}
-            </p>
+                <span>${shortUrl}</span>
+            </div>
 
         </div>
-
 
         <span class="link-type ${type}">
             ${type.toUpperCase()}
         </span>
 
+    </div>
+
+    <div class="link-stats">
+
+        <div class="link-stat">
+            <h5>Views</h5>
+            <span>${views.toLocaleString("id-ID")}</span>
+        </div>
+
+        <div class="link-stat">
+            <h5>Clicks</h5>
+            <span>${clicks.toLocaleString("id-ID")}</span>
+        </div>
+
+        <div class="link-stat">
+            <h5>Earning</h5>
+            <span>Rp${earning.toLocaleString("id-ID")}</span>
+        </div>
+
+        <div class="link-stat">
+            <h5>Type</h5>
+            <span>${type.toUpperCase()}</span>
+        </div>
 
     </div>
 
-
-
-    <div class="card-stats">
-
-
-        <div>
-            <small>Views</small>
-            <strong>${views}</strong>
-        </div>
-
-
-        <div>
-            <small>Clicks</small>
-            <strong>${clicks}</strong>
-        </div>
-
-
-        <div>
-            <small>Earning</small>
-            <strong>
-            Rp${earning.toLocaleString("id-ID")}
-            </strong>
-        </div>
-
-
-    </div>
-
-
-
-    <div class="card-detail">
-
+    <div class="link-info">
 
         <p>
             <i class="fa-solid fa-globe"></i>
             ${destination}
         </p>
 
-
         <p>
             <i class="fa-solid fa-calendar"></i>
             ${formatDate(link.created_at)}
         </p>
 
-
     </div>
-
-
 
     <div class="link-actions">
 
-
         <button class="copy-btn"
-        onclick="copyLink('${shortUrl}')">
-
+            onclick="copyLink('${shortUrl}')">
             <i class="fa-solid fa-copy"></i>
             Copy
-
         </button>
-
-
 
         <button class="edit-btn"
-        onclick="editLink('${link.id}')">
-
+            onclick="editLink('${link.id}')">
             <i class="fa-solid fa-pen"></i>
             Edit
-
         </button>
-
-
 
         <button class="delete-btn"
-        onclick="deleteLink('${link.id}')">
-
+            onclick="deleteLink('${link.id}')">
             <i class="fa-solid fa-trash"></i>
             Hapus
-
         </button>
 
-
     </div>
-
 
 </div>
 
