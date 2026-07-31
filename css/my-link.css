@@ -517,19 +517,19 @@ body{
 .copy-box{
   display:flex;
   align-items:center;
-  gap:10px;
-  margin-bottom:16px;
+  gap:8px;
+  margin-bottom:10px;
 }
 
 .copy-box input{
   flex:1;
-  height:44px;
-  padding:0 14px;
+  height:36px;
+  padding:0 12px;
   border:1px solid var(--border);
-  border-radius:12px;
+  border-radius:10px;
   background:#f8fafc;
   color:var(--text);
-  font-size:13px;
+  font-size:12px;
   outline:none;
 }
 
@@ -538,22 +538,23 @@ body{
 }
 
 .btn-copy{
-  width:44px;
-  height:44px;
+  width:36px;
+  height:36px;
+  flex:none;
   display:flex;
   align-items:center;
   justify-content:center;
   border:none;
-  border-radius:12px;
+  border-radius:10px;
   background:linear-gradient(135deg,var(--primary),var(--primary-light));
   color:#fff;
   cursor:pointer;
-  transition:var(--transition);
+  transition:.25s;
 }
 
 .btn-copy:hover{
   transform:translateY(-2px);
-  box-shadow:0 8px 20px rgba(37,99,235,.25);
+  box-shadow:0 6px 15px rgba(37,99,235,.2);
 }
 
 /* ==========================
@@ -887,11 +888,6 @@ html.dark .empty{
 
   .link-meta{
     gap:8px;
-  }
-
-  .copy-box,
-  .link-actions{
-    flex-direction:column;
   }
 
   .btn-copy{
