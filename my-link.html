@@ -533,381 +533,45 @@ Optimalkan traffic berkualitas untuk meningkatkan pendapatan Ads Link dan Sell L
 <script src="js/my-link.js"></script>
 
 <script>
-
-document.addEventListener("DOMContentLoaded", async () => {
-
-    // ===========================================
-    // LOAD NAVBAR
-    // ===========================================
-
-    try {
-
-        const html = await fetch("components/navbar.html").then(r => r.text());
-
-        document.getElementById("navbar").innerHTML = html;
-
-        if (typeof c2pInit === "function") {
-            c2pInit();
-        }
-
-        const logoutBtn = document.getElementById("logoutBtn");
-
-        if (logoutBtn) {
-
-            logoutBtn.onclick = async () => {
-
-                try {
-                    await database.logout();
-                } catch (e) {
-                    console.error(e);
-                }
-
-                localStorage.clear();
-                sessionStorage.clear();
-
-                window.location.replace("index.html");
-
-            };
-
-        }
-
-    } catch (err) {
-
-        console.error("Navbar:", err);
-
-    }
-
-    // ===========================================
-    // LOAD FOOTER
-    // ===========================================
-
-    try {
-
-        const html = await fetch("components/footer.html").then(r => r.text());
-
-        document.getElementById("footer").innerHTML = html;
-
-        if (typeof c2pFooterInit === "function") {
-            c2pFooterInit();
-        }
-
-    } catch (err) {
-
-        console.error("Footer:", err);
-
-    }
-
-    // ===========================================
-    // ELEMENT
-    // ===========================================
-
-    const advanceBtn = document.getElementById("advanceBtn");
-    const advancedModal = document.getElementById("advancedModal");
-    const closeAdvanced = document.getElementById("closeAdvanced");
-    const saveAdvanced = document.getElementById("saveAdvanced");
-    const shortenBtn = document.getElementById("shortenBtn");
-
-    // ===========================================
-    // ADVANCED MODAL
-    // ===========================================
-
-    advanceBtn?.addEventListener("click", () => {
-        advancedModal?.classList.add("active");
-    });
-
-    closeAdvanced?.addEventListener("click", () => {
-        advancedModal?.classList.remove("active");
-    });
-
-    window.addEventListener("click", (e) => {
-
-        if (e.target === advancedModal) {
-            advancedModal.classList.remove("active");
-        }
-
-    });
-
-    // ===========================================
-    // SAVE ADVANCED
-    // ===========================================
-
-    saveAdvanced?.addEventListener("click", () => {
-
-        const data = {
-
-            alias: document.getElementById("customAlias").value.trim(),
-            expired: document.getElementById("expiredLink").value,
-            campaign: document.getElementById("campaignName").value.trim(),
-            device: document.getElementById("targetDevice").value
-
-        };
-
-        localStorage.setItem(
-            "advanced_settings",
-            JSON.stringify(data)
-        );
-
-        advancedModal.classList.remove("active");
-
-        alert("Advanced Settings berhasil disimpan.");
-
-    });
-
-    // ===========================================
-    // SELL LINK CHECK
-    // ===========================================
-
-    try {
-
-        const sellInfo = document.getElementById("sellInfo");
-        const linkType = document.getElementById("linkType");
-
-        if (sellInfo && linkType) {
-
-            const user = await database.getUser();
-
-            if (user) {
-
-                const withdraws = await database.getWithdraws(user.id);
-
-                if (withdraws && withdraws.length > 0) {
-
-                    linkType.querySelector("option[value='sell']").disabled = false;
-
-                    sellInfo.innerHTML =
-                        '<i class="fa-solid fa-circle-check"></i> Sell Link sudah aktif';
-
-                } else {
-
-                    linkType.value = "ads";
-
-                    linkType.querySelector("option[value='sell']").disabled = true;
-
-                    sellInfo.innerHTML =
-                        '<i class="fa-solid fa-lock"></i> Sell Link aktif setelah minimal 1 Withdraw';
-
-                }
-
-            }
-
-        }
-
-    } catch (err) {
-
-        console.error(err);
-
-    }
-
-    // ===========================================
-    // CREATE LINK
-    // ===========================================
-
-    shortenBtn?.addEventListener("click", async () => {
-
-        const url = document.getElementById("urlInput").value.trim();
-
-        const type = document.getElementById("linkType").value;
-
-        if (!url) {
-
-            alert("Masukkan Destination URL.");
-
-            return;
-
-        }
-
-        try {
-
-            const user = await database.getUser();
-
-            if (!user) {
-
-                window.location.href = "index.html";
-
-                return;
-
-            }
-
-            let advanced = {};
-
-            try {
-
-                advanced = JSON.parse(
-                    localStorage.getItem("advanced_settings")
-                ) || {};
-
-            } catch {
-
-                advanced = {};
-
-            }
-
-            const code = Math.random().toString(36).substring(2,8);
-
-            await database.createLink({
-
-                user_id: user.id,
-                title: advanced.campaign || "Short Link",
-                url,
-                short_url: `${window.location.origin}/${advanced.alias || code}`,
-                alias: advanced.alias || null,
-                campaign: advanced.campaign || null,
-                expired: advanced.expired || "never",
-                device: advanced.device || "all",
-                type,
-                total_views: 0,
-                total_clicks: 0,
-                total_earnings: 0,
-                created_at: new Date().toISOString()
-
-            });
-
-            document.getElementById("urlInput").value = "";
-
-            localStorage.removeItem("advanced_settings");
-
-            if (typeof loadMyLinks === "function") {
-                await loadMyLinks();
-            }
-
-            alert("Link berhasil dibuat.");
-
-        } catch (err) {
-
-            console.error(err);
-
-            alert("Gagal membuat link.");
-
-        }
-
-    });
-
-    // ===========================================
-    // LOAD MY LINKS
-    // ===========================================
-
-    if (typeof loadMyLinks === "function") {
-        await loadMyLinks();
-    }
-
-});
-
-// ===========================================
-// EDIT LINK
-// ===========================================
-
-function editLink(id){
-
-    const list = window.allLinks || [];
-
-    const link = list.find(item => item.id === id);
-
-    if(!link) return;
-
-    document.getElementById("editModal").classList.add("active");
-
-    document.getElementById("editId").value = link.id;
-
-    document.getElementById("editTitle").value = link.title || "";
-
-    document.getElementById("editUrl").value = link.url || "";
-
+async function loadComponents(){
+try{
+const navbar=await fetch("components/navbar.html").then(res=>res.text());
+const nav=document.getElementById("navbar");
+if(nav){
+nav.innerHTML=navbar;
 }
-
-function closeEdit(){
-
-    document.getElementById("editModal").classList.remove("active");
-
+if(typeof c2pInit==="function"){
+c2pInit();
 }
-
-async function saveEdit(){
-
-    try{
-
-        await database.updateLink(
-
-            document.getElementById("editId").value,
-
-            {
-
-                title: document.getElementById("editTitle").value,
-
-                url: document.getElementById("editUrl").value
-
-            }
-
-        );
-
-        closeEdit();
-
-        if(typeof loadMyLinks==="function"){
-            await loadMyLinks();
-        }
-
-        alert("Link berhasil diperbarui.");
-
-    }catch(err){
-
-        console.error(err);
-
-        alert("Gagal mengubah link.");
-
-    }
-
+const logoutBtn=document.getElementById("logoutBtn");
+if(logoutBtn){
+logoutBtn.onclick=async()=>{
+try{
+await database.logout();
+}catch(err){
+console.error(err);
 }
-
-async function deleteLink(id){
-
-    if(!confirm("Yakin ingin menghapus link ini?")) return;
-
-    try{
-
-        await database.deleteLink(id);
-
-        if(typeof loadMyLinks==="function"){
-            await loadMyLinks();
-        }
-
-        alert("Link berhasil dihapus.");
-
-    }catch(err){
-
-        console.error(err);
-
-        alert("Gagal menghapus link.");
-
-    }
-
+localStorage.clear();
+sessionStorage.clear();
+window.location.replace("index.html");
+};
 }
-
-async function copyLink(url){
-
-    try{
-
-        await navigator.clipboard.writeText(url);
-
-        alert("Link berhasil disalin.");
-
-    }catch(err){
-
-        console.error(err);
-
-    }
-
+}catch(err){
+console.error("NAVBAR ERROR:",err);
 }
-
-window.addEventListener("keydown",(e)=>{
-
-    if(e.key==="Escape"){
-
-        document.getElementById("editModal")?.classList.remove("active");
-
-        document.getElementById("advancedModal")?.classList.remove("active");
-
-    }
-
-});
-
+try{
+const footer=await fetch("components/footer.html").then(res=>res.text());
+const foot=document.getElementById("footer");
+if(foot){
+foot.innerHTML=footer;
+}
+if(typeof c2pFooterInit==="function"){
+c2pFooterInit();
+}
+}catch(err){
+console.error("FOOTER ERROR:",err);
+}
+}
 </script>
 <script src="assets/js/debug.js"></script>
 </body>
