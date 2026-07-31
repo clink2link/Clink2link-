@@ -176,16 +176,19 @@ link.type||
 
 function getShortUrl(link){
 
-return(
-link.short_url||
-(
-link.short_code
-?
-location.origin+"/s/"+link.short_code
-:
-"-"
-)
-);
+if(link.short_url){
+return link.short_url;
+}
+
+
+if(link.short_code){
+
+return `${location.origin}/s/${link.short_code}`;
+
+}
+
+
+return "-";
 
 }
 
@@ -232,7 +235,12 @@ const adsViews=adsLinks.reduce(
 );
 
 const sellRevenue=sellLinks.reduce(
-(a,b)=>a+Number(b.total_earnings||b.earnings||0),0
+(a,b)=>a+Number(
+b.seller_receive ||
+b.total_earnings ||
+b.earnings ||
+0
+),0
 );
 
 
@@ -442,6 +450,39 @@ ${type.toUpperCase()} LINK
 <span class="badge green">
 Rp ${earn.toLocaleString("id-ID")}
 </span>
+
+</div>
+
+
+<div class="advanced-info">
+
+
+${link.alias ? `
+<span>
+<i class="fa-solid fa-tag"></i>
+${link.alias}
+</span>
+`:""}
+
+
+
+${link.campaign ? `
+<span>
+<i class="fa-solid fa-bullseye"></i>
+${link.campaign}
+</span>
+`:""}
+
+
+
+${link.device ? `
+<span>
+<i class="fa-solid fa-mobile-screen"></i>
+${link.device}
+</span>
+`:""}
+
+
 
 </div>
 
@@ -947,25 +988,33 @@ document
 "click",
 async()=>{
 
+
 const input=document.getElementById("urlInput");
 
 const url=input.value.trim();
+
 
 const type=document.getElementById("linkType").value;
 
 
 if(!url){
 
-alert("Masukkan Destination URL.");
+alert(
+"Masukkan Destination URL."
+);
 
 return;
 
 }
 
 
+
 try{
 
-const user=await database.getUser();
+
+const user=
+await database.getUser();
+
 
 
 if(!user){
@@ -977,7 +1026,9 @@ return;
 }
 
 
+
 let advanced={};
+
 
 try{
 
@@ -986,6 +1037,7 @@ JSON.parse(
 localStorage.getItem("advanced_settings")
 )||{};
 
+
 }catch{
 
 advanced={};
@@ -993,37 +1045,71 @@ advanced={};
 }
 
 
-const code=Math.random()
+
+
+const code=
+Math.random()
 .toString(36)
 .substring(2,8);
+
+
 
 
 await database.createLink({
 
 user_id:user.id,
 
+
 title:
 advanced.campaign ||
 "Smart Link",
 
+
 destination:url,
+
 
 destination_url:url,
 
+
 short_code:code,
+
 
 type:type,
 
+
 link_type:type,
+
 
 price:0,
 
-status:"active"
+
+status:"active",
+
+
+
+// ADVANCED SETTINGS
+
+alias:
+advanced.alias || null,
+
+
+campaign:
+advanced.campaign || null,
+
+
+expired:
+advanced.expired || "never",
+
+
+device:
+advanced.device || "all"
 
 });
 
 
+
 input.value="";
+
 
 
 localStorage.removeItem(
@@ -1031,7 +1117,9 @@ localStorage.removeItem(
 );
 
 
+
 await loadMyLinks();
+
 
 
 alert(
@@ -1039,7 +1127,9 @@ alert(
 );
 
 
+
 }catch(err){
+
 
 console.error(
 "CREATE LINK ERROR:",
@@ -1047,11 +1137,16 @@ err
 );
 
 
+
 alert(
 "Gagal membuat link."
 );
 
+
+
 }
+
+
 
 });
 
