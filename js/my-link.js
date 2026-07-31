@@ -32,40 +32,55 @@ try{
 const user=await database.getUser();
 
 if(!user){
+
 window.location.href="index.html";
+
 return;
+
 }
 
-const {data,error}=await database.supabase
-.from("links")
-.select("*")
-.eq("user_id",user.id)
-.order("created_at",{ascending:false});
 
-if(error)throw error;
+const data=
+await database.getLinks(user.id);
+
 
 allLinks=data||[];
 
 window.allLinks=allLinks;
 
+
 await checkSellAccess(user);
+
 
 updateStats();
 
+
 applyCurrentFilter();
+
 
 }catch(err){
 
-console.error("LOAD LINK ERROR:",err);
+console.error(
+"LOAD LINK ERROR:",
+err
+);
+
 
 if(smartList){
 
 smartList.innerHTML=`
+
 <div class="empty">
+
 <i class="fa-solid fa-circle-xmark"></i>
+
 <h3>Gagal Memuat Link</h3>
+
 <p>${err.message}</p>
-</div>`;
+
+</div>
+
+`;
 
 }
 
@@ -178,9 +193,8 @@ location.origin+"/s/"+link.short_code
 function getDestination(link){
 
 return(
-link.destination_url||
-link.destination||
-link.url||
+link.destination_url ||
+link.destination ||
 "-"
 );
 
@@ -360,11 +374,23 @@ const short=getShortUrl(link);
 
 const destination=getDestination(link);
 
-const views=Number(link.total_views||0);
+const views=Number(
+link.total_views ||
+link.views ||
+0
+);
 
-const clicks=Number(link.total_clicks||0);
+const clicks=Number(
+link.total_clicks ||
+link.clicks ||
+0
+);
 
-const earn=Number(link.total_earnings||0);
+const earn=Number(
+link.total_earnings ||
+link.earnings ||
+0
+);
 
 
 return`
@@ -504,7 +530,10 @@ id,
 title:
 document.getElementById("editTitle").value.trim(),
 
-url:
+destination:
+document.getElementById("editUrl").value.trim(),
+
+destination_url:
 document.getElementById("editUrl").value.trim()
 }
 );
@@ -918,24 +947,16 @@ document
 "click",
 async()=>{
 
+const input=document.getElementById("urlInput");
 
-const input=
-document.getElementById("urlInput");
+const url=input.value.trim();
 
-
-const url=
-input.value.trim();
-
-
-const type=
-document.getElementById("linkType").value;
+const type=document.getElementById("linkType").value;
 
 
 if(!url){
 
-alert(
-"Masukkan Destination URL."
-);
+alert("Masukkan Destination URL.");
 
 return;
 
@@ -944,9 +965,7 @@ return;
 
 try{
 
-
-const user=
-await database.getUser();
+const user=await database.getUser();
 
 
 if(!user){
@@ -959,7 +978,6 @@ return;
 
 
 let advanced={};
-
 
 try{
 
@@ -975,12 +993,9 @@ advanced={};
 }
 
 
-
-const code=
-Math.random()
+const code=Math.random()
 .toString(36)
 .substring(2,8);
-
 
 
 await database.createLink({
@@ -991,38 +1006,21 @@ title:
 advanced.campaign ||
 "Smart Link",
 
-url:url,
+destination:url,
 
-short_url:
-`${location.origin}/s/${code}`,
+destination_url:url,
 
 short_code:code,
 
-alias:
-advanced.alias||null,
-
-campaign:
-advanced.campaign||null,
-
-expired:
-advanced.expired||"never",
-
-device:
-advanced.device||"all",
-
 type:type,
 
-total_views:0,
+link_type:type,
 
-total_clicks:0,
+price:0,
 
-total_earnings:0,
-
-created_at:
-new Date().toISOString()
+status:"active"
 
 });
-
 
 
 input.value="";
@@ -1043,16 +1041,17 @@ alert(
 
 }catch(err){
 
-console.error(err);
+console.error(
+"CREATE LINK ERROR:",
+err
+);
 
 
 alert(
 "Gagal membuat link."
 );
 
-
 }
-
 
 });
 
