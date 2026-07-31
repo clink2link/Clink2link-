@@ -304,101 +304,149 @@ function renderLinkBox(box,list,message){
 function createLinkCard(link){
 
     const type = getLinkType(link);
+
     const shortUrl = getShortUrl(link);
+
     const destination = getDestination(link);
 
-    const views = Number(link.total_views || link.views || 0);
-    const clicks = Number(link.total_clicks || link.clicks || 0);
-    const earning = Number(link.total_earnings || link.earnings || 0);
+    const views = Number(
+        link.total_views ||
+        link.views ||
+        0
+    );
+
+    const clicks = Number(
+        link.total_clicks ||
+        link.clicks ||
+        0
+    );
+
+    const earning = Number(
+        link.total_earnings ||
+        link.earnings ||
+        0
+    );
+
+    const status =
+        (link.status || "active") === "active";
 
     return `
 
-<div class="link-card">
+    <div class="link-card">
 
-    <div class="link-top">
+        <div class="link-top">
 
-        <div class="link-left">
-
-            <h3 class="link-title">
+            <h3>
                 ${link.title || "Smart Link"}
             </h3>
 
-            <div class="link-url">
-                <i class="fa-solid fa-link"></i>
-                <span>${shortUrl}</span>
-            </div>
+        </div>
+
+        <div class="link-meta">
+
+            <span>
+                <i class="fa-regular fa-calendar"></i>
+                ${formatDate(link.created_at)}
+            </span>
+
+            <span>
+                <i class="fa-solid fa-eye"></i>
+                ${views.toLocaleString("id-ID")} View
+            </span>
+
+            <span>
+                <i class="fa-solid fa-computer-mouse"></i>
+                ${clicks.toLocaleString("id-ID")} Click
+            </span>
 
         </div>
 
-        <span class="link-type ${type}">
-            ${type.toUpperCase()}
-        </span>
+        <div class="destination-link">
 
-    </div>
-
-    <div class="link-stats">
-
-        <div class="link-stat">
-            <h5>Views</h5>
-            <span>${views.toLocaleString("id-ID")}</span>
-        </div>
-
-        <div class="link-stat">
-            <h5>Clicks</h5>
-            <span>${clicks.toLocaleString("id-ID")}</span>
-        </div>
-
-        <div class="link-stat">
-            <h5>Earning</h5>
-            <span>Rp${earning.toLocaleString("id-ID")}</span>
-        </div>
-
-        <div class="link-stat">
-            <h5>Type</h5>
-            <span>${type.toUpperCase()}</span>
-        </div>
-
-    </div>
-
-    <div class="link-info">
-
-        <p>
             <i class="fa-solid fa-globe"></i>
-            ${destination}
-        </p>
 
-        <p>
-            <i class="fa-solid fa-calendar"></i>
-            ${formatDate(link.created_at)}
-        </p>
+            <a
+                href="${destination}"
+                target="_blank"
+                class="destination-url">
+
+                ${destination}
+
+            </a>
+
+        </div>
+
+        <div class="badge-group">
+
+            <span class="badge ${type==="ads" ? "blue" : "orange"}">
+
+                <i class="fa-solid fa-link"></i>
+
+                ${type.toUpperCase()} LINK
+
+            </span>
+
+            <span class="badge ${status ? "green" : "red"}">
+
+                <i class="fa-solid fa-circle"></i>
+
+                ${status ? "Aktif" : "Nonaktif"}
+
+            </span>
+
+            <span class="badge green">
+
+                <i class="fa-solid fa-wallet"></i>
+
+                Rp ${earning.toLocaleString("id-ID")}
+
+            </span>
+
+        </div>
+
+        <div class="copy-box">
+
+            <input
+                readonly
+                value="${shortUrl}">
+
+            <button
+                class="btn-copy"
+                onclick="copyLink('${shortUrl}')">
+
+                <i class="fa-regular fa-copy"></i>
+
+            </button>
+
+        </div>
+
+        <div class="link-actions">
+
+            <button
+                class="btn-edit"
+                onclick="editLink('${link.id}')">
+
+                <i class="fa-solid fa-pen"></i>
+
+                Edit
+
+            </button>
+
+            <button
+                class="btn-delete"
+                onclick="deleteLink('${link.id}')">
+
+                <i class="fa-solid fa-trash"></i>
+
+                Hapus
+
+            </button>
+
+        </div>
 
     </div>
 
-    <div class="link-actions">
-
-        <button class="copy-btn"
-            onclick="copyLink('${shortUrl}')">
-            <i class="fa-solid fa-copy"></i>
-            Copy
-        </button>
-
-        <button class="edit-btn"
-            onclick="editLink('${link.id}')">
-            <i class="fa-solid fa-pen"></i>
-            Edit
-        </button>
-
-        <button class="delete-btn"
-            onclick="deleteLink('${link.id}')">
-            <i class="fa-solid fa-trash"></i>
-            Hapus
-        </button>
-
-    </div>
-
-</div>
-
-`;
+    `;
 
 }
 
