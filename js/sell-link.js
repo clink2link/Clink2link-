@@ -557,7 +557,7 @@ if(createBtn){
         if(
             !title ||
             !destination ||
-            price < 10000
+            price < 1000
         ){
 
             alert(
