@@ -3,96 +3,77 @@ CLICK2PAY HISTORY SALDO
 REAL DATABASE SUPABASE FIX
 ================================ */
 
-document.addEventListener("DOMContentLoaded", async()=>{
+document.addEventListener("DOMContentLoaded",()=>{
+
+let historyData=[];
+let currentFilter="all";
+
+const $=id=>document.getElementById(id);
+
+const container=$("historyList");
 
 
-let historyData = [];
-let currentFilter = "all";
-
-const $ = id => document.getElementById(id);
-
-
-/* ================= FORMAT ================= */
+/* FORMAT */
 
 function formatRupiah(num){
-
-    return new Intl.NumberFormat("id-ID",{
-        style:"currency",
-        currency:"IDR",
-        maximumFractionDigits:0
-    }).format(Number(num)||0);
-
+return new Intl.NumberFormat("id-ID",{
+style:"currency",
+currency:"IDR",
+maximumFractionDigits:0
+}).format(Number(num)||0);
 }
 
 
 function formatDate(date){
-
-    return new Date(date).toLocaleString("id-ID",{
-        day:"2-digit",
-        month:"short",
-        year:"numeric",
-        hour:"2-digit",
-        minute:"2-digit"
-    });
-
+return new Date(date).toLocaleString("id-ID",{
+day:"2-digit",
+month:"short",
+year:"numeric",
+hour:"2-digit",
+minute:"2-digit"
+});
 }
 
 
-
-/* ================= ELEMENT ================= */
-
-const container = $("historyList");
-
-
-
-/* ================= STATUS ================= */
+/* STATUS */
 
 function statusText(status){
 
-switch(status){
+if(status==="success") return "Berhasil";
+if(status==="pending") return "Diproses";
+if(status==="failed") return "Gagal";
 
-case "success":
-return "Berhasil";
+return "Unknown";
 
-case "pending":
-return "Diproses";
+}
 
-case "failed":
-return "Gagal";
 
-default:
-return status || "Unknown";
+/* LOADING */
 
+function hideLoading(){
+
+const loading=$("historyLoading");
+
+if(loading){
+loading.style.display="none";
 }
 
 }
 
 
-
-/* ================= EMPTY ================= */
+/* EMPTY */
 
 function emptyState(){
 
 container.innerHTML=`
 
-<div style="
-text-align:center;
-padding:40px 20px;
-">
+<div class="empty-box">
 
-<i class="fa-regular fa-folder-open"
-style="
-font-size:40px;
-color:#94a3b8;
-"></i>
+<i class="fa-solid fa-wallet"></i>
 
-<h3>
-Belum ada transaksi
-</h3>
+<h3>Belum ada transaksi</h3>
 
-<p>
-Transaksi saldo akan muncul otomatis
-</p>
+<p>Riwayat saldo akan muncul di sini.</p>
 
 </div>
 
@@ -101,8 +82,7 @@ Transaksi saldo akan muncul otomatis
 }
 
 
-
-/* ================= RENDER ================= */
+/* RENDER */
 
 function renderHistory(data){
 
@@ -117,35 +97,29 @@ return;
 }
 
 
-
 data.forEach(item=>{
 
 
-const income =
-item.type === "income";
+const income=item.type==="income";
 
 
-container.innerHTML += `
+container.innerHTML+=`
 
 <div class="link-card">
 
-
 <div class="link-top">
-
 
 <h3>
 
 <i class="fa-solid ${
 income
-? "fa-arrow-down"
-: "fa-arrow-up"
-}">
-</i>
+?"fa-arrow-trend-up"
+:"fa-arrow-trend-down"
+}"></i>
 
 ${item.title || item.description || "Transaksi Saldo"}
 
 </h3>
-
 
 
 <span class="badge ${item.status || "success"}">
@@ -158,20 +132,16 @@ ${statusText(item.status)}
 </div>
 
 
-
 <div class="link-mid">
-
 
 <span>
 ${formatDate(item.created_at)}
 </span>
 
 
-<strong style="
-color:${income ? "#16a34a":"#dc2626"}
-">
+<strong style="color:${income?"#16a34a":"#dc2626"}">
 
-${income ? "+" : "-"}
+${income?"+":"-"}
 ${formatRupiah(item.amount)}
 
 </strong>
@@ -184,82 +154,68 @@ ${formatRupiah(item.amount)}
 
 `;
 
-
 });
 
 
 }
 
 
-
-/* ================= STATS ================= */
+/* STAT */
 
 function updateStats(data){
 
-let totalIn = 0;
-let totalOut = 0;
-let pending = 0;
+let totalIn=0;
+let totalOut=0;
+let pending=0;
 
 
 data.forEach(item=>{
 
-
-const amount =
-Number(item.amount)||0;
+const amount=Number(item.amount)||0;
 
 
-if(item.type==="income"){
-totalIn += amount;
-}
+if(item.type==="income")
+totalIn+=amount;
 
 
-if(item.type==="expense"){
-totalOut += amount;
-}
+if(item.type==="expense")
+totalOut+=amount;
 
 
-if(item.status==="pending"){
+if(item.status==="pending")
 pending++;
-}
-
 
 });
 
 
-
-$("totalIn") &&
-($("totalIn").innerText=formatRupiah(totalIn));
-
-
-$("totalOut") &&
-($("totalOut").innerText=formatRupiah(totalOut));
+if($("totalIn"))
+$("totalIn").innerText=formatRupiah(totalIn);
 
 
-$("totalTx") &&
-($("totalTx").innerText=data.length);
+if($("totalOut"))
+$("totalOut").innerText=formatRupiah(totalOut);
 
 
-$("totalPending") &&
-($("totalPending").innerText=pending);
+if($("totalTx"))
+$("totalTx").innerText=data.length;
 
+
+if($("totalPending"))
+$("totalPending").innerText=pending;
 
 }
 
 
-
-/* ================= LOAD DATABASE ================= */
+/* LOAD DATABASE */
 
 async function loadHistory(){
-
 
 try{
 
 
 if(!window.database){
 
-console.log(
-"DATABASE BELUM READY"
-);
+console.log("DATABASE BELUM READY");
 
 setTimeout(loadHistory,500);
 
@@ -268,22 +224,20 @@ return;
 }
 
 
-
-const user =
-await window.database.getCurrentProfile();
-
+const userId=
+localStorage.getItem("user_id");
 
 
 console.log(
-"CURRENT USER:",
-user
+"USER ID:",
+userId
 );
 
 
-
-if(!user?.id){
+if(!userId){
 
 location.href="login.html";
+
 return;
 
 }
@@ -301,7 +255,7 @@ error
 
 .eq(
 "user_id",
-user.id
+userId
 )
 
 .order(
@@ -313,83 +267,94 @@ ascending:false
 
 
 
+if(error)
+throw error;
+
+
+
 console.log(
-"TRANSACTION DATA:",
+"TRANSACTIONS:",
 data
 );
 
 
 
-if(error){
-
-console.log(
-"SUPABASE ERROR:",
-error
-);
-
-throw error;
-
-}
-
-
-
-historyData=data || [];
+historyData=data||[];
 
 
 renderHistory(historyData);
 
 updateStats(historyData);
 
+hideLoading();
 
 
 }catch(err){
 
-
-console.log(
+console.error(
 "HISTORY ERROR:",
 err
 );
 
 
-container.innerHTML=
-`
-<p>
-Gagal memuat riwayat
-</p>
+hideLoading();
+
+
+container.innerHTML=`
+
+<div class="empty-box">
+
+<h3>Gagal memuat riwayat</h3>
+
+<p>${err.message}</p>
+
+</div>
+
 `;
 
-
 }
 
 
 }
 
 
-
-/* ================= FILTER ================= */
-
+/* FILTER */
 
 function applyFilter(){
 
-
-const keyword =
-($("searchInput")?.value || "")
+const keyword=
+($("searchInput")?.value||"")
 .toLowerCase();
 
 
-
-const filtered =
+const filtered=
 historyData.filter(item=>{
 
 
-const filterOK =
-currentFilter==="all"
-||
+let filterOK;
+
+
+if(currentFilter==="all"){
+
+filterOK=true;
+
+}
+else if(currentFilter==="pending"){
+
+filterOK=
+item.status==="pending";
+
+}
+else{
+
+filterOK=
 item.type===currentFilter;
 
+}
 
 
-const text =
+
+const text=
 (
 item.title ||
 item.description ||
@@ -410,13 +375,10 @@ renderHistory(filtered);
 
 updateStats(filtered);
 
-
 }
 
 
-
-/* ================= EVENT ================= */
-
+/* SEARCH */
 
 $("searchInput")
 ?.addEventListener(
@@ -425,6 +387,7 @@ applyFilter
 );
 
 
+/* FILTER BUTTON */
 
 document
 .querySelectorAll(".link-filter button")
@@ -443,11 +406,10 @@ b.classList.remove("active")
 );
 
 
-
 btn.classList.add("active");
 
 
-currentFilter =
+currentFilter=
 btn.dataset.filter;
 
 
@@ -456,13 +418,25 @@ applyFilter();
 
 });
 
+
 });
 
 
+/* REFRESH */
 
-/* ================= START ================= */
+$("refreshHistory")
+?.addEventListener(
+"click",
+()=>{
 
-await loadHistory();
+loadHistory();
+
+});
+
+
+/* START */
+
+loadHistory();
 
 
 });
