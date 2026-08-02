@@ -40,11 +40,19 @@ return;
 
 /* ================= REF CODE ================= */
 
+let refCode = user.ref_code;
 
-const refCode =
-user.ref_code ||
-("REF"+user.id);
 
+if(!refCode){
+
+refCode =
+"C2P"+
+Math.random()
+.toString(36)
+.substring(2,8)
+.toUpperCase();
+
+}
 
 
 const link =
