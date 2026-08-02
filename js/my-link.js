@@ -125,9 +125,11 @@ if(option)
 option.disabled=false;
 
 
-sellInfo.innerHTML=`
-<i class="fa-solid fa-circle-check"></i>
-Sell Link sudah aktif
+sellInfo.innerHTML = `
+<span class="status-success">
+    <i class="fa-solid fa-circle-check"></i>
+    Sell Link sudah aktif
+</span>
 `;
 
 }else{
@@ -139,9 +141,11 @@ option.disabled=true;
 linkType.value="ads";
 
 
-sellInfo.innerHTML=`
-<i class="fa-solid fa-lock"></i>
-Sell Link belum aktif
+sellInfo.innerHTML = `
+<span class="status-danger">
+    <i class="fa-solid fa-lock"></i>
+    Sell Link belum aktif
+</span>
 `;
 
 }
