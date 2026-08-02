@@ -1,670 +1,694 @@
+// ========================================
+// PAYMENT JS
+// PART 1 - INIT & SERVICE STATUS
+// ========================================
+
 console.log("PAYMENT JS AKTIF");
 
 "use strict";
 
 let db = null;
 let user = null;
-
 let withdrawOpen = false;
 let instantSelected = 0;
 
 const $ = id => document.getElementById(id);
 
-// =========================
-// GLOBAL ERROR DEBUG (WAJIB)
-// =========================
-window.onerror = function(message, source, lineno, colno) {
+// ========================================
+// GLOBAL ERROR DEBUG
+// ========================================
+window.onerror = (message, source, lineno, colno) => {
   console.log("[GLOBAL ERROR]", { message, source, lineno, colno });
 };
 
-// =========================
-// WAIT DATABASE (PINDAH KE LUAR)
-// =========================
+// ========================================
+// WAIT DATABASE READY
+// ========================================
 async function waitDatabase() {
-  let retry = 0;
+  for (let retry = 0; retry < 20; retry++) {
+    if (window.database) return true;
 
-  while (!window.database && retry < 20) {
     console.log("MENUNGGU DATABASE...");
     await new Promise(r => setTimeout(r, 100));
-    retry++;
   }
 
-  if (!window.database) {
-    alert("Database gagal load");
-    return false;
-  }
-
-  return true;
+  alert("Database gagal load");
+  return false;
 }
 
-// =========================
-// INIT
-// =========================
+// ========================================
+// INIT APP
+// ========================================
 document.addEventListener("DOMContentLoaded", async () => {
-
   console.log("PAYMENT INIT START");
 
   const dbReady = await waitDatabase();
   if (!dbReady) return;
 
-  // ambil supabase dari database.js
   db = window.database.supabase;
-
-  // ambil user
   user = await window.database.getCurrentProfile();
 
   console.log("USER:", user);
 
-  // validasi user (cukup sekali)
-  if (!user || !user.id) {
+  if (!user?.id) {
     alert("User tidak valid / belum login");
     location.replace("login.html");
     return;
   }
 
-  // jalankan semua
   checkWithdrawService();
   await loadBalance();
   await checkPayment();
   await loadWithdrawStats();
   bindEvent();
-
 });
 
-// =========================
-// CEK JAM WITHDRAW
-// =========================
-
-function checkWithdrawService(){
-
+// ========================================
+// CHECK WITHDRAW SERVICE
+// ========================================
+function checkWithdrawService() {
   const box = $("withdrawService");
   const btn = $("manualScrollBtn");
 
-  // 🔥 SAFE CHECK (biar gak null error)
   if (!box) {
     console.log("[ERROR] withdrawService element tidak ditemukan");
     return;
   }
 
   const now = new Date();
-  const day = now.getDay();   // 0 = Minggu
+  const day = now.getDay();
   const hour = now.getHours();
 
-  const isOpen =
-    day >= 1 &&
-    day <= 5 &&
-    hour >= 8 &&
-    hour < 18;
+  withdrawOpen = day >= 1 && day <= 5 && hour >= 8 && hour < 18;
 
-  withdrawOpen = isOpen;
-
-  if (isOpen){
-
+  if (withdrawOpen) {
     box.innerHTML = `
       <i class="fa-solid fa-circle-check"></i>
-      Withdraw buka
-      <br>
+      Withdraw buka<br>
       Senin - Jumat<br>
       08:00 - 18:00 WIB
     `;
 
     box.style.color = "#16a34a";
 
-    if (btn){
+    if (btn) {
       btn.disabled = false;
       btn.style.opacity = "1";
     }
-
   } else {
-
     box.innerHTML = `
       <i class="fa-solid fa-circle-xmark"></i>
-      Withdraw sedang tutup
-      <br>
+      Withdraw sedang tutup<br>
       Buka Senin - Jumat<br>
       08:00 - 18:00 WIB
     `;
 
     box.style.color = "#dc2626";
 
-    if (btn){
+    if (btn) {
       btn.disabled = true;
       btn.style.opacity = "0.5";
     }
-
   }
 
-  // 🔥 DEBUG TAMBAHAN
-  console.log("[WITHDRAW STATUS]", {
-    day,
-    hour,
-    withdrawOpen
-  });
-
+  console.log("[WITHDRAW STATUS]", { day, hour, withdrawOpen });
 }
 
+// ========================================
+// FORMAT RUPIAH
+// ========================================
+const rupiahFormatter = new Intl.NumberFormat("id-ID", {
+  style: "currency",
+  currency: "IDR",
+  maximumFractionDigits: 0
+});
 
-// =========================
-// LOAD SALDO
-// =========================
+function rupiah(value) {
+  const number = Number(value) || 0;
 
-
-async function loadBalance(){
-
-  // 🔥 SAFE CHECK USER
-  if (!user) {
-    console.log("[ERROR] user belum ada");
-    return;
+  try {
+    return rupiahFormatter.format(number);
+  } catch (err) {
+    console.log("[RUPIAH ERROR]", err);
+    return "Rp" + number.toLocaleString("id-ID");
   }
+}
 
-  // ambil element
+// ========================================
+// HELPER UPDATE BALANCE UI
+// ========================================
+function updateBalanceUI(balance, ads, sell) {
   const balanceEl = $("balance");
   const adsEl = $("adsBalance");
   const sellEl = $("sellBalance");
 
-  // 🔥 DEBUG ELEMENT
-  console.log("[LOAD BALANCE ELEMENT]", {
-    balanceEl,
-    adsEl,
-    sellEl
-  });
+  if (balanceEl) balanceEl.innerText = rupiah(balance);
+  if (adsEl) adsEl.innerText = rupiah(ads);
+  if (sellEl) sellEl.innerText = rupiah(sell);
+}
 
-  // 🔥 SET VALUE (PAKAI DEFAULT 0)
-  if (balanceEl){
-    balanceEl.innerText = rupiah(user.balance || 0);
+// ========================================
+// PAYMENT JS
+// PART 2 - LOAD DATA
+// ========================================
+
+// ========================================
+// LOAD BALANCE
+// ========================================
+async function loadBalance() {
+
+  if (!user?.id) {
+    console.log("[ERROR] User tidak valid");
+    return;
   }
 
-  if (adsEl){
-    adsEl.innerText = rupiah(user.ads_earning_total || 0);
-  }
+  try {
 
-  if (sellEl){
-    sellEl.innerText = rupiah(user.sell_earning_total || 0);
+    const profile = await window.database.getCurrentProfile();
+
+    if (!profile) {
+      console.log("[ERROR] Profile gagal diambil");
+      return;
+    }
+
+    user = profile;
+
+    updateBalanceUI(
+      profile.balance || 0,
+      profile.ads_earning_total || 0,
+      profile.sell_earning_total || 0
+    );
+
+  } catch (err) {
+    console.log("[LOAD BALANCE ERROR]", err);
   }
 
 }
 
-// =========================
-// CEK REKENING
-// =========================
-
-async function checkPayment(){
+// ========================================
+// CHECK PAYMENT METHOD
+// ========================================
+async function checkPayment() {
 
   const warning = $("paymentWarning");
 
-  // 🔥 SAFE CHECK
-  if (!warning){
-    console.log("[ERROR] paymentWarning element tidak ditemukan");
-    return;
-  }
+  if (!warning) return;
 
-  if (!user || !user.id){
-    console.log("[ERROR] user tidak valid");
-    return;
-  }
+  try {
 
-  console.log("[CHECK PAYMENT] user_id:", user.id);
+    const { data, error } = await db
+      .from("payment_methods")
+      .select("id")
+      .eq("user_id", user.id)
+      .maybeSingle();
 
-  const { data, error } = await db
-    .from("payment_methods")
-    .select("id")
-    .eq("user_id", user.id)
-    .maybeSingle();
+    if (error) throw error;
 
-  if (error){
-    console.log("[CHECK PAYMENT ERROR]", error);
-    return;
-  }
+    warning.style.display = data ? "none" : "flex";
 
-  console.log("[CHECK PAYMENT RESULT]", data);
+  } catch (err) {
 
-  if (!data){
-    warning.style.display = "flex";
-  } else {
-    warning.style.display = "none";
+    console.log("[CHECK PAYMENT ERROR]", err);
+
   }
 
 }
 
-// =========================
-// STATISTIK WD
-// =========================
+// ========================================
+// LOAD WITHDRAW STATS
+// ========================================
+async function loadWithdrawStats() {
 
+  try {
 
-async function loadWithdrawStats(){
+    const { data, error } = await db
+      .from("withdraws")
+      .select("amount,status")
+      .eq("user_id", user.id);
 
-  // 🔥 VALIDASI USER
-  if (!user || !user.id){
-    console.log("[ERROR] user tidak valid");
-    return;
-  }
+    if (error) throw error;
 
-  console.log("[LOAD WD STATS] user_id:", user.id);
+    let success = 0;
+    let pending = 0;
+    let failed = 0;
 
-  const { data, error } = await db
-    .from("withdraws")
-    .select("amount, status")
-    .eq("user_id", user.id);
+    (data || []).forEach(item => {
 
-  if (error){
-    console.log("[WD STATS ERROR]", error);
-    return;
-  }
+      const amount = Number(item.amount) || 0;
 
-  console.log("[WD DATA]", data);
+      switch (item.status) {
 
-  let success = 0;
-  let pending = 0;
-  let failed = 0;
+        case "success":
+          success += amount;
+          break;
 
-  (data || []).forEach(w => {
+        case "pending":
+          pending += amount;
+          break;
 
-    const amount = Number(w.amount) || 0;
+        case "failed":
+          failed += amount;
+          break;
 
-    if (w.status === "success"){
-      success += amount;
-    }
+      }
 
-    if (w.status === "pending"){
-      pending += amount;
-    }
+    });
 
-    if (w.status === "failed"){
-      failed += amount;
-    }
+    if ($("successWD"))
+      $("successWD").innerText = rupiah(success);
 
-  });
+    if ($("pendingWD"))
+      $("pendingWD").innerText = rupiah(pending);
 
-  // 🔥 AMBIL ELEMENT (SAFE)
-  const successEl = $("successWD");
-  const pendingEl = $("pendingWD");
-  const failedEl = $("failedWD");
+    if ($("failedWD"))
+      $("failedWD").innerText = rupiah(failed);
 
-  // 🔥 SET NILAI (ANTI NULL ERROR)
-  if (successEl){
-    successEl.innerText = rupiah(success);
-  }
+  } catch (err) {
 
-  if (pendingEl){
-    pendingEl.innerText = rupiah(pending);
-  }
+    console.log("[LOAD WD ERROR]", err);
 
-  if (failedEl){
-    failedEl.innerText = rupiah(failed);
   }
 
 }
+// ========================================
+// PAYMENT JS
+// PART 3 - EVENTS
+// ========================================
 
+function bindEvent() {
 
-// =========================
-// EVENT
-// =========================
+  console.log("[BIND EVENT]");
 
-function bindEvent(){
-
-  console.log("[BIND EVENT] start");
-
-  const scrollBtn = $("manualScrollBtn");
-
-  if (scrollBtn){
-
-    scrollBtn.onclick = () => {
-
-      console.log("[CLICK] manualScrollBtn");
-
-      if (!withdrawOpen){
-        alert(
-          "Withdraw sedang tutup.\n\nJam:\nSenin - Jumat\n08:00 - 18:00 WIB"
-        );
-        return;
-      }
-
-      const target = $("manualWithdrawBox");
-
-      if (!target){
-        console.log("[ERROR] manualWithdrawBox tidak ditemukan");
-        return;
-      }
-
-      target.scrollIntoView({
-        behavior: "smooth"
-      });
-
-    };
-
-  }
-
-  const manualBtn = $("manualWithdrawBtn");
-
-  if (manualBtn){
-
-    manualBtn.onclick = () => {
-      console.log("[CLICK] manualWithdrawBtn");
-      manualWithdraw();
-    };
-
-  }
-
-  // 🔥 cache element biar gak query ulang
+  const manualScrollBtn = $("manualScrollBtn");
+  const manualWithdrawBtn = $("manualWithdrawBtn");
+  const instantWithdrawBtn = $("instantWithdrawBtn");
+  const instantAmount = $("instantAmount");
   const instantButtons = document.querySelectorAll(".instant-options button");
 
-  instantButtons.forEach(btn => {
+  // =====================================
+  // SCROLL KE MANUAL WITHDRAW
+  // =====================================
 
-    btn.onclick = () => {
+  manualScrollBtn?.addEventListener("click", () => {
 
-      console.log("[CLICK] instant option", btn.dataset.value);
+    if (!withdrawOpen) {
+      alert(
+        "Withdraw sedang tutup.\n\n" +
+        "Jam Operasional:\n" +
+        "Senin - Jumat\n" +
+        "08:00 - 18:00 WIB"
+      );
+      return;
+    }
 
-      instantButtons.forEach(x => x.classList.remove("active"));
-
-      btn.classList.add("active");
-
-      instantSelected = Number(btn.dataset.value) || 0;
-
-      const input = $("instantAmount");
-
-      if (input){
-        input.value = instantSelected;
-      }
-
-    };
+    $("manualWithdrawBox")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
 
   });
 
-  const instantBtn = $("instantWithdrawBtn");
+  // =====================================
+  // MANUAL WITHDRAW
+  // =====================================
 
-  if (instantBtn){
+  manualWithdrawBtn?.addEventListener("click", manualWithdraw);
 
-    instantBtn.onclick = () => {
-      console.log("[CLICK] instantWithdrawBtn");
-      instantWithdraw();
-    };
+  // =====================================
+  // PILIH NOMINAL INSTANT
+  // =====================================
 
-  }
+  instantButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      instantButtons.forEach(btn =>
+        btn.classList.remove("active")
+      );
+
+      button.classList.add("active");
+
+      instantSelected = Number(button.dataset.value) || 0;
+
+      if (instantAmount) {
+        instantAmount.value = instantSelected;
+      }
+
+    });
+
+  });
+
+  // =====================================
+  // INPUT NOMINAL MANUAL
+  // =====================================
+
+  instantAmount?.addEventListener("input", e => {
+
+    instantSelected = Number(e.target.value) || 0;
+
+    instantButtons.forEach(btn => {
+
+      btn.classList.toggle(
+        "active",
+        Number(btn.dataset.value) === instantSelected
+      );
+
+    });
+
+  });
+
+  // =====================================
+  // INSTANT WITHDRAW
+  // =====================================
+
+  instantWithdrawBtn?.addEventListener(
+    "click",
+    instantWithdraw
+  );
 
 }
-// =========================
-// WD MANUAL
-// =========================
 
-async function manualWithdraw(){
 
-  console.log("[MANUAL WD] start");
+// ========================================
+// PAYMENT JS
+// PART 4 - MANUAL WITHDRAW
+// ========================================
 
-  if (!withdrawOpen){
+async function manualWithdraw() {
+
+  console.log("[MANUAL WITHDRAW]");
+
+  if (!withdrawOpen) {
     alert("Withdraw sedang tutup");
     return;
   }
 
-  const input = $("manualAmount");
+  const amount = Number($("manualAmount")?.value || 0);
 
-  if (!input){
-    console.log("[ERROR] manualAmount tidak ditemukan");
-    return;
-  }
-
-  const amount = Number(input.value);
-
-  if (!amount){
+  if (amount <= 0) {
     alert("Masukkan nominal withdraw");
     return;
   }
 
-  if (amount < 100000){
+  if (amount < 100000) {
     alert("Minimal withdraw Rp100.000");
     return;
   }
 
-  console.log("[MANUAL WD] amount:", amount);
+  try {
 
-  // 🔥 ambil rekening
-  const { data: payment, error: payError } = await db
-    .from("payment_methods")
-    .select("*")
-    .eq("user_id", user.id)
-    .maybeSingle();
+    // =====================================
+    // PAYMENT METHOD
+    // =====================================
 
-  if (payError){
-    console.log("[PAYMENT ERROR]", payError);
-    alert("Gagal mengambil data rekening");
-    return;
+    const { data: payment, error: paymentError } = await db
+      .from("payment_methods")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (paymentError) throw paymentError;
+
+    if (!payment) {
+      alert("Silakan simpan rekening terlebih dahulu");
+      location.href = "paymentsetting.html";
+      return;
+    }
+
+    // =====================================
+    // PROFILE TERBARU
+    // =====================================
+
+    const profile = await window.database.getCurrentProfile();
+
+    if (!profile) {
+      alert("Gagal mengambil data user");
+      return;
+    }
+
+    const balance = Number(profile.balance) || 0;
+
+    if (balance < amount) {
+      alert("Saldo tidak cukup");
+      return;
+    }
+
+    // =====================================
+    // INSERT WITHDRAW
+    // =====================================
+
+    const { error: withdrawError } = await db
+      .from("withdraws")
+      .insert({
+        user_id: user.id,
+        method: payment.method,
+        account_number: payment.account_number,
+        amount,
+        fee: 0,
+        type: "manual",
+        status: "pending"
+      });
+
+    if (withdrawError) throw withdrawError;
+
+    // =====================================
+    // UPDATE BALANCE
+    // =====================================
+
+    const newBalance = balance - amount;
+
+    const { error: updateError } = await db
+      .from("profiles")
+      .update({
+        balance: newBalance
+      })
+      .eq("id", user.id);
+
+    if (updateError) throw updateError;
+
+    alert("Withdraw manual berhasil dibuat");
+
+    location.reload();
+
+  } catch (err) {
+
+    console.log("[MANUAL WITHDRAW ERROR]", err);
+
+    alert(
+      err.message ||
+      "Terjadi kesalahan saat membuat withdraw."
+    );
+
   }
-
-  if (!payment){
-    alert("Silakan simpan rekening terlebih dahulu");
-    location.href = "paymentsetting.html";
-    return;
-  }
-
-  console.log("[PAYMENT DATA]", payment);
-
-  // 🔥 ambil profile terbaru
-  const profile = await window.database.getCurrentProfile();
-
-  if (!profile){
-    alert("Gagal mengambil data user");
-    return;
-  }
-
-  if (Number(profile.balance) < amount){
-    alert("Saldo tidak cukup");
-    return;
-  }
-
-  console.log("[BALANCE BEFORE]", profile.balance);
-
-  // =========================
-  // INSERT WITHDRAW
-  // =========================
-  const { error: wdError } = await db
-    .from("withdraws")
-    .insert({
-      user_id: user.id,
-      method: payment.method,
-      account_number: payment.account_number,
-      amount: amount,
-      status: "pending",
-      type: "manual",
-      fee: 0
-    });
-
-  if (wdError){
-    console.log("[WD INSERT ERROR]", wdError);
-    alert(wdError.message);
-    return;
-  }
-
-  // =========================
-  // UPDATE BALANCE
-  // =========================
-  const newBalance = Number(profile.balance) - amount;
-
-  const { error: updError } = await db
-    .from("profiles")
-    .update({
-      balance: newBalance
-    })
-    .eq("id", user.id);
-
-  if (updError){
-    console.log("[BALANCE UPDATE ERROR]", updError);
-    alert("Withdraw masuk tapi saldo gagal update");
-    return;
-  }
-
-  console.log("[BALANCE AFTER]", newBalance);
-
-  alert("Withdraw manual berhasil dibuat");
-
-  location.reload();
 
 }
 
-// =========================
-// WD INSTANT
-// =========================
+// ========================================
+// PAYMENT JS
+// PART 5 - INSTANT WITHDRAW
+// ========================================
 
-async function instantWithdraw(){
+async function instantWithdraw() {
 
-  console.log("[INSTANT WD] start");
+  console.log("[INSTANT WITHDRAW]");
 
-  if (!withdrawOpen){
+  if (!withdrawOpen) {
     alert("Withdraw sedang tutup");
     return;
   }
 
-  if (!instantSelected){
-    alert("Pilih nominal");
-    return;
-  }
-
-  const profile = await window.database.getCurrentProfile();
-
-  if (!profile){
-    alert("Gagal mengambil data user");
+  if (!instantSelected) {
+    alert("Pilih nominal withdraw");
     return;
   }
 
   const fee = 15000;
   const total = instantSelected + fee;
 
-  console.log("[INSTANT WD] amount:", instantSelected);
-  console.log("[INSTANT WD] total:", total);
-
-  if (Number(profile.balance) < total){
-    alert(
-      "Saldo tidak cukup\n\n" +
-      "Withdraw : " + rupiah(instantSelected) +
-      "\nFee : " + rupiah(fee)
-    );
-    return;
-  }
-
-  // =========================
-  // CEK PAYMENT METHOD
-  // =========================
-  const { data: payment, error: payError } = await db
-    .from("payment_methods")
-    .select("*")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (payError){
-    console.log("[PAYMENT ERROR]", payError);
-    alert("Gagal mengambil rekening");
-    return;
-  }
-
-  if (!payment){
-    alert("Simpan rekening terlebih dahulu");
-    location.href = "paymentsetting.html";
-    return;
-  }
-
-  console.log("[PAYMENT DATA]", payment);
-
-  // =========================
-  // LIMIT HARIAN (FIX 🔥)
-  // =========================
-  const today = new Date().toISOString().split("T")[0];
-
-  const { data: list, error: listError } = await db
-    .from("withdraws")
-    .select("amount, created_at")
-    .eq("user_id", user.id)
-    .eq("type", "instant")
-    .gte("created_at", today); // 🔥 hanya hari ini
-
-  if (listError){
-    console.log("[LIMIT ERROR]", listError);
-    alert("Gagal cek limit harian");
-    return;
-  }
-
-  let used = 0;
-
-  (list || []).forEach(x => {
-    used += Number(x.amount) || 0;
-  });
-
-  console.log("[LIMIT USED TODAY]", used);
-
-  if (used + instantSelected > 500000){
-    alert("Limit instant hari ini habis");
-    return;
-  }
-
-  // =========================
-  // INSERT WITHDRAW
-  // =========================
-  const { error: wdError } = await db
-    .from("withdraws")
-    .insert({
-      user_id: user.id,
-      method: payment.method,
-      account_number: payment.account_number,
-      amount: instantSelected,
-      status: "success",
-      type: "instant",
-      fee: fee
-    });
-
-  if (wdError){
-    console.log("[WD ERROR]", wdError);
-    alert(wdError.message);
-    return;
-  }
-
-  // =========================
-  // UPDATE BALANCE
-  // =========================
-  const newBalance = Number(profile.balance) - total;
-
-  const { error: updError } = await db
-    .from("profiles")
-    .update({
-      balance: newBalance
-    })
-    .eq("id", user.id);
-
-  if (updError){
-    console.log("[BALANCE ERROR]", updError);
-    alert("Withdraw berhasil tapi saldo gagal update");
-    return;
-  }
-
-  console.log("[BALANCE AFTER]", newBalance);
-
-  alert("Withdraw instant berhasil");
-
-  location.reload();
-
-}
-
-// =========================
-// FORMAT
-// =========================
-
-function rupiah(value){
-
-  const number = Number(value);
-
-  // 🔥 HANDLE NaN / null / undefined
-  if (isNaN(number)){
-    return "Rp0";
-  }
-
   try {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      maximumFractionDigits: 0
-    }).format(number);
 
-  } catch (err){
-    console.log("[RUPIAH ERROR]", err);
+    // =====================================
+    // PROFILE TERBARU
+    // =====================================
 
-    // 🔥 fallback manual (kalau Intl gagal di device lama)
-    return "Rp" + number.toLocaleString("id-ID");
+    const profile = await window.database.getCurrentProfile();
+
+    if (!profile) {
+      alert("Gagal mengambil data user");
+      return;
+    }
+
+    const balance = Number(profile.balance) || 0;
+
+    if (balance < total) {
+      alert(
+        "Saldo tidak cukup\n\n" +
+        "Withdraw : " + rupiah(instantSelected) +
+        "\nFee : " + rupiah(fee) +
+        "\nTotal Potongan : " + rupiah(total)
+      );
+      return;
+    }
+
+    // =====================================
+    // PAYMENT METHOD
+    // =====================================
+
+    const { data: payment, error: paymentError } = await db
+      .from("payment_methods")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (paymentError) throw paymentError;
+
+    if (!payment) {
+      alert("Silakan simpan rekening terlebih dahulu");
+      location.href = "paymentsetting.html";
+      return;
+    }
+
+    // =====================================
+    // LIMIT HARIAN
+    // =====================================
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const { data: history, error: historyError } = await db
+      .from("withdraws")
+      .select("amount")
+      .eq("user_id", user.id)
+      .eq("type", "instant")
+      .gte("created_at", today.toISOString());
+
+    if (historyError) throw historyError;
+
+    const usedToday = (history || []).reduce(
+      (total, item) => total + (Number(item.amount) || 0),
+      0
+    );
+
+    if (usedToday + instantSelected > 500000) {
+      alert(
+        "Limit withdraw instant hari ini telah habis.\n\n" +
+        "Limit harian: Rp500.000"
+      );
+      return;
+    }
+
+    // =====================================
+    // INSERT WITHDRAW
+    // =====================================
+
+    const { error: withdrawError } = await db
+      .from("withdraws")
+      .insert({
+        user_id: user.id,
+        method: payment.method,
+        account_number: payment.account_number,
+        amount: instantSelected,
+        fee,
+        type: "instant",
+        status: "success"
+      });
+
+    if (withdrawError) throw withdrawError;
+
+    // =====================================
+    // UPDATE BALANCE
+    // =====================================
+
+    const newBalance = balance - total;
+
+    const { error: updateError } = await db
+      .from("profiles")
+      .update({
+        balance: newBalance
+      })
+      .eq("id", user.id);
+
+    if (updateError) throw updateError;
+
+    alert("Withdraw instant berhasil");
+
+    location.reload();
+
+  } catch (err) {
+
+    console.log("[INSTANT WITHDRAW ERROR]", err);
+
+    alert(
+      err.message ||
+      "Terjadi kesalahan saat melakukan withdraw."
+    );
+
   }
 
 }
+
+// ========================================
+// PAYMENT JS
+// PART 6 - HELPER & AUTO REFRESH
+// ========================================
+
+// =====================================
+// UPDATE INSTANT LIMIT
+// =====================================
+
+function updateInstantLimit(used = 0) {
+
+  const limit = 500000;
+  const remain = Math.max(limit - used, 0);
+  const percent = Math.min((used / limit) * 100, 100);
+
+  if ($("instantLimit")) {
+    $("instantLimit").textContent = rupiah(remain);
+  }
+
+  if ($("instantProgress")) {
+    $("instantProgress").style.width = percent + "%";
+  }
+
+}
+
+// =====================================
+// TOGGLE BUTTON LOADING
+// =====================================
+
+function setButtonLoading(button, loading, text = "Loading...") {
+
+  if (!button) return;
+
+  if (loading) {
+
+    button.disabled = true;
+    button.dataset.original = button.innerHTML;
+    button.innerHTML =
+      `<i class="fa-solid fa-spinner fa-spin"></i> ${text}`;
+
+  } else {
+
+    button.disabled = false;
+
+    if (button.dataset.original) {
+      button.innerHTML = button.dataset.original;
+    }
+
+  }
+
+}
+
+// =====================================
+// AUTO REFRESH STATUS
+// =====================================
+
+setInterval(() => {
+
+  if (user?.id) {
+    checkWithdrawService();
+  }
+
+}, 60000);
+
+console.log("PAYMENT JS READY");
