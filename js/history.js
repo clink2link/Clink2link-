@@ -1,194 +1,491 @@
 /* ===============================
-CLICK2PAY HISTORY SCRIPT
+CLICK2PAY HISTORY SALDO
+REAL DATABASE SUPABASE
 ================================ */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async()=>{
 
-let historyData = [
-{
-id: "TRX001",
-title: "Pembayaran QRIS",
-amount: 25000,
-status: "success",
-date: "2026-07-24T08:00:00"
-},
-{
-id: "TRX002",
-title: "Top Up Saldo",
-amount: 50000,
-status: "success",
-date: "2026-07-23T21:30:00"
-},
-{
-id: "TRX003",
-title: "Transfer User",
-amount: 15000,
-status: "pending",
-date: "2026-07-23T20:10:00"
-},
-{
-id: "TRX004",
-title: "Pembayaran QRIS",
-amount: 8000,
-status: "success",
-date: "2026-07-22T19:00:00"
-}
-];
+
+let historyData = [];
+let currentFilter = "all";
+
+const $ = id => document.getElementById(id);
+
 
 /* ================= FORMAT ================= */
 
-const formatRupiah = (num) => {
-return "Rp " + num.toLocaleString("id-ID");
-};
+function formatRupiah(num){
 
-const formatDate = (date) => {
-let d = new Date(date);
-return d.toLocaleString("id-ID", {
-day: "2-digit",
-month: "short",
-hour: "2-digit",
-minute: "2-digit"
-});
-};
+    return new Intl.NumberFormat("id-ID",{
+        style:"currency",
+        currency:"IDR",
+        maximumFractionDigits:0
+    }).format(Number(num)||0);
+
+}
+
+
+function formatDate(date){
+
+    return new Date(date).toLocaleString("id-ID",{
+        day:"2-digit",
+        month:"short",
+        year:"numeric",
+        hour:"2-digit",
+        minute:"2-digit"
+    });
+
+}
+
 
 /* ================= ELEMENT ================= */
 
-const container = document.getElementById("historyList");
+const container = $("historyList");
 
-/* ================= UI ENHANCEMENT ================= */
 
-// SKELETON
-const showSkeleton = () => {
-container.innerHTML = "";
+/* ================= SKELETON ================= */
+
+function showSkeleton(){
+
+if(!container) return;
+
+container.innerHTML="";
+
 for(let i=0;i<4;i++){
-container.innerHTML += `
-<div class="link-card" style="opacity:.6">
-<div style="height:14px;width:60%;background:#e2e8f0;border-radius:6px;margin-bottom:10px;"></div>
-<div style="height:12px;width:40%;background:#e2e8f0;border-radius:6px;"></div>
+
+container.innerHTML+=`
+
+<div class="link-card">
+
+<div style="
+height:14px;
+width:60%;
+background:#e2e8f0;
+border-radius:8px;
+margin-bottom:12px;">
 </div>
+
+<div style="
+height:12px;
+width:40%;
+background:#e2e8f0;
+border-radius:8px;">
+</div>
+
+</div>
+
 `;
+
 }
-};
 
-// EMPTY STATE
-const emptyState = () => {
-container.innerHTML = `
-<div style="text-align:center;padding:40px 20px;">
-<i class="fa-regular fa-folder-open" style="font-size:40px;color:#94a3b8;margin-bottom:10px;"></i>
-<h3 style="margin:0;color:#334155;">Belum ada transaksi</h3>
-<p style="font-size:13px;color:#64748b;">Transaksi kamu akan muncul di sini</p>
+}
+
+
+
+/* ================= EMPTY ================= */
+
+function emptyState(){
+
+container.innerHTML=`
+
+<div style="
+text-align:center;
+padding:40px 20px;
+">
+
+<i class="fa-regular fa-folder-open"
+style="
+font-size:40px;
+color:#94a3b8;
+">
+</i>
+
+<h3>
+Belum ada transaksi
+</h3>
+
+<p style="
+color:#64748b;
+font-size:13px;
+">
+Transaksi saldo akan muncul otomatis
+</p>
+
 </div>
-`;
-};
 
-// STATUS TEXT
-const getStatusText = (status) => {
-if(status === "success") return "Berhasil";
-if(status === "pending") return "Diproses";
+`;
+
+}
+
+
+
+/* ================= STATUS ================= */
+
+function statusText(status){
+
+switch(status){
+
+case "success":
+return "Berhasil";
+
+case "pending":
+return "Diproses";
+
+case "failed":
+return "Gagal";
+
+default:
 return status;
-};
+
+}
+
+}
+
+
 
 /* ================= RENDER ================= */
 
-const renderHistory = (data) => {
 
-container.innerHTML = "";
+function renderHistory(data){
 
-if(data.length === 0){
+container.innerHTML="";
+
+
+if(data.length===0){
+
 emptyState();
 return;
+
 }
 
-data.forEach((item,index) => {
 
-let isNew = index === 0;
 
-container.innerHTML += `
-<div class="link-card" style="animation:fadeIn .4s ease ${index * 0.05}s both; ${isNew ? 'border:2px solid #2563eb;' : ''}">
+data.forEach((item,index)=>{
+
+
+let income = item.type==="income";
+
+
+container.innerHTML+=`
+
+<div class="link-card">
+
 <div class="link-top">
-<h3>${item.title}</h3>
-<span class="badge ${item.status === "success" ? "success" : "pending"}">
-${getStatusText(item.status)}
+
+<h3>
+<i class="fa-solid ${
+income 
+? "fa-arrow-down"
+: "fa-arrow-up"
+}">
+</i>
+
+${item.title}
+
+</h3>
+
+
+<span class="badge ${item.status}">
+
+${statusText(item.status)}
+
 </span>
+
+
 </div>
+
 
 <div class="link-mid">
-<span>${formatDate(item.date)}</span>
-<strong>${formatRupiah(item.amount)}</strong>
+
+
+<span>
+${formatDate(item.created_at)}
+</span>
+
+
+<strong style="
+color:${income ? "#16a34a":"#dc2626"}
+">
+
+${income ? "+" : "-"}
+${formatRupiah(item.amount)}
+
+</strong>
+
+
 </div>
+
+
 </div>
+
 `;
 
-});
-
-};
-
-/* ================= STATS ================= */
-
-const updateStats = (data) => {
-
-let total = data.reduce((a,b)=>a+b.amount,0);
-let success = data.filter(x=>x.status==="success").length;
-let pending = data.filter(x=>x.status==="pending").length;
-
-document.getElementById("totalAmount").innerText = formatRupiah(total);
-document.getElementById("totalSuccess").innerText = success;
-document.getElementById("totalPending").innerText = pending;
-document.getElementById("totalTrx").innerText = data.length;
-
-};
-
-/* ================= FILTER ================= */
-
-let currentFilter = "all";
-
-const applyFilter = () => {
-
-let searchValue = document.getElementById("searchInput").value.toLowerCase();
-
-let filtered = historyData.filter(item => {
-
-let matchFilter = currentFilter === "all" || item.status === currentFilter;
-let matchSearch = item.title.toLowerCase().includes(searchValue);
-
-return matchFilter && matchSearch;
 
 });
 
-renderHistory(filtered);
-updateStats(filtered);
 
-};
+}
 
-/* ================= EVENT ================= */
 
-// SEARCH
-document.getElementById("searchInput").addEventListener("input", applyFilter);
 
-// FILTER
-document.querySelectorAll(".filterBtn").forEach(btn => {
+/* ================= UPDATE STATS ================= */
 
-btn.addEventListener("click", () => {
 
-document.querySelectorAll(".filterBtn").forEach(b => b.classList.remove("active"));
+function updateStats(data){
 
-btn.classList.add("active");
 
-currentFilter = btn.dataset.filter;
+let totalIn = 0;
+let totalOut = 0;
+let pending = 0;
 
-applyFilter();
+
+data.forEach(item=>{
+
+
+let amount = Number(item.amount)||0;
+
+
+if(item.type==="income")
+totalIn += amount;
+
+
+if(item.type==="expense")
+totalOut += amount;
+
+
+if(item.status==="pending")
+pending++;
+
 
 });
 
-});
 
-/* ================= INIT ================= */
+
+if($("totalIn"))
+$("totalIn").innerText =
+formatRupiah(totalIn);
+
+
+
+if($("totalOut"))
+$("totalOut").innerText =
+formatRupiah(totalOut);
+
+
+
+if($("totalTx"))
+$("totalTx").innerText =
+data.length;
+
+
+
+if($("totalPending"))
+$("totalPending").innerText =
+pending;
+
+
+
+}
+
+
+
+/* ================= LOAD DATABASE ================= */
+
+
+async function loadHistory(){
+
+
+try{
+
 
 showSkeleton();
 
-setTimeout(() => {
+
+
+if(!window.database){
+
+console.log(
+"DATABASE BELUM READY"
+);
+
+return;
+
+}
+
+
+
+const user =
+await window.database.getCurrentProfile();
+
+
+
+if(!user?.id){
+
+location.href="login.html";
+
+return;
+
+}
+
+
+
+
+const {
+data,
+error
+}=await window.database.supabase
+
+.from("transactions")
+
+.select("*")
+
+.eq(
+"user_id",
+user.id
+)
+
+.order(
+"created_at",
+{
+ascending:false
+}
+);
+
+
+
+if(error)
+throw error;
+
+
+
+historyData = data || [];
+
+
+
 renderHistory(historyData);
+
 updateStats(historyData);
-}, 800);
+
+
+
+}catch(err){
+
+console.log(
+"HISTORY ERROR",
+err
+);
+
+container.innerHTML=
+"<p>Gagal memuat transaksi</p>";
+
+}
+
+
+}
+
+
+
+/* ================= FILTER ================= */
+
+
+function applyFilter(){
+
+
+let keyword =
+$("searchInput")
+.value
+.toLowerCase();
+
+
+
+let filtered =
+historyData.filter(item=>{
+
+
+let filterOK =
+currentFilter==="all"
+||
+item.type===currentFilter;
+
+
+let searchOK =
+item.title
+.toLowerCase()
+.includes(keyword);
+
+
+
+return filterOK && searchOK;
+
+
+});
+
+
+
+renderHistory(filtered);
+
+updateStats(filtered);
+
+
+}
+
+
+
+/* ================= EVENT ================= */
+
+
+$("searchInput")
+?.addEventListener(
+"input",
+applyFilter
+);
+
+
+
+document
+.querySelectorAll(
+".link-filter button"
+)
+.forEach(btn=>{
+
+
+btn.addEventListener(
+"click",
+()=>{
+
+
+document
+.querySelectorAll(
+".link-filter button"
+)
+.forEach(b=>
+b.classList.remove("active")
+);
+
+
+
+btn.classList.add("active");
+
+
+
+currentFilter =
+btn.dataset.filter;
+
+
+
+applyFilter();
+
+
+});
+
+});
+
+
+
+/* ================= START ================= */
+
+
+await loadHistory();
+
 
 });
