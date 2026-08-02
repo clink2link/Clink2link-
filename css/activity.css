@@ -1,51 +1,56 @@
 /* =================================
-CLICK2PAY GLOBAL THEME (AUTO DARK)
+CLICK2PAY LOGIN ACTIVITY
+MATCH DASHBOARD STYLE
 ================================= */
 
 :root{
 --bg:#f6f7fb;
---card-bg:#ffffff;
---item-bg:#f1f3f7;
---hover-bg:#e9edf5;
+--card:#ffffff;
+--item:#f8fafc;
+--border:#e2e8f0;
 --text:#0f172a;
---subtext:#64748b;
+--sub:#64748b;
 --primary:#2563eb;
+--danger:#dc2626;
 }
 
-@media (prefers-color-scheme: dark){
-:root{
---bg:#0f172a;
---card-bg:#1e293b;
---item-bg:#273449;
---hover-bg:#334155;
---text:#e2e8f0;
---subtext:#94a3b8;
---primary:#3b82f6;
+html.dark{
+--bg:#020617;
+--card:#0f172a;
+--item:#1e293b;
+--border:#1e293b;
+--text:#f8fafc;
+--sub:#94a3b8;
+--primary:#60a5fa;
 }
-}
+
+
+/* =========================
+BODY
+========================= */
 
 body{
+margin:0;
 background:var(--bg);
 color:var(--text);
 font-family:'Inter',sans-serif;
-margin:0;
 }
 
 
-/* =================================
+/* =========================
 CONTAINER
-================================= */
+========================= */
 
-main.container{
+.container{
 max-width:1100px;
 margin:auto;
 padding:100px 20px 40px;
 }
 
 
-/* =================================
-TITLE (MATCH PAYMENT)
-================================= */
+/* =========================
+TITLE
+========================= */
 
 .page-title{
 margin-bottom:25px;
@@ -62,69 +67,60 @@ color:var(--primary);
 }
 
 .page-title p{
-margin-top:8px;
-color:var(--subtext);
+margin:8px 0 0;
 font-size:14px;
+color:var(--sub);
 }
 
 
-/* =================================
-GRID (MATCH PAYMENT)
-================================= */
+/* =========================
+STAT CARD
+========================= */
 
 .payment-grid{
 display:grid;
-grid-template-columns:repeat(2,1fr);
+grid-template-columns:repeat(3,1fr);
 gap:18px;
-margin-top:25px;
+margin-bottom:20px;
 }
-
-/* RESPONSIVE */
-@media (max-width:700px){
-.payment-grid{
-grid-template-columns:1fr;
-}
-}
-
-
-/* =================================
-CARD
-================================= */
 
 .pay-card{
-background:var(--card-bg);
-padding:18px;
-border-radius:16px;
+background:var(--card);
+border:1px solid var(--border);
+border-radius:20px;
+padding:20px;
 display:flex;
 flex-direction:column;
 gap:10px;
-transition:0.2s;
+box-shadow:0 10px 30px rgba(0,0,0,.05);
+transition:.25s;
 }
 
 .pay-card:hover{
-transform:translateY(-3px);
+transform:translateY(-4px);
 }
 
 .pay-card span{
 font-size:13px;
-color:var(--subtext);
+color:var(--sub);
 }
 
 .pay-card h2{
 margin:0;
 font-size:20px;
-font-weight:700;
+font-weight:800;
+color:var(--text);
 }
 
 
-/* =================================
+/* =========================
 ICON
-================================= */
+========================= */
 
 .card-icon{
-width:42px;
-height:42px;
-border-radius:12px;
+width:44px;
+height:44px;
+border-radius:14px;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -132,44 +128,65 @@ font-size:18px;
 }
 
 .blue{
-background:rgba(37,99,235,0.15);
-color:#3b82f6;
+background:#dbeafe;
+color:#2563eb;
 }
 
 .green{
-background:rgba(34,197,94,0.15);
-color:#22c55e;
+background:#dcfce7;
+color:#16a34a;
 }
 
 .purple{
-background:rgba(168,85,247,0.15);
-color:#a855f7;
+background:#f3e8ff;
+color:#9333ea;
+}
+
+html.dark .blue{
+background:#1e3a8a;
+}
+
+html.dark .green{
+background:#14532d;
+}
+
+html.dark .purple{
+background:#581c87;
 }
 
 
-/* =================================
+/* =========================
 INFO BOX
-================================= */
+========================= */
 
 .info-box{
-background:var(--card-bg);
-border-radius:16px;
-padding:18px;
-margin-top:20px;
+background:var(--card);
+border:1px solid var(--border);
+border-radius:20px;
+padding:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.05);
 }
 
 .info-header{
 display:flex;
 align-items:center;
 gap:10px;
-font-weight:700;
-margin-bottom:12px;
+margin-bottom:15px;
+}
+
+.info-header i{
+color:var(--primary);
+}
+
+.info-header h3{
+margin:0;
+font-size:17px;
 }
 
 
-/* =================================
-LIST LOGIN
-================================= */
+/* =========================
+LOGIN LIST
+========================= */
 
 .info-list{
 display:flex;
@@ -178,53 +195,101 @@ gap:12px;
 }
 
 .login-item{
+background:var(--item);
+border:1px solid var(--border);
+border-radius:16px;
+padding:15px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:14px;
-border-radius:12px;
-background:var(--item-bg);
-transition:0.2s;
-}
-
-.login-item:hover{
-background:var(--hover-bg);
+gap:15px;
 }
 
 .login-left{
 display:flex;
-flex-direction:column;
+align-items:center;
+gap:12px;
+}
+
+.login-left i{
+font-size:22px;
+color:var(--primary);
 }
 
 .login-device{
-font-weight:600;
 font-size:14px;
+font-weight:700;
 }
 
 .login-time{
 font-size:12px;
-color:var(--subtext);
+color:var(--sub);
+margin-top:4px;
 }
 
 
-/* =================================
-MOBILE FIX
-================================= */
+/* =========================
+LOGOUT DEVICE BUTTON
+========================= */
 
-@media (max-width:600px){
+.logout-device{
+background:#fee2e2;
+color:var(--danger);
+border:none;
+padding:8px 14px;
+border-radius:10px;
+font-size:12px;
+font-weight:700;
+cursor:pointer;
+transition:.2s;
+}
+
+.logout-device:hover{
+transform:translateY(-2px);
+}
+
+
+html.dark .logout-device{
+background:#450a0a;
+color:#fca5a5;
+}
+
+
+/* =========================
+RESPONSIVE
+========================= */
+
+@media(max-width:800px){
+
+.payment-grid{
+grid-template-columns:1fr;
+}
 
 .page-title h1{
 font-size:24px;
 }
 
-.pay-card h2{
-font-size:18px;
-}
-
 .login-item{
 flex-direction:column;
 align-items:flex-start;
-gap:6px;
+}
+
+.logout-device{
+width:100%;
+}
+
+}
+
+
+@media(max-width:420px){
+
+.container{
+padding-left:15px;
+padding-right:15px;
+}
+
+.pay-card h2{
+font-size:18px;
 }
 
 }
