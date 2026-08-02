@@ -525,16 +525,40 @@ gap:10px;
 @media(max-width:420px){
 
 .stat-card h2{
-
 font-size:16px;
-
 }
-
 
 .link-top h3{
-
 font-size:13px;
+}
 
 }
 
+
+/* ================= DARK MODE FIX ================= */
+
+html.dark .ref-card,
+html.dark .stat-card{
+    background:#0f172a;
+    border-color:#1e293b;
+}
+
+html.dark .ref-card h3,
+html.dark .stat-card h2{
+    color:#f8fafc;
+}
+
+html.dark .stat-card h4,
+html.dark .ref-link{
+    color:#94a3b8;
+}
+
+html.dark .ref-box input{
+    background:#020617;
+    border-color:#334155;
+    color:#fff;
+}
+
+html.dark .ref-box input::placeholder{
+    color:#94a3b8;
 }
