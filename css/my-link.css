@@ -965,6 +965,16 @@ color:#fff;
 html.dark .empty{
 border-color:#334155;
 }
+/* Status / Note */
+
+html.dark .status-success,
+html.dark .status-danger,
+html.dark .status-secondary,
+html.dark .create-note,
+html.dark .info-note{
+    color:#e2e8f0;
+}
+
 
 /*================ RESPONSIVE ================*/
 
