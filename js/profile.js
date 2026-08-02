@@ -286,7 +286,21 @@ showToast(
 
 });
 
+/* ================= LOGOUT ================= */
 
+const logoutBtn=document.getElementById("logoutBtn");
+
+if(logoutBtn){
+
+logoutBtn.onclick=async(e)=>{
+
+e.preventDefault();
+
+await window.database.logout();
+
+};
+
+}
 
 /* ================= TOAST ================= */
 
