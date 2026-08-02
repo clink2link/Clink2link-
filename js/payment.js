@@ -9,7 +9,8 @@ console.log("PAYMENT JS AKTIF");
 
 let db = null;
 let user = null;
-let withdrawOpen = false;
+let manualWithdrawOpen = false;
+const instantWithdrawOpen = true;
 let instantSelected = 0;
 
 const $ = id => document.getElementById(id);
@@ -79,9 +80,13 @@ function checkWithdrawService() {
   const day = now.getDay();
   const hour = now.getHours();
 
-  withdrawOpen = day >= 1 && day <= 5 && hour >= 8 && hour < 18;
+  manualWithdrawOpen =
+    day >= 1 &&
+    day <= 5 &&
+    hour >= 8 &&
+    hour < 18;
 
-  if (withdrawOpen) {
+  if (manualWithdrawOpen) {
     box.innerHTML = `
       <i class="fa-solid fa-circle-check"></i>
       Withdraw buka<br>
@@ -111,7 +116,12 @@ function checkWithdrawService() {
     }
   }
 
-  console.log("[WITHDRAW STATUS]", { day, hour, withdrawOpen });
+  console.log("[WITHDRAW STATUS]", {
+    day,
+    hour,
+    manualWithdrawOpen,
+    instantWithdrawOpen
+  });
 }
 
 // ========================================
@@ -291,7 +301,7 @@ function bindEvent() {
 
   manualScrollBtn?.addEventListener("click", () => {
 
-    if (!withdrawOpen) {
+    if (!manualWithdrawOpen) {
       alert(
         "Withdraw sedang tutup.\n\n" +
         "Jam Operasional:\n" +
@@ -378,7 +388,7 @@ async function manualWithdraw() {
 
   console.log("[MANUAL WITHDRAW]");
 
-  if (!withdrawOpen) {
+  if (!manualWithdrawOpen) {
     alert("Withdraw sedang tutup");
     return;
   }
@@ -491,11 +501,6 @@ async function manualWithdraw() {
 async function instantWithdraw() {
 
   console.log("[INSTANT WITHDRAW]");
-
-  if (!withdrawOpen) {
-    alert("Withdraw sedang tutup");
-    return;
-  }
 
   if (!instantSelected) {
     alert("Pilih nominal withdraw");
