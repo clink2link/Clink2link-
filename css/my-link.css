@@ -967,12 +967,28 @@ border-color:#334155;
 }
 /* Status / Note */
 
-html.dark .status-success,
-html.dark .status-danger,
-html.dark .status-secondary,
-html.dark .create-note,
-html.dark .info-note{
-    color:#e2e8f0;
+.status-success{
+display:flex;
+align-items:center;
+gap:8px;
+color:#16a34a;
+font-weight:600;
+}
+
+.status-danger{
+display:flex;
+align-items:center;
+gap:8px;
+color:#dc2626;
+font-weight:600;
+}
+
+html.dark .status-success{
+color:#4ade80;
+}
+
+html.dark .status-danger{
+color:#f87171;
 }
 
 
