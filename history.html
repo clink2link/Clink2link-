@@ -175,8 +175,13 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
 <div id="footer"></div>
 
-<!-- JS -->
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- DATABASE -->
 <script src="js/database.js"></script>
+
+<!-- PAGE SCRIPT -->
 <script src="js/history.js"></script>
 
 <!-- COMPONENT -->
@@ -186,30 +191,49 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 <script>
 
 fetch("components/navbar.html")
-.then(r => r.text())
-.then(html => {
+.then(r=>r.text())
+.then(html=>{
 
-    navbar.innerHTML = html;
+    const navbar =
+    document.getElementById("navbar");
 
-    if(typeof c2pInit === "function"){
-        c2pInit();
+    if(navbar){
+
+        navbar.innerHTML = html;
+
+        if(typeof c2pInit==="function"){
+            c2pInit();
+        }
+
     }
 
 });
+
 
 fetch("components/footer.html")
-.then(r => r.text())
-.then(html => {
+.then(r=>r.text())
+.then(html=>{
 
-    footer.innerHTML = html;
+    const footer =
+    document.getElementById("footer");
 
-    if(typeof c2pFooterInit === "function"){
-        c2pFooterInit();
+    if(footer){
+
+        footer.innerHTML = html;
+
+        if(typeof c2pFooterInit==="function"){
+            c2pFooterInit();
+        }
+
     }
 
 });
 
+
 </script>
+
+<!-- DEBUG -->
 <script src="assets/js/debug.js"></script>
+
 </body>
 </html>
