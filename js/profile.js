@@ -119,8 +119,8 @@ payment.account_name||
 if(profileUser){
 
 profileUser.textContent=
-user.username||
 profile?.username||
+user?.username||
 "User";
 
 }
@@ -128,8 +128,8 @@ profile?.username||
 if(profileUserInfo){
 
 profileUserInfo.textContent=
-user.username||
 profile?.username||
+user?.username||
 "-";
 
 }
@@ -137,17 +137,19 @@ profile?.username||
 if(profileId){
 
 profileId.textContent=
-user.id.substring(0,8)+"...";
+user?.id
+?user.id.substring(0,8)+"..."
+:"-";
 
 profileId.dataset.full=
-user.id;
+user?.id||"";
 
 }
 
 if(profileEmail){
 
 profileEmail.textContent=
-user.email||
+user?.email||
 "-";
 
 }
@@ -157,8 +159,8 @@ if(profileBalance){
 profileBalance.textContent=
 "Rp "+
 Number(
-profile?.balance??
-user.balance??
+profile?.balance||
+user?.balance||
 0
 ).toLocaleString("id-ID");
 
@@ -191,13 +193,12 @@ profile?.status||
 if(profileCreated){
 
 const created=
-user.created_at||
-profile?.created_at;
+profile?.created_at||
+user?.created_at;
 
 profileCreated.textContent=
 created
-?new Date(created)
-.toLocaleDateString(
+?new Date(created).toLocaleDateString(
 "id-ID",
 {
 day:"2-digit",
