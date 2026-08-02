@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>Profile • Click2Pay</title>
 
 <script>
@@ -17,7 +20,9 @@ document.documentElement.classList.add("dark");
 <link rel="stylesheet" href="css/app-ui.css">
 <link rel="stylesheet" href="css/profile.css">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 
 <body class="app-body">
@@ -27,14 +32,21 @@ document.documentElement.classList.add("dark");
 <div id="navbar"></div>
 
 <div class="app-container">
+
 <main class="app-main">
 
 <section class="page-title">
+
 <i class="fa-solid fa-user"></i>
+
 <div>
+
 <h1>Profile</h1>
+
 <p>Kelola informasi akun Click2Pay kamu.</p>
+
 </div>
+
 </section>
 
 <section class="profile-card">
@@ -42,17 +54,32 @@ document.documentElement.classList.add("dark");
 <div class="profile-header">
 
 <div class="profile-avatar">
+
 <i class="fa-solid fa-user"></i>
+
 </div>
 
 <div>
+
 <h2 id="profileUsername">User</h2>
+
 <p>Member Click2Pay</p>
+
 </div>
 
 </div>
 
 <div class="profile-info">
+
+<div class="profile-info">
+
+<div class="profile-item">
+<span>
+<i class="fa-solid fa-user"></i>
+Username
+</span>
+<b id="profileUsernameInfo">-</b>
+</div>
 
 <div class="profile-item">
 <span>
@@ -62,10 +89,27 @@ ID User
 
 <div class="id-copy">
 <b id="profileId">-</b>
+
 <button id="copyId">
 <i class="fa-solid fa-copy"></i>
 </button>
 </div>
+</div>
+
+<div class="profile-item">
+<span>
+<i class="fa-solid fa-envelope"></i>
+Email
+</span>
+<b id="profileEmail">-</b>
+</div>
+
+<div class="profile-item">
+<span>
+<i class="fa-solid fa-lock"></i>
+Password
+</span>
+<b>••••••••</b>
 </div>
 
 <div class="profile-item">
@@ -78,10 +122,26 @@ Saldo
 
 <div class="profile-item">
 <span>
-<i class="fa-solid fa-circle-check"></i>
-Status
+<i class="fa-solid fa-users"></i>
+Total Referral
 </span>
-<b id="profileStatus">-</b>
+<b id="profileReferral">0 Orang</b>
+</div>
+
+<div class="profile-item">
+<span>
+<i class="fa-solid fa-gift"></i>
+Pendapatan Referral
+</span>
+<b id="profileReferralIncome">Rp 0</b>
+</div>
+
+<div class="profile-item">
+<span>
+<i class="fa-solid fa-circle-check"></i>
+Status Member
+</span>
+<b id="profileStatus">Member</b>
 </div>
 
 <div class="profile-item">
@@ -101,22 +161,13 @@ Bergabung
 <i class="fa-solid fa-shield-halved"></i>
 
 <div>
+
 <h3>Keamanan Akun</h3>
-<p>Jangan membagikan ID akun, password, API Key, atau informasi pembayaran kepada orang lain.</p>
-</div>
 
-</section>
-
-<section class="info-note member-note">
-
-<i class="fa-solid fa-crown"></i>
-
-<div>
-<h3>Member Click2Pay</h3>
 <p>
-Akun kamu dapat menggunakan fitur Click2Pay seperti membuat link, melihat statistik, menerima penghasilan, dan mengelola pengaturan akun.
-Pastikan data akun selalu benar agar layanan berjalan dengan aman.
+Jangan pernah membagikan password, kode OTP, ataupun data pembayaran kepada siapa pun.
 </p>
+
 </div>
 
 </section>
@@ -124,50 +175,101 @@ Pastikan data akun selalu benar agar layanan berjalan dengan aman.
 <section class="setting-menu">
 
 <div class="setting-title">
-<i class="fa-solid fa-gear"></i>
-<h2>Pengaturan Akun</h2>
+
+<i class="fa-solid fa-building-columns"></i>
+
+<h2>Informasi Pembayaran</h2>
+
 </div>
 
 <div class="setting-list">
 
-<a href="edit-profile.html" class="setting-item">
+<a href="payment-account.html" class="setting-item">
+
 <div>
-<i class="fa-solid fa-user-pen"></i>
-<span>Edit Username</span>
+
+<i class="fa-solid fa-building-columns"></i>
+
+<div>
+
+<b>Bank / E-Wallet</b><br>
+
+<small id="paymentMethod">Belum ditambahkan</small>
+
 </div>
+
+</div>
+
 <i class="fa-solid fa-chevron-right"></i>
+
 </a>
 
-<a href="change-password.html" class="setting-item">
+<a href="payment-account.html" class="setting-item">
+
 <div>
-<i class="fa-solid fa-lock"></i>
-<span>Ganti Password</span>
+
+<i class="fa-solid fa-credit-card"></i>
+
+<div>
+
+<b>Nomor Rekening / Nomor HP</b><br>
+
+<small id="paymentNumber">-</small>
+
 </div>
+
+</div>
+
 <i class="fa-solid fa-chevron-right"></i>
+
 </a>
 
-<a href="api-key.html" class="setting-item">
+<a href="payment-account.html" class="setting-item">
+
 <div>
-<i class="fa-solid fa-key"></i>
-<span>API Key Click2Pay</span>
+
+<i class="fa-solid fa-user-check"></i>
+
+<div>
+
+<b>Atas Nama</b><br>
+
+<small id="paymentName">-</small>
+
 </div>
+
+</div>
+
 <i class="fa-solid fa-chevron-right"></i>
+
 </a>
 
-<a href="activity.html" class="setting-item">
+<a href="payment-account.html" class="setting-item">
+
 <div>
-<i class="fa-solid fa-clock-rotate-left"></i>
-<span>Riwayat Aktivitas Akun</span>
+
+<i class="fa-solid fa-plus"></i>
+
+<span>Tambah Akun Pembayaran</span>
+
 </div>
+
 <i class="fa-solid fa-chevron-right"></i>
+
 </a>
 
 <a href="delete-account.html" class="setting-item danger">
+
 <div>
+
 <i class="fa-solid fa-trash"></i>
-<span>Hapus Permanen Akun</span>
+
+<span>Hapus Akun</span>
+
 </div>
+
 <i class="fa-solid fa-chevron-right"></i>
+
 </a>
 
 </div>
@@ -175,33 +277,67 @@ Pastikan data akun selalu benar agar layanan berjalan dengan aman.
 </section>
 
 </main>
+
 </div>
 
 <div id="footer"></div>
 
+<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- CORE -->
 <script src="js/database.js"></script>
 <script src="js/session.js"></script>
 <script src="js/theme.js"></script>
+
+<!-- COMPONENT -->
 <script src="js/navbar.js"></script>
 <script src="js/footer.js"></script>
+
+<!-- PAGE -->
 <script src="js/profile.js"></script>
+
+<!-- DEBUG -->
 <script src="assets/js/debug.js"></script>
 
 <script>
+
 fetch("components/navbar.html")
-.then(res=>res.text())
+.then(r=>r.text())
 .then(html=>{
-document.getElementById("navbar").innerHTML=html;
-if(typeof c2pInit==="function")c2pInit();
+
+const navbar=document.getElementById("navbar");
+
+if(navbar){
+
+navbar.innerHTML=html;
+
+if(typeof c2pInit==="function"){
+c2pInit();
+}
+
+}
+
 });
 
 fetch("components/footer.html")
-.then(res=>res.text())
+.then(r=>r.text())
 .then(html=>{
-document.getElementById("footer").innerHTML=html;
-if(typeof c2pFooterInit==="function")c2pFooterInit();
+
+const footer=document.getElementById("footer");
+
+if(footer){
+
+footer.innerHTML=html;
+
+if(typeof c2pFooterInit==="function"){
+c2pFooterInit();
+}
+
+}
+
 });
+
 </script>
 
 </body>
