@@ -321,6 +321,105 @@
     color:#dc2626;
 }
 
+/* ================= PAYMENT BUTTON ================= */
+
+.payment-btn{
+
+display:flex;
+align-items:center;
+gap:15px;
+
+margin-top:20px;
+padding:16px 18px;
+
+background:linear-gradient(
+135deg,
+#2563eb,
+#3b82f6
+);
+
+color:white;
+
+border-radius:18px;
+
+text-decoration:none;
+
+box-shadow:
+0 10px 25px rgba(37,99,235,.25);
+
+transition:.25s;
+
+}
+
+
+.payment-btn:hover{
+
+transform:translateY(-3px);
+
+box-shadow:
+0 15px 35px rgba(37,99,235,.35);
+
+}
+
+
+/* ICON */
+
+.payment-btn-icon{
+
+width:45px;
+height:45px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:rgba(255,255,255,.2);
+
+border-radius:14px;
+
+font-size:20px;
+
+}
+
+
+/* TEXT */
+
+.payment-btn-text{
+
+display:flex;
+flex-direction:column;
+
+flex:1;
+
+}
+
+
+.payment-btn-text b{
+
+font-size:15px;
+
+}
+
+
+.payment-btn-text small{
+
+margin-top:3px;
+
+font-size:12px;
+
+opacity:.85;
+
+}
+
+
+/* CHEVRON */
+
+.payment-btn > i{
+
+font-size:18px;
+
+}
+
 /* ================= DARK ================= */
 
 html.dark .profile-card,
