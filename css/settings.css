@@ -1,6 +1,5 @@
 /* =================================
-CLICK2PAY SETTINGS STYLE
-MATCH DASHBOARD / HISTORY / REFERRAL
+CLICK2PAY SETTINGS PREMIUM
 ================================= */
 
 .app-container{
@@ -8,7 +7,8 @@ padding-top:15px;
 padding-bottom:40px;
 }
 
-/* ================= TITLE ================= */
+
+/* TITLE */
 
 .page-title{
 display:flex;
@@ -17,142 +17,162 @@ gap:14px;
 margin-bottom:25px;
 }
 
-.page-title i{
-font-size:28px;
-color:#2563eb;
+.page-title>i{
+width:52px;
+height:52px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:16px;
+background:linear-gradient(135deg,#2563eb,#3b82f6);
+color:white;
+font-size:23px;
+box-shadow:0 10px 25px rgba(37,99,235,.25);
 }
 
 .page-title h1{
 margin:0;
-font-size:30px;
+font-size:28px;
 font-weight:800;
-color:#2563eb;
+color:var(--text);
 }
 
 .page-title p{
-margin-top:6px;
+margin:5px 0 0;
 font-size:14px;
-color:#64748b;
+color:var(--text2);
 }
 
-/* ================= CARD ================= */
+
+
+/* CARD */
 
 .settings-card{
-background:#fff;
-border:1px solid #dbeafe;
+background:var(--card);
+border:1px solid var(--border);
 border-radius:22px;
-padding:22px;
-margin-bottom:20px;
-box-shadow:0 10px 30px rgba(0,0,0,.05);
-transition:.3s;
+padding:20px;
+margin-bottom:18px;
+box-shadow:var(--shadow);
+transition:.25s;
 }
 
 .settings-card:hover{
-transform:translateY(-3px);
+transform:translateY(-2px);
 }
 
-/* HEADER */
 
 .settings-card h3{
-margin:0 0 15px;
-font-size:16px;
-color:#2563eb;
 display:flex;
 align-items:center;
-gap:8px;
+gap:10px;
+margin:0 0 15px;
+font-size:16px;
+font-weight:800;
+color:var(--text);
 }
 
-/* ================= ITEM ================= */
+.settings-card h3 i{
+color:#2563eb;
+}
+
+
+
+/* ITEM */
 
 .setting-item{
 display:flex;
-justify-content:space-between;
 align-items:center;
-padding:12px 0;
-border-bottom:1px solid #f1f5f9;
+justify-content:space-between;
+gap:12px;
+padding:15px;
+margin-bottom:10px;
+border-radius:16px;
+background:var(--bg);
+border:1px solid var(--border);
+text-decoration:none;
+color:var(--text);
+cursor:pointer;
+transition:.2s;
 }
 
 .setting-item:last-child{
-border:none;
+margin-bottom:0;
 }
 
-.setting-item span{
-color:#64748b;
-font-size:14px;
+.setting-item:hover{
+border-color:#2563eb;
+transform:translateX(3px);
 }
 
-.setting-item strong{
+
+.setting-item>div{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+
+.setting-item>div>i{
+width:40px;
+height:40px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:12px;
+background:#2563eb18;
+color:#2563eb;
+}
+
+
+.setting-item b{
+display:block;
 font-size:14px;
 font-weight:700;
-color:#0f172a;
+color:var(--text);
 }
 
-/* ================= BUTTON ================= */
 
-.btn-primary{
-background:#2563eb;
-color:#fff;
-border:none;
-padding:10px 16px;
-border-radius:12px;
-cursor:pointer;
-font-weight:600;
-transition:.2s;
+.setting-item small{
+display:block;
+font-size:12px;
+margin-top:3px;
+color:var(--text2);
 }
 
-.btn-primary:hover{
-transform:translateY(-2px);
-box-shadow:0 8px 20px rgba(37,99,235,.25);
+
+.setting-item>i{
+color:var(--text2);
 }
 
-.btn-danger{
-background:#dc2626;
-color:#fff;
-border:none;
-padding:10px 16px;
-border-radius:12px;
-cursor:pointer;
-font-weight:600;
-transition:.2s;
-}
 
-.btn-danger:hover{
-transform:translateY(-2px);
-box-shadow:0 8px 20px rgba(220,38,38,.25);
-}
 
-/* ================= SWITCH ================= */
+/* SWITCH */
 
 .switch{
 position:relative;
-display:inline-block;
 width:46px;
 height:24px;
+display:inline-block;
 }
 
 .switch input{
-opacity:0;
-width:0;
-height:0;
+display:none;
 }
 
 .slider{
 position:absolute;
-cursor:pointer;
-top:0;
-left:0;
-right:0;
-bottom:0;
-background:#e2e8f0;
-border-radius:20px;
+inset:0;
+background:#cbd5e1;
+border-radius:30px;
 transition:.3s;
 }
 
 .slider:before{
-position:absolute;
 content:"";
-height:18px;
+position:absolute;
 width:18px;
+height:18px;
 left:3px;
 top:3px;
 background:white;
@@ -160,101 +180,129 @@ border-radius:50%;
 transition:.3s;
 }
 
-input:checked + .slider{
+.switch input:checked+.slider{
 background:#2563eb;
 }
 
-input:checked + .slider:before{
+.switch input:checked+.slider:before{
 transform:translateX(22px);
 }
 
-/* ================= DANGER ================= */
 
-.settings-card.danger{
+
+/* DANGER */
+
+.setting-item.danger{
 border-color:#fecaca;
 }
 
-/* ================= DARK MODE ================= */
-
-body.dark .page-title h1{
-color:#60a5fa;
+.setting-item.danger>div>i{
+background:#fee2e2;
+color:#dc2626;
 }
 
-body.dark .page-title p{
-color:#94a3b8;
+.setting-item.danger b{
+color:#dc2626;
 }
 
-body.dark .settings-card{
-background:#0f172a;
-border-color:#1e293b;
-box-shadow:0 10px 30px rgba(0,0,0,.4);
-}
 
-body.dark .setting-item{
-border-color:#1e293b;
-}
 
-body.dark .setting-item span{
-color:#94a3b8;
-}
-
-body.dark .setting-item strong{
-color:#fff;
-}
-
-body.dark .slider{
-background:#334155;
-}
-
-body.dark input:checked + .slider{
-background:#2563eb;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:700px){
-
-.app-container{
-padding-top:10px;
-padding-left:15px;
-padding-right:15px;
-}
-
-.setting-item{
-flex-direction:column;
-align-items:flex-start;
-gap:6px;
-}
+/* BUTTON */
 
 .btn-primary,
 .btn-danger{
 width:100%;
-text-align:center;
+border:none;
+padding:12px;
+border-radius:14px;
+font-weight:700;
+cursor:pointer;
 }
 
+.btn-primary{
+background:#2563eb;
+color:white;
 }
 
-@media(max-width:420px){
+.btn-danger{
+background:#dc2626;
+color:white;
+}
+
+
+
+/* DARK */
+
+html.dark .settings-card{
+background:#0f172a;
+border-color:#1e293b;
+}
+
+html.dark .setting-item{
+background:#020617;
+border-color:#1e293b;
+}
+
+html.dark .page-title h1,
+html.dark .settings-card h3,
+html.dark .setting-item b{
+color:#f8fafc;
+}
+
+html.dark .page-title p,
+html.dark .setting-item small,
+html.dark .setting-item>i{
+color:#94a3b8;
+}
+
+html.dark .slider{
+background:#334155;
+}
+
+
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+.app-container{
+padding-left:15px;
+padding-right:15px;
+}
 
 .page-title h1{
-font-size:22px;
+font-size:23px;
 }
 
-.setting-item strong{
+.settings-card{
+padding:16px;
+}
+
+.setting-item{
+padding:13px;
+}
+
+.setting-item b{
 font-size:13px;
 }
 
+.setting-item small{
+font-size:11px;
 }
 
-/* ================= ANIMATION ================= */
+}
 
-@keyframes fadeIn{
-from{
-opacity:0;
-transform:translateY(10px);
+
+@media(max-width:420px){
+
+.page-title>i{
+width:45px;
+height:45px;
+font-size:20px;
 }
-to{
-opacity:1;
-transform:translateY(0);
+
+.page-title h1{
+font-size:21px;
 }
+
 }
