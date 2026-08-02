@@ -320,6 +320,24 @@ showToast(
 
 }
 
+/* ================= SWITCH ACCOUNT ================= */
+
+const switchAccountBtn=document.getElementById("switchAccountBtn");
+
+if(switchAccountBtn){
+
+switchAccountBtn.onclick=(e)=>{
+
+e.preventDefault();
+
+showToast(
+"Switch Account sedang dalam pemrosesan"
+);
+
+};
+
+}
+
 /* ================= TOAST ================= */
 
 function showToast(message){
