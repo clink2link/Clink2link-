@@ -1,6 +1,6 @@
 /* ===============================
 CLICK2PAY HISTORY SALDO
-REAL DATABASE SUPABASE
+REAL DATABASE SUPABASE FIX
 ================================ */
 
 document.addEventListener("DOMContentLoaded", async()=>{
@@ -38,43 +38,30 @@ function formatDate(date){
 }
 
 
+
 /* ================= ELEMENT ================= */
 
 const container = $("historyList");
 
 
-/* ================= SKELETON ================= */
 
-function showSkeleton(){
+/* ================= STATUS ================= */
 
-if(!container) return;
+function statusText(status){
 
-container.innerHTML="";
+switch(status){
 
-for(let i=0;i<4;i++){
+case "success":
+return "Berhasil";
 
-container.innerHTML+=`
+case "pending":
+return "Diproses";
 
-<div class="link-card">
+case "failed":
+return "Gagal";
 
-<div style="
-height:14px;
-width:60%;
-background:#e2e8f0;
-border-radius:8px;
-margin-bottom:12px;">
-</div>
-
-<div style="
-height:12px;
-width:40%;
-background:#e2e8f0;
-border-radius:8px;">
-</div>
-
-</div>
-
-`;
+default:
+return status || "Unknown";
 
 }
 
@@ -97,17 +84,13 @@ padding:40px 20px;
 style="
 font-size:40px;
 color:#94a3b8;
-">
-</i>
+"></i>
 
 <h3>
 Belum ada transaksi
 </h3>
 
-<p style="
-color:#64748b;
-font-size:13px;
-">
+<p>
 Transaksi saldo akan muncul otomatis
 </p>
 
@@ -119,39 +102,14 @@ Transaksi saldo akan muncul otomatis
 
 
 
-/* ================= STATUS ================= */
-
-function statusText(status){
-
-switch(status){
-
-case "success":
-return "Berhasil";
-
-case "pending":
-return "Diproses";
-
-case "failed":
-return "Gagal";
-
-default:
-return status;
-
-}
-
-}
-
-
-
 /* ================= RENDER ================= */
-
 
 function renderHistory(data){
 
 container.innerHTML="";
 
 
-if(data.length===0){
+if(!data.length){
 
 emptyState();
 return;
@@ -160,32 +118,37 @@ return;
 
 
 
-data.forEach((item,index)=>{
+data.forEach(item=>{
 
 
-let income = item.type==="income";
+const income =
+item.type === "income";
 
 
-container.innerHTML+=`
+container.innerHTML += `
 
 <div class="link-card">
 
+
 <div class="link-top">
 
+
 <h3>
+
 <i class="fa-solid ${
-income 
+income
 ? "fa-arrow-down"
 : "fa-arrow-up"
 }">
 </i>
 
-${item.title}
+${item.title || item.description || "Transaksi Saldo"}
 
 </h3>
 
 
-<span class="badge ${item.status}">
+
+<span class="badge ${item.status || "success"}">
 
 ${statusText(item.status)}
 
@@ -193,6 +156,7 @@ ${statusText(item.status)}
 
 
 </div>
+
 
 
 <div class="link-mid">
@@ -228,11 +192,9 @@ ${formatRupiah(item.amount)}
 
 
 
-/* ================= UPDATE STATS ================= */
-
+/* ================= STATS ================= */
 
 function updateStats(data){
-
 
 let totalIn = 0;
 let totalOut = 0;
@@ -242,47 +204,43 @@ let pending = 0;
 data.forEach(item=>{
 
 
-let amount = Number(item.amount)||0;
+const amount =
+Number(item.amount)||0;
 
 
-if(item.type==="income")
+if(item.type==="income"){
 totalIn += amount;
+}
 
 
-if(item.type==="expense")
+if(item.type==="expense"){
 totalOut += amount;
+}
 
 
-if(item.status==="pending")
+if(item.status==="pending"){
 pending++;
+}
 
 
 });
 
 
 
-if($("totalIn"))
-$("totalIn").innerText =
-formatRupiah(totalIn);
+$("totalIn") &&
+($("totalIn").innerText=formatRupiah(totalIn));
 
 
-
-if($("totalOut"))
-$("totalOut").innerText =
-formatRupiah(totalOut);
+$("totalOut") &&
+($("totalOut").innerText=formatRupiah(totalOut));
 
 
-
-if($("totalTx"))
-$("totalTx").innerText =
-data.length;
+$("totalTx") &&
+($("totalTx").innerText=data.length);
 
 
-
-if($("totalPending"))
-$("totalPending").innerText =
-pending;
-
+$("totalPending") &&
+($("totalPending").innerText=pending);
 
 
 }
@@ -291,15 +249,10 @@ pending;
 
 /* ================= LOAD DATABASE ================= */
 
-
 async function loadHistory(){
 
 
 try{
-
-
-showSkeleton();
-
 
 
 if(!window.database){
@@ -307,6 +260,8 @@ if(!window.database){
 console.log(
 "DATABASE BELUM READY"
 );
+
+setTimeout(loadHistory,500);
 
 return;
 
@@ -319,14 +274,19 @@ await window.database.getCurrentProfile();
 
 
 
+console.log(
+"CURRENT USER:",
+user
+);
+
+
+
 if(!user?.id){
 
 location.href="login.html";
-
 return;
 
 }
-
 
 
 
@@ -353,13 +313,27 @@ ascending:false
 
 
 
-if(error)
+console.log(
+"TRANSACTION DATA:",
+data
+);
+
+
+
+if(error){
+
+console.log(
+"SUPABASE ERROR:",
+error
+);
+
 throw error;
 
+}
 
 
-historyData = data || [];
 
+historyData=data || [];
 
 
 renderHistory(historyData);
@@ -370,13 +344,20 @@ updateStats(historyData);
 
 }catch(err){
 
+
 console.log(
-"HISTORY ERROR",
+"HISTORY ERROR:",
 err
 );
 
+
 container.innerHTML=
-"<p>Gagal memuat transaksi</p>";
+`
+<p>
+Gagal memuat riwayat
+</p>
+`;
+
 
 }
 
@@ -391,35 +372,38 @@ container.innerHTML=
 function applyFilter(){
 
 
-let keyword =
-$("searchInput")
-.value
+const keyword =
+($("searchInput")?.value || "")
 .toLowerCase();
 
 
 
-let filtered =
+const filtered =
 historyData.filter(item=>{
 
 
-let filterOK =
+const filterOK =
 currentFilter==="all"
 ||
 item.type===currentFilter;
 
 
-let searchOK =
-item.title
-.toLowerCase()
-.includes(keyword);
+
+const text =
+(
+item.title ||
+item.description ||
+""
+)
+.toLowerCase();
 
 
 
-return filterOK && searchOK;
+return filterOK &&
+text.includes(keyword);
 
 
 });
-
 
 
 renderHistory(filtered);
@@ -443,9 +427,7 @@ applyFilter
 
 
 document
-.querySelectorAll(
-".link-filter button"
-)
+.querySelectorAll(".link-filter button")
 .forEach(btn=>{
 
 
@@ -455,9 +437,7 @@ btn.addEventListener(
 
 
 document
-.querySelectorAll(
-".link-filter button"
-)
+.querySelectorAll(".link-filter button")
 .forEach(b=>
 b.classList.remove("active")
 );
@@ -467,10 +447,8 @@ b.classList.remove("active")
 btn.classList.add("active");
 
 
-
 currentFilter =
 btn.dataset.filter;
-
 
 
 applyFilter();
@@ -483,7 +461,6 @@ applyFilter();
 
 
 /* ================= START ================= */
-
 
 await loadHistory();
 
