@@ -170,6 +170,22 @@ applyTheme(newTheme);
 });
 
 
+const createBtn=document.getElementById("createBtn");
+const createMenu=document.getElementById("createMenu");
+
+if(createBtn&&createMenu){
+
+createBtn.onclick=()=>{
+
+createMenu.classList.toggle("active");
+
+createBtn.classList.toggle("active");
+
+};
+
+}
+
+
 /* =========================
    LOGOUT
 ========================= */
