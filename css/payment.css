@@ -550,141 +550,142 @@ box-shadow:0 10px 22px rgba(37,99,235,.25);
 DARK MODE
 ==================================================*/
 
-.dark body{
+html.dark,
+html.dark body{
 background:linear-gradient(180deg,#020617,#0f172a);
 color:#e2e8f0;
 }
 
-.dark .pay-card,
-.dark .payment-box,
-.dark .info-box{
+html.dark .pay-card,
+html.dark .payment-box,
+html.dark .info-box{
 background:#0f172a;
 border:1px solid #1e293b;
 box-shadow:0 10px 28px rgba(0,0,0,.35);
 }
 
-.dark .page-title h1,
-.dark .payment-box h2,
-.dark .info-header h3{
+html.dark .page-title h1,
+html.dark .payment-box h2,
+html.dark .info-header h3{
 color:#60a5fa;
 }
 
-.dark .page-title p,
-.dark .pay-card span,
-.dark .payment-box p,
-.dark .info-item span,
-.dark .withdraw-note li{
+html.dark .page-title p,
+html.dark .pay-card span,
+html.dark .payment-box p,
+html.dark .info-item span,
+html.dark .withdraw-note li{
 color:#94a3b8;
 }
 
-.dark .pay-card h2{
+html.dark .pay-card h2{
 color:#fff;
 }
 
-.dark .input-box{
+html.dark .input-box{
 background:#020617;
 border:1px solid #334155;
 }
 
-.dark .input-box:focus-within{
+html.dark .input-box:focus-within{
 border-color:#60a5fa;
 box-shadow:0 0 0 4px rgba(96,165,250,.15);
 }
 
-.dark .input-box i{
+html.dark .input-box i{
 color:#60a5fa;
 }
 
-.dark .input-box input{
+html.dark .input-box input{
 background:transparent;
 color:#fff;
 }
 
-.dark .input-box input::placeholder{
+html.dark .input-box input::placeholder{
 color:#64748b;
 }
 
-.dark .withdraw-note{
+html.dark .withdraw-note{
 background:#020617;
 border:1px solid #334155;
 }
 
-.dark .withdraw-note b{
+html.dark .withdraw-note b{
 color:#60a5fa;
 }
 
-.dark .payment-status{
+html.dark .payment-status{
 background:#172554;
 border:1px solid #2563eb;
 border-left:4px solid #60a5fa;
 color:#bfdbfe;
 }
 
-.dark .btn-secondary{
+html.dark .btn-secondary{
 background:#1e293b;
 border:1px solid #334155;
 color:#60a5fa;
 }
 
-.dark .btn-secondary:hover{
+html.dark .btn-secondary:hover{
 background:#334155;
 }
 
-.dark .warning-box{
+html.dark .warning-box{
 background:#451a03;
 border:1px solid #78350f;
 }
 
-.dark .warning-box h3,
-.dark .warning-box p,
-.dark .warning-box>i{
+html.dark .warning-box h3,
+html.dark .warning-box p,
+html.dark .warning-box>i{
 color:#fdba74;
 }
 
-.dark .info-item{
+html.dark .info-item{
 background:#020617;
 border:1px solid #334155;
 }
 
-.dark .info-item:hover{
+html.dark .info-item:hover{
 background:#172554;
 border-color:#2563eb;
 }
 
-.dark .info-item i,
-.dark .info-item b{
+html.dark .info-item i,
+html.dark .info-item b{
 color:#60a5fa;
 }
 
-.dark .instant-limit{
+html.dark .instant-limit{
 background:#451a03;
 border:1px solid #78350f;
 }
 
-.dark .instant-limit>div:first-child,
-.dark #instantLimit{
+html.dark .instant-limit>div:first-child,
+html.dark #instantLimit{
 color:#fbbf24;
 }
 
-.dark .progress{
+html.dark .progress{
 background:#78350f;
 }
 
-.dark #instantProgress{
+html.dark #instantProgress{
 background:linear-gradient(90deg,#f59e0b,#ea580c);
 }
 
-.dark .instant-options button{
+html.dark .instant-options button{
 background:#0f172a;
 border:1px solid #334155;
 color:#60a5fa;
 }
 
-.dark .instant-options button:hover{
+html.dark .instant-options button:hover{
 border-color:#60a5fa;
 }
 
-.dark .instant-options button.active{
+html.dark .instant-options button.active{
 background:#2563eb;
 border-color:#2563eb;
 color:#fff;
