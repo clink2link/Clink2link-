@@ -89,7 +89,7 @@ IP: ${escapeHTML(item.ip||"-")}
 </div>
 
 
-${item.device!==getDevice()?`
+${item.user_agent!==getDevice()+"-"+navigator.userAgent?`
 
 <button class="logout-device"
 onclick="logoutDevice('${item.id}')">
@@ -140,12 +140,15 @@ const ipData=await getIP();
 
 const device=getDevice();
 
+const fingerprint=
+device+"-"+navigator.userAgent;
+
 
 const {data:old}=await window.database.supabase
 .from("login_activity")
 .select("id")
 .eq("user_id",userId)
-.eq("device",device)
+.eq("user_agent",fingerprint)
 .maybeSingle();
 
 
@@ -183,7 +186,7 @@ user_id:userId,
 
 device:device,
 
-user_agent:navigator.userAgent,
+user_agent:fingerprint,
 
 ip:ipData.ip,
 
