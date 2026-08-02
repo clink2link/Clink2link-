@@ -178,7 +178,30 @@ Jangan pernah membagikan password, kode OTP, ataupun data pembayaran kepada siap
 
 <div class="setting-list">
 
-<a href="payment-account.html" class="setting-item">
+<div class="payment-empty" id="paymentEmpty">
+
+<i class="fa-solid fa-wallet"></i>
+
+<h3>Belum ada metode pembayaran</h3>
+
+<p>
+Kamu belum menambahkan Bank atau E-Wallet.
+Tambahkan metode pembayaran agar dapat menerima penarikan saldo.
+</p>
+
+<a href="payment-setting.html" class="payment-btn">
+
+<i class="fa-solid fa-gear"></i>
+
+<span>Atur Pembayaran</span>
+
+</a>
+
+</div>
+
+<div id="paymentList" style="display:none;">
+
+<a href="payment-setting.html" class="setting-item">
 
 <div>
 
@@ -186,29 +209,9 @@ Jangan pernah membagikan password, kode OTP, ataupun data pembayaran kepada siap
 
 <div>
 
-<b>Bank / E-Wallet</b><br>
+<b id="paymentMethod">Bank / E-Wallet</b><br>
 
-<small id="paymentMethod">Belum ditambahkan</small>
-
-</div>
-
-</div>
-
-<i class="fa-solid fa-chevron-right"></i>
-
-</a>
-
-<a href="payment-account.html" class="setting-item">
-
-<div>
-
-<i class="fa-solid fa-credit-card"></i>
-
-<div>
-
-<b>Nomor Rekening / Nomor HP</b><br>
-
-<small id="paymentNumber">-</small>
+<small id="paymentNumber">Nomor Rekening / Nomor HP</small>
 
 </div>
 
@@ -218,7 +221,7 @@ Jangan pernah membagikan password, kode OTP, ataupun data pembayaran kepada siap
 
 </a>
 
-<a href="payment-account.html" class="setting-item">
+<a href="payment-setting.html" class="setting-item">
 
 <div>
 
@@ -238,13 +241,59 @@ Jangan pernah membagikan password, kode OTP, ataupun data pembayaran kepada siap
 
 </a>
 
-<a href="payment-account.html" class="setting-item">
+</div>
+
+</div>
+
+</section>
+
+<section class="setting-menu">
+
+<div class="setting-title">
+
+<i class="fa-solid fa-user-gear"></i>
+
+<h2>Manajemen Akun</h2>
+
+</div>
+
+<div class="setting-list">
+
+<a href="add-account.html" class="setting-item">
 
 <div>
 
-<i class="fa-solid fa-plus"></i>
+<i class="fa-solid fa-user-plus"></i>
 
-<span>Tambah Akun Pembayaran</span>
+<span>Tambah Akun</span>
+
+</div>
+
+<i class="fa-solid fa-chevron-right"></i>
+
+</a>
+
+<a href="switch-account.html" class="setting-item">
+
+<div>
+
+<i class="fa-solid fa-right-left"></i>
+
+<span>Ganti Akun</span>
+
+</div>
+
+<i class="fa-solid fa-chevron-right"></i>
+
+</a>
+
+<a href="logout.html" class="setting-item">
+
+<div>
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+<span>Keluar</span>
 
 </div>
 
