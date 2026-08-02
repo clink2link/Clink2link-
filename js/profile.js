@@ -286,6 +286,37 @@ showToast(
 
 });
 
+/* ================= PASSWORD ================= */
+
+const passwordInput=
+document.getElementById("profilePassword");
+
+const togglePassword=
+document.getElementById("togglePassword");
+
+if(passwordInput&&togglePassword){
+
+togglePassword.onclick=()=>{
+
+if(passwordInput.type==="password"){
+
+passwordInput.type="text";
+
+togglePassword.innerHTML=
+'<i class="fa-solid fa-eye-slash"></i>';
+
+}else{
+
+passwordInput.type="password";
+
+togglePassword.innerHTML=
+'<i class="fa-solid fa-eye"></i>';
+
+}
+
+};
+
+}
 
 /* ================= TOAST ================= */
 
