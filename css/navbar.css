@@ -641,3 +641,46 @@ filter:brightness(1.2);
 .c2p-bottom-nav a.active i{
 transform:scale(1.2);
 }
+
+.create-wrapper{
+position:relative;
+}
+
+.create-menu{
+position:absolute;
+bottom:0;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+gap:12px;
+opacity:0;
+pointer-events:none;
+transition:.3s;
+}
+
+.create-menu a{
+width:90px;
+height:42px;
+background:#2563eb;
+color:white;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:6px;
+font-size:12px;
+font-weight:700;
+text-decoration:none;
+box-shadow:0 10px 25px rgba(0,0,0,.2);
+}
+
+.create-menu.active{
+opacity:1;
+pointer-events:auto;
+transform:translateX(-50%) translateY(-55px);
+}
+
+
+.center-btn.active{
+transform:rotate(45deg);
+}
