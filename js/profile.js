@@ -338,6 +338,26 @@ showToast(
 
 }
 
+const deleteAccountBtn =
+document.getElementById("deleteAccountBtn");
+
+
+if(deleteAccountBtn){
+
+deleteAccountBtn.onclick=(e)=>{
+
+e.preventDefault();
+
+
+showToast(
+"Fitur penghapusan akun sedang dalam pengembangan"
+);
+
+
+};
+
+}
+
 /* ================= TOAST ================= */
 
 function showToast(message){
