@@ -2,118 +2,145 @@
 CLICK2PAY SETTINGS LOGIC
 ========================= */
 
-// INIT
-document.addEventListener("DOMContentLoaded", async () => {
-loadUser();
+document.addEventListener("DOMContentLoaded",async()=>{
+await loadUser();
 initTheme();
 });
 
-/* =========================
-LOAD USER DATA
-========================= */
-function loadUser(){
 
-// sementara ambil dari localStorage
-const user = JSON.parse(localStorage.getItem("c2p_user")) || {};
+/* LOAD USER */
+async function loadUser(){
 
-document.getElementById("userEmail").innerText = user.email || "user@mail.com";
-document.getElementById("userId").innerText = user.id || "USR-" + randomId();
+try{
+
+if(!window.database){
+console.error("DATABASE BELUM READY");
+return;
+}
+
+const user=await window.database.getUser();
+
+if(!user){
+location.href="login.html";
+return;
+}
+
+const email=document.getElementById("userEmail");
+const id=document.getElementById("userId");
+
+if(email){
+email.textContent=user.email||"-";
+}
+
+if(id){
+id.textContent=user.id?user.id.substring(0,8)+"...":"-";
+}
+
+}catch(err){
+
+console.error("LOAD USER ERROR:",err);
+showToast("Gagal mengambil data akun");
 
 }
 
-/* =========================
-THEME TOGGLE
-========================= */
+}
+
+
+/* THEME */
 function initTheme(){
 
-const toggle = document.getElementById("themeToggle");
+const toggle=document.getElementById("themeToggle");
 
-// set awal
-if(localStorage.getItem("theme")==="dark"){
-toggle.checked = true;
-}
+if(!toggle)return;
 
-// event
-toggle.addEventListener("change", () => {
+toggle.checked=document.documentElement.classList.contains("dark");
+
+toggle.addEventListener("change",()=>{
 
 if(toggle.checked){
+
 document.documentElement.classList.add("dark");
 localStorage.setItem("theme","dark");
 showToast("Dark mode aktif 🌙");
+
 }else{
+
 document.documentElement.classList.remove("dark");
 localStorage.setItem("theme","light");
 showToast("Light mode aktif ☀️");
+
 }
 
 });
 
 }
 
-/* =========================
-CHANGE PASSWORD (UI ONLY)
-========================= */
+
+/* PASSWORD */
 function changePassword(){
 
-const newPass = prompt("Masukkan password baru:");
-
-if(!newPass){
-showToast("Batal ganti password");
-return;
-}
-
-if(newPass.length < 6){
-showToast("Password minimal 6 karakter");
-return;
-}
-
-// dummy save
-showToast("Password berhasil diganti (dummy)");
+showToast("Fitur ganti password sedang dipersiapkan");
 
 }
 
-/* =========================
-LOGOUT
-========================= */
-function logout(){
 
-const confirmLogout = confirm("Yakin mau logout?");
+/* ADD ACCOUNT */
+function addAccount(e){
 
-if(!confirmLogout) return;
+if(e)e.preventDefault();
 
-// hapus data local
-localStorage.removeItem("c2p_user");
-
-// redirect
-window.location.href = "login.html";
+showToast("Add Account sedang dalam pemrosesan");
 
 }
 
-/* =========================
-HELPER
-========================= */
-function randomId(){
-return Math.random().toString(36).substr(2,6).toUpperCase();
+
+/* LOGOUT */
+async function logout(e){
+
+if(e)e.preventDefault();
+
+if(!confirm("Yakin ingin logout?"))return;
+
+try{
+
+await window.database.logout();
+
+}catch(err){
+
+console.error("LOGOUT ERROR:",err);
+showToast("Gagal logout");
+
 }
 
-/* =========================
-TOAST NOTIFICATION
-========================= */
+}
+
+
+/* TOAST */
 function showToast(message){
 
-let toast = document.createElement("div");
-toast.className = "c2p-toast";
-toast.innerText = message;
+const old=document.querySelector(".c2p-toast");
+
+if(old)old.remove();
+
+const toast=document.createElement("div");
+
+toast.className="c2p-toast";
+toast.innerText=message;
 
 document.body.appendChild(toast);
 
 setTimeout(()=>{
 toast.classList.add("show");
-},100);
+},50);
 
 setTimeout(()=>{
+
 toast.classList.remove("show");
-setTimeout(()=>toast.remove(),300);
+
+setTimeout(()=>{
+toast.remove();
+},300);
+
 },2500);
 
 }
