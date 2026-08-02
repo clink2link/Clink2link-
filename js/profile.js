@@ -302,6 +302,24 @@ await window.database.logout();
 
 }
 
+/* ================= ADD ACCOUNT ================= */
+
+const addAccountBtn=document.getElementById("addAccountBtn");
+
+if(addAccountBtn){
+
+addAccountBtn.onclick=(e)=>{
+
+e.preventDefault();
+
+showToast(
+"Add Account sedang dalam pemrosesan"
+);
+
+};
+
+}
+
 /* ================= TOAST ================= */
 
 function showToast(message){
