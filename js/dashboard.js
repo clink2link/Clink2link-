@@ -21,7 +21,7 @@ const authId=user.id;
 // PROFILE
 // ===========================
 
-const profile=await database.getProfile(authId);
+const profile=await database.getUser();
 
 if(!profile){
 console.error("Profile tidak ditemukan.");
@@ -919,7 +919,7 @@ return;
 
 
 // ambil profile dari database.js
-const profile = await database.getProfile(user.id);
+const profile = await database.getUser();
 
 
 if(!profile){
