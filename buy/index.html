@@ -362,44 +362,57 @@ color:#111827;
 }
 
 .payment-marquee{
+position:relative;
 overflow:hidden;
-white-space:nowrap;
+width:100%;
 }
 
 .payment-track{
-display:inline-flex;
-gap:12px;
+display:flex;
 align-items:center;
+gap:12px;
+width:max-content;
 }
 
 .payment-track.left{
-animation:marqueeLeft 28s linear infinite;
+animation:marqueeLeft 80s linear infinite;
 }
 
 .payment-track.right{
-animation:marqueeRight 28s linear infinite;
+animation:marqueeRight 80s linear infinite;
 }
 
 .payment-item{
-display:inline-flex;
+display:flex;
 align-items:center;
-padding:8px 14px;
+justify-content:center;
+padding:8px 16px;
 border-radius:999px;
 background:#eff6ff;
 border:1px solid #dbeafe;
 color:#2563eb;
 font-size:14px;
 font-weight:700;
+white-space:nowrap;
+flex-shrink:0;
 }
 
 @keyframes marqueeLeft{
-0%{transform:translateX(100%);}
-100%{transform:translateX(-100%);}
+0%{
+transform:translateX(0);
+}
+100%{
+transform:translateX(-50%);
+}
 }
 
 @keyframes marqueeRight{
-0%{transform:translateX(-100%);}
-100%{transform:translateX(100%);}
+0%{
+transform:translateX(-50%);
+}
+100%{
+transform:translateX(0);
+}
 }
 </style>
 
@@ -509,6 +522,28 @@ Utamakan lihat dulu link yang mau anda beli supaya tidak ada kendala kesalahpaha
 <div class="payment-box">
 
 <div class="payment-title">
+<i class="fa-solid fa-circle-check"></i>
+Pembayaran Didukung
+</div>
+
+<p style="
+margin:0 0 14px;
+font-size:14px;
+color:#6b7280;
+line-height:1.6;
+">
+Pembayaran dapat dilakukan menggunakan berbagai <b>E-Wallet</b>,
+<b>Mobile Banking</b>, <b>Virtual Account</b>, dan
+<b>Transfer Bank</b> yang didukung oleh sistem pembayaran kami.
+</p>
+
+</div>
+
+
+
+<div class="payment-box">
+
+<div class="payment-title">
 <i class="fa-solid fa-wallet"></i>
 E-Wallet Indonesia & Malaysia
 </div>
@@ -527,11 +562,28 @@ E-Wallet Indonesia & Malaysia
 <span class="payment-item">Sakuku</span>
 <span class="payment-item">MotionPay</span>
 <span class="payment-item">Paytren</span>
-
-<span class="payment-item">Touch 'n Go eWallet</span>
+<span class="payment-item">Touch 'n Go</span>
 <span class="payment-item">Boost</span>
 <span class="payment-item">GrabPay MY</span>
-<span class="payment-item">MAE Maybank</span>
+<span class="payment-item">MAE</span>
+<span class="payment-item">ShopeePay MY</span>
+<span class="payment-item">BigPay</span>
+<span class="payment-item">Setel</span>
+
+<span class="payment-item">DANA</span>
+<span class="payment-item">GoPay</span>
+<span class="payment-item">OVO</span>
+<span class="payment-item">ShopeePay</span>
+<span class="payment-item">LinkAja</span>
+<span class="payment-item">AstraPay</span>
+<span class="payment-item">i.Saku</span>
+<span class="payment-item">Sakuku</span>
+<span class="payment-item">MotionPay</span>
+<span class="payment-item">Paytren</span>
+<span class="payment-item">Touch 'n Go</span>
+<span class="payment-item">Boost</span>
+<span class="payment-item">GrabPay MY</span>
+<span class="payment-item">MAE</span>
 <span class="payment-item">ShopeePay MY</span>
 <span class="payment-item">BigPay</span>
 <span class="payment-item">Setel</span>
@@ -548,7 +600,7 @@ E-Wallet Indonesia & Malaysia
 
 <div class="payment-title">
 <i class="fa-solid fa-building-columns"></i>
-Transfer Bank
+Transfer Bank Indonesia
 </div>
 
 <div class="payment-marquee">
@@ -558,25 +610,48 @@ Transfer Bank
 <span class="payment-item">BCA</span>
 <span class="payment-item">blu by BCA</span>
 <span class="payment-item">Mandiri</span>
-<span class="payment-item">Livin' by Mandiri</span>
+<span class="payment-item">Livin'</span>
 <span class="payment-item">BRI</span>
 <span class="payment-item">BNI</span>
 <span class="payment-item">BTN</span>
-<span class="payment-item">CIMB Niaga</span>
-<span class="payment-item">Permata</span>
-<span class="payment-item">Danamon</span>
-<span class="payment-item">Panin Bank</span>
-<span class="payment-item">OCBC</span>
-<span class="payment-item">Bank Mega</span>
+<span class="payment-item">BSI</span>
 <span class="payment-item">SeaBank</span>
 <span class="payment-item">Bank Jago</span>
 <span class="payment-item">Bank Neo</span>
 <span class="payment-item">BNC</span>
-<span class="payment-item">Bank Syariah Indonesia</span>
-<span class="payment-item">Maybank Indonesia</span>
-<span class="payment-item">UOB</span>
+<span class="payment-item">Permata</span>
+<span class="payment-item">CIMB Niaga</span>
+<span class="payment-item">Danamon</span>
+<span class="payment-item">OCBC</span>
+<span class="payment-item">Maybank</span>
+<span class="payment-item">Panin Bank</span>
+<span class="payment-item">Bank Mega</span>
 <span class="payment-item">HSBC</span>
 <span class="payment-item">DBS</span>
+<span class="payment-item">UOB</span>
+
+<span class="payment-item">BCA</span>
+<span class="payment-item">blu by BCA</span>
+<span class="payment-item">Mandiri</span>
+<span class="payment-item">Livin'</span>
+<span class="payment-item">BRI</span>
+<span class="payment-item">BNI</span>
+<span class="payment-item">BTN</span>
+<span class="payment-item">BSI</span>
+<span class="payment-item">SeaBank</span>
+<span class="payment-item">Bank Jago</span>
+<span class="payment-item">Bank Neo</span>
+<span class="payment-item">BNC</span>
+<span class="payment-item">Permata</span>
+<span class="payment-item">CIMB Niaga</span>
+<span class="payment-item">Danamon</span>
+<span class="payment-item">OCBC</span>
+<span class="payment-item">Maybank</span>
+<span class="payment-item">Panin Bank</span>
+<span class="payment-item">Bank Mega</span>
+<span class="payment-item">HSBC</span>
+<span class="payment-item">DBS</span>
+<span class="payment-item">UOB</span>
 
 </div>
 
