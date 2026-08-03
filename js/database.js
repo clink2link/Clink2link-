@@ -733,7 +733,7 @@ payload
 
 
 const response = await fetch(
-"https://click2pay.my.id/api/create-sell-order",
+`${API_URL}/api/create-sell-order`,
 {
 method:"POST",
 headers:{
