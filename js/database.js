@@ -724,30 +724,74 @@ async function createSellOrder(payload){
 
 
     if(!payload.link_id){
-
         throw new Error(
             "Link ID tidak ditemukan"
         );
-
     }
 
 
     if(!payload.seller_id){
-
         throw new Error(
             "Seller ID tidak ditemukan"
         );
-
     }
 
 
-    const price =
-    Number(payload.price || 0);
+    const price = Number(
+        payload.price || 0
+    );
+
+
+    if(price <= 0){
+        throw new Error(
+            "Harga tidak valid"
+        );
+    }
+
+
+    const fee =
+    Math.floor(price * 0.20);
+
+
+    const seller_receive =
+    price - fee;
 
 
 
-    const payment =
-    calculateSellPayment(price);
+    const insertData={
+
+        link_id:
+        payload.link_id,
+
+        seller_id:
+        payload.seller_id,
+
+        buyer_id:
+        null,
+
+        price:
+
+        price,
+
+        fee:
+
+        fee,
+
+        seller_receive:
+
+        seller_receive,
+
+        status:
+
+        "pending"
+
+    };
+
+
+    console.log(
+        "INSERT SELL ORDER:",
+        insertData
+    );
 
 
 
@@ -758,36 +802,9 @@ async function createSellOrder(payload){
 
     .from("sell_orders")
 
-    .insert({
-
-        link_id:
-        payload.link_id,
-
-
-        seller_id:
-        payload.seller_id,
-
-
-        buyer_id:
-        payload.buyer_id || null,
-
-
-        price:
-        price,
-
-
-        fee:
-        payment.fee,
-
-
-        seller_receive:
-        payment.seller_receive,
-
-
-        status:
-        "pending"
-
-    })
+    .insert(
+        insertData
+    )
 
     .select()
 
@@ -802,13 +819,17 @@ async function createSellOrder(payload){
             error
         );
 
-        throw error;
+
+        throw new Error(
+            error.message
+        );
 
     }
 
 
+
     console.log(
-        "SELL ORDER CREATED:",
+        "SELL ORDER SUCCESS:",
         data
     );
 
@@ -816,7 +837,6 @@ async function createSellOrder(payload){
     return data;
 
 }
-
 
 
 
