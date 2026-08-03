@@ -525,3 +525,57 @@ b=>b.toString(16).padStart(2,"0")
 .join("");
 
 }
+
+
+// =================================
+// CHECK PAYMENT
+// =================================
+
+async function checkPayment(request,env){
+
+const url=new URL(request.url);
+
+const invoice_id=url.searchParams.get("invoice_id");
+
+
+if(!invoice_id){
+throw new Error("invoice_id wajib diisi");
+}
+
+
+// CARI ORDER
+
+const orders=await supabaseRequest(
+env,
+"sell_orders",
+"GET",
+null,
+`?invoice_id=eq.${invoice_id}&select=*`
+);
+
+
+if(!orders.length){
+
+return jsonResponse({
+success:false,
+message:"Order tidak ditemukan"
+});
+
+}
+
+
+const order=orders[0];
+
+
+return jsonResponse({
+success:true,
+data:{
+order_id:order.id,
+status:order.status,
+price:order.price,
+seller_receive:order.seller_receive,
+paid_at:order.paid_at||null
+}
+});
+
+}
