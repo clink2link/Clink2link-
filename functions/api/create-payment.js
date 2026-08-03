@@ -73,14 +73,22 @@ env,
 amount:Number(order.price),
 
 description:
-`Pembelian Sell Link ${order.link_id}`,
-
-payment_url:
-"https://www.bayar.gg/pay"
+`Pembelian Sell Link ${order.link_id}`
 
 }
+
 );
 
+
+
+// =====================
+// REAL EXPIRED 7 MENIT
+// =====================
+
+const expiresAt =
+new Date(
+Date.now() + 7 * 60 * 1000
+).toISOString();
 
 
 
@@ -105,7 +113,7 @@ qris_string:
 payment.qris_string,
 
 expires_at:
-payment.expires_at
+expiresAt
 
 },
 
@@ -144,7 +152,7 @@ qris_string:
 payment.qris_string,
 
 expires_at:
-payment.expires_at
+expiresAt
 
 }
 
@@ -227,7 +235,6 @@ JSON.stringify(payload)
 
 
 const text=await res.text();
-
 
 
 let data;
