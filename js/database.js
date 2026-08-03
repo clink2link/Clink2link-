@@ -724,143 +724,83 @@ const API_URL="https://click2pay.my.id";
 
 async function createSellOrder(payload){
 
-let debugBox=document.getElementById("debugBox");
-
-
-if(!debugBox){
-
-debugBox=document.createElement("div");
-
-debugBox.id="debugBox";
-
-debugBox.style.position="fixed";
-debugBox.style.top="10px";
-debugBox.style.left="10px";
-debugBox.style.right="10px";
-debugBox.style.maxHeight="80vh";
-debugBox.style.overflow="auto";
-debugBox.style.zIndex="999999";
-debugBox.style.background="#111";
-debugBox.style.color="#00ff00";
-debugBox.style.padding="15px";
-debugBox.style.borderRadius="12px";
-debugBox.style.fontSize="12px";
-debugBox.style.fontFamily="monospace";
-debugBox.style.whiteSpace="pre-wrap";
-
-document.body.appendChild(debugBox);
-
-}
-
-
-function debug(text){
-
-debugBox.innerHTML+=text+"\n\n";
-
-}
-
-
 try{
 
-
-debug(
-"=== CREATE SELL ORDER START ==="
+console.log(
+"CREATE ORDER PAYLOAD",
+payload
 );
 
 
-debug(
-"PAYLOAD:\n"+
-JSON.stringify(payload,null,2)
-);
-
-
-
-const response=
-await fetch(
-
-`${API_URL}/api/create-sell-order`,
-
+const response = await fetch(
+"https://click2pay.my.id/api/create-sell-order",
 {
-
 method:"POST",
-
 headers:{
 "Content-Type":"application/json"
 },
+body:JSON.stringify(payload)
+}
+);
 
-body:
-JSON.stringify(payload)
+
+const text = await response.text();
+
+
+console.log(
+"STATUS:",
+response.status
+);
+
+
+console.log(
+"RAW RESPONSE:",
+text
+);
+
+
+
+let result;
+
+try{
+
+result=JSON.parse(text);
+
+}catch(e){
+
+throw new Error(
+"SERVER BUKAN JSON:\n"+text.substring(0,200)
+);
 
 }
-
-);
-
-
-
-const result=
-await response.json();
-
-
-
-debug(
-"FUNCTION RESPONSE:\n"+
-JSON.stringify(result,null,2)
-);
 
 
 
 if(!response.ok){
 
 throw new Error(
-result.error||"CREATE ORDER ERROR"
+result.error || "REQUEST ERROR"
 );
 
 }
 
 
-
-if(!result.success){
-
-throw new Error(
-result.error||"CREATE ORDER GAGAL"
-);
-
-}
-
-
-
-debug(
-"SUCCESS CREATE SELL ORDER"
-);
-
-
-
-return result.data;
+return result.data || result;
 
 
 
 }catch(err){
 
-
-debug(
-"ERROR:\n"+
-err.message
-);
-
-
 console.error(
-"SELL ORDER ERROR:",
+"CREATE SELL ORDER ERROR:",
 err
 );
-
 
 throw err;
 
 }
 
 }
-
-
 
 // ===============================
 // CREATE PAYMENT
