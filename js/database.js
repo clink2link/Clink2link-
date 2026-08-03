@@ -808,9 +808,7 @@ throw err;
 
 async function createPayment(payload){
 
-    console.log("CREATE PAYMENT:",payload);
-
-    const response=await fetch(
+    const response = await fetch(
         `${API_URL}/api/create-payment`,
         {
             method:"POST",
@@ -821,29 +819,40 @@ async function createPayment(payload){
         }
     );
 
-    const text=await response.text();
 
-    console.log("PAYMENT RAW:",text);
+    const text = await response.text();
+
 
     let result;
 
+
     try{
 
-        result=JSON.parse(text);
+        result = JSON.parse(text);
 
-    }catch(e){
+    }
+    catch{
 
-        throw new Error("Response payment bukan JSON");
+        throw new Error(
+            "Payment response bukan JSON"
+        );
 
     }
 
-    if(!response.ok){
 
-        throw new Error(result.error||"Payment gagal");
+
+    if(!response.ok || !result.success){
+
+        throw new Error(
+            result.error ||
+            "Gagal membuat pembayaran"
+        );
 
     }
 
-    return result.data||result;
+
+
+    return result.data || result;
 
 }
 
@@ -864,6 +873,38 @@ async function getPaymentStatus(orderId){
     }
 
     return result.data||result;
+
+}
+
+// ===============================
+// CHECK SELL PAYMENT
+// ===============================
+
+async function checkSellPayment(invoice_id){
+
+
+    const response = await fetch(
+        `${API_URL}/api/check-payment?invoice_id=${invoice_id}`
+    );
+
+
+    const result =
+    await response.json();
+
+
+
+    if(!response.ok || !result.success){
+
+        throw new Error(
+            result.error ||
+            "Gagal cek pembayaran"
+        );
+
+    }
+
+
+
+    return result.data || result;
 
 }
 
@@ -945,6 +986,7 @@ deleteLink,
 createSellOrder,
 createPayment,
 getPaymentStatus,
+checkSellPayment,
 getSellOrders,
 
 getShortlinks,
