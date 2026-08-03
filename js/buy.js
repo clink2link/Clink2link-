@@ -226,28 +226,40 @@ throw new Error(
 const payment =
 await database.createPayment({
 
-order_id:order.id
+    order_id:order.id
 
 });
 
 
-
-
-const paymentData =
-payment.data || payment;
+console.log(
+    "PAYMENT RESULT:",
+    payment
+);
 
 
 
 const qris =
-paymentData.qris_string;
+payment.qris_string ||
+payment.data?.qris_string;
+
 
 
 const expires =
-paymentData.expires_at;
+payment.expires_at ||
+payment.data?.expires_at;
+
 
 
 const invoiceId =
-paymentData.invoice_id;
+payment.invoice_id ||
+payment.data?.invoice_id;
+
+
+
+console.log(
+    "INVOICE ID:",
+    invoiceId
+);
 
 
 
