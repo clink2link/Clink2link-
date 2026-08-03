@@ -717,85 +717,102 @@ async function getMenusByRole(role){
 
 async function createSellOrder(payload){
 
+    const {
+        data,
+        error
+    } = await supabaseClient
 
-const payment = calculateSellPayment(
-    payload.price
-);
+    .from("sell_orders")
+
+    .insert({
+
+        link_id:
+        payload.link_id,
+
+        seller_id:
+        payload.seller_id || null,
+
+        buyer_id:
+        payload.buyer_id || null,
+
+        price:
+        Number(payload.price || 0),
+
+        fee:
+        Number(payload.fee || 0),
+
+        seller_receive:
+        Number(payload.seller_receive || 0),
+
+        status:
+        "pending"
+
+    })
+
+    .select()
+
+    .single();
 
 
-const {
-data,
-error
-}=await supabaseClient
-.from("sell_orders")
-.insert({
 
-link_id:payload.link_id,
+    if(error){
 
-seller_id:payload.seller_id,
+        console.error(
+            "CREATE SELL ORDER ERROR:",
+            error
+        );
 
-buyer_id:payload.buyer_id || null,
+        throw error;
 
-price:payload.price,
-
-fee:payment.fee,
-
-seller_receive:payment.seller_receive,
-
-status:"pending"
-
-})
-.select()
-.single();
+    }
 
 
-if(error){
-
-console.error(
-"CREATE SELL ORDER ERROR:",
-error
-);
-
-throw error;
+    return data;
 
 }
 
 
-return data;
-
-}
 
 
 
 async function getSellOrders(userId){
 
-const {
-data,
-error
-}=await supabaseClient
-.from("sell_orders")
-.select("*")
-.eq("seller_id",userId)
-.order(
-"created_at",
-{
-ascending:false
-}
-);
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+    .from("sell_orders")
+
+    .select("*")
+
+    .eq(
+        "seller_id",
+        userId
+    )
+
+    .order(
+        "created_at",
+        {
+            ascending:false
+        }
+    );
 
 
-if(error){
 
-console.error(
-"GET SELL ORDERS ERROR:",
-error
-);
+    if(error){
 
-return [];
+        console.error(
+            "GET SELL ORDERS ERROR:",
+            error
+        );
 
-}
+        return [];
 
-return data || [];
+    }
+
+
+    return data || [];
 
 }
 
