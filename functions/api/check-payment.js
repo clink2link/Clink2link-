@@ -28,7 +28,6 @@ error:"invoice_id wajib diisi"
 
 
 
-
 // =====================
 // GET ORDER
 // =====================
@@ -58,7 +57,7 @@ message:"Order tidak ditemukan"
 
 
 
-const order=orders[0];
+let order=orders[0];
 
 
 
@@ -76,14 +75,19 @@ invoice_id
 
 
 
-// =====================
-// UPDATE STATUS JIKA PAID
-// =====================
-
 let status =
 order.status;
 
 
+let paid_at =
+order.paid_at;
+
+
+
+
+// =====================
+// UPDATE JIKA SUDAH BAYAR
+// =====================
 
 if(
 payment.status==="paid" ||
@@ -92,6 +96,12 @@ payment.status==="success"
 
 
 status="paid";
+
+
+paid_at =
+paid_at ||
+new Date().toISOString();
+
 
 
 await supabaseRequest(
@@ -106,13 +116,41 @@ env,
 
 status:"paid",
 
-paid_at:new Date().toISOString()
+paid_at
 
 },
 
 `?id=eq.${order.id}`
 
 );
+
+
+
+
+// ambil ulang data terbaru
+
+const updatedOrder =
+await supabaseRequest(
+
+env,
+
+"sell_orders",
+
+"GET",
+
+null,
+
+`?id=eq.${order.id}&select=*`
+
+);
+
+
+
+if(updatedOrder.length){
+
+order=updatedOrder[0];
+
+}
 
 
 }
@@ -152,9 +190,13 @@ if(links.length){
 
 
 destination_url =
+
 links[0].destination_url ||
+
 links[0].destination ||
+
 links[0].url ||
+
 null;
 
 
@@ -166,6 +208,9 @@ null;
 
 
 
+// =====================
+// RESPONSE
+// =====================
 
 return json({
 
@@ -175,32 +220,50 @@ success:true,
 data:{
 
 
-order_id:order.id,
+order_id:
+order.id,
 
 
-invoice_id,
+invoice_id:
+order.invoice_id || invoice_id,
 
 
 status,
 
 
-price:Number(order.price||0),
+price:
+Number(order.price || 0),
+
 
 
 payment_url:
-order.payment_url||null,
+order.payment_url || null,
+
 
 
 qris_string:
-order.qris_string||null,
+order.qris_string || null,
+
 
 
 expires_at:
-order.expires_at||null,
+order.expires_at || null,
+
 
 
 paid_at:
-order.paid_at||null,
+order.paid_at || paid_at || null,
+
+
+
+link_id:
+order.link_id,
+
+
+
+seller_id:
+order.seller_id,
+
 
 
 destination_url
@@ -241,6 +304,8 @@ error:error.message
 
 
 
+
+
 // =====================
 // BAYARGG CHECK PAYMENT
 // =====================
@@ -249,6 +314,15 @@ async function bayarGGCheckPayment(
 env,
 invoice_id
 ){
+
+
+if(!env.BAYARGG_API_KEY){
+
+throw new Error(
+"BAYARGG_API_KEY kosong"
+);
+
+}
 
 
 
@@ -291,6 +365,7 @@ await res.text();
 let data;
 
 
+
 try{
 
 data=JSON.parse(text);
@@ -307,9 +382,21 @@ throw new Error(
 
 
 
+if(!res.ok){
+
+throw new Error(
+"BayarGG HTTP ERROR: "+text
+);
+
+}
+
+
+
+
 if(!data.success){
 
 throw new Error(
+"BayarGG ERROR: "+
 JSON.stringify(data)
 );
 
@@ -318,8 +405,7 @@ JSON.stringify(data)
 
 
 
-return data.data;
-
+return data.data || {};
 
 }
 
@@ -351,16 +437,21 @@ await fetch(
 
 method,
 
+
 headers:{
 
 apikey:
 env.SUPABASE_SERVICE_KEY,
 
+
 Authorization:
+
 `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+
 
 "Content-Type":
 "application/json",
+
 
 Prefer:
 "return=representation"
@@ -369,6 +460,7 @@ Prefer:
 
 
 body:
+
 body
 ?
 JSON.stringify(body)
@@ -398,15 +490,17 @@ try{
 data=JSON.parse(text);
 
 }
+
 catch{
 
 throw new Error(
-"Supabase bukan JSON"
+"Supabase bukan JSON: "+text
 );
 
 }
 
 }
+
 
 
 
@@ -420,6 +514,7 @@ JSON.stringify(data)
 
 
 
+
 return data;
 
 
@@ -430,11 +525,15 @@ return data;
 
 
 
+
 // =====================
-// JSON
+// JSON RESPONSE
 // =====================
 
-function json(data,status=200){
+function json(
+data,
+status=200
+){
 
 return new Response(
 
@@ -443,6 +542,7 @@ JSON.stringify(data),
 {
 
 status,
+
 
 headers:{
 
