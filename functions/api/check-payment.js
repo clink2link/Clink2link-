@@ -1,12 +1,16 @@
 export async function onRequestGet(context){
 
-const {env,request}=context;
+const {
+    env,
+    request
+}=context;
 
 
 try{
 
 
-const url=new URL(request.url);
+const url =
+new URL(request.url);
 
 
 const invoice_id =
@@ -14,13 +18,20 @@ url.searchParams.get("invoice_id");
 
 
 
+console.log(
+    "CHECK PAYMENT INVOICE:",
+    invoice_id
+);
+
+
+
 if(!invoice_id){
 
 return json({
 
-success:false,
+    success:false,
 
-error:"invoice_id wajib diisi"
+    error:"invoice_id wajib diisi"
 
 },400);
 
@@ -29,16 +40,22 @@ error:"invoice_id wajib diisi"
 
 
 // =====================
-// GET ORDER
+// GET SELL ORDER
 // =====================
 
 const orders =
 await supabaseRequest(
-env,
-"sell_orders",
-"GET",
-null,
-`?invoice_id=eq.${invoice_id}&select=*`
+
+    env,
+
+    "sell_orders",
+
+    "GET",
+
+    null,
+
+    `?invoice_id=eq.${encodeURIComponent(invoice_id)}&select=*`
+
 );
 
 
@@ -47,9 +64,9 @@ if(!orders.length){
 
 return json({
 
-success:false,
+    success:false,
 
-message:"Order tidak ditemukan"
+    error:"Order tidak ditemukan"
 
 },404);
 
@@ -57,7 +74,8 @@ message:"Order tidak ditemukan"
 
 
 
-let order=orders[0];
+let order =
+orders[0];
 
 
 
@@ -68,30 +86,46 @@ let order=orders[0];
 
 const payment =
 await bayarGGCheckPayment(
-env,
-invoice_id
+
+    env,
+
+    invoice_id
+
 );
 
 
 
+console.log(
+    "BAYARGG RESULT:",
+    payment
+);
+
+
 
 let status =
-order.status;
+order.status || "pending";
 
 
 let paid_at =
-order.paid_at;
+order.paid_at || null;
+
+
+
+const paymentStatus =
+String(
+    payment.status || ""
+).toLowerCase();
 
 
 
 
 // =====================
-// UPDATE JIKA SUDAH BAYAR
+// UPDATE PAID
 // =====================
 
 if(
-payment.status==="paid" ||
-payment.status==="success"
+paymentStatus==="paid" ||
+paymentStatus==="success"
 ){
 
 
@@ -106,49 +140,50 @@ new Date().toISOString();
 
 await supabaseRequest(
 
-env,
+    env,
 
-"sell_orders",
+    "sell_orders",
 
-"PATCH",
+    "PATCH",
 
-{
+    {
 
-status:"paid",
+        status:"paid",
 
-paid_at
+        paid_at
 
-},
+    },
 
-`?id=eq.${order.id}`
+    `?id=eq.${order.id}`
 
 );
 
 
 
 
-// ambil ulang data terbaru
+// refresh order
 
-const updatedOrder =
+const updated =
 await supabaseRequest(
 
-env,
+    env,
 
-"sell_orders",
+    "sell_orders",
 
-"GET",
+    "GET",
 
-null,
+    null,
 
-`?id=eq.${order.id}&select=*`
+    `?id=eq.${order.id}&select=*`
 
 );
 
 
 
-if(updatedOrder.length){
+if(updated.length){
 
-order=updatedOrder[0];
+order =
+updated[0];
 
 }
 
@@ -159,7 +194,7 @@ order=updatedOrder[0];
 
 
 // =====================
-// GET LINK ASLI
+// GET DESTINATION
 // =====================
 
 let destination_url=null;
@@ -172,15 +207,15 @@ if(status==="paid"){
 const links =
 await supabaseRequest(
 
-env,
+    env,
 
-"links",
+    "links",
 
-"GET",
+    "GET",
 
-null,
+    null,
 
-`?id=eq.${order.link_id}&select=*`
+    `?id=eq.${order.link_id}&select=*`
 
 );
 
@@ -189,13 +224,17 @@ null,
 if(links.length){
 
 
+const link =
+links[0];
+
+
 destination_url =
 
-links[0].destination_url ||
+link.destination_url ||
 
-links[0].destination ||
+link.destination ||
 
-links[0].url ||
+link.url ||
 
 null;
 
@@ -236,11 +275,6 @@ Number(order.price || 0),
 
 
 
-payment_url:
-order.payment_url || null,
-
-
-
 qris_string:
 order.qris_string || null,
 
@@ -252,7 +286,7 @@ order.expires_at || null,
 
 
 paid_at:
-order.paid_at || paid_at || null,
+order.paid_at || paid_at,
 
 
 
@@ -304,8 +338,6 @@ error:error.message
 
 
 
-
-
 // =====================
 // BAYARGG CHECK PAYMENT
 // =====================
@@ -326,7 +358,7 @@ throw new Error(
 
 
 
-const res =
+const response =
 await fetch(
 
 "https://www.bayar.gg/api/check-payment.php",
@@ -358,50 +390,54 @@ invoice_id
 
 
 const text =
-await res.text();
+await response.text();
+
+
+
+console.log(
+"BAYARGG RAW:",
+text
+);
 
 
 
 let data;
 
 
-
 try{
 
-data=JSON.parse(text);
+data =
+JSON.parse(text);
 
 }
 catch{
 
 throw new Error(
-"BayarGG bukan JSON: "+text
+"BayarGG response bukan JSON"
 );
 
 }
 
 
 
-
-if(!res.ok){
+if(!response.ok){
 
 throw new Error(
-"BayarGG HTTP ERROR: "+text
+"BayarGG HTTP ERROR"
 );
 
 }
-
 
 
 
 if(!data.success){
 
 throw new Error(
-"BayarGG ERROR: "+
-JSON.stringify(data)
+data.message ||
+"BayarGG gagal cek pembayaran"
 );
 
 }
-
 
 
 
@@ -413,10 +449,8 @@ return data.data || {};
 
 
 
-
-
 // =====================
-// SUPABASE
+// SUPABASE REQUEST
 // =====================
 
 async function supabaseRequest(
@@ -428,7 +462,7 @@ query=""
 ){
 
 
-const res =
+const response =
 await fetch(
 
 `${env.SUPABASE_URL}/rest/v1/${table}${query}`,
@@ -460,7 +494,6 @@ Prefer:
 
 
 body:
-
 body
 ?
 JSON.stringify(body)
@@ -475,26 +508,25 @@ undefined
 
 
 const text =
-await res.text();
+await response.text();
 
 
 
 let data=[];
 
 
-
 if(text){
 
 try{
 
-data=JSON.parse(text);
+data =
+JSON.parse(text);
 
 }
-
 catch{
 
 throw new Error(
-"Supabase bukan JSON: "+text
+"Supabase response bukan JSON"
 );
 
 }
@@ -503,8 +535,7 @@ throw new Error(
 
 
 
-
-if(!res.ok){
+if(!response.ok){
 
 throw new Error(
 JSON.stringify(data)
@@ -514,9 +545,7 @@ JSON.stringify(data)
 
 
 
-
 return data;
-
 
 }
 
@@ -524,10 +553,8 @@ return data;
 
 
 
-
-
 // =====================
-// JSON RESPONSE
+// JSON
 // =====================
 
 function json(
