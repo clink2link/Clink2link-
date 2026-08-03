@@ -715,7 +715,7 @@ async function getMenusByRole(role){
 // SELL ORDERS WORKER API
 // ===============================
 
-const WORKER_URL="https://click2pay.my.id";
+const WORKER_URL="https://clink2link.clink2link.workers.dev";
 
 
 // ===============================
