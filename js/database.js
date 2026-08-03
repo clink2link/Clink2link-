@@ -808,42 +808,62 @@ throw err;
 
 async function createPayment(payload){
 
+    console.log("CREATE PAYMENT:",payload);
 
-const response=
-await fetch(
+    const response=await fetch(
+        `${API_URL}/api/create-payment`,
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(payload)
+        }
+    );
 
-`${API_URL}/api/create-payment`,
+    const text=await response.text();
 
-{
+    console.log("PAYMENT RAW:",text);
 
-method:"POST",
+    let result;
 
-headers:{
-"Content-Type":"application/json"
-},
+    try{
 
-body:
-JSON.stringify(payload)
+        result=JSON.parse(text);
+
+    }catch(e){
+
+        throw new Error("Response payment bukan JSON");
+
+    }
+
+    if(!response.ok){
+
+        throw new Error(result.error||"Payment gagal");
+
+    }
+
+    return result.data||result;
 
 }
 
-);
+async function getPaymentStatus(orderId){
 
+    const response=await fetch(
+        `${API_URL}/api/payment-status/${orderId}`
+    );
 
-const result=
-await response.json();
+    const result=await response.json();
 
+    if(!response.ok){
 
-if(!response.ok || !result.success){
+        throw new Error(
+            result.error||"Status gagal"
+        );
 
-throw new Error(
-result.error||"PAYMENT GAGAL"
-);
+    }
 
-}
-
-
-return result.data;
+    return result.data||result;
 
 }
 
@@ -924,6 +944,7 @@ deleteLink,
 
 createSellOrder,
 createPayment,
+getPaymentStatus,
 getSellOrders,
 
 getShortlinks,
