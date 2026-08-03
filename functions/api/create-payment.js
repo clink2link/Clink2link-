@@ -47,8 +47,7 @@ const payment=await bayarGGCreatePayment(
 env,
 {
 amount:Number(order.price),
-description:`Pembelian Sell Link ${order.link_id}`,
-payment_url:`${env.FRONTEND_URL}/payment-success`
+description:`Pembelian Sell Link ${order.link_id}`
 }
 );
 
