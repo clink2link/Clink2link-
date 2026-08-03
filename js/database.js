@@ -137,19 +137,16 @@ async function getProfile(userId){
 
 
 // ===============================
-// UPDATE PROFILE
+// UPDATE USER PROFILE
 // ===============================
 
 async function updateProfile(payload){
 
-    const userId =
-    localStorage.getItem("user_id");
+    const userId = localStorage.getItem("user_id");
 
 
     if(!userId){
-
         return null;
-
     }
 
 
@@ -160,12 +157,7 @@ async function updateProfile(payload){
 
     .from("users")
 
-    .update({
-
-        username:
-        payload.username
-
-    })
+    .update(payload)
 
     .eq(
         "id",
@@ -193,8 +185,6 @@ async function updateProfile(payload){
     return data;
 
 }
-
-
 
 // ===============================
 // CURRENT PROFILE
