@@ -288,12 +288,125 @@ margin:0 8px;
     transform:translateY(-2px);
 
 }
+
+.buy-nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.buy-status{
+margin-top:15px;
+font-size:15px;
+font-weight:700;
+}
+
+.buy-expired{
+margin-top:10px;
+font-size:14px;
+color:#ef4444;
+}
+
+.buy-success{
+color:#10b981;
+}
+
+.buy-pending{
+color:#f59e0b;
+}
+
+.buy-failed{
+color:#ef4444;
+}
+
+.buy-countdown{
+
+margin-top:15px;
+
+font-size:22px;
+
+font-weight:800;
+
+color:#2563eb;
+
+}
+
+/* =========================
+   PAYMENT SUPPORT
+========================= */
+
+.payment-support{
+margin-top:20px;
+display:flex;
+flex-direction:column;
+gap:16px;
+}
+
+.payment-box{
+background:#fff;
+border-radius:18px;
+padding:16px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+overflow:hidden;
+}
+
+.payment-title{
+display:flex;
+align-items:center;
+gap:8px;
+font-size:16px;
+font-weight:800;
+margin-bottom:12px;
+color:#111827;
+}
+
+.payment-marquee{
+overflow:hidden;
+white-space:nowrap;
+}
+
+.payment-track{
+display:inline-flex;
+gap:12px;
+align-items:center;
+}
+
+.payment-track.left{
+animation:marqueeLeft 28s linear infinite;
+}
+
+.payment-track.right{
+animation:marqueeRight 28s linear infinite;
+}
+
+.payment-item{
+display:inline-flex;
+align-items:center;
+padding:8px 14px;
+border-radius:999px;
+background:#eff6ff;
+border:1px solid #dbeafe;
+color:#2563eb;
+font-size:14px;
+font-weight:700;
+}
+
+@keyframes marqueeLeft{
+0%{transform:translateX(100%);}
+100%{transform:translateX(-100%);}
+}
+
+@keyframes marqueeRight{
+0%{transform:translateX(-100%);}
+100%{transform:translateX(100%);}
+}
 </style>
 
 </head>
 
 
-<body>
+<body class="buy-page">
 
 <div class="buy-wrapper">
 
@@ -362,26 +475,18 @@ Daftar sekarang dan dapatkan CPM tertinggi dan bonus yang menarik.
 
 <div id="buyBox">
 
-
 <div class="buy-sell-card">
 
+<i class="fa-solid fa-spinner fa-spin"
+style="font-size:40px;color:#2563eb"></i>
 
-<h2>
+<h2>Memuat Pembayaran...</h2>
 
-<i class="fa-solid fa-link"></i>
-
-Loading Sell Link...
-
-</h2>
-
+<p>Mohon tunggu...</p>
 
 </div>
 
-
 </div>
-
-
-
 
 
 <!-- NOTE -->
@@ -397,7 +502,89 @@ Utamakan lihat dulu link yang mau anda beli supaya tidak ada kendala kesalahpaha
 </div>
 
 
+<!-- PAYMENT SUPPORT -->
 
+<div class="payment-support">
+
+<div class="payment-box">
+
+<div class="payment-title">
+<i class="fa-solid fa-wallet"></i>
+E-Wallet Indonesia & Malaysia
+</div>
+
+<div class="payment-marquee">
+
+<div class="payment-track left">
+
+<span class="payment-item">DANA</span>
+<span class="payment-item">GoPay</span>
+<span class="payment-item">OVO</span>
+<span class="payment-item">ShopeePay</span>
+<span class="payment-item">LinkAja</span>
+<span class="payment-item">AstraPay</span>
+<span class="payment-item">i.Saku</span>
+<span class="payment-item">Sakuku</span>
+<span class="payment-item">MotionPay</span>
+<span class="payment-item">Paytren</span>
+
+<span class="payment-item">Touch 'n Go eWallet</span>
+<span class="payment-item">Boost</span>
+<span class="payment-item">GrabPay MY</span>
+<span class="payment-item">MAE Maybank</span>
+<span class="payment-item">ShopeePay MY</span>
+<span class="payment-item">BigPay</span>
+<span class="payment-item">Setel</span>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="payment-box">
+
+<div class="payment-title">
+<i class="fa-solid fa-building-columns"></i>
+Transfer Bank
+</div>
+
+<div class="payment-marquee">
+
+<div class="payment-track right">
+
+<span class="payment-item">BCA</span>
+<span class="payment-item">blu by BCA</span>
+<span class="payment-item">Mandiri</span>
+<span class="payment-item">Livin' by Mandiri</span>
+<span class="payment-item">BRI</span>
+<span class="payment-item">BNI</span>
+<span class="payment-item">BTN</span>
+<span class="payment-item">CIMB Niaga</span>
+<span class="payment-item">Permata</span>
+<span class="payment-item">Danamon</span>
+<span class="payment-item">Panin Bank</span>
+<span class="payment-item">OCBC</span>
+<span class="payment-item">Bank Mega</span>
+<span class="payment-item">SeaBank</span>
+<span class="payment-item">Bank Jago</span>
+<span class="payment-item">Bank Neo</span>
+<span class="payment-item">BNC</span>
+<span class="payment-item">Bank Syariah Indonesia</span>
+<span class="payment-item">Maybank Indonesia</span>
+<span class="payment-item">UOB</span>
+<span class="payment-item">HSBC</span>
+<span class="payment-item">DBS</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 
 <!-- CARA PEMBAYARAN -->
@@ -523,15 +710,11 @@ Link siap dibagikan atau di-share.
 </div>
 
 
-
+</div>
 
 <!-- FOOTER -->
 
 <div id="footer"></div>
-
-
-
-</div>
 
 
 
@@ -552,7 +735,7 @@ fetch("../components/footer.html")
 document.getElementById("footer").innerHTML=data;
 });
 </script>
-
+<div id="paymentModal" style="display:none"></div>
 </body>
 
 </html>
