@@ -185,8 +185,8 @@ async function loadBalance() {
 
     updateBalanceUI(
       profile.balance || 0,
-      profile.ads_earning_total || 0,
-      profile.sell_earning_total || 0
+      profile.total_ads || 0,
+      profile.total_sell || 0
     );
 
   } catch (err) {
@@ -468,7 +468,7 @@ async function manualWithdraw() {
     const newBalance = balance - amount;
 
     const { error: updateError } = await db
-      .from("profiles")
+      .from("users")
       .update({
         balance: newBalance
       })
@@ -607,7 +607,7 @@ async function instantWithdraw() {
     const newBalance = balance - total;
 
     const { error: updateError } = await db
-      .from("profiles")
+      .from("users")
       .update({
         balance: newBalance
       })
