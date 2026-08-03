@@ -46,25 +46,11 @@ throw new Error("Order sudah diproses");
 const payment=await bayarGGCreatePayment(
 env,
 {
-
 amount:Number(order.price),
-
-description:
-`Pembelian Sell Link ${order.link_id}`,
-
-customer_name:
-"Customer",
-
-payment_url:
-`${env.FRONTEND_URL}/payment-success`,
-
-payment_method:
-"qris_bayar_gg"
-
+description:`Pembelian Sell Link ${order.link_id}`,
+payment_url:`${env.FRONTEND_URL}/payment-success`
 }
 );
-
-
 
 
 // SIMPAN PAYMENT
