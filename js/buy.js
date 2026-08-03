@@ -28,25 +28,65 @@ if(link.link_type!=="sell"&&link.type!=="sell"){
 }
 
 buyBox.innerHTML=`
-<div class="sell-card">
-<h2>${link.title||"Sell Link"}</h2>
 
-<p>
-Harga:
-<b>Rp ${Number(link.price||0).toLocaleString("id-ID")}</b>
-</p>
+<div class="buy-product-card">
 
-<p>
-Terjual:
-<b>${link.sold||0}x</b>
-</p>
 
-<button class="btn-sell" id="payBtn">
-<i class="fa-solid fa-cart-shopping"></i>
-Bayar Sekarang
-</button>
+<div class="buy-product-title">
+
+<i class="fa-solid fa-link"></i>
+
+${link.title || "Sell Link"}
 
 </div>
+
+
+
+<div class="buy-price">
+
+Rp ${Number(link.price||0).toLocaleString("id-ID")}
+
+</div>
+
+
+
+<div class="buy-info-row">
+
+
+<span class="buy-badge">
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+Terjual ${link.sold||0}x
+
+</span>
+
+
+
+<span class="buy-badge">
+
+<i class="fa-solid fa-eye"></i>
+
+${link.views||0} View
+
+</span>
+
+
+</div>
+
+
+
+<button class="buy-btn" id="payBtn">
+
+<i class="fa-solid fa-bolt"></i>
+
+Bayar Sekarang
+
+</button>
+
+
+</div>
+
 `;
 
 document.getElementById("payBtn").addEventListener("click",async()=>{
