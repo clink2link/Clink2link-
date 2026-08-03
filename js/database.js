@@ -102,99 +102,154 @@ return data || [];
 }
 
 // ===============================
-// PROFILE
+// PROFILE / USERS
 // ===============================
 
 async function getProfile(userId){
 
-const {data,error}=await supabaseClient
-.from("profiles")
-.select("*")
-.eq("id",userId)
-.maybeSingle();
-if(error){
-console.error(
-"GET PROFILE ERROR:",
-error
-);
-return null;
-}
-if(!data){
-const {data:newProfile,error:createError}=await supabaseClient
-.from("profiles")
-.insert({
-id:userId,
+    const {
+        data,
+        error
+    } = await supabaseClient
 
-balance:0,
+    .from("users")
+    .select("*")
+    .eq("id", userId)
+    .maybeSingle();
 
-ads_earning_today:0,
-ads_earning_month:0,
-ads_earning_total:0,
 
-sell_earning_today:0,
-sell_earning_month:0,
-sell_earning_total:0,
+    if(error){
 
-total_views:0,
-total_clicks:0,
+        console.error(
+            "GET PROFILE ERROR:",
+            error
+        );
 
-withdraw_count:0,
+        return null;
 
-sell_link_enabled:false,
+    }
 
-status:"active"
-})
-.select()
-.single();
-if(createError){
-console.error(
-"CREATE PROFILE ERROR:",
-createError
-);
-return null;
-}
-return newProfile;
-}
-return data;
+
+    return data;
+
 }
 
+
+
+// ===============================
+// UPDATE PROFILE
+// ===============================
 
 async function updateProfile(payload){
-const userId=localStorage.getItem("user_id");
-if(!userId)return null;
-const {data,error}=await supabaseClient
-.from("profiles")
-.update({
-username:payload.username
-})
-.eq("id",userId)
-.select()
-.single();
-if(error){
-console.error("UPDATE PROFILE ERROR:",error);
-throw error;
+
+    const userId =
+    localStorage.getItem("user_id");
+
+
+    if(!userId){
+
+        return null;
+
+    }
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+    .from("users")
+
+    .update({
+
+        username:
+        payload.username
+
+    })
+
+    .eq(
+        "id",
+        userId
+    )
+
+    .select()
+
+    .single();
+
+
+
+    if(error){
+
+        console.error(
+            "UPDATE PROFILE ERROR:",
+            error
+        );
+
+        throw error;
+
+    }
+
+
+    return data;
+
 }
-return data;
-}
+
+
+
+// ===============================
+// CURRENT PROFILE
+// ===============================
 
 async function getCurrentProfile(){
-const userId=localStorage.getItem("user_id");
-if(!userId){
-return null;
-}
-return await getProfile(userId);
-}
-async function getProfiles(){
-const {data,error}=await supabaseClient
-.from("users")
-.select("*");
-if(error){
-console.error("GET PROFILES ERROR:",error);
-return [];
-}
-return data || [];
+
+    const userId =
+    localStorage.getItem("user_id");
+
+
+    if(!userId){
+
+        return null;
+
+    }
+
+
+    return await getProfile(userId);
+
 }
 
+
+
+// ===============================
+// ALL USERS
+// ===============================
+
+async function getProfiles(){
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+    .from("users")
+
+    .select("*");
+
+
+    if(error){
+
+        console.error(
+            "GET PROFILES ERROR:",
+            error
+        );
+
+        return [];
+
+    }
+
+
+    return data || [];
+
+}
 // ===============================
 // SELL FEE SYSTEM
 // ===============================
