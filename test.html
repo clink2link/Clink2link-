@@ -1,16 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-document.write("Supabase = " + typeof supabase + "<br>");
-</script>
-
-<script src="js/database.js"></script>
+<button onclick="test()">TEST</button>
 
 <script>
-document.write("Database = " + typeof database + "<br>");
+async function test(){
+
+const r=await fetch(
+"/api/create-sell-order",
+{
+method:"POST"
+}
+);
+
+alert(await r.text());
+
+}
 </script>
-</head>
-<body></body>
-</html>
