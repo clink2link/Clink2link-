@@ -841,6 +841,13 @@ async function createPayment(payload){
 
 
 
+    console.log(
+        "CREATE PAYMENT RESPONSE:",
+        result
+    );
+
+
+
     if(!response.ok || !result.success){
 
         throw new Error(
@@ -852,7 +859,7 @@ async function createPayment(payload){
 
 
 
-    return result.data || result;
+    return result;
 
 }
 
@@ -883,13 +890,56 @@ async function getPaymentStatus(orderId){
 async function checkSellPayment(invoice_id){
 
 
-    const response = await fetch(
-        `${API_URL}/api/check-payment?invoice_id=${invoice_id}`
+    if(!invoice_id){
+
+        throw new Error(
+            "Invoice ID kosong"
+        );
+
+    }
+
+
+
+    console.log(
+        "CHECK PAYMENT INVOICE:",
+        invoice_id
     );
 
 
-    const result =
-    await response.json();
+
+    const response = await fetch(
+        `${API_URL}/api/check-payment?invoice_id=${encodeURIComponent(invoice_id)}`
+    );
+
+
+
+    const text =
+    await response.text();
+
+
+
+    console.log(
+        "CHECK PAYMENT RAW:",
+        text
+    );
+
+
+
+    let result;
+
+
+    try{
+
+        result = JSON.parse(text);
+
+    }
+    catch{
+
+        throw new Error(
+            "Response check payment bukan JSON"
+        );
+
+    }
 
 
 
