@@ -2,7 +2,9 @@ export async function onRequestPost(context){
 
 const {request,env}=context;
 
+
 try{
+
 
 const body=await request.json();
 
@@ -12,12 +14,19 @@ order_id
 }=body;
 
 
-if(!order_id)
-throw new Error("order_id wajib diisi");
+if(!order_id){
+
+throw new Error(
+"order_id wajib diisi"
+);
+
+}
 
 
 
-// AMBIL ORDER
+// =====================
+// GET ORDER
+// =====================
 
 const orders=await supabaseRequest(
 env,
@@ -28,34 +37,59 @@ null,
 );
 
 
-if(!orders.length)
-throw new Error("Order tidak ditemukan");
+
+if(!orders.length){
+
+throw new Error(
+"Order tidak ditemukan"
+);
+
+}
+
 
 
 const order=orders[0];
 
 
-if(order.status!=="pending")
-throw new Error("Order sudah diproses");
+
+if(order.status!=="pending"){
+
+throw new Error(
+"Order sudah diproses"
+);
+
+}
 
 
 
-
-// CREATE BAYARGG
+// =====================
+// CREATE BAYARGG PAYMENT
+// =====================
 
 const payment=await bayarGGCreatePayment(
 env,
 {
+
 amount:Number(order.price),
-description:`Pembelian Sell Link ${order.link_id}`,
-payment_url:"https://www.bayar.gg/pay"
+
+description:
+`Pembelian Sell Link ${order.link_id}`,
+
+payment_url:
+"https://www.bayar.gg/pay"
+
 }
 );
 
 
-// SIMPAN PAYMENT
 
-await supabaseRequest(
+
+
+// =====================
+// UPDATE ORDER PAYMENT DATA
+// =====================
+
+const updated=await supabaseRequest(
 env,
 "sell_orders",
 "PATCH",
@@ -75,9 +109,20 @@ payment.expires_at
 
 },
 
-`?id=eq.${order_id}`
-
+`?id=eq.${order_id}&select=*`
 );
+
+
+
+if(!updated.length){
+
+throw new Error(
+"Gagal menyimpan data payment"
+);
+
+}
+
+
 
 
 
@@ -110,6 +155,13 @@ payment.expires_at
 }catch(error){
 
 
+console.log(
+"CREATE PAYMENT ERROR:",
+error
+);
+
+
+
 return json({
 
 success:false,
@@ -128,7 +180,7 @@ error:error.message
 
 
 // =====================
-// BAYARGG
+// BAYARGG CREATE PAYMENT
 // =====================
 
 async function bayarGGCreatePayment(
@@ -181,11 +233,14 @@ const text=await res.text();
 let data;
 
 
+
 try{
 
 data=JSON.parse(text);
 
-}catch(e){
+}
+
+catch{
 
 throw new Error(
 "BayarGG bukan JSON: "+text
@@ -225,7 +280,7 @@ return data.data;
 
 
 // =====================
-// SUPABASE
+// SUPABASE REQUEST
 // =====================
 
 async function supabaseRequest(
@@ -262,7 +317,11 @@ Prefer:
 },
 
 body:
-body?JSON.stringify(body):undefined
+body
+?
+JSON.stringify(body)
+:
+undefined
 
 }
 
@@ -273,18 +332,25 @@ body?JSON.stringify(body):undefined
 const text=await res.text();
 
 
-let data;
+let data=[];
 
+
+
+if(text){
 
 try{
 
 data=JSON.parse(text);
 
-}catch(e){
+}
+
+catch{
 
 throw new Error(
 "Supabase bukan JSON: "+text
 );
+
+}
 
 }
 
@@ -308,7 +374,14 @@ return data;
 
 
 
-function json(data,status=200){
+// =====================
+// RESPONSE
+// =====================
+
+function json(
+data,
+status=200
+){
 
 return new Response(
 
