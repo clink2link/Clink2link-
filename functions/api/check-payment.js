@@ -47,6 +47,34 @@ const order=orders[0];
 
 
 // =====================
+// GET DESTINATION
+// =====================
+
+let destination_url=null;
+
+if(order.status==="paid"){
+
+const links=await supabaseRequest(
+env,
+"links",
+"GET",
+null,
+`?id=eq.${order.link_id}&select=destination,destination_url`
+);
+
+if(links.length){
+
+destination_url=
+links[0].destination_url||
+links[0].destination||
+null;
+
+}
+
+}
+
+
+// =====================
 // RESPONSE
 // =====================
 
@@ -78,7 +106,9 @@ paid_at:order.paid_at||null,
 
 link_id:order.link_id,
 
-seller_id:order.seller_id
+seller_id:order.seller_id,
+
+destination_url
 
 }
 
