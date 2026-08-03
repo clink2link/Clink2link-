@@ -1,120 +1,266 @@
-document.addEventListener("DOMContentLoaded",async()=>{
+document.addEventListener("DOMContentLoaded", async()=>{
 
 const buyBox=document.getElementById("buyBox");
 
-const code=window.BUY_CODE||location.pathname.split("/").pop();
+if(!buyBox) return;
 
-if(!code||code==="b"||code==="buy"){
-buyBox.innerHTML="<h3>Link tidak valid</h3>";
+
+const code =
+window.BUY_CODE ||
+location.pathname.split("/").pop();
+
+
+if(!code || code==="b" || code==="buy"){
+
+buyBox.innerHTML=`
+<h3>Link tidak valid</h3>
+`;
+
 return;
+
 }
 
-console.log("BUY CODE:",code);
+
+console.log(
+"BUY CODE:",
+code
+);
+
+
 
 try{
 
-const link=await database.getLinkByCode(code);
 
-console.log("LINK:",link);
+const link =
+await database.getLinkByCode(code);
+
+
+
+console.log(
+"LINK:",
+link
+);
+
+
 
 if(!link){
-buyBox.innerHTML="<h3>Link tidak ditemukan</h3>";
+
+buyBox.innerHTML=`
+<h3>Link tidak ditemukan</h3>
+`;
+
 return;
+
 }
 
-if(link.link_type!=="sell"&&link.type!=="sell"){
-buyBox.innerHTML="<h3>Link bukan Sell Link</h3>";
+
+
+if(
+link.link_type!=="sell" &&
+link.type!=="sell"
+){
+
+buyBox.innerHTML=`
+<h3>Link bukan Sell Link</h3>
+`;
+
 return;
+
 }
+
+
+
+const title =
+escapeHtml(
+link.title || "Sell Link"
+);
+
+
+
+const price =
+Number(link.price || 0);
+
 
 
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
 
+
 <div class="buy-product-title">
+
 <i class="fa-solid fa-link"></i>
-${link.title||"Sell Link"}
+
+${title}
+
 </div>
 
+
+
 <div class="buy-price">
-Rp ${Number(link.price||0).toLocaleString("id-ID")}
+
+Rp ${price.toLocaleString("id-ID")}
+
 </div>
+
+
 
 <div class="buy-info-row">
 
-<span class="buy-badge">
-<i class="fa-solid fa-cart-shopping"></i>
-Terjual ${link.sold||0}x
-</span>
 
 <span class="buy-badge">
-<i class="fa-solid fa-eye"></i>
-${link.views||0} View
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+Terjual ${Number(link.sold||0)}x
+
 </span>
+
+
+
+<span class="buy-badge">
+
+<i class="fa-solid fa-eye"></i>
+
+${Number(link.views||0)} View
+
+</span>
+
 
 </div>
 
-<button class="buy-btn" id="payBtn">
+
+
+<button 
+class="buy-btn"
+id="payBtn">
+
 <i class="fa-solid fa-bolt"></i>
+
 Bayar Sekarang
+
 </button>
 
+
 </div>
+
 `;
 
 
-const payBtn=document.getElementById("payBtn");
+
+
+const payBtn =
+document.getElementById("payBtn");
+
 
 
 payBtn.onclick=async()=>{
 
+
+if(payBtn.disabled)
+return;
+
+
+
 payBtn.disabled=true;
 
+
+
 payBtn.innerHTML=`
+
 <i class="fa-solid fa-spinner fa-spin"></i>
+
 Membuat Pesanan...
+
 `;
+
 
 
 try{
 
-const price=Number(link.price||0);
+
+const sellerId =
+link.user_id ||
+link.seller_id ||
+link.owner_id;
+
+
+
+if(!sellerId){
+
+throw new Error(
+"Seller ID tidak ditemukan"
+);
+
+}
+
 
 
 const orderPayload={
 
 link_id:link.id,
 
-seller_id:link.user_id,
+seller_id:sellerId,
 
-price
+price:price
 
 };
 
 
+
 showBuyDebug(
 "CREATE ORDER\n"+
-JSON.stringify(orderPayload,null,2)
+JSON.stringify(
+orderPayload,
+null,
+2
+)
 );
 
 
 
-const order=
+
+let order =
 await database.createSellOrder(
 orderPayload
 );
 
 
 
+// jika Supabase return array
+
+if(Array.isArray(order)){
+
+order=order[0];
+
+}
+
+
+
+if(!order?.id){
+
+throw new Error(
+"Order gagal dibuat"
+);
+
+}
+
+
+
 showBuyDebug(
 "ORDER RESULT\n"+
-JSON.stringify(order,null,2)
+JSON.stringify(
+order,
+null,
+2
+)
 );
 
 
 
-const payment=
+
+
+const payment =
 await database.createPayment({
 
 order_id:order.id
@@ -123,16 +269,26 @@ order_id:order.id
 
 
 
+
+
 showBuyDebug(
 "PAYMENT RESULT\n"+
-JSON.stringify(payment,null,2)
+JSON.stringify(
+payment,
+null,
+2
+)
 );
 
 
 
-const paymentUrl=
-payment.payment_url||
-payment.data?.payment_url;
+
+
+const paymentUrl =
+
+payment?.payment_url ||
+
+payment?.data?.payment_url;
 
 
 
@@ -146,35 +302,47 @@ throw new Error(
 
 
 
+
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
 
+
 <div class="buy-product-title">
+
 <i class="fa-solid fa-qrcode"></i>
+
 Pembayaran
+
 </div>
+
 
 
 <div class="buy-price">
+
 Rp ${price.toLocaleString("id-ID")}
+
 </div>
 
 
-<a 
+
+<a
 class="buy-btn"
 href="${paymentUrl}"
 target="_blank">
 
 <i class="fa-solid fa-credit-card"></i>
+
 Buka Pembayaran
 
 </a>
 
 
+
 <span class="buy-badge">
 
 <i class="fa-solid fa-clock"></i>
+
 Menunggu Pembayaran
 
 </span>
@@ -186,42 +354,73 @@ Menunggu Pembayaran
 
 
 
+
+
 }catch(err){
 
-showBuyDebug(
-"ERROR\n"+err.message
+
+console.error(
+"PAY ERROR:",
+err
 );
+
+
+
+showBuyDebug(
+"ERROR\n"+
+err.message
+);
+
 
 
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
 
+
 <h3>
+
 <i class="fa-solid fa-triangle-exclamation"></i>
+
 Pembayaran Gagal
+
 </h3>
 
+
+
 <p>
-${err.message}
+
+${escapeHtml(err.message)}
+
 </p>
 
 
-<button class="buy-btn" onclick="location.reload()">
+
+<button
+class="buy-btn"
+onclick="location.reload()">
+
 Coba Lagi
+
 </button>
+
 
 </div>
 
 `;
 
+
+
 }
+
 
 
 };
 
 
+
 }catch(err){
+
 
 console.error(
 "BUY ERROR:",
@@ -229,58 +428,109 @@ err
 );
 
 
+
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
+
 
 <h3>
 Terjadi kesalahan
 </h3>
 
+
 <p>
-${err.message}
+
+${escapeHtml(err.message)}
+
 </p>
+
 
 </div>
 
 `;
 
+
+
 }
+
 
 
 });
 
 
+
+
+
 function showBuyDebug(text){
 
-let box=document.getElementById("buyDebug");
+
+let box =
+document.getElementById(
+"buyDebug"
+);
+
 
 
 if(!box){
 
-box=document.createElement("div");
+
+box=document.createElement(
+"div"
+);
+
 
 box.id="buyDebug";
 
-box.style.position="fixed";
-box.style.bottom="10px";
-box.style.left="10px";
-box.style.right="10px";
-box.style.maxHeight="50vh";
-box.style.overflow="auto";
-box.style.zIndex="999999";
-box.style.background="#111";
-box.style.color="#00ff00";
-box.style.padding="15px";
-box.style.borderRadius="10px";
-box.style.fontSize="12px";
-box.style.whiteSpace="pre-wrap";
+
+box.style.cssText=`
+
+position:fixed;
+bottom:10px;
+left:10px;
+right:10px;
+max-height:50vh;
+overflow:auto;
+z-index:999999;
+background:#111;
+color:#00ff00;
+padding:15px;
+border-radius:10px;
+font-size:12px;
+white-space:pre-wrap;
+
+`;
+
+
 
 document.body.appendChild(box);
 
 }
 
 
-box.innerHTML+="\n\n"+text;
+
+box.innerHTML +=
+"\n\n"+text;
+
+
+
+}
+
+
+
+
+function escapeHtml(str){
+
+return String(str)
+
+.replaceAll("&","&amp;")
+
+.replaceAll("<","&lt;")
+
+.replaceAll(">","&gt;")
+
+.replaceAll('"',"&quot;")
+
+.replaceAll("'","&#039;");
 
 }
