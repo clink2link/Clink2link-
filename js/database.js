@@ -712,10 +712,10 @@ async function getMenusByRole(role){
 
 
 // ===============================
-// SELL ORDERS WORKER API
+// SELL ORDERS PAGES FUNCTION API
 // ===============================
 
-const WORKER_URL="https://clink2link.clink2link.workers.dev";
+const API_URL="https://click2pay.my.id";
 
 
 // ===============================
@@ -775,29 +775,10 @@ JSON.stringify(payload,null,2)
 
 
 
-if(!payload.link_id){
-
-throw new Error(
-"LINK ID KOSONG"
-);
-
-}
-
-
-if(!payload.seller_id){
-
-throw new Error(
-"SELLER ID KOSONG"
-);
-
-}
-
-
-
 const response=
 await fetch(
 
-`${WORKER_URL}/api/create-sell-order`,
+`${API_URL}/api/create-sell-order`,
 
 {
 
@@ -822,9 +803,19 @@ await response.json();
 
 
 debug(
-"WORKER RESPONSE:\n"+
+"FUNCTION RESPONSE:\n"+
 JSON.stringify(result,null,2)
 );
+
+
+
+if(!response.ok){
+
+throw new Error(
+result.error||"CREATE ORDER ERROR"
+);
+
+}
 
 
 
@@ -867,10 +858,8 @@ throw err;
 
 }
 
-
-
-
 }
+
 
 
 // ===============================
@@ -879,10 +868,11 @@ throw err;
 
 async function createPayment(payload){
 
+
 const response=
 await fetch(
 
-`${WORKER_URL}/api/create-payment`,
+`${API_URL}/api/create-payment`,
 
 {
 
@@ -904,7 +894,7 @@ const result=
 await response.json();
 
 
-if(!result.success){
+if(!response.ok || !result.success){
 
 throw new Error(
 result.error||"PAYMENT GAGAL"
@@ -916,9 +906,6 @@ result.error||"PAYMENT GAGAL"
 return result.data;
 
 }
-
-
-
 
 // ===============================
 // GET SELL ORDERS
