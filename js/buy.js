@@ -67,7 +67,6 @@ Bayar Sekarang
 
 const payBtn=document.getElementById("payBtn");
 
-
 payBtn.addEventListener("click",async()=>{
 
 payBtn.disabled=true;
@@ -77,14 +76,10 @@ payBtn.innerHTML=`
 Membuat Pembayaran...
 `;
 
-
 try{
 
 
 const price=Number(link.price||0);
-
-
-const payment=calculateSellPayment(price);
 
 
 const orderPayload={
@@ -100,9 +95,10 @@ price:price
 };
 
 
-console.log(
-"ORDER PAYLOAD:",
-orderPayload
+
+showBuyDebug(
+"ORDER PAYLOAD:\n"+
+JSON.stringify(orderPayload,null,2)
 );
 
 
@@ -114,16 +110,12 @@ orderPayload
 
 
 
-console.log(
-"ORDER CREATED:",
-order
+showBuyDebug(
+"ORDER SUCCESS:\n"+
+JSON.stringify(order,null,2)
 );
 
 
-
-/*
-LANJUT BAYARGG DISINI
-*/
 
 if(!database.createPayment){
 
@@ -132,6 +124,7 @@ throw new Error(
 );
 
 }
+
 
 
 const invoice=
@@ -146,9 +139,10 @@ type:"sell"
 });
 
 
-console.log(
-"INVOICE:",
-invoice
+
+showBuyDebug(
+"INVOICE:\n"+
+JSON.stringify(invoice,null,2)
 );
 
 
@@ -158,6 +152,7 @@ invoice.qr_url||
 invoice.qr_code||
 invoice.qr||
 invoice.payment_url;
+
 
 
 if(!qr){
@@ -179,18 +174,15 @@ buyBox.innerHTML=`
 Pembayaran Sell Link
 </div>
 
-
 <div class="buy-price">
 Rp ${price.toLocaleString("id-ID")}
 </div>
-
 
 <div class="buy-qr-box">
 
 <img src="${qr}" alt="QR Pembayaran">
 
 </div>
-
 
 <span class="buy-badge">
 
@@ -199,17 +191,13 @@ Menunggu Pembayaran
 
 </span>
 
-
 <p style="
 margin-top:15px;
 font-size:14px;
 color:#666;
 ">
-
 Silakan scan QR menggunakan Mobile Banking atau E-Wallet.
-
 </p>
-
 
 </div>
 
@@ -219,9 +207,10 @@ Silakan scan QR menggunakan Mobile Banking atau E-Wallet.
 
 }catch(err){
 
-console.error(
-"PAYMENT ERROR:",
-err
+
+showBuyDebug(
+"ERROR:\n"+
+err.message
 );
 
 
@@ -237,7 +226,6 @@ Pembayaran Gagal
 <p>
 ${err.message}
 </p>
-
 
 <button class="buy-btn" onclick="location.reload()">
 Coba Lagi
@@ -280,3 +268,38 @@ ${err.message}
 }
 
 });
+
+function showBuyDebug(text){
+
+let box=document.getElementById("buyDebug");
+
+
+if(!box){
+
+box=document.createElement("div");
+
+box.id="buyDebug";
+
+box.style.position="fixed";
+box.style.bottom="10px";
+box.style.left="10px";
+box.style.right="10px";
+box.style.maxHeight="50vh";
+box.style.overflow="auto";
+box.style.zIndex="999999";
+box.style.background="#111";
+box.style.color="#00ff00";
+box.style.padding="15px";
+box.style.borderRadius="10px";
+box.style.fontSize="12px";
+box.style.whiteSpace="pre-wrap";
+
+document.body.appendChild(box);
+
+}
+
+
+box.innerHTML+=
+"\n\n"+text;
+
+}
