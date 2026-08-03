@@ -82,6 +82,7 @@ Number(link.price || 0);
 
 
 
+
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
@@ -145,7 +146,6 @@ Bayar Sekarang
 </div>
 
 `;
-
 
 
 
@@ -222,12 +222,14 @@ throw new Error(
 
 
 
+
 const payment =
 await database.createPayment({
 
 order_id:order.id
 
 });
+
 
 
 
@@ -240,19 +242,27 @@ const qris =
 paymentData.qris_string;
 
 
-
 const expires =
 paymentData.expires_at;
 
 
+const invoiceId =
+paymentData.invoice_id;
 
-if(!qris || !expires){
+
+
+if(
+!qris ||
+!expires ||
+!invoiceId
+){
 
 throw new Error(
 "Data pembayaran tidak lengkap"
 );
 
 }
+
 
 
 
@@ -280,14 +290,13 @@ Rp ${price.toLocaleString("id-ID")}
 
 
 
-<div 
+<div
 class="buy-countdown"
 id="countdown">
 
-00:07
+Memuat waktu...
 
 </div>
-
 
 
 
@@ -313,10 +322,32 @@ Menunggu Pembayaran
 
 
 
+
+<button
+class="buy-btn"
+id="checkPayment"
+style="
+background:#10b981;
+margin-top:15px;
+">
+
+<i class="fa-solid fa-rotate"></i>
+
+Cek Pembayaran
+
+</button>
+
+
+
+
+
 <button
 class="buy-btn"
 id="cancelPayment"
-style="background:#ef4444;margin-top:15px;">
+style="
+background:#ef4444;
+margin-top:15px;
+">
 
 <i class="fa-solid fa-xmark"></i>
 
@@ -365,11 +396,6 @@ height:200
 
 
 
-// =====================
-// COUNTDOWN
-// =====================
-
-
 const countdown =
 document.getElementById("countdown");
 
@@ -385,6 +411,7 @@ const qrContainer =
 document.getElementById(
 "qrcode"
 );
+
 
 
 
@@ -422,8 +449,10 @@ countdown.innerHTML=`
 qrContainer.innerHTML="";
 
 
+
 paymentStatus.className=
 "buy-status buy-failed";
+
 
 
 paymentStatus.innerHTML=`
@@ -442,10 +471,9 @@ return;
 
 
 
+
 const minutes =
-Math.floor(
-diff/60000
-);
+Math.floor(diff/60000);
 
 
 
@@ -467,6 +495,182 @@ ${minutes}:${String(seconds).padStart(2,"0")}
 
 
 },1000);
+
+
+
+
+
+// =====================
+// CEK PEMBAYARAN
+// =====================
+
+
+document
+.getElementById("checkPayment")
+.onclick=async()=>{
+
+
+const btn =
+document.getElementById(
+"checkPayment"
+);
+
+
+
+btn.disabled=true;
+
+
+
+btn.innerHTML=`
+
+<i class="fa-solid fa-spinner fa-spin"></i>
+
+Mengecek...
+
+`;
+
+
+
+try{
+
+
+const res =
+await fetch(
+`/api/check-payment?invoice_id=${invoiceId}`
+);
+
+
+
+const result =
+await res.json();
+
+
+
+if(!result.success){
+
+throw new Error(
+result.error || 
+"Gagal cek pembayaran"
+);
+
+}
+
+
+
+
+const data =
+result.data;
+
+
+
+if(
+data.status==="paid"
+){
+
+
+clearInterval(timer);
+
+
+
+paymentStatus.className=
+"buy-status buy-success";
+
+
+
+paymentStatus.innerHTML=`
+
+<i class="fa-solid fa-circle-check"></i>
+
+Pembayaran Berhasil
+
+`;
+
+
+
+setTimeout(()=>{
+
+
+if(data.destination_url){
+
+location.href =
+data.destination_url;
+
+}else{
+
+alert(
+"Link tujuan tidak ditemukan"
+);
+
+}
+
+
+},1000);
+
+
+
+return;
+
+}
+
+
+
+
+
+paymentStatus.className=
+"buy-status buy-pending";
+
+
+
+paymentStatus.innerHTML=`
+
+<i class="fa-solid fa-clock"></i>
+
+Belum Dibayar
+
+`;
+
+
+
+btn.disabled=false;
+
+
+
+btn.innerHTML=`
+
+<i class="fa-solid fa-rotate"></i>
+
+Cek Pembayaran
+
+`;
+
+
+
+}catch(err){
+
+
+alert(
+err.message
+);
+
+
+
+btn.disabled=false;
+
+
+
+btn.innerHTML=`
+
+<i class="fa-solid fa-rotate"></i>
+
+Cek Pembayaran
+
+`;
+
+}
+
+
+
+};
 
 
 
@@ -523,6 +727,7 @@ Buat Pembayaran Baru
 
 
 
+
 }catch(err){
 
 
@@ -532,6 +737,7 @@ buyBox.innerHTML=`
 
 
 <h3>
+
 <i class="fa-solid fa-triangle-exclamation"></i>
 
 Pembayaran Gagal
@@ -539,9 +745,13 @@ Pembayaran Gagal
 </h3>
 
 
+
 <p>
+
 ${escapeHtml(err.message)}
+
 </p>
+
 
 
 <button
@@ -578,7 +788,9 @@ Terjadi Kesalahan
 
 
 <p>
+
 ${escapeHtml(err.message)}
+
 </p>
 
 
