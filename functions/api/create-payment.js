@@ -2,26 +2,15 @@ export async function onRequestPost(context){
 
 const {request,env}=context;
 
-
 try{
-
 
 const body=await request.json();
 
-
-const {
-order_id
-}=body;
-
+const {order_id}=body;
 
 if(!order_id){
-
-throw new Error(
-"order_id wajib diisi"
-);
-
+throw new Error("order_id wajib diisi");
 }
-
 
 
 // =====================
@@ -36,30 +25,67 @@ null,
 `?id=eq.${order_id}&select=*`
 );
 
-
-
 if(!orders.length){
-
-throw new Error(
-"Order tidak ditemukan"
-);
-
+throw new Error("Order tidak ditemukan");
 }
-
-
 
 const order=orders[0];
 
 
+// =====================
+// STATUS
+// =====================
 
 if(order.status!=="pending"){
+throw new Error("Order sudah diproses");
+}
 
-throw new Error(
-"Order sudah diproses"
-);
+
+// =====================
+// VALIDASI HARGA
+// =====================
+
+const amount=Number(order.price||0);
+
+if(amount<1000){
+throw new Error("Harga order tidak valid");
+}
+
+
+// =====================
+// QR MASIH BERLAKU
+// =====================
+
+if(
+order.invoice_id &&
+order.payment_url &&
+order.expires_at &&
+new Date(order.expires_at)>new Date()
+){
+
+return json({
+
+success:true,
+
+data:{
+
+order_id:order.id,
+
+invoice_id:order.invoice_id,
+
+payment_id:order.payment_id,
+
+payment_url:order.payment_url,
+
+qris_string:order.qris_string,
+
+expires_at:order.expires_at
 
 }
 
+});
+
+}
 
 
 // =====================
@@ -70,34 +96,27 @@ const payment=await bayarGGCreatePayment(
 env,
 {
 
-amount:Number(order.price),
+amount,
 
-description:
-`Pembelian Sell Link ${order.link_id}`,
+description:`Pembelian Sell Link ${order.link_id}`,
 
-payment_url:
-"https://www.bayar.gg/pay"
+payment_url:"https://www.bayar.gg/pay"
 
 }
-
 );
 
 
-
 // =====================
-// REAL EXPIRED 7 MENIT
+// EXPIRED 7 MENIT
 // =====================
 
-const expiresAt =
-new Date(
-Date.now() + 7 * 60 * 1000
+const expiresAt=new Date(
+Date.now()+7*60*1000
 ).toISOString();
 
 
-
-
 // =====================
-// UPDATE ORDER PAYMENT DATA
+// UPDATE ORDER
 // =====================
 
 const updated=await supabaseRequest(
@@ -105,6 +124,11 @@ env,
 "sell_orders",
 "PATCH",
 {
+
+payment_id:
+payment.payment_id||
+payment.id||
+null,
 
 invoice_id:
 payment.invoice_id,
@@ -123,18 +147,15 @@ expiresAt
 `?id=eq.${order_id}&select=*`
 );
 
-
-
 if(!updated.length){
-
-throw new Error(
-"Gagal menyimpan data payment"
-);
-
+throw new Error("Gagal menyimpan data payment");
 }
 
 
-
+console.log(
+"PAYMENT CREATED:",
+payment.invoice_id
+);
 
 
 return json({
@@ -144,6 +165,11 @@ success:true,
 data:{
 
 order_id,
+
+payment_id:
+payment.payment_id||
+payment.id||
+null,
 
 invoice_id:
 payment.invoice_id,
@@ -161,17 +187,12 @@ expiresAt
 
 });
 
-
-
 }catch(error){
 
-
-console.log(
+console.error(
 "CREATE PAYMENT ERROR:",
 error
 );
-
-
 
 return json({
 
@@ -181,235 +202,6 @@ error:error.message
 
 },500);
 
-
 }
-
-}
-
-
-
-
-
-// =====================
-// BAYARGG CREATE PAYMENT
-// =====================
-
-async function bayarGGCreatePayment(
-env,
-payload
-){
-
-
-if(!env.BAYARGG_API_KEY){
-
-throw new Error(
-"BAYARGG_API_KEY kosong"
-);
-
-}
-
-
-
-const res=await fetch(
-
-"https://www.bayar.gg/api/create-payment.php",
-
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":
-"application/json",
-
-"X-API-Key":
-env.BAYARGG_API_KEY
-
-},
-
-body:
-JSON.stringify(payload)
-
-}
-
-);
-
-
-
-const text=await res.text();
-
-
-let data;
-
-
-
-try{
-
-data=JSON.parse(text);
-
-}
-
-catch{
-
-throw new Error(
-"BayarGG bukan JSON: "+text
-);
-
-}
-
-
-
-if(!res.ok){
-
-throw new Error(
-"BayarGG HTTP ERROR: "+text
-);
-
-}
-
-
-
-if(!data.success){
-
-throw new Error(
-"BayarGG ERROR: "+
-JSON.stringify(data)
-);
-
-}
-
-
-
-return data.data;
-
-}
-
-
-
-
-
-// =====================
-// SUPABASE REQUEST
-// =====================
-
-async function supabaseRequest(
-env,
-table,
-method="GET",
-body=null,
-query=""
-){
-
-
-const res=await fetch(
-
-`${env.SUPABASE_URL}/rest/v1/${table}${query}`,
-
-{
-
-method,
-
-headers:{
-
-apikey:
-env.SUPABASE_SERVICE_KEY,
-
-Authorization:
-`Bearer ${env.SUPABASE_SERVICE_KEY}`,
-
-"Content-Type":
-"application/json",
-
-Prefer:
-"return=representation"
-
-},
-
-body:
-body
-?
-JSON.stringify(body)
-:
-undefined
-
-}
-
-);
-
-
-
-const text=await res.text();
-
-
-let data=[];
-
-
-
-if(text){
-
-try{
-
-data=JSON.parse(text);
-
-}
-
-catch{
-
-throw new Error(
-"Supabase bukan JSON: "+text
-);
-
-}
-
-}
-
-
-
-if(!res.ok){
-
-throw new Error(
-JSON.stringify(data)
-);
-
-}
-
-
-
-return data;
-
-}
-
-
-
-
-
-// =====================
-// RESPONSE
-// =====================
-
-function json(
-data,
-status=200
-){
-
-return new Response(
-
-JSON.stringify(data),
-
-{
-
-status,
-
-headers:{
-
-"Content-Type":
-"application/json"
-
-}
-
-}
-
-);
 
 }
