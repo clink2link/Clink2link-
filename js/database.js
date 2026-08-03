@@ -715,7 +715,7 @@ async function getMenusByRole(role){
 // SELL ORDERS WORKER API
 // ===============================
 
-const WORKER_URL="https://NAMA-WORKER.workers.dev";
+const WORKER_URL="https://clink2link.workers.dev";
 
 
 // ===============================
