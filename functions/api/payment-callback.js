@@ -6,6 +6,10 @@ const {request,env}=context;
 try{
 
 
+// =====================
+// READ BODY
+// =====================
+
 const bodyText = await request.text();
 
 const body = JSON.parse(bodyText);
@@ -15,6 +19,7 @@ console.log(
 "PAYMENT CALLBACK BODY:",
 body
 );
+
 
 
 // =====================
@@ -36,10 +41,17 @@ throw new Error(
 }
 
 
+if(!env.BAYARGG_WEBHOOK_SECRET){
+
+throw new Error(
+"Webhook secret belum diset"
+);
+
+}
+
 
 const signData =
 `${body.invoice_id}|${body.status}|${body.final_amount}|${body.timestamp}`;
-
 
 
 const expected =
@@ -49,11 +61,10 @@ env.BAYARGG_WEBHOOK_SECRET
 );
 
 
-
-if(expected !== signature){
+if(signature !== expected){
 
 throw new Error(
-"Signature tidak valid"
+"Signature webhook tidak valid"
 );
 
 }
@@ -61,7 +72,7 @@ throw new Error(
 
 
 // =====================
-// CHECK STATUS
+// STATUS CHECK
 // =====================
 
 if(body.status !== "paid"){
@@ -79,7 +90,7 @@ message:"Status belum paid"
 
 
 // =====================
-// GET ORDER
+// FIND ORDER
 // =====================
 
 const orders =
@@ -92,7 +103,6 @@ null,
 );
 
 
-
 if(!orders.length){
 
 throw new Error(
@@ -102,12 +112,13 @@ throw new Error(
 }
 
 
-
 const order = orders[0];
 
 
 
-// CEGAH DOUBLE PAYMENT
+// =====================
+// ANTI DOUBLE PROCESS
+// =====================
 
 if(order.status === "paid"){
 
@@ -151,7 +162,7 @@ body.buyer_id || null
 
 
 // =====================
-// TAMBAH SALDO SELLER
+// GET SELLER
 // =====================
 
 const profiles =
@@ -160,9 +171,8 @@ env,
 "profiles",
 "GET",
 null,
-`?id=eq.${order.seller_id}&select=*`
+`?id=eq.${order.seller_id}&select=id,balance`
 );
-
 
 
 if(!profiles.length){
@@ -174,18 +184,28 @@ throw new Error(
 }
 
 
-
-const profile =
+const seller =
 profiles[0];
 
 
 
-const newBalance =
-Number(profile.balance || 0)
-+
+const receive =
 Number(order.seller_receive || 0);
 
 
+const oldBalance =
+Number(seller.balance || 0);
+
+
+
+const newBalance =
+oldBalance + receive;
+
+
+
+// =====================
+// UPDATE SELLER BALANCE
+// =====================
 
 await supabaseRequest(
 env,
@@ -202,13 +222,18 @@ balance:newBalance
 
 
 
-
 console.log(
 "SALDO SELLER UPDATE:",
 {
+
 seller_id:order.seller_id,
-receive:order.seller_receive,
-balance:newBalance
+
+receive,
+
+oldBalance,
+
+newBalance
+
 }
 );
 
@@ -218,15 +243,18 @@ return json({
 
 success:true,
 
-message:"Pembayaran berhasil diproses",
+message:
+"Pembayaran berhasil diproses",
 
 data:{
 
 order_id:order.id,
 
+invoice_id:body.invoice_id,
+
 seller_id:order.seller_id,
 
-seller_receive:order.seller_receive,
+seller_receive:receive,
 
 balance:newBalance
 
@@ -239,7 +267,7 @@ balance:newBalance
 }catch(error){
 
 
-console.log(
+console.error(
 "CALLBACK ERROR:",
 error
 );
@@ -270,31 +298,39 @@ data,
 secret
 ){
 
-
 const encoder =
 new TextEncoder();
 
 
-
 const key =
 await crypto.subtle.importKey(
+
 "raw",
+
 encoder.encode(secret),
+
 {
 name:"HMAC",
 hash:"SHA-256"
 },
+
 false,
+
 ["sign"]
+
 );
 
 
 
 const signature =
 await crypto.subtle.sign(
+
 "HMAC",
+
 key,
+
 encoder.encode(data)
+
 );
 
 
@@ -303,7 +339,9 @@ return Array.from(
 new Uint8Array(signature)
 )
 .map(
-b=>b.toString(16).padStart(2,"0")
+b =>
+b.toString(16)
+.padStart(2,"0")
 )
 .join("");
 
@@ -325,9 +363,11 @@ query=""
 ){
 
 
-const res =
+const response =
 await fetch(
+
 `${env.SUPABASE_URL}/rest/v1/${table}${query}`,
+
 {
 
 method,
@@ -362,26 +402,39 @@ undefined
 
 
 const text =
-await res.text();
+await response.text();
 
 
-const data =
+
+let data=[];
+
+
+try{
+
+data =
 text
 ?
 JSON.parse(text)
 :
 [];
 
+}catch{
+
+throw new Error(
+"Response Supabase bukan JSON"
+);
+
+}
 
 
-if(!res.ok){
+
+if(!response.ok){
 
 throw new Error(
 JSON.stringify(data)
 );
 
 }
-
 
 
 return data;
@@ -392,7 +445,7 @@ return data;
 
 
 // =====================
-// RESPONSE
+// JSON RESPONSE
 // =====================
 
 function json(
@@ -401,7 +454,9 @@ status=200
 ){
 
 return new Response(
+
 JSON.stringify(data),
+
 {
 
 status,
@@ -414,6 +469,7 @@ headers:{
 }
 
 }
+
 );
 
 }
