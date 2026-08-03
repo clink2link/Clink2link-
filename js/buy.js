@@ -14,21 +14,20 @@ location.pathname.split("/").pop();
 if(!code || code==="b" || code==="buy"){
 
 buyBox.innerHTML=`
+
 <div class="buy-product-card">
-<h3>Link tidak valid</h3>
+
+<h3>
+Link tidak valid
+</h3>
+
 </div>
+
 `;
 
 return;
 
 }
-
-
-
-console.log(
-"BUY CODE:",
-code
-);
 
 
 
@@ -40,19 +39,18 @@ await database.getLinkByCode(code);
 
 
 
-console.log(
-"LINK:",
-link
-);
-
-
-
 if(!link){
 
 buyBox.innerHTML=`
+
 <div class="buy-product-card">
-<h3>Link tidak ditemukan</h3>
+
+<h3>
+Link tidak ditemukan
+</h3>
+
 </div>
+
 `;
 
 return;
@@ -67,9 +65,15 @@ link.type!=="sell"
 ){
 
 buyBox.innerHTML=`
+
 <div class="buy-product-card">
-<h3>Bukan Sell Link</h3>
+
+<h3>
+Bukan Sell Link
+</h3>
+
 </div>
+
 `;
 
 return;
@@ -198,7 +202,8 @@ throw new Error(
 
 
 
-const order = await database.createSellOrder({
+const order =
+await database.createSellOrder({
 
 link_id:link.id,
 
@@ -229,13 +234,6 @@ throw new Error(
 
 
 
-console.log(
-"ORDER:",
-finalOrder
-);
-
-
-
 const payment =
 await database.createPayment({
 
@@ -246,20 +244,8 @@ finalOrder.id
 
 
 
-console.log(
-"PAYMENT:",
-payment
-);
-
-
-
 const paymentData =
 payment.data || payment;
-
-
-
-const paymentUrl =
-paymentData.payment_url;
 
 
 
@@ -268,10 +254,15 @@ paymentData.qris_string;
 
 
 
-if(!paymentUrl && !qris){
+const expires =
+paymentData.expires_at;
+
+
+
+if(!qris){
 
 throw new Error(
-"QRIS dan Payment URL kosong"
+"QRIS tidak tersedia"
 );
 
 }
@@ -301,6 +292,18 @@ Rp ${price.toLocaleString("id-ID")}
 
 
 
+
+<div 
+class="buy-countdown"
+id="countdown">
+
+Memuat waktu...
+
+</div>
+
+
+
+
 <div 
 class="buy-qr-box"
 id="qrcode">
@@ -309,31 +312,10 @@ id="qrcode">
 
 
 
-${
-paymentUrl
-?
-`
 
-<a
-href="${paymentUrl}"
-target="_blank"
-class="buy-btn">
-
-<i class="fa-solid fa-credit-card"></i>
-
-Buka Pembayaran
-
-</a>
-
-`
-:
-""
-
-}
-
-
-
-<div class="buy-status buy-pending">
+<div
+class="buy-status buy-pending"
+id="paymentStatus">
 
 <i class="fa-solid fa-clock"></i>
 
@@ -343,6 +325,22 @@ Menunggu Pembayaran
 
 
 
+
+<button
+class="buy-btn"
+id="cancelPayment"
+style="
+background:#ef4444;
+margin-top:15px;
+">
+
+<i class="fa-solid fa-xmark"></i>
+
+Batalkan Pembayaran
+
+</button>
+
+
 </div>
 
 `;
@@ -350,23 +348,19 @@ Menunggu Pembayaran
 
 
 
-// GENERATE QR
-
-if(qris){
+// =====================
+// QR GENERATE
+// =====================
 
 
 const qrBox =
-document.getElementById(
-"qrcode"
-);
-
+document.getElementById("qrcode");
 
 
 if(
 qrBox &&
 typeof QRCode !== "undefined"
 ){
-
 
 new QRCode(
 qrBox,
@@ -382,35 +376,168 @@ height:200
 
 );
 
-
-}else{
-
-
-console.error(
-"QRCode library belum masuk"
-);
-
-
-}
-
-
 }
 
 
 
-}catch(err){
+// =====================
+// COUNTDOWN
+// =====================
 
 
-console.error(
-"PAY ERROR:",
-err
+const countdown =
+document.getElementById(
+"countdown"
 );
+
+
+
+const status =
+document.getElementById(
+"paymentStatus"
+);
+
+
+
+const expireTime =
+new Date(expires).getTime();
+
+
+
+const timer =
+setInterval(()=>{
+
+
+const now =
+Date.now();
+
+
+const diff =
+expireTime-now;
+
+
+
+if(diff<=0){
+
+
+clearInterval(timer);
+
+
+
+countdown.innerHTML=
+"Pembayaran Kadaluarsa";
+
+
+
+status.className=
+"buy-status buy-failed";
+
+
+status.innerHTML=`
+
+<i class="fa-solid fa-circle-xmark"></i>
+
+Expired
+
+`;
+
+
+
+return;
+
+}
+
+
+
+const minutes =
+Math.floor(
+diff/60000
+);
+
+
+
+const seconds =
+Math.floor(
+(diff%60000)/1000
+);
+
+
+
+countdown.innerHTML=`
+
+<i class="fa-solid fa-stopwatch"></i>
+
+${minutes}:${String(seconds).padStart(2,"0")}
+
+`;
+
+
+
+},1000);
+
+
+
+
+
+// =====================
+// CANCEL PAYMENT
+// =====================
+
+
+document
+.getElementById("cancelPayment")
+.onclick=()=>{
+
+
+clearInterval(timer);
 
 
 
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
+
+
+<h3>
+
+<i class="fa-solid fa-ban"></i>
+
+Pembayaran Dibatalkan
+
+</h3>
+
+
+<p>
+Silakan buat pembayaran baru.
+</p>
+
+
+
+<button
+class="buy-btn"
+onclick="location.reload()">
+
+Buat Pembayaran Baru
+
+</button>
+
+
+</div>
+
+`;
+
+};
+
+
+
+
+}catch(err){
+
+
+buyBox.innerHTML=`
+
+<div class="buy-product-card">
+
 
 <h3>
 
@@ -419,6 +546,7 @@ buyBox.innerHTML=`
 Pembayaran Gagal
 
 </h3>
+
 
 
 <p>
@@ -442,8 +570,6 @@ Coba Lagi
 
 `;
 
-
-
 }
 
 
@@ -455,16 +581,10 @@ Coba Lagi
 }catch(err){
 
 
-console.error(
-"BUY ERROR:",
-err
-);
-
-
-
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
+
 
 <h3>
 Terjadi Kesalahan
@@ -472,7 +592,9 @@ Terjadi Kesalahan
 
 
 <p>
+
 ${escapeHtml(err.message)}
+
 </p>
 
 
@@ -480,14 +602,11 @@ ${escapeHtml(err.message)}
 
 `;
 
-
-
 }
 
 
 
 });
-
 
 
 
