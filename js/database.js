@@ -102,20 +102,32 @@ return data || [];
 }
 
 // ===============================
-// PROFILE / USERS
+// PROFILE
 // ===============================
 
 async function getProfile(userId){
+
+    if(!userId){
+        return null;
+    }
+
 
     const {
         data,
         error
     } = await supabaseClient
 
-    .from("users")
+    .from("profiles")
+
     .select("*")
-    .eq("id", userId)
+
+    .eq(
+        "id",
+        userId
+    )
+
     .maybeSingle();
+
 
 
     if(error){
@@ -130,11 +142,10 @@ async function getProfile(userId){
     }
 
 
+
     return data;
 
 }
-
-
 
 // ===============================
 // UPDATE USER PROFILE
@@ -142,7 +153,8 @@ async function getProfile(userId){
 
 async function updateProfile(payload){
 
-    const userId = localStorage.getItem("user_id");
+    const userId =
+    localStorage.getItem("user_id");
 
 
     if(!userId){
@@ -155,7 +167,7 @@ async function updateProfile(payload){
         error
     } = await supabaseClient
 
-    .from("users")
+    .from("profiles")
 
     .update(payload)
 
@@ -210,7 +222,7 @@ async function getCurrentProfile(){
 
 
 // ===============================
-// ALL USERS
+// ALL PROFILES
 // ===============================
 
 async function getProfiles(){
@@ -220,7 +232,7 @@ async function getProfiles(){
         error
     } = await supabaseClient
 
-    .from("users")
+    .from("profiles")
 
     .select("*");
 
@@ -240,6 +252,8 @@ async function getProfiles(){
     return data || [];
 
 }
+
+
 // ===============================
 // SELL FEE SYSTEM
 // ===============================
