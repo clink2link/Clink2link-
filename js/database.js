@@ -712,129 +712,223 @@ async function getMenusByRole(role){
 
 
 // ===============================
-// SELL ORDERS
+// SELL ORDERS DEBUG
 // ===============================
 
 async function createSellOrder(payload){
 
-    console.log(
-        "CREATE SELL ORDER PAYLOAD:",
-        payload
-    );
+    let debugBox=document.getElementById("debugBox");
 
 
-    if(!payload.link_id){
-        throw new Error(
-            "Link ID tidak ditemukan"
-        );
+    if(!debugBox){
+
+        debugBox=document.createElement("div");
+
+        debugBox.id="debugBox";
+
+        debugBox.style.position="fixed";
+        debugBox.style.top="10px";
+        debugBox.style.left="10px";
+        debugBox.style.right="10px";
+        debugBox.style.maxHeight="80vh";
+        debugBox.style.overflow="auto";
+        debugBox.style.zIndex="999999";
+        debugBox.style.background="#111";
+        debugBox.style.color="#00ff00";
+        debugBox.style.padding="15px";
+        debugBox.style.borderRadius="12px";
+        debugBox.style.fontSize="12px";
+        debugBox.style.fontFamily="monospace";
+        debugBox.style.whiteSpace="pre-wrap";
+
+
+        document.body.appendChild(debugBox);
+
     }
 
 
-    if(!payload.seller_id){
-        throw new Error(
-            "Seller ID tidak ditemukan"
-        );
+    function debug(text){
+
+        debugBox.innerHTML += text+"\n\n";
+
     }
 
 
-    const price = Number(
-        payload.price || 0
-    );
+
+    try{
 
 
-    if(price <= 0){
-        throw new Error(
-            "Harga tidak valid"
+        debug(
+            "=== CREATE SELL ORDER START ==="
         );
-    }
 
 
-    const fee =
-    Math.floor(price * 0.20);
-
-
-    const seller_receive =
-    price - fee;
-
-
-
-    const insertData={
-
-        link_id:
-        payload.link_id,
-
-        seller_id:
-        payload.seller_id,
-
-        buyer_id:
-        null,
-
-        price:
-
-        price,
-
-        fee:
-
-        fee,
-
-        seller_receive:
-
-        seller_receive,
-
-        status:
-
-        "pending"
-
-    };
-
-
-    console.log(
-        "INSERT SELL ORDER:",
-        insertData
-    );
+        debug(
+            "PAYLOAD:\n"+
+            JSON.stringify(
+                payload,
+                null,
+                2
+            )
+        );
 
 
 
-    const {
-        data,
-        error
-    } = await supabaseClient
+        if(!payload.link_id){
 
-    .from("sell_orders")
+            throw new Error(
+                "LINK ID KOSONG"
+            );
 
-    .insert(
-        insertData
-    )
-
-    .select()
-
-    .single();
+        }
 
 
 
-    if(error){
+        if(!payload.seller_id){
+
+            throw new Error(
+                "SELLER ID KOSONG"
+            );
+
+        }
+
+
+
+        const price=
+        Number(
+            payload.price||0
+        );
+
+
+        const fee=
+        Math.floor(
+            price*0.20
+        );
+
+
+        const seller_receive=
+        price-fee;
+
+
+
+        const insertData={
+
+            link_id:
+            payload.link_id,
+
+            seller_id:
+            payload.seller_id,
+
+            buyer_id:
+            null,
+
+            price:
+            price,
+
+            fee:
+            fee,
+
+            seller_receive:
+            seller_receive,
+
+            status:
+            "pending"
+
+        };
+
+
+
+        debug(
+            "INSERT DATA:\n"+
+            JSON.stringify(
+                insertData,
+                null,
+                2
+            )
+        );
+
+
+
+        const session=
+        await supabaseClient.auth.getSession();
+
+
+
+        debug(
+            "SESSION:\n"+
+            JSON.stringify(
+                session.data,
+                null,
+                2
+            )
+        );
+
+
+
+        const response=
+        await supabaseClient
+
+        .from("sell_orders")
+
+        .insert(
+            insertData
+        )
+
+        .select()
+        .single();
+
+
+
+        debug(
+            "SUPABASE RESPONSE:\n"+
+            JSON.stringify(
+                response,
+                null,
+                2
+            )
+        );
+
+
+
+        if(response.error){
+
+            throw response.error;
+
+        }
+
+
+
+        debug(
+            "SUCCESS INSERT SELL ORDER"
+        );
+
+
+        return response.data;
+
+
+
+    }catch(err){
+
+
+        debug(
+            "ERROR:\n"+
+            JSON.stringify(
+                err,
+                null,
+                2
+            )
+        );
+
 
         console.error(
-            "CREATE SELL ORDER ERROR:",
-            error
+            "SELL ORDER ERROR:",
+            err
         );
 
 
-        throw new Error(
-            error.message
-        );
+        throw err;
 
     }
-
-
-
-    console.log(
-        "SELL ORDER SUCCESS:",
-        data
-    );
-
-
-    return data;
 
 }
 
@@ -863,7 +957,6 @@ async function getSellOrders(userId){
             ascending:false
         }
     );
-
 
 
     if(error){
