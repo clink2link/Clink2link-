@@ -4,77 +4,132 @@ const {request,env}=context;
 
 try{
 
-console.log("CREATE SELL ORDER START");
+const body=await request.json();
+
+const {
+link_id,
+seller_id,
+price
+}=body;
 
 
-let body;
+if(!link_id)
+throw new Error("link_id wajib diisi");
 
-try{
+if(!seller_id)
+throw new Error("seller_id wajib diisi");
 
-body=await request.json();
 
-console.log("BODY:",body);
+const amount=Number(price);
 
-}catch(e){
 
-throw new Error(
-"JSON BODY ERROR: "+e.message
+if(amount<1000)
+throw new Error("Harga tidak valid");
+
+
+// hitung fee
+
+const fee=Math.floor(
+amount*(Number(env.MARKET_FEE||20)/100)
 );
 
+
+const seller_receive=amount-fee;
+
+
+
+// INSERT
+
+const order=await supabaseRequest(
+env,
+"sell_orders",
+"POST",
+{
+link_id,
+seller_id,
+price:amount,
+fee,
+seller_receive,
+status:"pending"
 }
+);
 
 
-return new Response(
-JSON.stringify({
+
+return json({
 
 success:true,
 
-message:"CREATE SELL ORDER FUNCTION OK",
+data:order[0]
 
-body:body,
-
-env:{
-supabase:!!env.SUPABASE_URL,
-key:!!env.SUPABASE_SERVICE_KEY,
-fee:env.MARKET_FEE||null
-}
-
-}),
-{
-status:200,
-headers:{
-"Content-Type":"application/json"
-}
-}
-);
+});
 
 
 }catch(error){
 
-
-console.log(
-"FUNCTION ERROR:",
-error
-);
-
-
-return new Response(
-JSON.stringify({
+return json({
 
 success:false,
 
 error:error.message
 
-}),
+},500);
+
+}
+
+}
+
+
+
+async function supabaseRequest(
+env,
+table,
+method="GET",
+body=null,
+query=""
+){
+
+const res=await fetch(
+`${env.SUPABASE_URL}/rest/v1/${table}${query}`,
 {
-status:500,
+method,
+headers:{
+apikey:env.SUPABASE_SERVICE_KEY,
+Authorization:`Bearer ${env.SUPABASE_SERVICE_KEY}`,
+"Content-Type":"application/json",
+Prefer:"return=representation"
+},
+body:body?JSON.stringify(body):undefined
+}
+);
+
+
+const text=await res.text();
+
+
+if(!res.ok){
+
+throw new Error(text);
+
+}
+
+
+return JSON.parse(text);
+
+}
+
+
+
+function json(data,status=200){
+
+return new Response(
+JSON.stringify(data),
+{
+status,
 headers:{
 "Content-Type":"application/json"
 }
 }
 );
-
-
-}
 
 }
