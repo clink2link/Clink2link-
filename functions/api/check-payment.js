@@ -123,45 +123,42 @@ String(
 // UPDATE PAID
 // =====================
 
-if(
-paymentStatus==="paid" ||
-paymentStatus==="success"
-){
+if (
+    (paymentStatus === "paid" || paymentStatus === "success") &&
+    order.status !== "paid"
+) {
 
 
-status="paid";
-
-
-paid_at =
-paid_at ||
-new Date().toISOString();
-
-
-
-await supabaseRequest(
-
+const process =
+await supabaseRpc(
     env,
-
-    "sell_orders",
-
-    "PATCH",
-
+    "process_sell_payment",
     {
-
-        status:"paid",
-
-        paid_at
-
-    },
-
-    `?id=eq.${order.id}`
-
+        p_order_id: order.id
+    }
 );
 
 
 
+console.log(
+    "PROCESS SELL PAYMENT:",
+    process
+);
 
-// refresh order
+
+
+if(
+!process ||
+process.success === false
+){
+
+throw new Error(
+process?.error || "Gagal proses pembayaran"
+);
+
+}
+
+
 
 const updated =
 await supabaseRequest(
@@ -188,10 +185,10 @@ updated[0];
 }
 
 
+// update status terbaru
+status = order.status;
+
 }
-
-
-
 
 // =====================
 // GET DESTINATION
@@ -446,7 +443,89 @@ return data.data || {};
 }
 
 
+// =====================
+// SUPABASE RPC
+// =====================
 
+async function supabaseRpc(
+env,
+functionName,
+params={}
+){
+
+
+const response =
+await fetch(
+
+`${env.SUPABASE_URL}/rest/v1/rpc/${functionName}`,
+
+{
+
+method:"POST",
+
+headers:{
+
+apikey:
+env.SUPABASE_SERVICE_KEY,
+
+
+Authorization:
+`Bearer ${env.SUPABASE_SERVICE_KEY}`,
+
+
+"Content-Type":
+"application/json"
+
+},
+
+
+body:
+JSON.stringify(params)
+
+}
+
+);
+
+
+
+const text =
+await response.text();
+
+
+
+let data;
+
+
+
+try{
+
+data =
+JSON.parse(text);
+
+}
+catch{
+
+throw new Error(
+"RPC response bukan JSON: "+text
+);
+
+}
+
+
+
+if(!response.ok){
+
+throw new Error(
+JSON.stringify(data)
+);
+
+}
+
+
+
+return data;
+
+}
 
 
 // =====================
