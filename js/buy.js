@@ -10,15 +10,19 @@ window.BUY_CODE ||
 location.pathname.split("/").pop();
 
 
+
 if(!code || code==="b" || code==="buy"){
 
 buyBox.innerHTML=`
+<div class="buy-product-card">
 <h3>Link tidak valid</h3>
+</div>
 `;
 
 return;
 
 }
+
 
 
 console.log(
@@ -46,7 +50,9 @@ link
 if(!link){
 
 buyBox.innerHTML=`
+<div class="buy-product-card">
 <h3>Link tidak ditemukan</h3>
+</div>
 `;
 
 return;
@@ -61,7 +67,9 @@ link.type!=="sell"
 ){
 
 buyBox.innerHTML=`
-<h3>Link bukan Sell Link</h3>
+<div class="buy-product-card">
+<h3>Bukan Sell Link</h3>
+</div>
 `;
 
 return;
@@ -131,7 +139,7 @@ ${Number(link.views||0)} View
 
 
 
-<button 
+<button
 class="buy-btn"
 id="payBtn">
 
@@ -157,20 +165,14 @@ document.getElementById("payBtn");
 payBtn.onclick=async()=>{
 
 
-if(payBtn.disabled)
-return;
-
-
-
 payBtn.disabled=true;
-
 
 
 payBtn.innerHTML=`
 
 <i class="fa-solid fa-spinner fa-spin"></i>
 
-Membuat Pesanan...
+Membuat Pembayaran...
 
 `;
 
@@ -189,53 +191,35 @@ link.owner_id;
 if(!sellerId){
 
 throw new Error(
-"Seller ID tidak ditemukan"
+"Seller tidak ditemukan"
 );
 
 }
 
 
 
-const orderPayload={
+const order = await database.createSellOrder({
 
 link_id:link.id,
 
 seller_id:sellerId,
 
-price:price
+price
 
-};
-
-
-
-showBuyDebug(
-"CREATE ORDER\n"+
-JSON.stringify(
-orderPayload,
-null,
-2
-)
-);
+});
 
 
 
-
-let order =
-await database.createSellOrder(
-orderPayload
-);
-
-
-
-if(Array.isArray(order)){
-
-order=order[0];
-
-}
+const finalOrder =
+Array.isArray(order)
+?
+order[0]
+:
+order;
 
 
 
-if(!order?.id){
+if(!finalOrder?.id){
 
 throw new Error(
 "Order gagal dibuat"
@@ -245,63 +229,52 @@ throw new Error(
 
 
 
-showBuyDebug(
-"ORDER RESULT\n"+
-JSON.stringify(
-order,
-null,
-2
-)
+console.log(
+"ORDER:",
+finalOrder
 );
-
 
 
 
 const payment =
 await database.createPayment({
 
-order_id:order.id
+order_id:
+finalOrder.id
 
 });
 
 
 
-
-
-showBuyDebug(
-"PAYMENT RESULT\n"+
-JSON.stringify(
-payment,
-null,
-2
-)
+console.log(
+"PAYMENT:",
+payment
 );
 
 
 
+const paymentData =
+payment.data || payment;
+
 
 
 const paymentUrl =
-payment?.payment_url ||
-payment?.data?.payment_url;
+paymentData.payment_url;
 
 
 
 const qris =
-payment?.qris_string ||
-payment?.data?.qris_string;
+paymentData.qris_string;
 
 
 
 if(!paymentUrl && !qris){
 
 throw new Error(
-"Data pembayaran kosong"
+"QRIS dan Payment URL kosong"
 );
 
 }
-
-
 
 
 
@@ -328,12 +301,10 @@ Rp ${price.toLocaleString("id-ID")}
 
 
 
-<div id="qrcode"
-style="
-display:flex;
-justify-content:center;
-margin:20px 0;
-">
+<div 
+class="buy-qr-box"
+id="qrcode">
+
 </div>
 
 
@@ -342,30 +313,34 @@ ${
 paymentUrl
 ?
 `
+
 <a
-class="buy-btn"
 href="${paymentUrl}"
-target="_blank">
+target="_blank"
+class="buy-btn">
 
 <i class="fa-solid fa-credit-card"></i>
 
 Buka Pembayaran
 
 </a>
+
 `
 :
 ""
+
 }
 
 
 
-<span class="buy-badge">
+<div class="buy-status buy-pending">
 
 <i class="fa-solid fa-clock"></i>
 
 Menunggu Pembayaran
 
-</span>
+</div>
+
 
 
 </div>
@@ -375,6 +350,7 @@ Menunggu Pembayaran
 
 
 
+// GENERATE QR
 
 if(qris){
 
@@ -386,7 +362,10 @@ document.getElementById(
 
 
 
-if(qrBox && window.QRCode){
+if(
+qrBox &&
+typeof QRCode !== "undefined"
+){
 
 
 new QRCode(
@@ -395,9 +374,9 @@ qrBox,
 
 text:qris,
 
-width:220,
+width:200,
 
-height:220
+height:200
 
 }
 
@@ -407,20 +386,15 @@ height:220
 }else{
 
 
-qrBox.innerHTML=`
+console.error(
+"QRCode library belum masuk"
+);
 
-<p>
-QR tidak bisa dibuat.
-Gunakan tombol pembayaran.
-</p>
-
-`;
 
 }
 
 
 }
-
 
 
 
@@ -434,17 +408,9 @@ err
 
 
 
-showBuyDebug(
-"ERROR\n"+
-err.message
-);
-
-
-
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
-
 
 <h3>
 
@@ -453,7 +419,6 @@ buyBox.innerHTML=`
 Pembayaran Gagal
 
 </h3>
-
 
 
 <p>
@@ -501,16 +466,13 @@ buyBox.innerHTML=`
 
 <div class="buy-product-card">
 
-
 <h3>
-Terjadi kesalahan
+Terjadi Kesalahan
 </h3>
 
 
 <p>
-
 ${escapeHtml(err.message)}
-
 </p>
 
 
@@ -526,62 +488,6 @@ ${escapeHtml(err.message)}
 
 });
 
-
-
-
-
-function showBuyDebug(text){
-
-let box =
-document.getElementById(
-"buyDebug"
-);
-
-
-
-if(!box){
-
-
-box=document.createElement(
-"div"
-);
-
-
-box.id="buyDebug";
-
-
-box.style.cssText=`
-
-position:fixed;
-bottom:10px;
-left:10px;
-right:10px;
-max-height:50vh;
-overflow:auto;
-z-index:999999;
-background:#111;
-color:#00ff00;
-padding:15px;
-border-radius:10px;
-font-size:12px;
-white-space:pre-wrap;
-
-`;
-
-
-
-document.body.appendChild(box);
-
-}
-
-
-
-box.innerHTML +=
-"\n\n"+text;
-
-
-
-}
 
 
 
