@@ -23,7 +23,7 @@ return;
 }
 
 if(link.link_type!=="sell"&&link.type!=="sell"){
-buyBox.innerHTML="<h3>Link ini bukan Sell Link</h3>";
+buyBox.innerHTML="<h3>Link bukan Sell Link</h3>";
 return;
 }
 
@@ -61,23 +61,23 @@ Bayar Sekarang
 </button>
 
 </div>
-
 `;
 
 
 const payBtn=document.getElementById("payBtn");
 
-payBtn.addEventListener("click",async()=>{
+
+payBtn.onclick=async()=>{
 
 payBtn.disabled=true;
 
 payBtn.innerHTML=`
 <i class="fa-solid fa-spinner fa-spin"></i>
-Membuat Pembayaran...
+Membuat Pesanan...
 `;
 
-try{
 
+try{
 
 const price=Number(link.price||0);
 
@@ -88,16 +88,13 @@ link_id:link.id,
 
 seller_id:link.user_id,
 
-buyer_id:null,
-
-price:price
+price
 
 };
 
 
-
 showBuyDebug(
-"ORDER PAYLOAD:\n"+
+"CREATE ORDER\n"+
 JSON.stringify(orderPayload,null,2)
 );
 
@@ -111,54 +108,38 @@ orderPayload
 
 
 showBuyDebug(
-"ORDER SUCCESS:\n"+
+"ORDER RESULT\n"+
 JSON.stringify(order,null,2)
 );
 
 
 
-if(!database.createPayment){
-
-throw new Error(
-"createPayment belum tersedia"
-);
-
-}
-
-
-
-const invoice=
+const payment=
 await database.createPayment({
 
-order_id:order.id,
-
-amount:price,
-
-type:"sell"
+order_id:order.id
 
 });
 
 
 
 showBuyDebug(
-"INVOICE:\n"+
-JSON.stringify(invoice,null,2)
+"PAYMENT RESULT\n"+
+JSON.stringify(payment,null,2)
 );
 
 
 
-const qr=
-invoice.qr_url||
-invoice.qr_code||
-invoice.qr||
-invoice.payment_url;
+const paymentUrl=
+payment.payment_url||
+payment.data?.payment_url;
 
 
 
-if(!qr){
+if(!paymentUrl){
 
 throw new Error(
-"QR pembayaran tidak tersedia"
+"Payment URL tidak tersedia"
 );
 
 }
@@ -171,18 +152,25 @@ buyBox.innerHTML=`
 
 <div class="buy-product-title">
 <i class="fa-solid fa-qrcode"></i>
-Pembayaran Sell Link
+Pembayaran
 </div>
+
 
 <div class="buy-price">
 Rp ${price.toLocaleString("id-ID")}
 </div>
 
-<div class="buy-qr-box">
 
-<img src="${qr}" alt="QR Pembayaran">
+<a 
+class="buy-btn"
+href="${paymentUrl}"
+target="_blank">
 
-</div>
+<i class="fa-solid fa-credit-card"></i>
+Buka Pembayaran
+
+</a>
+
 
 <span class="buy-badge">
 
@@ -191,13 +179,6 @@ Menunggu Pembayaran
 
 </span>
 
-<p style="
-margin-top:15px;
-font-size:14px;
-color:#666;
-">
-Silakan scan QR menggunakan Mobile Banking atau E-Wallet.
-</p>
 
 </div>
 
@@ -207,10 +188,8 @@ Silakan scan QR menggunakan Mobile Banking atau E-Wallet.
 
 }catch(err){
 
-
 showBuyDebug(
-"ERROR:\n"+
-err.message
+"ERROR\n"+err.message
 );
 
 
@@ -227,6 +206,7 @@ Pembayaran Gagal
 ${err.message}
 </p>
 
+
 <button class="buy-btn" onclick="location.reload()">
 Coba Lagi
 </button>
@@ -238,7 +218,7 @@ Coba Lagi
 }
 
 
-});
+};
 
 
 }catch(err){
@@ -267,7 +247,9 @@ ${err.message}
 
 }
 
+
 });
+
 
 function showBuyDebug(text){
 
@@ -299,7 +281,6 @@ document.body.appendChild(box);
 }
 
 
-box.innerHTML+=
-"\n\n"+text;
+box.innerHTML+="\n\n"+text;
 
 }
