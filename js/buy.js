@@ -16,11 +16,7 @@ if(!code || code==="b" || code==="buy"){
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
-
-<h3>
-Link tidak valid
-</h3>
-
+<h3>Link tidak valid</h3>
 </div>
 
 `;
@@ -44,11 +40,7 @@ if(!link){
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
-
-<h3>
-Link tidak ditemukan
-</h3>
-
+<h3>Link tidak ditemukan</h3>
 </div>
 
 `;
@@ -67,11 +59,7 @@ link.type!=="sell"
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
-
-<h3>
-Bukan Sell Link
-</h3>
-
+<h3>Bukan Sell Link</h3>
 </div>
 
 `;
@@ -161,6 +149,7 @@ Bayar Sekarang
 
 
 
+
 const payBtn =
 document.getElementById("payBtn");
 
@@ -202,7 +191,7 @@ throw new Error(
 
 
 
-const order =
+let order =
 await database.createSellOrder({
 
 link_id:link.id,
@@ -215,16 +204,15 @@ price
 
 
 
-const finalOrder =
-Array.isArray(order)
-?
-order[0]
-:
-order;
+if(Array.isArray(order)){
+
+order=order[0];
+
+}
 
 
 
-if(!finalOrder?.id){
+if(!order?.id){
 
 throw new Error(
 "Order gagal dibuat"
@@ -237,8 +225,7 @@ throw new Error(
 const payment =
 await database.createPayment({
 
-order_id:
-finalOrder.id
+order_id:order.id
 
 });
 
@@ -259,10 +246,10 @@ paymentData.expires_at;
 
 
 
-if(!qris){
+if(!qris || !expires){
 
 throw new Error(
-"QRIS tidak tersedia"
+"Data pembayaran tidak lengkap"
 );
 
 }
@@ -297,14 +284,14 @@ Rp ${price.toLocaleString("id-ID")}
 class="buy-countdown"
 id="countdown">
 
-Memuat waktu...
+00:07
 
 </div>
 
 
 
 
-<div 
+<div
 class="buy-qr-box"
 id="qrcode">
 
@@ -329,10 +316,7 @@ Menunggu Pembayaran
 <button
 class="buy-btn"
 id="cancelPayment"
-style="
-background:#ef4444;
-margin-top:15px;
-">
+style="background:#ef4444;margin-top:15px;">
 
 <i class="fa-solid fa-xmark"></i>
 
@@ -349,12 +333,12 @@ Batalkan Pembayaran
 
 
 // =====================
-// QR GENERATE
+// QR CODE
 // =====================
-
 
 const qrBox =
 document.getElementById("qrcode");
+
 
 
 if(
@@ -380,21 +364,26 @@ height:200
 
 
 
+
 // =====================
 // COUNTDOWN
 // =====================
 
 
 const countdown =
+document.getElementById("countdown");
+
+
+const paymentStatus =
 document.getElementById(
-"countdown"
+"paymentStatus"
 );
 
 
 
-const status =
+const qrContainer =
 document.getElementById(
-"paymentStatus"
+"qrcode"
 );
 
 
@@ -408,12 +397,8 @@ const timer =
 setInterval(()=>{
 
 
-const now =
-Date.now();
-
-
 const diff =
-expireTime-now;
+expireTime - Date.now();
 
 
 
@@ -424,20 +409,28 @@ clearInterval(timer);
 
 
 
-countdown.innerHTML=
-"Pembayaran Kadaluarsa";
+countdown.innerHTML=`
+
+<i class="fa-solid fa-hourglass-end"></i>
+
+00:00
+
+`;
 
 
 
-status.className=
+qrContainer.innerHTML="";
+
+
+paymentStatus.className=
 "buy-status buy-failed";
 
 
-status.innerHTML=`
+paymentStatus.innerHTML=`
 
 <i class="fa-solid fa-circle-xmark"></i>
 
-Expired
+Pembayaran Expired
 
 `;
 
@@ -480,7 +473,7 @@ ${minutes}:${String(seconds).padStart(2,"0")}
 
 
 // =====================
-// CANCEL PAYMENT
+// CANCEL
 // =====================
 
 
@@ -530,7 +523,6 @@ Buat Pembayaran Baru
 
 
 
-
 }catch(err){
 
 
@@ -540,7 +532,6 @@ buyBox.innerHTML=`
 
 
 <h3>
-
 <i class="fa-solid fa-triangle-exclamation"></i>
 
 Pembayaran Gagal
@@ -548,13 +539,9 @@ Pembayaran Gagal
 </h3>
 
 
-
 <p>
-
 ${escapeHtml(err.message)}
-
 </p>
-
 
 
 <button
@@ -585,16 +572,13 @@ buyBox.innerHTML=`
 
 <div class="buy-product-card">
 
-
 <h3>
 Terjadi Kesalahan
 </h3>
 
 
 <p>
-
 ${escapeHtml(err.message)}
-
 </p>
 
 
@@ -607,6 +591,7 @@ ${escapeHtml(err.message)}
 
 
 });
+
 
 
 
