@@ -227,8 +227,6 @@ orderPayload
 
 
 
-// jika Supabase return array
-
 if(Array.isArray(order)){
 
 order=order[0];
@@ -259,7 +257,6 @@ null,
 
 
 
-
 const payment =
 await database.createPayment({
 
@@ -285,20 +282,25 @@ null,
 
 
 const paymentUrl =
-
 payment?.payment_url ||
-
 payment?.data?.payment_url;
 
 
 
-if(!paymentUrl){
+const qris =
+payment?.qris_string ||
+payment?.data?.qris_string;
+
+
+
+if(!paymentUrl && !qris){
 
 throw new Error(
-"Payment URL tidak tersedia"
+"Data pembayaran kosong"
 );
 
 }
+
 
 
 
@@ -326,6 +328,20 @@ Rp ${price.toLocaleString("id-ID")}
 
 
 
+<div id="qrcode"
+style="
+display:flex;
+justify-content:center;
+margin:20px 0;
+">
+</div>
+
+
+
+${
+paymentUrl
+?
+`
 <a
 class="buy-btn"
 href="${paymentUrl}"
@@ -336,6 +352,10 @@ target="_blank">
 Buka Pembayaran
 
 </a>
+`
+:
+""
+}
 
 
 
@@ -352,6 +372,54 @@ Menunggu Pembayaran
 
 `;
 
+
+
+
+
+if(qris){
+
+
+const qrBox =
+document.getElementById(
+"qrcode"
+);
+
+
+
+if(qrBox && window.QRCode){
+
+
+new QRCode(
+qrBox,
+{
+
+text:qris,
+
+width:220,
+
+height:220
+
+}
+
+);
+
+
+}else{
+
+
+qrBox.innerHTML=`
+
+<p>
+QR tidak bisa dibuat.
+Gunakan tombol pembayaran.
+</p>
+
+`;
+
+}
+
+
+}
 
 
 
@@ -463,7 +531,6 @@ ${escapeHtml(err.message)}
 
 
 function showBuyDebug(text){
-
 
 let box =
 document.getElementById(
