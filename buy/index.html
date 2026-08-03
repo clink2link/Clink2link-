@@ -16,8 +16,7 @@
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-
-body{
+.buy-page{
 background:#f5f8ff;
 font-family:Inter,Arial,sans-serif;
 }
@@ -28,13 +27,17 @@ margin:auto;
 padding:20px;
 }
 
-
 /* NAVBAR */
-
 .buy-logo{
 font-weight:800;
 color:#2563eb;
 font-size:20px;
+}
+
+.buy-nav-btn{
+display:flex;
+align-items:center;
+gap:6px;
 }
 
 .buy-nav-btn a{
@@ -42,7 +45,9 @@ text-decoration:none;
 padding:8px 14px;
 border-radius:10px;
 font-size:14px;
-margin-left:5px;
+display:inline-flex;
+align-items:center;
+gap:6px;
 }
 
 .buy-login{
@@ -57,8 +62,7 @@ color:white;
 
 
 /* RUNNING TEXT */
-
-.running-box{
+.buy-running-box{
 margin-top:15px;
 overflow:hidden;
 background:#2563eb;
@@ -67,84 +71,68 @@ border-radius:12px;
 padding:10px;
 }
 
-.running-text{
+.buy-running-text{
 white-space:nowrap;
-animation:running 12s linear infinite;
+animation:buyRunning 12s linear infinite;
 }
 
-@keyframes running{
-
+@keyframes buyRunning{
 from{
 transform:translateX(100%);
 }
-
 to{
 transform:translateX(-100%);
 }
-
 }
 
 
 /* CARD */
-
-.sell-card{
-
+.buy-sell-card{
 margin-top:20px;
 background:white;
 padding:25px;
 border-radius:18px;
 box-shadow:0 10px 30px #0001;
 text-align:center;
-
 }
 
-
-.sell-card h2{
+.buy-sell-card h2{
 margin-bottom:10px;
 }
 
-
-.price{
+.buy-price{
 font-size:22px;
 color:#2563eb;
 font-weight:800;
 }
 
-
-.sold{
+.buy-sold{
 font-size:14px;
 color:#666;
 }
 
 
-
-.qr-box{
-
+/* QR */
+.buy-qr-box{
 margin:20px auto;
 padding:15px;
 width:230px;
 height:230px;
 border-radius:15px;
-background:#fff;
+background:white;
 box-shadow:0 5px 20px #0002;
-
 display:flex;
 align-items:center;
 justify-content:center;
-
 }
 
-
-
-.qr-box img{
-
+.buy-qr-box img{
 max-width:100%;
 }
 
 
-
+/* BUTTON */
 .buy-btn{
-
 width:100%;
 border:none;
 padding:14px;
@@ -154,73 +142,50 @@ color:white;
 font-size:16px;
 font-weight:bold;
 cursor:pointer;
-
 }
-
 
 
 /* NOTE */
-
-.note{
-
+.buy-note{
 margin-top:20px;
 font-size:13px;
-color:red;
+color:#dc2626;
 background:#fff1f1;
 padding:12px;
 border-radius:10px;
-
 }
 
 
-
 /* INFO */
-
-.info-card{
-
+.buy-info-card{
 margin-top:20px;
 background:white;
 padding:20px;
 border-radius:15px;
-
 }
 
-
-.info-card h3{
-
+.buy-info-card h3{
 font-size:18px;
 margin-bottom:10px;
-
 }
 
-
-.info-card li{
-
-margin-bottom:8px;
-font-size:14px;
-
-}
-
-.info-card li{
+.buy-info-card li{
 display:flex;
 gap:10px;
 align-items:center;
+margin-bottom:8px;
+font-size:14px;
 }
 
-.info-card li i{
+.buy-info-card li i{
 width:18px;
 color:#2563eb;
 }
 
-.nav-btn i{
-margin-right:5px;
-}
 
-.running-text i{
+.buy-running-text i{
 margin:0 8px;
 }
-
-
 </style>
 
 </head>
@@ -233,40 +198,55 @@ margin:0 8px;
 
 <!-- NAVBAR -->
 
+<div class="buy-nav">
+
+
 <div class="buy-logo">
 
-<div class="logo">
 <i class="fa-solid fa-hand-pointer"></i>
 CLICK2PAY
+
 </div>
 
 
-<div class="nav-btn">
+
+<div class="buy-nav-btn">
+
 
 <a class="buy-login" href="../login.html">
+
 <i class="fa-solid fa-right-to-bracket"></i>
 Login
+
 </a>
+
 
 <a class="buy-register" href="../register.html">
+
 <i class="fa-solid fa-user-plus"></i>
 Registrasi
+
 </a>
 
-</div>
 
 </div>
+
+
+</div>
+
 
 
 
 <!-- RUNNING TEXT -->
 
-<div class="running-box">
+<div class="buy-running-box">
 
-<div class="running-text">
+<div class="buy-running-text">
 
 <i class="fa-solid fa-bolt"></i>
+
 Daftar sekarang dan dapatkan CPM tertinggi dan bonus yang menarik.
+
 <i class="fa-solid fa-gift"></i>
 
 </div>
@@ -281,7 +261,7 @@ Daftar sekarang dan dapatkan CPM tertinggi dan bonus yang menarik.
 <div id="buyBox">
 
 
-<div class="sell-card">
+<div class="buy-sell-card">
 
 
 <h2>
@@ -301,9 +281,10 @@ Loading Sell Link...
 
 
 
+
 <!-- NOTE -->
 
-<div class="note">
+<div class="buy-note">
 
 <i class="fa-solid fa-triangle-exclamation"></i>
 
@@ -319,7 +300,7 @@ Utamakan lihat dulu link yang mau anda beli supaya tidak ada kendala kesalahpaha
 
 <!-- CARA PEMBAYARAN -->
 
-<div class="info-card">
+<div class="buy-info-card">
 
 
 <h3>
@@ -376,12 +357,12 @@ Lakukan pembayaran dan tunggu konfirmasi.
 
 <!-- CARA BUAT SELL LINK -->
 
-<div class="info-card">
+<div class="buy-info-card">
 
 
 <h3>
 
-<i class="fa-solid fa-link-circle"></i>
+<i class="fa-solid fa-link"></i>
 
 Cara Membuat Sell Link
 
