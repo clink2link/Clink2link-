@@ -717,6 +717,40 @@ async function getMenusByRole(role){
 
 async function createSellOrder(payload){
 
+    console.log(
+        "CREATE SELL ORDER PAYLOAD:",
+        payload
+    );
+
+
+    if(!payload.link_id){
+
+        throw new Error(
+            "Link ID tidak ditemukan"
+        );
+
+    }
+
+
+    if(!payload.seller_id){
+
+        throw new Error(
+            "Seller ID tidak ditemukan"
+        );
+
+    }
+
+
+    const price =
+    Number(payload.price || 0);
+
+
+
+    const payment =
+    calculateSellPayment(price);
+
+
+
     const {
         data,
         error
@@ -729,20 +763,26 @@ async function createSellOrder(payload){
         link_id:
         payload.link_id,
 
+
         seller_id:
-        payload.seller_id || null,
+        payload.seller_id,
+
 
         buyer_id:
         payload.buyer_id || null,
 
+
         price:
-        Number(payload.price || 0),
+        price,
+
 
         fee:
-        Number(payload.fee || 0),
+        payment.fee,
+
 
         seller_receive:
-        Number(payload.seller_receive || 0),
+        payment.seller_receive,
+
 
         status:
         "pending"
@@ -765,6 +805,12 @@ async function createSellOrder(payload){
         throw error;
 
     }
+
+
+    console.log(
+        "SELL ORDER CREATED:",
+        data
+    );
 
 
     return data;
