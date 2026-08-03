@@ -1,15 +1,13 @@
-export async function onRequestPost(){
+export async function onRequestPost(context){
 
-return new Response(
-JSON.stringify({
-success:true,
-message:"CREATE SELL ORDER OK"
-}),
-{
-headers:{
-"Content-Type":"application/json"
-}
-}
-);
+const {request,env}=context;
 
-}
+console.log("CREATE SELL ORDER START");
+
+console.log("ENV CHECK",{
+SUPABASE_URL:env.SUPABASE_URL,
+HAS_KEY:!!env.SUPABASE_SERVICE_KEY,
+MARKET_FEE:env.MARKET_FEE
+});
+
+try{
