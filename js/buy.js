@@ -504,7 +504,6 @@ ${minutes}:${String(seconds).padStart(2,"0")}
 // CEK PEMBAYARAN
 // =====================
 
-
 document
 .getElementById("checkPayment")
 .onclick=async()=>{
@@ -534,32 +533,10 @@ Mengecek...
 try{
 
 
-const res =
-await fetch(
-`/api/check-payment?invoice_id=${invoiceId}`
-);
-
-
-
-const result =
-await res.json();
-
-
-
-if(!result.success){
-
-throw new Error(
-result.error || 
-"Gagal cek pembayaran"
-);
-
-}
-
-
-
-
 const data =
-result.data;
+await database.checkSellPayment(
+invoiceId
+);
 
 
 
@@ -572,7 +549,7 @@ clearInterval(timer);
 
 
 
-paymentStatus.className=
+paymentStatus.className =
 "buy-status buy-success";
 
 
@@ -584,6 +561,16 @@ paymentStatus.innerHTML=`
 Pembayaran Berhasil
 
 `;
+
+
+
+btn.style.display="none";
+
+
+
+document
+.getElementById("cancelPayment")
+.style.display="none";
 
 
 
@@ -615,8 +602,7 @@ return;
 
 
 
-
-paymentStatus.className=
+paymentStatus.className =
 "buy-status buy-pending";
 
 
@@ -667,7 +653,6 @@ Cek Pembayaran
 `;
 
 }
-
 
 
 };
