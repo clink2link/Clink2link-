@@ -712,266 +712,258 @@ async function getMenusByRole(role){
 
 
 // ===============================
-// SELL ORDERS DEBUG
+// SELL ORDERS WORKER API
+// ===============================
+
+const WORKER_URL="https://NAMA-WORKER.workers.dev";
+
+
+// ===============================
+// CREATE SELL ORDER
 // ===============================
 
 async function createSellOrder(payload){
 
-    let debugBox=document.getElementById("debugBox");
+let debugBox=document.getElementById("debugBox");
 
 
-    if(!debugBox){
+if(!debugBox){
 
-        debugBox=document.createElement("div");
+debugBox=document.createElement("div");
 
-        debugBox.id="debugBox";
+debugBox.id="debugBox";
 
-        debugBox.style.position="fixed";
-        debugBox.style.top="10px";
-        debugBox.style.left="10px";
-        debugBox.style.right="10px";
-        debugBox.style.maxHeight="80vh";
-        debugBox.style.overflow="auto";
-        debugBox.style.zIndex="999999";
-        debugBox.style.background="#111";
-        debugBox.style.color="#00ff00";
-        debugBox.style.padding="15px";
-        debugBox.style.borderRadius="12px";
-        debugBox.style.fontSize="12px";
-        debugBox.style.fontFamily="monospace";
-        debugBox.style.whiteSpace="pre-wrap";
+debugBox.style.position="fixed";
+debugBox.style.top="10px";
+debugBox.style.left="10px";
+debugBox.style.right="10px";
+debugBox.style.maxHeight="80vh";
+debugBox.style.overflow="auto";
+debugBox.style.zIndex="999999";
+debugBox.style.background="#111";
+debugBox.style.color="#00ff00";
+debugBox.style.padding="15px";
+debugBox.style.borderRadius="12px";
+debugBox.style.fontSize="12px";
+debugBox.style.fontFamily="monospace";
+debugBox.style.whiteSpace="pre-wrap";
 
+document.body.appendChild(debugBox);
 
-        document.body.appendChild(debugBox);
+}
 
-    }
 
+function debug(text){
 
-    function debug(text){
+debugBox.innerHTML+=text+"\n\n";
 
-        debugBox.innerHTML += text+"\n\n";
+}
 
-    }
 
+try{
 
 
-    try{
+debug(
+"=== CREATE SELL ORDER START ==="
+);
 
 
-        debug(
-            "=== CREATE SELL ORDER START ==="
-        );
+debug(
+"PAYLOAD:\n"+
+JSON.stringify(payload,null,2)
+);
 
 
-        debug(
-            "PAYLOAD:\n"+
-            JSON.stringify(
-                payload,
-                null,
-                2
-            )
-        );
 
+if(!payload.link_id){
 
+throw new Error(
+"LINK ID KOSONG"
+);
 
-        if(!payload.link_id){
+}
 
-            throw new Error(
-                "LINK ID KOSONG"
-            );
 
-        }
+if(!payload.seller_id){
 
+throw new Error(
+"SELLER ID KOSONG"
+);
 
+}
 
-        if(!payload.seller_id){
 
-            throw new Error(
-                "SELLER ID KOSONG"
-            );
 
-        }
+const response=
+await fetch(
 
+`${WORKER_URL}/api/create-sell-order`,
 
+{
 
-        const price=
-        Number(
-            payload.price||0
-        );
+method:"POST",
 
+headers:{
+"Content-Type":"application/json"
+},
 
-        const fee=
-        Math.floor(
-            price*0.20
-        );
+body:
+JSON.stringify(payload)
 
+}
 
-        const seller_receive=
-        price-fee;
+);
 
 
 
-        const insertData={
+const result=
+await response.json();
 
-            link_id:
-            payload.link_id,
 
-            seller_id:
-            payload.seller_id,
 
-            buyer_id:
-            null,
+debug(
+"WORKER RESPONSE:\n"+
+JSON.stringify(result,null,2)
+);
 
-            price:
-            price,
 
-            fee:
-            fee,
 
-            seller_receive:
-            seller_receive,
+if(!result.success){
 
-            status:
-            "pending"
+throw new Error(
+result.error||"CREATE ORDER GAGAL"
+);
 
-        };
+}
 
 
 
-        debug(
-            "INSERT DATA:\n"+
-            JSON.stringify(
-                insertData,
-                null,
-                2
-            )
-        );
+debug(
+"SUCCESS CREATE SELL ORDER"
+);
 
 
 
-        const session=
-        await supabaseClient.auth.getSession();
+return result.data;
 
 
 
-        debug(
-            "SESSION:\n"+
-            JSON.stringify(
-                session.data,
-                null,
-                2
-            )
-        );
+}catch(err){
 
 
+debug(
+"ERROR:\n"+
+err.message
+);
 
-        const response=
-        await supabaseClient
 
-        .from("sell_orders")
+console.error(
+"SELL ORDER ERROR:",
+err
+);
 
-        .insert(
-            insertData
-        )
 
-        .select()
-        .single();
-
-
-
-        debug(
-            "SUPABASE RESPONSE:\n"+
-            JSON.stringify(
-                response,
-                null,
-                2
-            )
-        );
-
-
-
-        if(response.error){
-
-            throw response.error;
-
-        }
-
-
-
-        debug(
-            "SUCCESS INSERT SELL ORDER"
-        );
-
-
-        return response.data;
-
-
-
-    }catch(err){
-
-
-        debug(
-            "ERROR:\n"+
-            JSON.stringify(
-                err,
-                null,
-                2
-            )
-        );
-
-
-        console.error(
-            "SELL ORDER ERROR:",
-            err
-        );
-
-
-        throw err;
-
-    }
+throw err;
 
 }
 
 
 
 
+}
+
+
+// ===============================
+// CREATE PAYMENT
+// ===============================
+
+async function createPayment(payload){
+
+const response=
+await fetch(
+
+`${WORKER_URL}/api/create-payment`,
+
+{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:
+JSON.stringify(payload)
+
+}
+
+);
+
+
+const result=
+await response.json();
+
+
+if(!result.success){
+
+throw new Error(
+result.error||"PAYMENT GAGAL"
+);
+
+}
+
+
+return result.data;
+
+}
+
+
+
+
+// ===============================
+// GET SELL ORDERS
+// ===============================
+
 async function getSellOrders(userId){
 
-    const {
-        data,
-        error
-    } = await supabaseClient
+const {
+data,
+error
+}
+=
+await supabaseClient
 
-    .from("sell_orders")
+.from("sell_orders")
 
-    .select("*")
+.select("*")
 
-    .eq(
-        "seller_id",
-        userId
-    )
+.eq(
+"seller_id",
+userId
+)
 
-    .order(
-        "created_at",
-        {
-            ascending:false
-        }
-    );
-
-
-    if(error){
-
-        console.error(
-            "GET SELL ORDERS ERROR:",
-            error
-        );
-
-        return [];
-
-    }
+.order(
+"created_at",
+{
+ascending:false
+}
+);
 
 
-    return data || [];
+
+if(error){
+
+console.error(
+"GET SELL ORDERS ERROR:",
+error
+);
+
+return [];
+
+}
+
+
+return data||[];
 
 }
 
@@ -1004,6 +996,7 @@ updateLink,
 deleteLink,
 
 createSellOrder,
+createPayment,
 getSellOrders,
 
 getShortlinks,
