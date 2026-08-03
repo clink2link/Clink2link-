@@ -186,7 +186,7 @@ return await getProfile(userId);
 }
 async function getProfiles(){
 const {data,error}=await supabaseClient
-.from("profiles")
+.from("users")
 .select("*");
 if(error){
 console.error("GET PROFILES ERROR:",error);
