@@ -73,7 +73,10 @@ env,
 amount:Number(order.price),
 
 description:
-`Pembelian Sell Link ${order.link_id}`
+`Pembelian Sell Link ${order.link_id}`,
+
+payment_url:
+"https://www.bayar.gg/pay"
 
 }
 
