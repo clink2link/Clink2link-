@@ -10,6 +10,7 @@
 
 <link rel="stylesheet" href="../css/theme.css">
 <link rel="stylesheet" href="../css/app-ui.css">
+<link rel="stylesheet" href="../css/footer.css">
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -30,23 +31,13 @@ padding:20px;
 
 /* NAVBAR */
 
-.buy-nav{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px;
-background:white;
-border-radius:14px;
-box-shadow:0 5px 20px #0001;
-}
-
-.logo{
+.buy-logo{
 font-weight:800;
 color:#2563eb;
 font-size:20px;
 }
 
-.nav-btn a{
+.buy-nav-btn a{
 text-decoration:none;
 padding:8px 14px;
 border-radius:10px;
@@ -54,12 +45,12 @@ font-size:14px;
 margin-left:5px;
 }
 
-.login{
+.buy-login{
 color:#2563eb;
 border:1px solid #2563eb;
 }
 
-.register{
+.buy-register{
 background:#2563eb;
 color:white;
 }
@@ -210,18 +201,6 @@ font-size:14px;
 
 }
 
-
-/* FOOTER */
-
-footer{
-
-margin-top:30px;
-text-align:center;
-font-size:13px;
-color:#777;
-
-}
-
 .info-card li{
 display:flex;
 gap:10px;
@@ -254,7 +233,7 @@ margin:0 8px;
 
 <!-- NAVBAR -->
 
-<div class="buy-nav">
+<div class="buy-logo">
 
 <div class="logo">
 <i class="fa-solid fa-hand-pointer"></i>
@@ -264,13 +243,12 @@ CLICK2PAY
 
 <div class="nav-btn">
 
-<a class="login" href="../login.html">
+<a class="buy-login" href="../login.html">
 <i class="fa-solid fa-right-to-bracket"></i>
 Login
 </a>
 
-
-<a class="register" href="../register.html">
+<a class="buy-register" href="../register.html">
 <i class="fa-solid fa-user-plus"></i>
 Registrasi
 </a>
@@ -466,15 +444,7 @@ Link siap dibagikan atau di-share.
 
 <!-- FOOTER -->
 
-<footer>
-
-<i class="fa-solid fa-shield-halved"></i>
-
-© 2026 Click2Pay • Smart Link Platform
-
-<i class="fa-solid fa-bolt"></i>
-
-</footer>
+<div id="footer"></div>
 
 
 
@@ -492,7 +462,13 @@ window.BUY_CODE=location.pathname.split("/").pop();
 <script src="../js/database.js"></script>
 
 <script src="../js/buy.js"></script>
-
+<script>
+fetch("../components/footer.html")
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("footer").innerHTML=data;
+});
+</script>
 
 </body>
 
