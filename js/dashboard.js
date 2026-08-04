@@ -8,24 +8,23 @@ async function loadDashboard(){
 
 try{
 
-const user=await database.getUser();
+const profile = await database.getCurrentProfile();
 
-if(!user){
-window.location.replace("index.html");
-return;
+if(!profile){
+    window.location.replace("index.html");
+    return;
 }
 
-const authId=user.id;
+const authId = profile.id;
 
 // ===========================
 // PROFILE
 // ===========================
 
-const profile=await database.getUser();
 
 if(!profile){
-console.error("Profile tidak ditemukan.");
-return;
+    console.error("Profile tidak ditemukan.");
+    return;
 }
 
 window.currentUserCountry = profile.country || "Indonesia";
@@ -908,78 +907,47 @@ arrow.classList.toggle("active");
 
 async function checkSellStatus(){
 
-try{
+    try{
 
-const user = await database.getUser();
+        const profile = await database.getCurrentProfile();
 
-if(!user){
-console.log("USER TIDAK ADA");
-return;
-}
+        if(!profile){
+            console.log("PROFILE TIDAK ADA");
+            return;
+        }
 
+        console.log("PROFILE:", profile);
 
-// ambil profile dari database.js
-const profile = await database.getUser();
+        // cek status sell
+        const enabled =
+            profile.sell_link_enabled === true ||
+            profile.sell_unlocked === true ||
+            Number(profile.withdraw_count || 0) >= 3;
 
+        const cards = document.querySelectorAll(".sell-card");
 
-if(!profile){
+        if(enabled){
 
-console.error("PROFILE TIDAK DITEMUKAN");
-return;
+            cards.forEach(card=>{
+                card.classList.remove("locked");
+            });
 
-}
+            console.log("✅ SELL LINK AKTIF");
 
+        }else{
 
-console.log("PROFILE:",profile);
+            cards.forEach(card=>{
+                card.classList.add("locked");
+            });
 
+            console.log("🔒 SELL LINK TERKUNCI");
 
-// cek status sell
-const enabled =
-    profile.sell_link_enabled === true ||
-    user.sell_unlocked === true ||
-    Number(user.withdraw_count || 0) >= 3 ||
-    Number(profile.withdraw_count || 0) >= 3;
+        }
 
+    }catch(err){
 
-const cards=document.querySelectorAll(".sell-card");
+        console.error("CHECK SELL ERROR:", err);
 
-
-if(enabled){
-
-cards.forEach(card=>{
-
-card.classList.remove("locked");
-
-});
-
-
-console.log("✅ SELL LINK AKTIF");
-
-
-}else{
-
-
-cards.forEach(card=>{
-
-card.classList.add("locked");
-
-});
-
-
-console.log("🔒 SELL LINK TERKUNCI");
-
+    }
 
 }
-
-
-}catch(err){
-
-console.error(
-"CHECK SELL ERROR:",
-err
-);
-
-}
-
-}
-
