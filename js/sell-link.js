@@ -276,11 +276,16 @@ function renderSellStats(){
         );
 
         sold += soldCount;
-
         views += viewCount;
 
-        // Total uang hasil penjualan
-        totalEarning += price * soldCount;
+        // Fee Click2Pay 20%
+        const fee = Math.floor(price * 0.20);
+
+        // Seller menerima 80%
+        const sellerReceive = price - fee;
+
+        // Total pendapatan seller
+        totalEarning += sellerReceive * soldCount;
 
     }
 
