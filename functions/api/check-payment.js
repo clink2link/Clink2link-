@@ -117,8 +117,16 @@ const paymentStatus = String(
     payment.paymentStatus ??
     payment.state ??
     payment.paymentState ??
+    payment.result ??
+    payment.data?.status ??
     ""
 ).trim().toLowerCase();
+
+
+console.log(
+    "PAYMENT STATUS PARSED:",
+    paymentStatus
+);
 
 
 
@@ -128,9 +136,16 @@ const paymentStatus = String(
 // =====================
 
 if (
-    (paymentStatus === "paid" || paymentStatus === "success") &&
+    (
+        paymentStatus === "paid" ||
+        paymentStatus === "success" ||
+        paymentStatus === "completed" ||
+        paymentStatus === "settlement" ||
+        paymentStatus === "berhasil"
+    )
+    &&
     order.status !== "paid"
-) {
+)
 
 
 const process =
