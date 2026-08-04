@@ -165,33 +165,69 @@ function updateBalanceUI(balance, ads, sell) {
 // ========================================
 // LOAD BALANCE
 // ========================================
-async function loadBalance() {
+async function loadBalance(){
 
-  if (!user?.id) {
-    console.log("[ERROR] User tidak valid");
-    return;
-  }
-
-  try {
-
-    const profile = await window.database.getCurrentProfile();
-
-    if (!profile) {
-      console.log("[ERROR] Profile gagal diambil");
-      return;
+    if(!user?.id){
+        console.log("[ERROR] User tidak valid");
+        return;
     }
 
-    user = profile;
+    try{
 
-    updateBalanceUI(
-      profile.balance || 0,
-      profile.total_ads || 0,
-      profile.total_sell || 0
-    );
+        const profile =
+            await window.database.getCurrentProfile();
 
-  } catch (err) {
-    console.log("[LOAD BALANCE ERROR]", err);
-  }
+
+        if(!profile){
+            console.log("[ERROR] Profile gagal diambil");
+            return;
+        }
+
+
+        user = profile;
+
+
+        const {data:sales,error:salesError}=await db
+        .from("sell_orders")
+        .select("seller_receive")
+        .eq("seller_id",user.id)
+        .eq("status","paid");
+
+
+        if(salesError)
+            throw salesError;
+
+
+        const totalSell =
+            (sales || []).reduce(
+                (sum,item)=>
+                sum + Number(item.seller_receive || 0),
+                0
+            );
+
+
+        updateBalanceUI(
+
+            profile.balance || 0,
+
+            profile.total_ads || 0,
+
+            totalSell
+
+        );
+
+
+        console.log("SELL TOTAL:",totalSell);
+
+
+    }catch(err){
+
+        console.log(
+            "[LOAD BALANCE ERROR]",
+            err
+        );
+
+    }
 
 }
 
