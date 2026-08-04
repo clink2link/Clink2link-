@@ -31,26 +31,35 @@ if(countryNotice){
         `Data CPM berdasarkan negara ${window.currentUserCountry}`;
 }
 
-const sellToday = document.getElementById("sellToday");
-const sellMonth = document.getElementById("sellMonth");
-const sellLastMonth = document.getElementById("sellLastMonth");
+const sellToday=document.getElementById("sellToday");
+const sellMonth=document.getElementById("sellMonth");
+const sellLastMonth=document.getElementById("sellLastMonth");
+
+
+let totalSellEarn = 0;
+
 
 if(sellToday){
-    sellToday.textContent =
-        "Rp " + Number(profile.sell_earning_today || 0)
-        .toLocaleString("id-ID");
+
+sellToday.textContent =
+"Rp "+totalSellEarn.toLocaleString("id-ID");
+
 }
+
 
 if(sellMonth){
-    sellMonth.textContent =
-        "Rp " + Number(profile.sell_earning_month || 0)
-        .toLocaleString("id-ID");
+
+sellMonth.textContent =
+"Rp "+totalSellEarn.toLocaleString("id-ID");
+
 }
 
+
 if(sellLastMonth){
-    sellLastMonth.textContent =
-        "Rp " + Number(profile.sell_earning_last_month || 0)
-        .toLocaleString("id-ID");
+
+sellLastMonth.textContent =
+"Rp "+totalSellEarn.toLocaleString("id-ID");
+
 }
 
 // ===========================
@@ -129,6 +138,7 @@ let totalSellClicks = 0;
 let totalSell = 0;
 let totalSellPrice = 0;
 let totalSold = 0;
+let totalSellEarning = 0;
 
 if(Array.isArray(links)){
 
@@ -144,11 +154,23 @@ if(
     link.link_type === "sell"
 ){
 
+    const price = Number(
+        link.price || 0
+    );
+
+    const sold = Number(
+        link.sold ??
+        link.sales ??
+        0
+    );
+
+
     totalSellViews += Number(
         link.total_views ??
         link.views ??
         0
     );
+
 
     totalSellClicks += Number(
         link.total_clicks ??
@@ -156,17 +178,23 @@ if(
         0
     );
 
-    totalSellPrice += Number(
-        link.price || 0
-    );
 
-    totalSold += Number(
-        link.sold ??
-        link.sales ??
-        0
-    );
+    // Total omzet kotor
+    totalSellPrice +=
+        price * sold;
 
+
+    // Total barang terjual
+    totalSold += sold;
+
+
+    // Total jumlah sell link
     totalSell++;
+
+
+    // Pendapatan seller (80%)
+    totalSellEarning +=
+        Math.floor(price * 0.80) * sold;
 
 }
 
@@ -219,7 +247,7 @@ if(sellTotalPrice){
 
     sellTotalPrice.textContent =
         "Rp " +
-        totalSellPrice.toLocaleString("id-ID");
+        totalSellEarning.toLocaleString("id-ID");
 
 }
 
@@ -230,6 +258,36 @@ if(sellTotalSold){
 
     sellTotalSold.textContent =
         totalSold.toLocaleString("id-ID");
+
+}
+
+totalSellEarn =
+totalSellEarning;
+
+
+if(sellToday){
+
+sellToday.textContent =
+"Rp " +
+totalSellEarn.toLocaleString("id-ID");
+
+}
+
+
+if(sellMonth){
+
+sellMonth.textContent =
+"Rp " +
+totalSellEarn.toLocaleString("id-ID");
+
+}
+
+
+if(sellLastMonth){
+
+sellLastMonth.textContent =
+"Rp " +
+totalSellEarn.toLocaleString("id-ID");
 
 }
 
