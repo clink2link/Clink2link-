@@ -354,7 +354,6 @@ async function bayarGGCheckPayment(
         );
     }
 
-
     if(!invoice_id){
         throw new Error(
             "invoice_id kosong"
@@ -363,13 +362,14 @@ async function bayarGGCheckPayment(
 
 
     const payload = {
+        invoice_id: String(invoice_id),
         invoiceId: String(invoice_id)
     };
 
 
     console.log(
         "BAYARGG CHECK PAYLOAD:",
-        payload
+        JSON.stringify(payload)
     );
 
 
@@ -404,7 +404,6 @@ async function bayarGGCheckPayment(
 
     let data;
 
-
     try{
 
         data = JSON.parse(text);
@@ -418,7 +417,6 @@ async function bayarGGCheckPayment(
     }
 
 
-
     if(!response.ok){
 
         throw new Error(
@@ -426,7 +424,6 @@ async function bayarGGCheckPayment(
         );
 
     }
-
 
 
     if(data.success === false){
@@ -438,7 +435,6 @@ async function bayarGGCheckPayment(
         );
 
     }
-
 
 
     return (
