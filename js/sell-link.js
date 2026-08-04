@@ -4,6 +4,26 @@
 
 document.addEventListener("DOMContentLoaded",()=>{
 
+/* =========================
+   DEBUG MODE
+========================= */
+
+const DEBUG = true;
+
+function debug(title, data = null){
+
+    if(!DEBUG) return;
+
+    console.group("🐞 " + title);
+
+    if(data !== null){
+        console.log(data);
+    }
+
+    console.groupEnd();
+
+}
+
 let sellActive = false;
 
 let sellLinks = [];
