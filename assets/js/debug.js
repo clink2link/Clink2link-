@@ -1,26 +1,352 @@
+/* =========================================
+   CLICK2PAY DEBUG PANEL v2.0
+   File : assets/js/debug.js
+   Author : ChatGPT
+========================================= */
+
 (function(){
 
 "use strict";
 
+/* =========================================
+   CONFIG
+========================================= */
 
-const KEY="click2pay123";
+const DEBUG_KEY="debug111";
 
-
-if(new URLSearchParams(location.search).get("debug")!==KEY){
+if(new URLSearchParams(location.search).get("debug")!==DEBUG_KEY){
     return;
 }
 
+/* =========================================
+   STORAGE
+========================================= */
 
-// =========================================
-// BASIC
-// =========================================
+const logs=[];
 
-function safeJSON(data){
+const stats={
+    info:0,
+    warn:0,
+    error:0,
+    fetch:0
+};
+
+/* =========================================
+   STYLE
+========================================= */
+
+const css=document.createElement("style");
+
+css.textContent=`
+
+#c2pDebug{
+
+position:fixed;
+
+top:10px;
+
+right:10px;
+
+width:420px;
+
+height:650px;
+
+background:#111;
+
+color:#fff;
+
+border-radius:16px;
+
+overflow:hidden;
+
+font-family:monospace;
+
+font-size:12px;
+
+z-index:999999999;
+
+box-shadow:0 0 30px rgba(0,0,0,.4);
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+#c2pHeader{
+
+background:#191919;
+
+padding:12px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+cursor:move;
+
+font-weight:bold;
+
+}
+
+#c2pToolbar{
+
+display:flex;
+
+gap:6px;
+
+}
+
+#c2pToolbar button{
+
+background:#222;
+
+color:#fff;
+
+border:none;
+
+padding:4px 8px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+#c2pToolbar button:hover{
+
+background:#333;
+
+}
+
+#c2pStats{
+
+display:grid;
+
+grid-template-columns:repeat(4,1fr);
+
+gap:4px;
+
+padding:10px;
+
+background:#161616;
+
+text-align:center;
+
+}
+
+#c2pStats div{
+
+background:#202020;
+
+padding:8px;
+
+border-radius:8px;
+
+}
+
+#c2pSearch{
+
+padding:10px;
+
+background:#111;
+
+}
+
+#c2pSearch input{
+
+width:100%;
+
+padding:8px;
+
+border:none;
+
+border-radius:8px;
+
+outline:none;
+
+background:#222;
+
+color:#fff;
+
+}
+
+#c2pLog{
+
+flex:1;
+
+overflow:auto;
+
+padding:10px;
+
+background:#000;
+
+}
+
+.c2pItem{
+
+margin-bottom:10px;
+
+padding:8px;
+
+border-radius:8px;
+
+word-break:break-word;
+
+}
+
+.c2pInfo{
+
+background:#14213d;
+
+}
+
+.c2pWarn{
+
+background:#7a4b00;
+
+}
+
+.c2pError{
+
+background:#6b0000;
+
+}
+
+.c2pFetch{
+
+background:#003b2e;
+
+}
+
+.c2pTime{
+
+color:#aaa;
+
+font-size:11px;
+
+margin-bottom:5px;
+
+}
+
+.c2pTitle{
+
+font-weight:bold;
+
+margin-bottom:5px;
+
+}
+
+.c2pBody{
+
+white-space:pre-wrap;
+
+color:#ddd;
+
+}
+
+`;
+
+document.head.appendChild(css);
+
+/* =========================================
+   CREATE PANEL
+========================================= */
+
+const panel=document.createElement("div");
+
+panel.id="c2pDebug";
+
+panel.innerHTML=`
+
+<div id="c2pHeader">
+
+<span>🐞 CLICK2PAY DEBUG</span>
+
+<div id="c2pToolbar">
+
+<button id="dbgClear">Clear</button>
+
+<button id="dbgCopy">Copy</button>
+
+<button id="dbgHide">Hide</button>
+
+</div>
+
+</div>
+
+<div id="c2pStats">
+
+<div>
+
+<b id="dbgInfo">0</b><br>
+
+INFO
+
+</div>
+
+<div>
+
+<b id="dbgWarn">0</b><br>
+
+WARN
+
+</div>
+
+<div>
+
+<b id="dbgError">0</b><br>
+
+ERROR
+
+</div>
+
+<div>
+
+<b id="dbgFetch">0</b><br>
+
+FETCH
+
+</div>
+
+</div>
+
+<div id="c2pSearch">
+
+<input
+id="dbgSearch"
+placeholder="Cari log...">
+
+</div>
+
+<div id="c2pLog"></div>
+
+`;
+
+document.body.appendChild(panel);
+
+/* =========================================
+   ELEMENT
+========================================= */
+
+const logBox=document.getElementById("c2pLog");
+
+const search=document.getElementById("dbgSearch");
+
+/* =========================================
+   HELPER
+========================================= */
+
+function stringify(data){
 
     try{
 
         if(typeof data==="object"){
+
             return JSON.stringify(data,null,2);
+
         }
 
         return String(data);
@@ -33,916 +359,1709 @@ function safeJSON(data){
 
 }
 
+function now(){
 
+    return new Date().toLocaleTimeString();
 
-function log(type,data){
+}
 
-    let box=document.getElementById("debugBox");
+/* =========================================
+   UPDATE STATS
+========================================= */
 
+function updateStats(){
 
-    if(!box){
+    document.getElementById("dbgInfo").textContent=
+    stats.info;
 
-        box=document.createElement("div");
+    document.getElementById("dbgWarn").textContent=
+    stats.warn;
 
-        box.id="debugBox";
+    document.getElementById("dbgError").textContent=
+    stats.error;
 
-
-        box.style.cssText=`
-
-position:fixed;
-left:10px;
-right:10px;
-bottom:10px;
-
-max-height:400px;
-
-overflow:auto;
-
-background:#000;
-
-color:#00ff00;
-
-font:12px monospace;
-
-padding:12px;
-
-z-index:999999;
-
-border-radius:12px;
-
-`;
-
-        document.body.appendChild(box);
-
-    }
-
-
-
-    const item=document.createElement("div");
-
-
-    item.style.marginBottom="12px";
-
-
-    item.innerHTML=`
-
-<b>[${type}]</b>
-
-<pre style="white-space:pre-wrap">${safeJSON(data)}</pre>
-
-`;
-
-
-    box.prepend(item);
+    document.getElementById("dbgFetch").textContent=
+    stats.fetch;
 
 }
 
 
+/* =========================================
+   CREATE LOG
+========================================= */
 
-window.debug=log;
+function addLog(type,title,data=null){
+
+    const item={
+
+        time:now(),
+
+        type,
+
+        title,
+
+        data
+
+    };
+
+    logs.push(item);
+
+    switch(type){
+
+        case "info":
+            stats.info++;
+            break;
+
+        case "warn":
+            stats.warn++;
+            break;
+
+        case "error":
+            stats.error++;
+            break;
+
+        case "fetch":
+            stats.fetch++;
+            break;
+
+    }
+
+    updateStats();
+
+    renderItem(item);
+
+}
 
 
+/* =========================================
+   RENDER ITEM
+========================================= */
 
-// =========================================
-// CURRENT PAGE
-// =========================================
+function renderItem(item){
+
+    const div=document.createElement("div");
+
+    div.className="c2pItem c2p"+(
+        item.type.charAt(0).toUpperCase()+
+        item.type.slice(1)
+    );
+
+    div.dataset.search=(
+
+        item.title+
+
+        stringify(item.data)
+
+    ).toLowerCase();
+
+    div.innerHTML=`
+
+<div class="c2pTime">
+
+${item.time}
+
+</div>
+
+<div class="c2pTitle">
+
+${item.title}
+
+</div>
+
+<div class="c2pBody">
+
+${stringify(item.data)}
+
+</div>
+
+`;
+
+    logBox.prepend(div);
+
+}
 
 
-const PAGE=
-location.pathname
-.replace(/^\/+/,"")
-.split("/")[0]
-||"index";
+/* =========================================
+   SEARCH
+========================================= */
 
+search.addEventListener("input",()=>{
 
+    const keyword=
+    search.value
+    .toLowerCase()
+    .trim();
 
-log("CURRENT PAGE",PAGE);
+    logBox
+    .querySelectorAll(".c2pItem")
+    .forEach(item=>{
 
+        item.style.display=
 
+        item.dataset.search
+        .includes(keyword)
 
+        ?
 
-// =========================================
-// PAGE INFO
-// =========================================
+        ""
 
+        :
 
-log("PAGE INFO",{
+        "none";
 
-url:location.href,
-
-title:document.title,
-
-time:new Date().toString()
+    });
 
 });
 
 
+/* =========================================
+   CLEAR
+========================================= */
 
-log("DEVICE",navigator.userAgent);
+document
+.getElementById("dbgClear")
+.onclick=()=>{
 
+    logs.length=0;
 
+    logBox.innerHTML="";
 
-log(
-"NETWORK",
-navigator.onLine
-?"ONLINE"
-:"OFFLINE"
-);
+    stats.info=0;
+    stats.warn=0;
+    stats.error=0;
+    stats.fetch=0;
 
-
-
-// =========================================
-// NETWORK STATUS
-// =========================================
-
-
-window.addEventListener(
-"offline",
-()=>log("NETWORK","OFFLINE")
-);
-
-
-window.addEventListener(
-"online",
-()=>log("NETWORK","ONLINE")
-);
-
-
-
-
-// =========================================
-// JAVASCRIPT ERROR
-// =========================================
-
-
-window.onerror=function(
-msg,
-src,
-line,
-col,
-err
-){
-
-log("JS ERROR",{
-
-message:msg,
-
-file:src,
-
-line,
-
-column:col,
-
-stack:err?.stack
-
-});
-
+    updateStats();
 
 };
 
 
+/* =========================================
+   COPY
+========================================= */
+
+document
+.getElementById("dbgCopy")
+.onclick=async()=>{
+
+    try{
+
+        await navigator.clipboard.writeText(
+
+            JSON.stringify(
+                logs,
+                null,
+                2
+            )
+
+        );
+
+        alert("Debug berhasil disalin.");
+
+    }catch(e){
+
+        alert("Gagal copy debug.");
+
+    }
+
+};
 
 
-// =========================================
-// PROMISE ERROR
-// =========================================
+/* =========================================
+   HIDE
+========================================= */
+
+document
+.getElementById("dbgHide")
+.onclick=()=>{
+
+    panel.style.display="none";
+
+};
 
 
-window.addEventListener(
-"unhandledrejection",
-e=>{
+/* =========================================
+   GLOBAL DEBUG
+========================================= */
 
-log(
-"PROMISE ERROR",
-e.reason
+window.debug=function(
+
+title,
+
+data=null,
+
+type="info"
+
+){
+
+    addLog(
+
+        type,
+
+        title,
+
+        data
+
+    );
+
+};
+
+
+/* =========================================
+   START
+========================================= */
+
+debug(
+"CLICK2PAY DEBUG",
+"Panel berhasil dimuat"
 );
+
+debug(
+"URL",
+location.href
+);
+
+debug(
+"USER AGENT",
+navigator.userAgent
+);
+
+debug(
+"ONLINE",
+navigator.onLine
+);
+
+
+/* =========================================
+   CONSOLE MONITOR
+========================================= */
+
+["log","warn","error","info"].forEach(type=>{
+
+    const original=console[type];
+
+    console[type]=function(...args){
+
+        if(type==="warn"){
+
+            addLog(
+                "warn",
+                "CONSOLE WARN",
+                args
+            );
+
+        }
+
+        else if(type==="error"){
+
+            addLog(
+                "error",
+                "CONSOLE ERROR",
+                args
+            );
+
+        }
+
+        else{
+
+            addLog(
+                "info",
+                "CONSOLE "+type.toUpperCase(),
+                args
+            );
+
+        }
+
+        original.apply(
+            console,
+            args
+        );
+
+    };
 
 });
 
 
-
-
-// =========================================
-// FILE ERROR
-// =========================================
-
+/* =========================================
+   JAVASCRIPT ERROR
+========================================= */
 
 window.addEventListener(
 "error",
 e=>{
 
+    addLog(
 
-const target=e.target;
+        "error",
 
+        "JAVASCRIPT ERROR",
 
+        {
 
-if(target?.tagName==="SCRIPT"){
+            message:e.message,
 
-log(
-"JS FILE ERROR",
-target.src
-);
+            file:e.filename,
 
-}
+            line:e.lineno,
 
+            column:e.colno,
 
+            stack:e.error?.stack
 
-if(target?.tagName==="LINK"){
+        }
 
-log(
-"CSS FILE ERROR",
-target.href
-);
-
-}
-
-
-
-},
-true
-);
-
-
-
-
-// =========================================
-// FETCH MONITOR
-// =========================================
-
-
-const oldFetch=window.fetch;
-
-
-window.fetch=async function(...args){
-
-
-try{
-
-
-const res=await oldFetch(...args);
-
-
-
-log(
-res.ok
-?"FETCH OK"
-:"FETCH ERROR",
-{
-
-url:String(args[0]),
-
-status:res.status
-
-}
-
-);
-
-
-
-return res;
-
-
-
-}catch(err){
-
-
-log(
-"FETCH FAILED",
-{
-
-url:String(args[0]),
-
-error:err.message
-
-}
-
-);
-
-
-
-throw err;
-
-
-}
-
-
-
-};
-
-
-
-// =========================================
-// CONSOLE MONITOR
-// =========================================
-
-
-["log","warn","error"]
-.forEach(type=>{
-
-
-const old=console[type];
-
-
-console[type]=function(...args){
-
-
-log(
-"CONSOLE "+type.toUpperCase(),
-args
-);
-
-
-
-old.apply(
-console,
-args
-);
-
-
-
-};
-
+    );
 
 });
 
 
-// =========================================
-// DOM READY
-// =========================================
+/* =========================================
+   PROMISE ERROR
+========================================= */
+
+window.addEventListener(
+"unhandledrejection",
+e=>{
+
+    addLog(
+
+        "error",
+
+        "PROMISE ERROR",
+
+        e.reason
+
+    );
+
+});
+
+
+/* =========================================
+   NETWORK
+========================================= */
+
+window.addEventListener(
+"online",
+()=>{
+
+    addLog(
+        "info",
+        "NETWORK",
+        "ONLINE"
+    );
+
+});
+
+window.addEventListener(
+"offline",
+()=>{
+
+    addLog(
+        "warn",
+        "NETWORK",
+        "OFFLINE"
+    );
+
+});
+
+
+/* =========================================
+   PAGE LOAD
+========================================= */
+
+window.addEventListener(
+"load",
+()=>{
+
+    addLog(
+        "info",
+        "WINDOW",
+        "LOAD COMPLETE"
+    );
+
+});
 
 
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
 
-
-log(
-"DOM",
-"READY"
-);
-
-
-
-// =========================================
-// SCRIPT CHECK
-// =========================================
-
-
-const scripts=[
-...document.scripts
-];
-
-
-log(
-"SCRIPT COUNT",
-scripts.length
-);
-
-
-
-scripts.forEach((s,i)=>{
-
-
-log(
-"SCRIPT "+i,
-{
-
-src:s.src||"INLINE",
-
-async:s.async,
-
-defer:s.defer
-
-}
-
-);
-
+    addLog(
+        "info",
+        "DOM",
+        "READY"
+    );
 
 });
 
 
+/* =========================================
+   LOCAL STORAGE
+========================================= */
 
+try{
 
-// =========================================
-// CSS CHECK
-// =========================================
+    addLog(
 
+        "info",
 
-const css=[
-...document.querySelectorAll(
-'link[rel="stylesheet"]'
-)
-];
+        "LOCAL STORAGE",
 
+        {
 
+            user_id:
+            localStorage.getItem("user_id"),
 
-log(
-"CSS LINK COUNT",
-css.length
-);
+            total_key:
+            localStorage.length
 
+        }
 
+    );
 
-css.forEach((c,i)=>{
+}catch(e){
 
-
-log(
-"CSS "+i,
-{
-
-href:c.href,
-
-disabled:c.disabled
+    addLog(
+        "warn",
+        "LOCAL STORAGE",
+        e.message
+    );
 
 }
 
+
+/* =========================================
+   PAGE INFO
+========================================= */
+
+addLog(
+
+    "info",
+
+    "PAGE INFO",
+
+    {
+
+        title:document.title,
+
+        path:location.pathname,
+
+        search:location.search,
+
+        hash:location.hash,
+
+        language:navigator.language,
+
+        platform:navigator.platform
+
+    }
+
 );
 
 
-});
+/* =========================================
+   FETCH MONITOR
+========================================= */
 
+const originalFetch=window.fetch;
 
+window.fetch=async function(...args){
 
+    const started=performance.now();
 
-// =========================================
-// INLINE STYLE
-// =========================================
+    const url=String(args[0]);
 
+    const options=args[1]||{};
 
-const styles=[
-...document.querySelectorAll("style")
-];
+    const method=options.method||"GET";
 
+    addLog(
+        "fetch",
+        "FETCH START",
+        {
+            method,
+            url,
+            body:options.body||null
+        }
+    );
 
+    try{
 
-log(
-"INLINE STYLE COUNT",
-styles.length
-);
+        const response=
+        await originalFetch(...args);
 
+        const ended=
+        performance.now();
 
+        let body="";
 
+        try{
 
-// =========================================
-// PAGE ELEMENT CONFIG
-// =========================================
+            body=
+            await response.clone().text();
 
+            if(body.length>1000){
 
-const PAGE_ELEMENTS={
+                body=
+                body.substring(0,1000)+
+                "\n...(dipotong)...";
 
+            }
 
-dashboard:[
+        }catch(e){
 
-"adsToday",
+            body=
+            "[Response tidak bisa dibaca]";
 
-"adsMonth",
+        }
 
-"currentCpm",
+        addLog(
 
-"adsChart",
+            response.ok
+            ?"fetch"
+            :"error",
 
-"sellChart",
+            "FETCH RESPONSE",
 
-"reportTable",
+            {
 
-"announcementBox",
+                url,
 
-"cpmMarketList"
+                method,
 
-],
+                status:
+                response.status,
 
+                statusText:
+                response.statusText,
 
+                time:
+                (
+                    ended-started
+                ).toFixed(0)+" ms",
 
-payment:[
+                response:body
 
-"balance",
+            }
 
-"withdrawService",
+        );
 
-"manualWithdrawBtn",
+        return response;
 
-"instantWithdrawBtn",
+    }
 
-"paymentWarning"
+    catch(err){
 
-],
+        addLog(
 
+            "error",
 
+            "FETCH FAILED",
 
-profile:[
+            {
 
-"profileName",
+                url,
 
-"profileEmail",
+                method,
 
-"saveProfile"
+                error:err.message,
 
-],
+                stack:err.stack
 
+            }
 
+        );
 
-withdraw:[
+        throw err;
 
-"withdrawAmount",
-
-"withdrawBtn",
-
-"withdrawHistory"
-
-],
-
-
-
-buy:[
-
-"productList",
-
-"buyButton"
-
-]
-
-
+    }
 
 };
 
 
+/* =========================================
+   XMLHTTPREQUEST MONITOR
+========================================= */
 
+(function(){
 
-// =========================================
-// CHECK PAGE ONLY
-// =========================================
+const open=
+XMLHttpRequest.prototype.open;
 
+const send=
+XMLHttpRequest.prototype.send;
 
-const ids=
-PAGE_ELEMENTS[PAGE]||[];
+XMLHttpRequest.prototype.open=function(
 
+method,
 
+url
 
-if(ids.length===0){
+){
 
+this._debugMethod=method;
 
-log(
-"PAGE CONFIG",
-"Tidak ada konfigurasi untuk "+PAGE
+this._debugUrl=url;
+
+return open.apply(
+
+this,
+
+arguments
+
 );
 
+};
 
-}else{
+XMLHttpRequest.prototype.send=function(body){
 
+const start=
+performance.now();
 
-let found=0;
+this.addEventListener(
 
+"load",
 
+()=>{
 
-ids.forEach(id=>{
+addLog(
 
+this.status>=200&&this.status<300
+?"fetch"
+:"error",
 
-const element=
-document.getElementById(id);
+"XHR",
 
-
-
-if(element){
-
-found++;
-
-}
-
-
-
-log(
-"ELEMENT "+id,
-element
-?"FOUND"
-:"MISSING"
-);
-
-
-
-});
-
-
-
-
-log(
-"PAGE RESULT",
 {
 
-page:PAGE,
+method:
+this._debugMethod,
 
-found,
-
-total:ids.length,
+url:
+this._debugUrl,
 
 status:
-found===ids.length
-?"READY"
-:"INCOMPLETE"
+this.status,
+
+time:
+(
+performance.now()-start
+).toFixed(0)+" ms"
 
 }
 
 );
 
-
-
 }
 
-
-
-// =========================================
-// DEBUG ELEMENT
-// =========================================
-
-
-const debugElements=
-document.querySelectorAll(
-"[data-debug]"
 );
 
+return send.apply(
 
+this,
 
-log(
-"DEBUG ELEMENT COUNT",
-debugElements.length
+arguments
+
 );
 
+};
+
+})();
 
 
-debugElements.forEach(el=>{
+/* =========================================
+   PERFORMANCE
+========================================= */
 
+setInterval(()=>{
 
-log(
-"DEBUG ELEMENT",
+if(performance.memory){
+
+addLog(
+
+"info",
+
+"MEMORY",
+
 {
 
-id:el.id,
+used:
+Math.round(
 
-tag:el.tagName
+performance.memory.usedJSHeapSize
+/1024/1024
 
-}
+)+" MB",
 
-);
+total:
+Math.round(
 
+performance.memory.totalJSHeapSize
+/1024/1024
 
-
-});
-
-
-
-});
-
-
-// =========================================
-// DATABASE CHECK
-// =========================================
-
-
-setTimeout(()=>{
-
-
-log(
-"DATABASE",
-window.database
-?"READY"
-:"NULL"
-);
-
-
-
-if(window.database){
-
-
-log(
-"SUPABASE",
-window.database.supabase
-?"READY"
-:"NULL"
-);
-
-
+)+" MB"
 
 }
 
+);
+
+}
+
+},30000);
+
+/* =========================================
+   DATABASE MONITOR
+========================================= */
+
+setTimeout(async()=>{
+
+    if(!window.database){
+
+        addLog(
+            "error",
+            "DATABASE",
+            "window.database belum tersedia"
+        );
+
+        return;
+
+    }
+
+    addLog(
+        "info",
+        "DATABASE",
+        "READY"
+    );
+
+    if(!window.database.supabase){
+
+        addLog(
+            "error",
+            "SUPABASE",
+            "Client NULL"
+        );
+
+        return;
+
+    }
+
+    try{
+
+        const {data,error}=await window.database
+        .supabase
+        .from("profiles")
+        .select("id")
+        .limit(1);
+
+        if(error){
+
+            addLog(
+                "error",
+                "SUPABASE QUERY",
+                error
+            );
+
+        }else{
+
+            addLog(
+                "info",
+                "SUPABASE QUERY",
+                data
+            );
+
+        }
+
+    }catch(e){
+
+        addLog(
+            "error",
+            "SUPABASE FAILED",
+            e.message
+        );
+
+    }
+
+},1000);
+
+
+/* =========================================
+   CLICK2PAY USER
+========================================= */
+
+setTimeout(async()=>{
+
+    if(!window.database) return;
+
+    try{
+
+        const user=
+        await window.database.getUser();
+
+        addLog(
+            user
+            ?"info"
+            :"warn",
+            "CURRENT USER",
+            user
+        );
+
+        if(user){
+
+            const profile=
+            await window.database.getProfile(
+                user.id
+            );
+
+            addLog(
+                profile
+                ?"info"
+                :"warn",
+                "CURRENT PROFILE",
+                profile
+            );
+
+        }
+
+    }catch(e){
+
+        addLog(
+            "error",
+            "LOAD USER",
+            e
+        );
+
+    }
 
 },1500);
 
 
-
-
-// =========================================
-// USER CHECK
-// =========================================
-
+/* =========================================
+   ELEMENT CHECK
+========================================= */
 
 setTimeout(()=>{
 
+    const ids=[
 
-log(
-"USER_ID",
-localStorage.getItem("user_id")
-||"KOSONG"
-);
+        "sellTotalLink",
+        "sellTotalPrice",
+        "sellTotalView",
+        "sellTotalSold",
+        "sellList",
+        "generatedBox",
+        "createSellBtn"
 
+    ];
 
+    ids.forEach(id=>{
+
+        addLog(
+
+            document.getElementById(id)
+            ?"info"
+            :"warn",
+
+            "ELEMENT",
+
+            {
+
+                id,
+
+                exists:
+                !!document.getElementById(id)
+
+            }
+
+        );
+
+    });
 
 },2000);
 
-
-
-
-// =========================================
-// CSS ACTIVE CHECK
-// =========================================
-
+/* =========================================
+   DATABASE FUNCTION MONITOR
+========================================= */
 
 setTimeout(()=>{
 
+    if(!window.database){
 
-const sheets=[
-...document.styleSheets
-];
+        addLog(
+            "warn",
+            "DATABASE MONITOR",
+            "window.database belum tersedia"
+        );
 
+        return;
 
+    }
 
-log(
-"CSS ACTIVE COUNT",
-sheets.length
-);
+    const functions=[
 
+        "getUser",
+        "getProfile",
+        "getProfiles",
+        "getLinks",
+        "getLinkByCode",
+        "createLink",
+        "updateLink",
+        "deleteLink",
+        "createPayment",
+        "getPaymentStatus",
+        "checkSellPayment",
+        "createSellOrder",
+        "getSellOrders",
+        "getDashboardReport",
+        "getReports"
 
+    ];
 
-sheets.forEach((sheet,i)=>{
+    functions.forEach(name=>{
 
+        if(typeof window.database[name]!=="function"){
+            return;
+        }
 
-try{
+        const original=
+        window.database[name];
 
+        window.database[name]=async function(...args){
 
-log(
-"CSS ACTIVE "+i,
-{
+            const start=
+            performance.now();
 
-href:
-sheet.href||"INLINE",
+            addLog(
+                "info",
+                "DATABASE CALL",
+                {
+                    function:name,
+                    arguments:args
+                }
+            );
 
-rules:
-sheet.cssRules.length
+            try{
 
-}
+                const result=
+                await original.apply(
+                    this,
+                    args
+                );
 
-);
+                addLog(
+                    "info",
+                    "DATABASE RESULT",
+                    {
+                        function:name,
+                        time:
+                        (
+                            performance.now()-start
+                        ).toFixed(0)+" ms",
+                        result
+                    }
+                );
 
+                return result;
 
+            }catch(e){
 
-}catch(e){
+                addLog(
+                    "error",
+                    "DATABASE ERROR",
+                    {
+                        function:name,
+                        error:e.message,
+                        stack:e.stack
+                    }
+                );
 
+                throw e;
 
-log(
-"CSS BLOCKED",
-{
+            }
 
-href:sheet.href,
+        };
 
-reason:e.message
+    });
 
-}
+    addLog(
+        "info",
+        "DATABASE MONITOR",
+        "Semua fungsi database dipasang"
+    );
 
-);
+},2500);
 
+/* =========================================
+   DOM WATCHER
+========================================= */
 
+setTimeout(()=>{
 
-}
+    const watchIds=[
 
+        "sellTotalLink",
+        "sellTotalPrice",
+        "sellTotalView",
+        "sellTotalSold",
+        "sellList",
+        "generatedBox",
+        "createResult",
+        "sellStatus"
 
+    ];
 
-});
+    watchIds.forEach(id=>{
 
+        const element=
+        document.getElementById(id);
 
+        if(!element){
+
+            addLog(
+                "warn",
+                "DOM WATCH",
+                {
+                    id,
+                    status:"ELEMENT TIDAK DITEMUKAN"
+                }
+            );
+
+            return;
+
+        }
+
+        addLog(
+            "info",
+            "DOM WATCH",
+            {
+                id,
+                status:"AKTIF"
+            }
+        );
+
+        const observer=
+        new MutationObserver(()=>{
+
+            addLog(
+                "info",
+                "DOM UPDATE",
+                {
+                    id,
+                    text:
+                    element.innerText
+                    .substring(0,500),
+
+                    html:
+                    element.innerHTML
+                    .substring(0,500)
+                }
+            );
+
+        });
+
+        observer.observe(
+
+            element,
+
+            {
+
+                childList:true,
+
+                subtree:true,
+
+                characterData:true,
+
+                attributes:true
+
+            }
+
+        );
+
+    });
 
 },3000);
 
-
-
-
-// =========================================
-// SUPABASE TEST
-// =========================================
-
-
-setTimeout(async()=>{
-
-
-if(!window.database){
-
-log(
-"SUPABASE TEST",
-"DATABASE NOT READY"
-);
-
-return;
-
-}
-
-
-
-if(!window.database.supabase){
-
-
-log(
-"SUPABASE TEST",
-"CLIENT NULL"
-);
-
-
-return;
-
-
-}
-
-
-
-try{
-
-
-const {error}=
-
-await window.database.supabase
-
-.from("profiles")
-
-.select("id")
-
-.limit(1);
-
-
-
-
-if(error){
-
-
-log(
-"SUPABASE ERROR",
-error
-);
-
-
-}else{
-
-
-log(
-"SUPABASE QUERY",
-"OK"
-);
-
-
-}
-
-
-
-}catch(e){
-
-
-log(
-"SUPABASE FAILED",
-e.message
-);
-
-
-
-}
-
-
-
-},5000);
-
-
-
-
-// =========================================
-// FINAL INFO
-// =========================================
-
+/* =========================================
+   EVENT MONITOR
+========================================= */
 
 setTimeout(()=>{
 
+    const events=[
 
-log(
-"DEBUG COMPLETE",
+        "click",
+        "change",
+        "input",
+        "submit",
+        "keydown"
+
+    ];
+
+    events.forEach(eventName=>{
+
+        document.addEventListener(
+
+            eventName,
+
+            e=>{
+
+                const target=e.target;
+
+                addLog(
+
+                    "info",
+
+                    "EVENT "+eventName.toUpperCase(),
+
+                    {
+
+                        tag:
+                        target.tagName,
+
+                        id:
+                        target.id||null,
+
+                        class:
+                        target.className||null,
+
+                        name:
+                        target.name||null,
+
+                        value:
+                        typeof target.value!=="undefined"
+                        ?target.value
+                        :null,
+
+                        text:
+                        (
+                            target.innerText||
+                            target.textContent||
+                            ""
+                        )
+                        .trim()
+                        .substring(0,100)
+
+                    }
+
+                );
+
+            },
+
+            true
+
+        );
+
+    });
+
+    addLog(
+        "info",
+        "EVENT MONITOR",
+        "Semua event aktif"
+    );
+
+},3500);
+
+/* =========================================
+   LOCAL STORAGE MONITOR
+========================================= */
+
+(function(){
+
+    const originalSet=
+    Storage.prototype.setItem;
+
+    const originalGet=
+    Storage.prototype.getItem;
+
+    const originalRemove=
+    Storage.prototype.removeItem;
+
+    const originalClear=
+    Storage.prototype.clear;
+
+    Storage.prototype.setItem=function(key,value){
+
+        addLog(
+
+            "info",
+
+            "LOCAL STORAGE SET",
+
+            {
+
+                key,
+
+                value
+
+            }
+
+        );
+
+        return originalSet.apply(
+            this,
+            arguments
+        );
+
+    };
+
+    Storage.prototype.getItem=function(key){
+
+        const value=
+        originalGet.apply(
+            this,
+            arguments
+        );
+
+        addLog(
+
+            "info",
+
+            "LOCAL STORAGE GET",
+
+            {
+
+                key,
+
+                value
+
+            }
+
+        );
+
+        return value;
+
+    };
+
+    Storage.prototype.removeItem=function(key){
+
+        addLog(
+
+            "warn",
+
+            "LOCAL STORAGE REMOVE",
+
+            {
+
+                key
+
+            }
+
+        );
+
+        return originalRemove.apply(
+            this,
+            arguments
+        );
+
+    };
+
+    Storage.prototype.clear=function(){
+
+        addLog(
+
+            "warn",
+
+            "LOCAL STORAGE CLEAR",
+
+            "Semua data dihapus"
+
+        );
+
+        return originalClear.apply(
+            this,
+            arguments
+        );
+
+    };
+
+    addLog(
+        "info",
+        "LOCAL STORAGE MONITOR",
+        "Aktif"
+    );
+
+})();
+
+/* =========================================
+   PERFORMANCE MONITOR
+========================================= */
+
+(function(){
+
+    const startTime=Date.now();
+
+    let frame=0;
+
+    let last=performance.now();
+
+    function fpsLoop(now){
+
+        frame++;
+
+        if(now-last>=1000){
+
+            addLog(
+
+                "info",
+
+                "PERFORMANCE",
+
+                {
+
+                    uptime:
+                    Math.floor(
+                        (Date.now()-startTime)/1000
+                    )+" detik",
+
+                    fps:frame,
+
+                    dom:
+                    document
+                    .getElementsByTagName("*")
+                    .length,
+
+                    memory:
+                    performance.memory
+                    ?{
+
+                        used:
+                        Math.round(
+                            performance.memory.usedJSHeapSize
+                            /1024/1024
+                        )+" MB",
+
+                        total:
+                        Math.round(
+                            performance.memory.totalJSHeapSize
+                            /1024/1024
+                        )+" MB",
+
+                        limit:
+                        Math.round(
+                            performance.memory.jsHeapSizeLimit
+                            /1024/1024
+                        )+" MB"
+
+                    }
+                    :"Tidak didukung"
+
+                }
+
+            );
+
+            frame=0;
+
+            last=now;
+
+        }
+
+        requestAnimationFrame(fpsLoop);
+
+    }
+
+    requestAnimationFrame(fpsLoop);
+
+})();
+
+/* =========================================
+   RESOURCE MONITOR
+========================================= */
+
+window.addEventListener("load",()=>{
+
+    const resources=
+    performance.getEntriesByType("resource");
+
+    resources.forEach(item=>{
+
+        addLog(
+
+            "info",
+
+            "RESOURCE",
+
+            {
+
+                name:item.name,
+
+                type:item.initiatorType,
+
+                duration:
+                item.duration.toFixed(0)+" ms",
+
+                size:
+                item.transferSize||0
+
+            }
+
+        );
+
+    });
+
+});
+
+/* =========================================
+   NAVIGATION TIMING
+========================================= */
+
+window.addEventListener("load",()=>{
+
+    const nav=
+    performance.getEntriesByType("navigation")[0];
+
+    if(!nav) return;
+
+    addLog(
+
+        "info",
+
+        "PAGE SPEED",
+
+        {
+
+            dns:
+            nav.domainLookupEnd-
+            nav.domainLookupStart,
+
+            connect:
+            nav.connectEnd-
+            nav.connectStart,
+
+            request:
+            nav.responseStart-
+            nav.requestStart,
+
+            response:
+            nav.responseEnd-
+            nav.responseStart,
+
+            dom:
+            nav.domComplete-
+            nav.domInteractive,
+
+            total:
+            nav.loadEventEnd-
+            nav.startTime
+
+        }
+
+    );
+
+});
+
+/* =========================================
+   COOKIE MONITOR
+========================================= */
+
+setInterval(()=>{
+
+    addLog(
+
+        "info",
+
+        "COOKIE",
+
+        document.cookie||
+
+        "Tidak ada cookie"
+
+    );
+
+},60000);
+
+
+/* =========================================
+   SCREEN INFO
+========================================= */
+
+addLog(
+
+    "info",
+
+    "SCREEN",
+
+    {
+
+        width:
+        screen.width,
+
+        height:
+        screen.height,
+
+        colorDepth:
+        screen.colorDepth,
+
+        pixelRatio:
+        window.devicePixelRatio
+
+    }
+
+);
+
+/* =========================================
+   GEOLOCATION
+========================================= */
+
+if(navigator.geolocation){
+
+navigator.geolocation.getCurrentPosition(
+
+position=>{
+
+addLog(
+
+"info",
+
+"GEOLOCATION",
+
 {
 
-page:PAGE,
+latitude:
+position.coords.latitude,
 
-url:location.href,
+longitude:
+position.coords.longitude,
 
-time:new Date().toISOString()
+accuracy:
+position.coords.accuracy
 
 }
 
 );
 
+},
+
+error=>{
+
+addLog(
+
+"warn",
+
+"GEOLOCATION",
+
+error.message
+
+);
+
+}
+
+);
+
+}
+
+/* =========================================
+   BATTERY
+========================================= */
+
+if(navigator.getBattery){
+
+navigator.getBattery()
+
+.then(battery=>{
+
+addLog(
+
+"info",
+
+"BATTERY",
+
+{
+
+level:
+Math.round(
+battery.level*100
+)+"%",
+
+charging:
+battery.charging
+
+}
+
+);
+
+});
+
+}
 
 
-},6000);
+/* =========================================
+   WINDOW SIZE
+========================================= */
+
+window.addEventListener(
+
+"resize",
+
+()=>{
+
+addLog(
+
+"info",
+
+"WINDOW RESIZE",
+
+{
+
+width:
+window.innerWidth,
+
+height:
+window.innerHeight
+
+}
+
+);
+
+}
+
+);
+
+/* =========================================
+   VISIBILITY
+========================================= */
+
+document.addEventListener(
+
+"visibilitychange",
+
+()=>{
+
+addLog(
+
+"info",
+
+"PAGE VISIBILITY",
+
+document.hidden
+?"HIDDEN"
+:"VISIBLE"
+
+);
+
+}
+);
 
 
+/* =========================================
+   FINAL
+========================================= */
+
+addLog(
+
+"info",
+
+"DEBUG READY",
+
+{
+
+version:"2.0",
+
+time:new Date(),
+
+url:location.href
+
+}
+
+);
 
 })();
+
