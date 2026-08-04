@@ -25,7 +25,7 @@ async function bayarGGCreatePayment(env, payload) {
                 callback_url: payload.callback_url || "",
                 redirect_url: payload.redirect_url || "",
                 payment_url: "https://www.bayar.gg/pay",
-                payment_method: "qris_bayar_gg"
+                payment_method: "qris"
             })
         }
     );
