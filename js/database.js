@@ -935,15 +935,11 @@ async function getPaymentStatus(orderId){
 
 async function checkSellPayment(invoice_id){
 
-
     if(!invoice_id){
-
         throw new Error(
             "Invoice ID kosong"
         );
-
     }
-
 
 
     console.log(
@@ -952,9 +948,8 @@ async function checkSellPayment(invoice_id){
     );
 
 
-
     const response = await fetch(
-        `${API_URL}/api/check-payment?invoice_id=${encodeURIComponent(invoice_id)}`
+        `${API_URL}/api/check-payment?invoice_id=${encodeURIComponent(invoice_id)}&t=${Date.now()}`
     );
 
 
