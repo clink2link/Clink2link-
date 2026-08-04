@@ -21,12 +21,6 @@ const authId = profile.id;
 // PROFILE
 // ===========================
 
-
-if(!profile){
-    console.error("Profile tidak ditemukan.");
-    return;
-}
-
 window.currentUserCountry = profile.country || "Indonesia";
 
 
@@ -156,9 +150,9 @@ if(
         0
     );
 
-    totalSold += Number(
-        link.sold ??
-        link.sales ??
+    totalSellClicks += Number(
+        link.total_clicks ??
+        link.clicks ??
         0
     );
 
@@ -167,7 +161,9 @@ if(
     );
 
     totalSold += Number(
-        link.sold || 0
+        link.sold ??
+        link.sales ??
+        0
     );
 
     totalSell++;
@@ -269,7 +265,6 @@ currentCpm.textContent=
 const reports=await database.getReports(authId)||[];
 
 let labels = [];
-let adsViewsChart = [];
 let earnings = [];
 let sellViewsChart = [];
 
@@ -297,10 +292,6 @@ earnings = chartData.map(item =>
     Number(item.ads_earnings || 0)
 );
 
-sellViewsChart = chartData.map(item =>
-    Number(item.sell_views || 0)
-);
-
 }else{
 
 const today=new Date();
@@ -317,7 +308,6 @@ month:"short"
 })
 );
 
-adsViewsChart.push(0);
 earnings.push(0);
 sellViewsChart.push(0);
 
