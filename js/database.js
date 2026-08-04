@@ -880,43 +880,27 @@ async function createPayment(payload){
 
     const text=await response.text();
 
-    console.log("CREATE PAYMENT HTTP",response.status);
-    console.log("CREATE PAYMENT RAW",text);
+    console.log("STATUS:",response.status);
+    console.log("RAW PAYMENT:",text);
 
     let result;
 
     try{
-
         result=JSON.parse(text);
-
-    }catch(e){
+    }catch{
 
         throw new Error(
-            `HTTP ${response.status}\n\n${text.substring(0,1000)}`
+`HTTP ${response.status}
+
+${text}`
         );
 
     }
 
-    console.log(
-        "CREATE PAYMENT JSON",
-        result
-    );
-
-    if(!response.ok){
+    if(!response.ok||!result.success){
 
         throw new Error(
-            result.error||
-            `HTTP ${response.status}`
-        );
-
-    }
-
-    if(result.success===false){
-
-        throw new Error(
-            result.error||
-            result.message||
-            "Create payment gagal"
+            JSON.stringify(result,null,2)
         );
 
     }
