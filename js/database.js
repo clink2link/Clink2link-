@@ -867,7 +867,7 @@ throw err;
 
 async function createPayment(payload){
 
-    const response = await fetch(
+    const response=await fetch(
         `${API_URL}/api/create-payment`,
         {
             method:"POST",
@@ -878,47 +878,50 @@ async function createPayment(payload){
         }
     );
 
+    const text=await response.text();
 
-    const text = await response.text();
-
+    console.log("CREATE PAYMENT HTTP",response.status);
+    console.log("CREATE PAYMENT RAW",text);
 
     let result;
 
-
     try{
 
-        result = JSON.parse(text);
+        result=JSON.parse(text);
 
-    }
-    catch{
+    }catch(e){
 
         throw new Error(
-            "Payment response bukan JSON"
+            `HTTP ${response.status}\n\n${text.substring(0,1000)}`
         );
 
     }
 
-
-
     console.log(
-        "CREATE PAYMENT RESPONSE:",
+        "CREATE PAYMENT JSON",
         result
     );
 
-
-
-    if(!response.ok || !result.success){
+    if(!response.ok){
 
         throw new Error(
-            result.error ||
-            "Gagal membuat pembayaran"
+            result.error||
+            `HTTP ${response.status}`
         );
 
     }
 
+    if(result.success===false){
 
+        throw new Error(
+            result.error||
+            result.message||
+            "Create payment gagal"
+        );
 
-    return result;
+    }
+
+    return result.data||result;
 
 }
 
