@@ -14,7 +14,7 @@ new URL(request.url);
 
 
 const invoice_id =
-url.searchParams.get("invoice_id");
+(url.searchParams.get("invoice_id") || "").trim();
 
 
 
@@ -344,102 +344,109 @@ error:error.message
 // =====================
 
 async function bayarGGCheckPayment(
-env,
-invoice_id
+    env,
+    invoice_id
 ){
 
-
-if(!env.BAYARGG_API_KEY){
-
-throw new Error(
-"BAYARGG_API_KEY kosong"
-);
-
-}
+    if(!env.BAYARGG_API_KEY){
+        throw new Error(
+            "BAYARGG_API_KEY kosong"
+        );
+    }
 
 
-
-const response =
-await fetch(
-
-"https://www.bayar.gg/api/check-payment.php",
-
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":
-"application/json",
-
-"X-API-Key":
-env.BAYARGG_API_KEY
-
-},
-
-body:JSON.stringify({
-
-invoice_id
-
-})
-
-}
-
-);
+    if(!invoice_id){
+        throw new Error(
+            "invoice_id kosong"
+        );
+    }
 
 
-
-const text =
-await response.text();
-
-
-
-console.log(
-"BAYARGG RAW:",
-text
-);
+    const payload = {
+        invoiceId: String(invoice_id)
+    };
 
 
-
-let data;
-
-
-try{
-
-data =
-JSON.parse(text);
-
-}
-catch{
-
-throw new Error(
-"BayarGG response bukan JSON"
-);
-
-}
-
-
-
-if (!response.ok) {
-
-    throw new Error(
-        `BayarGG HTTP ${response.status}: ${text}`
+    console.log(
+        "BAYARGG CHECK PAYLOAD:",
+        payload
     );
 
-}
 
-if (data.success === false) {
+    const response = await fetch(
+        "https://www.bayar.gg/api/check-payment.php",
+        {
+            method:"POST",
 
-    throw new Error(
-        data.message ||
-        data.error ||
-        "BayarGG gagal cek pembayaran"
+            headers:{
+                "Content-Type":"application/json",
+                "X-API-Key":env.BAYARGG_API_KEY
+            },
+
+            body:JSON.stringify(payload)
+        }
     );
 
-}
 
-return data.data || data.result || data;
+    const text = await response.text();
+
+
+    console.log(
+        "BAYARGG CHECK STATUS:",
+        response.status
+    );
+
+    console.log(
+        "BAYARGG CHECK RAW:",
+        text
+    );
+
+
+    let data;
+
+
+    try{
+
+        data = JSON.parse(text);
+
+    }catch{
+
+        throw new Error(
+            "BayarGG response bukan JSON: "+text
+        );
+
+    }
+
+
+
+    if(!response.ok){
+
+        throw new Error(
+            `BayarGG HTTP ${response.status}: ${text}`
+        );
+
+    }
+
+
+
+    if(data.success === false){
+
+        throw new Error(
+            data.error ||
+            data.message ||
+            "Check payment gagal"
+        );
+
+    }
+
+
+
+    return (
+        data.data ||
+        data.result ||
+        data
+    );
+
 }
 
 
