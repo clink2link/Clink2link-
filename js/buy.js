@@ -8,7 +8,7 @@ if(!buyBox) return;
 // DEBUG PANEL
 // =====================
 
-const DEBUG=true;
+const DEBUG=false;
 
 let debugBox=null;
 
