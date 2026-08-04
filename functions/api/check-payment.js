@@ -111,9 +111,11 @@ order.paid_at || null;
 
 
 
-const paymentStatus =
-String(
-    payment.status || ""
+const paymentStatus = String(
+    payment.status ||
+    payment.payment_status ||
+    payment.paymentStatus ||
+    ""
 ).toLowerCase();
 
 
