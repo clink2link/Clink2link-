@@ -35,32 +35,7 @@ const sellToday=document.getElementById("sellToday");
 const sellMonth=document.getElementById("sellMonth");
 const sellLastMonth=document.getElementById("sellLastMonth");
 
-
-let totalSellEarn = 0;
-
-
-if(sellToday){
-
-sellToday.textContent =
-"Rp "+totalSellEarn.toLocaleString("id-ID");
-
-}
-
-
-if(sellMonth){
-
-sellMonth.textContent =
-"Rp "+totalSellEarn.toLocaleString("id-ID");
-
-}
-
-
-if(sellLastMonth){
-
-sellLastMonth.textContent =
-"Rp "+totalSellEarn.toLocaleString("id-ID");
-
-}
+let totalSellEarning = 0;
 
 // ===========================
 // DATE
@@ -138,7 +113,9 @@ let totalSellClicks = 0;
 let totalSell = 0;
 let totalSellPrice = 0;
 let totalSold = 0;
-let totalSellEarning = 0;
+let totalSellEarning = Number(
+    profile.sell_earning_total || 0
+);
 
 if(Array.isArray(links)){
 
@@ -191,11 +168,6 @@ if(
     // Total jumlah sell link
     totalSell++;
 
-
-    // Pendapatan seller (80%)
-    totalSellEarning +=
-        Math.floor(price * 0.80) * sold;
-
 }
 
 });
@@ -247,7 +219,7 @@ if(sellTotalPrice){
 
     sellTotalPrice.textContent =
         "Rp " +
-        totalSellEarning.toLocaleString("id-ID");
+        totalSellPrice.toLocaleString("id-ID");
 
 }
 
