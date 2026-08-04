@@ -1,17 +1,100 @@
-document.addEventListener("DOMContentLoaded", async()=>{
+document.addEventListener("DOMContentLoaded",async()=>{
 
 const buyBox=document.getElementById("buyBox");
 
 if(!buyBox) return;
 
+// =====================
+// DEBUG PANEL
+// =====================
 
-const code =
-window.BUY_CODE ||
+const DEBUG=true;
+
+let debugBox=null;
+
+if(DEBUG){
+
+debugBox=document.createElement("div");
+
+debugBox.id="buyDebug";
+
+debugBox.style=`
+position:fixed;
+left:10px;
+right:10px;
+bottom:10px;
+max-height:45vh;
+overflow:auto;
+background:#000;
+color:#00ff00;
+font-size:12px;
+font-family:monospace;
+padding:10px;
+z-index:999999;
+border-radius:10px;
+white-space:pre-wrap;
+box-shadow:0 0 20px rgba(0,0,0,.5);
+`;
+
+document.body.appendChild(debugBox);
+
+}
+
+function log(title,data=null){
+
+console.log(title,data);
+
+if(!debugBox) return;
+
+let text=title;
+
+if(data!==null){
+
+try{
+
+text+="\n"+JSON.stringify(data,null,2);
+
+}catch{
+
+text+="\n"+String(data);
+
+}
+
+}
+
+debugBox.innerHTML+=text+"\n\n";
+
+debugBox.scrollTop=debugBox.scrollHeight;
+
+}
+
+window.onerror=function(msg,url,line,col,error){
+
+log("JS ERROR",{
+msg,
+url,
+line,
+col,
+stack:error?.stack
+});
+
+};
+
+window.onunhandledrejection=function(e){
+
+log("PROMISE ERROR",e.reason);
+
+};
+
+log("BUY PAGE LOADED");
+
+const code=
+window.BUY_CODE||
 location.pathname.split("/").pop();
 
+log("BUY CODE",code);
 
-
-if(!code || code==="b" || code==="buy"){
+if(!code||code==="b"||code==="buy"){
 
 buyBox.innerHTML=`
 
@@ -25,17 +108,18 @@ return;
 
 }
 
-
-
 try{
 
+log("GET LINK...");
 
-const link =
+const link=
 await database.getLinkByCode(code);
 
-
+log("LINK RESULT",link);
 
 if(!link){
+
+log("LINK TIDAK DITEMUKAN");
 
 buyBox.innerHTML=`
 
@@ -49,12 +133,12 @@ return;
 
 }
 
-
-
 if(
 link.link_type!=="sell" &&
 link.type!=="sell"
 ){
+
+log("BUKAN SELL LINK",link);
 
 buyBox.innerHTML=`
 
@@ -68,25 +152,36 @@ return;
 
 }
 
-
-
-const title =
+const title=
 escapeHtml(
-link.title || "Sell Link"
+link.title||"Sell Link"
 );
 
+const price=
+Number(link.price||0);
 
+log("LINK INFO",{
 
-const price =
-Number(link.price || 0);
+id:link.id,
 
+title,
 
+price,
 
+seller:
+link.user_id||
+link.seller_id||
+link.owner_id,
+
+views:link.views,
+
+sold:link.sold
+
+});
 
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
-
 
 <div class="buy-product-title">
 
@@ -96,18 +191,13 @@ ${title}
 
 </div>
 
-
-
 <div class="buy-price">
 
 Rp ${price.toLocaleString("id-ID")}
 
 </div>
 
-
-
 <div class="buy-info-row">
-
 
 <span class="buy-badge">
 
@@ -117,8 +207,6 @@ Terjual ${Number(link.sold||0)}x
 
 </span>
 
-
-
 <span class="buy-badge">
 
 <i class="fa-solid fa-eye"></i>
@@ -127,10 +215,7 @@ ${Number(link.views||0)} View
 
 </span>
 
-
 </div>
-
-
 
 <button
 class="buy-btn"
@@ -142,24 +227,18 @@ Bayar Sekarang
 
 </button>
 
-
 </div>
 
 `;
 
-
-
-
-const payBtn =
+const payBtn=
 document.getElementById("payBtn");
-
-
 
 payBtn.onclick=async()=>{
 
+log("BUTTON BAYAR DIKLIK");
 
 payBtn.disabled=true;
-
 
 payBtn.innerHTML=`
 
@@ -169,17 +248,14 @@ Membuat Pembayaran...
 
 `;
 
-
-
 try{
 
-
-const sellerId =
-link.user_id ||
-link.seller_id ||
+const sellerId=
+link.user_id||
+link.seller_id||
 link.owner_id;
 
-
+log("SELLER ID",sellerId);
 
 if(!sellerId){
 
@@ -189,9 +265,17 @@ throw new Error(
 
 }
 
+log("CREATE ORDER REQUEST",{
 
+link_id:link.id,
 
-let order =
+seller_id:sellerId,
+
+price
+
+});
+
+let order=
 await database.createSellOrder({
 
 link_id:link.id,
@@ -202,15 +286,13 @@ price
 
 });
 
-
+log("CREATE ORDER RESPONSE",order);
 
 if(Array.isArray(order)){
 
 order=order[0];
 
 }
-
-
 
 if(!order?.id){
 
@@ -220,54 +302,50 @@ throw new Error(
 
 }
 
+log("ORDER ID",order.id);
 
+log("CREATE PAYMENT REQUEST",{
 
-
-const payment =
-await database.createPayment({
-
-    order_id:order.id
+order_id:order.id
 
 });
 
+const payment=
+await database.createPayment({
 
-console.log(
-    "PAYMENT RESULT:",
-    payment
-);
+order_id:order.id
+
+});
+
+log("CREATE PAYMENT RESPONSE",payment);
 
 
-
-const qris =
-payment.qris_string ||
+const qris=
+payment.qris_string||
 payment.data?.qris_string;
 
-
-
-const expires =
-payment.expires_at ||
+const expires=
+payment.expires_at||
 payment.data?.expires_at;
 
-
-
-const invoiceId =
-payment.invoice_id ||
+const invoiceId=
+payment.invoice_id||
 payment.data?.invoice_id;
 
+const paymentUrl=
+payment.payment_url||
+payment.data?.payment_url;
 
+log("PAYMENT DATA",{
+invoiceId,
+expires,
+paymentUrl,
+hasQris:!!qris
+});
 
-console.log(
-    "INVOICE ID:",
-    invoiceId
-);
+if(!qris||!expires||!invoiceId){
 
-
-
-if(
-!qris ||
-!expires ||
-!invoiceId
-){
+log("PAYMENT ERROR",payment);
 
 throw new Error(
 "Data pembayaran tidak lengkap"
@@ -275,13 +353,9 @@ throw new Error(
 
 }
 
-
-
-
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
-
 
 <div class="buy-product-title">
 
@@ -291,16 +365,11 @@ Pembayaran
 
 </div>
 
-
-
 <div class="buy-price">
 
 Rp ${price.toLocaleString("id-ID")}
 
 </div>
-
-
-
 
 <div
 class="buy-countdown"
@@ -310,16 +379,11 @@ Memuat waktu...
 
 </div>
 
-
-
 <div
 class="buy-qr-box"
 id="qrcode">
 
 </div>
-
-
-
 
 <div
 class="buy-status buy-pending"
@@ -331,17 +395,10 @@ Menunggu Pembayaran
 
 </div>
 
-
-
-
-
 <button
 class="buy-btn"
 id="checkPayment"
-style="
-background:#10b981;
-margin-top:15px;
-">
+style="background:#10b981;margin-top:15px;">
 
 <i class="fa-solid fa-rotate"></i>
 
@@ -349,17 +406,10 @@ Cek Pembayaran
 
 </button>
 
-
-
-
-
 <button
 class="buy-btn"
 id="cancelPayment"
-style="
-background:#ef4444;
-margin-top:15px;
-">
+style="background:#ef4444;margin-top:15px;">
 
 <i class="fa-solid fa-xmark"></i>
 
@@ -367,86 +417,54 @@ Batalkan Pembayaran
 
 </button>
 
-
 </div>
 
 `;
 
+log("QR PAGE CREATED");
 
-
-
-// =====================
-// QR CODE
-// =====================
-
-const qrBox =
+const qrBox=
 document.getElementById("qrcode");
 
+if(qrBox&&typeof QRCode!=="undefined"){
 
-
-if(
-qrBox &&
-typeof QRCode !== "undefined"
-){
-
-new QRCode(
-qrBox,
-{
-
+new QRCode(qrBox,{
 text:qris,
-
 width:200,
-
 height:200
+});
 
+log("QR CODE GENERATED");
+
+}else{
+
+log("QRCODE LIBRARY TIDAK DITEMUKAN");
 }
 
-);
-
-}
-
-
-
-
-const countdown =
+const countdown=
 document.getElementById("countdown");
 
+const paymentStatus=
+document.getElementById("paymentStatus");
 
-const paymentStatus =
-document.getElementById(
-"paymentStatus"
-);
+const qrContainer=
+document.getElementById("qrcode");
 
-
-
-const qrContainer =
-document.getElementById(
-"qrcode"
-);
-
-
-
-
-const expireTime =
+const expireTime=
 new Date(expires).getTime();
 
+log("EXPIRE TIME",expires);
 
+const timer=setInterval(()=>{
 
-const timer =
-setInterval(()=>{
-
-
-const diff =
-expireTime - Date.now();
-
-
+const diff=
+expireTime-Date.now();
 
 if(diff<=0){
 
-
 clearInterval(timer);
 
-
+log("PAYMENT EXPIRED");
 
 countdown.innerHTML=`
 
@@ -456,16 +474,10 @@ countdown.innerHTML=`
 
 `;
 
-
-
 qrContainer.innerHTML="";
-
-
 
 paymentStatus.className=
 "buy-status buy-failed";
-
-
 
 paymentStatus.innerHTML=`
 
@@ -475,26 +487,15 @@ Pembayaran Expired
 
 `;
 
-
-
 return;
 
 }
 
-
-
-
-const minutes =
+const minutes=
 Math.floor(diff/60000);
 
-
-
-const seconds =
-Math.floor(
-(diff%60000)/1000
-);
-
-
+const seconds=
+Math.floor((diff%60000)/1000);
 
 countdown.innerHTML=`
 
@@ -504,12 +505,7 @@ ${minutes}:${String(seconds).padStart(2,"0")}
 
 `;
 
-
-
 },1000);
-
-
-
 
 
 // =====================
@@ -520,17 +516,10 @@ document
 .getElementById("checkPayment")
 .onclick=async()=>{
 
-
-const btn =
-document.getElementById(
-"checkPayment"
-);
-
-
+const btn=
+document.getElementById("checkPayment");
 
 btn.disabled=true;
-
-
 
 btn.innerHTML=`
 
@@ -540,31 +529,27 @@ Mengecek...
 
 `;
 
-
+log("CHECK PAYMENT CLICK");
 
 try{
 
+log("CHECK PAYMENT REQUEST",{
+invoiceId
+});
 
-const data =
+const data=
 await database.checkSellPayment(
 invoiceId
 );
 
+log("CHECK PAYMENT RESPONSE",data);
 
-
-if(
-data.status==="paid"
-){
-
+if(data.status==="paid"){
 
 clearInterval(timer);
 
-
-
-paymentStatus.className =
+paymentStatus.className=
 "buy-status buy-success";
-
-
 
 paymentStatus.innerHTML=`
 
@@ -574,24 +559,23 @@ Pembayaran Berhasil
 
 `;
 
-
-
 btn.style.display="none";
-
-
 
 document
 .getElementById("cancelPayment")
 .style.display="none";
 
-
+log("PAYMENT SUCCESS");
 
 setTimeout(()=>{
 
+log("REDIRECT",{
+destination:data.destination_url
+});
 
 if(data.destination_url){
 
-location.href =
+location.href=
 data.destination_url;
 
 }else{
@@ -602,22 +586,14 @@ alert(
 
 }
 
-
 },1000);
-
-
 
 return;
 
 }
 
-
-
-
-paymentStatus.className =
+paymentStatus.className=
 "buy-status buy-pending";
-
-
 
 paymentStatus.innerHTML=`
 
@@ -627,11 +603,7 @@ Belum Dibayar
 
 `;
 
-
-
 btn.disabled=false;
-
-
 
 btn.innerHTML=`
 
@@ -641,20 +613,18 @@ Cek Pembayaran
 
 `;
 
-
+log("STATUS MASIH PENDING");
 
 }catch(err){
 
+log("CHECK PAYMENT ERROR",{
+message:err.message,
+stack:err.stack
+});
 
-alert(
-err.message
-);
-
-
+alert(err.message);
 
 btn.disabled=false;
-
-
 
 btn.innerHTML=`
 
@@ -666,31 +636,23 @@ Cek Pembayaran
 
 }
 
-
 };
-
-
-
-
 
 // =====================
 // CANCEL
 // =====================
 
-
 document
 .getElementById("cancelPayment")
 .onclick=()=>{
 
+log("PAYMENT CANCEL");
 
 clearInterval(timer);
-
-
 
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
-
 
 <h3>
 
@@ -700,12 +662,11 @@ Pembayaran Dibatalkan
 
 </h3>
 
-
 <p>
+
 Silakan buat pembayaran baru.
+
 </p>
-
-
 
 <button
 class="buy-btn"
@@ -715,23 +676,22 @@ Buat Pembayaran Baru
 
 </button>
 
-
 </div>
 
 `;
 
 };
 
-
-
-
 }catch(err){
 
+log("PAYMENT FLOW ERROR",{
+message:err.message,
+stack:err.stack
+});
 
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
-
 
 <h3>
 
@@ -741,15 +701,11 @@ Pembayaran Gagal
 
 </h3>
 
-
-
 <p>
 
 ${escapeHtml(err.message)}
 
 </p>
-
-
 
 <button
 class="buy-btn"
@@ -759,30 +715,30 @@ Coba Lagi
 
 </button>
 
-
 </div>
 
 `;
 
 }
 
-
-
 };
-
-
 
 }catch(err){
 
+log("BUY PAGE ERROR",{
+message:err.message,
+stack:err.stack
+});
 
 buyBox.innerHTML=`
 
 <div class="buy-product-card">
 
 <h3>
-Terjadi Kesalahan
-</h3>
 
+Terjadi Kesalahan
+
+</h3>
 
 <p>
 
@@ -790,33 +746,21 @@ ${escapeHtml(err.message)}
 
 </p>
 
-
 </div>
 
 `;
 
 }
 
-
-
 });
-
-
-
-
 
 function escapeHtml(str){
 
 return String(str)
-
 .replaceAll("&","&amp;")
-
 .replaceAll("<","&lt;")
-
 .replaceAll(">","&gt;")
-
 .replaceAll('"',"&quot;")
-
 .replaceAll("'","&#039;");
 
 }
