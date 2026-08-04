@@ -54,7 +54,7 @@ await supabaseRequest(
 
     null,
 
-    `?invoice_id=eq.${encodeURIComponent(invoice_id)}&select=*`
+    `?select=*&invoice_id=eq.${invoice_id}`
 
 );
 
@@ -112,11 +112,13 @@ order.paid_at || null;
 
 
 const paymentStatus = String(
-    payment.status ||
-    payment.payment_status ||
-    payment.paymentStatus ||
+    payment.status ??
+    payment.payment_status ??
+    payment.paymentStatus ??
+    payment.state ??
+    payment.paymentState ??
     ""
-).toLowerCase();
+).trim().toLowerCase();
 
 
 
@@ -419,29 +421,25 @@ throw new Error(
 
 
 
-if(!response.ok){
+if (!response.ok) {
 
-throw new Error(
-"BayarGG HTTP ERROR"
-);
-
-}
-
-
-
-if(!data.success){
-
-throw new Error(
-data.message ||
-"BayarGG gagal cek pembayaran"
-);
+    throw new Error(
+        `BayarGG HTTP ${response.status}: ${text}`
+    );
 
 }
 
+if (data.success === false) {
 
+    throw new Error(
+        data.message ||
+        data.error ||
+        "BayarGG gagal cek pembayaran"
+    );
 
-return data.data || {};
+}
 
+return data.data || data.result || data;
 }
 
 
