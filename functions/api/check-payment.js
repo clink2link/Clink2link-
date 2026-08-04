@@ -354,6 +354,7 @@ async function bayarGGCheckPayment(
         );
     }
 
+
     if(!invoice_id){
         throw new Error(
             "invoice_id kosong"
@@ -361,15 +362,17 @@ async function bayarGGCheckPayment(
     }
 
 
-    const payload = {
-        invoice_id: String(invoice_id),
-        invoiceId: String(invoice_id)
-    };
+    const formData = new URLSearchParams();
+
+    formData.append(
+        "invoice_id",
+        String(invoice_id)
+    );
 
 
     console.log(
-        "BAYARGG CHECK PAYLOAD:",
-        JSON.stringify(payload)
+        "BAYARGG CHECK INVOICE:",
+        invoice_id
     );
 
 
@@ -379,16 +382,21 @@ async function bayarGGCheckPayment(
             method:"POST",
 
             headers:{
-                "Content-Type":"application/json",
-                "X-API-Key":env.BAYARGG_API_KEY
+                "Content-Type":
+                "application/x-www-form-urlencoded",
+
+                "X-API-Key":
+                env.BAYARGG_API_KEY
             },
 
-            body:JSON.stringify(payload)
+            body:
+            formData.toString()
         }
     );
 
 
-    const text = await response.text();
+    const text =
+    await response.text();
 
 
     console.log(
@@ -396,13 +404,16 @@ async function bayarGGCheckPayment(
         response.status
     );
 
+
     console.log(
         "BAYARGG CHECK RAW:",
         text
     );
 
 
+
     let data;
+
 
     try{
 
@@ -417,6 +428,7 @@ async function bayarGGCheckPayment(
     }
 
 
+
     if(!response.ok){
 
         throw new Error(
@@ -424,6 +436,7 @@ async function bayarGGCheckPayment(
         );
 
     }
+
 
 
     if(data.success === false){
@@ -435,6 +448,7 @@ async function bayarGGCheckPayment(
         );
 
     }
+
 
 
     return (
