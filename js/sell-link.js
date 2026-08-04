@@ -8,7 +8,8 @@ let sellActive = false;
 
 let sellLinks = [];
 let filteredLinks = [];
-
+let sellOrders = [];
+   
 let currentUser = null;
 let currentProfile = null;
 let currentFilter = "all";
@@ -221,6 +222,34 @@ async function loadSellLinks(){
 
 }
 
+async function loadSellOrders(){
+
+    try{
+
+        const {data,error}=await database.supabase
+        .from("sell_orders")
+        .select("link_id,seller_receive,status");
+
+        if(error) throw error;
+
+        sellOrders=data || [];
+
+        console.log(
+            "SELL ORDERS:",
+            sellOrders
+        );
+
+    }catch(err){
+
+        console.error(
+            "LOAD SELL ORDER ERROR",
+            err
+        );
+
+    }
+
+}
+
 
 /* =========================
    HELPER
@@ -263,11 +292,14 @@ function renderSellStats(){
 
         const price = Number(link.price || 0);
 
-        const soldCount = Number(
-            link.sold ??
-            link.sales ??
-            0
-        );
+        const orders =
+            sellOrders.filter(order =>
+                order.link_id === link.id &&
+                order.status === "paid"
+            );
+
+
+        const soldCount = orders.length;
 
         const viewCount = Number(
             link.total_views ??
@@ -285,7 +317,11 @@ function renderSellStats(){
         const sellerReceive = price - fee;
 
         // Total pendapatan seller
-        totalEarning += sellerReceive * soldCount;
+        totalEarning += orders.reduce(
+            (sum,order)=>
+                sum + Number(order.seller_receive || 0),
+            0
+        );
 
     }
 
@@ -1605,6 +1641,8 @@ function checkAccess(){
 (async()=>{
 
     if(await loadUser()){
+
+        await loadSellOrders();
 
         await loadSellLinks();
 
