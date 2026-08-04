@@ -148,20 +148,50 @@ export async function onRequestPost(context){
 
         }
 
-        // =====================
-        // CREATE PAYMENT BAYARGG
-        // =====================
+// =====================
+// GET SHORT CODE LINK
+// =====================
 
-        const payment = await bayarGGCreatePayment(
-            env,
-            {
-                amount,
-                description:`Pembelian Sell Link ${order.link_id}`
-            }
-        );
+const links = await supabaseRequest(
+    env,
+    "links",
+    "GET",
+    null,
+    `?id=eq.${order.link_id}&select=short_code`
+);
 
-        const expiresAt = payment.expires_at ||
-            new Date(Date.now()+7*60*1000).toISOString();
+
+if(!links.length){
+    throw new Error("Short code link tidak ditemukan");
+}
+
+
+const shortCode = links[0].short_code;
+
+
+// =====================
+// CREATE PAYMENT BAYARGG
+// =====================
+
+const payment = await bayarGGCreatePayment(
+    env,
+    {
+        amount,
+
+        description:
+            `Pembelian Sell Link ${shortCode}`,
+
+        callback_url:
+            `${env.FRONTEND_URL}api/payment-callback`,
+
+        redirect_url:
+            `${env.FRONTEND_URL}b/${shortCode}`
+    }
+);
+
+        const expiresAt = payment.expires_at
+            ? new Date(payment.expires_at).toISOString()
+            : new Date(Date.now()+7*60*1000).toISOString();
 
         console.log("PAYMENT CREATED",payment);
 
@@ -174,7 +204,8 @@ export async function onRequestPost(context){
             "sell_orders",
             "PATCH",
             {
-                payment_id: payment.payment_id,
+                payment_id:
+                    payment.payment_id || null,
                 invoice_id: payment.invoice_id,
                 payment_url: payment.payment_url,
                 qris_string: payment.qris_string,
