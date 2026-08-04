@@ -4,26 +4,6 @@
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-/* =========================
-   DEBUG MODE
-========================= */
-
-const DEBUG = true;
-
-function debug(title, data = null){
-
-    if(!DEBUG) return;
-
-    console.group("🐞 " + title);
-
-    if(data !== null){
-        console.log(data);
-    }
-
-    console.groupEnd();
-
-}
-
 let sellActive = false;
 
 let sellLinks = [];
@@ -275,86 +255,61 @@ function renderSellStats(){
     const totalSold =
         document.getElementById("sellTotalSold");
 
-
-    let totalHarga = 0;
+    let totalEarning = 0;
     let sold = 0;
     let views = 0;
 
-
     for(const link of sellLinks){
 
+        const price = Number(link.price || 0);
 
-        // total harga semua sell link
-        totalHarga += Number(
-            link.price ?? 0
+        const soldCount = Number(
+            link.sold ??
+            link.sales ??
+            0
         );
 
-
-        // jumlah terjual
-        sold += getValue(
-            link,
-            "sold",
-            "sales"
+        const viewCount = Number(
+            link.total_views ??
+            link.views ??
+            0
         );
 
+        sold += soldCount;
 
-        // total view
-        views += getValue(
-            link,
-            "total_views",
-            "views"
-        );
+        views += viewCount;
 
+        // Total uang hasil penjualan
+        totalEarning += price * soldCount;
 
     }
-
 
     if(totalLink){
-
-        totalLink.textContent =
-            sellLinks.length;
-
+        totalLink.textContent = sellLinks.length;
     }
-
 
     if(totalPrice){
-
         totalPrice.textContent =
             "Rp " +
-            totalHarga.toLocaleString("id-ID");
-
+            totalEarning.toLocaleString("id-ID");
     }
-
 
     if(totalView){
-
         totalView.textContent =
             views.toLocaleString("id-ID");
-
     }
-
 
     if(totalSold){
-
         totalSold.textContent =
             sold.toLocaleString("id-ID");
-
     }
 
-
-    console.log(
-        "SELL STATS:",
-        {
-            totalLink:
-                sellLinks.length,
-
-            totalHarga,
-
-            views,
-
-            sold
-        }
-    );
+    console.log("SELL STATS:",{
+        totalLink: sellLinks.length,
+        totalEarning,
+        views,
+        sold
+    });
 
 }
 
