@@ -1020,6 +1020,10 @@ await supabaseClient
 "seller_id",
 userId
 )
+.eq(
+"status",
+"paid"
+)
 
 .order(
 "created_at",
