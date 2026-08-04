@@ -362,35 +362,26 @@ async function bayarGGCheckPayment(
     }
 
 
-    const formData = new URLSearchParams();
-
-    formData.append(
-        "invoice_id",
-        String(invoice_id)
-    );
+    const url =
+    `https://www.bayar.gg/api/check-payment.php?invoice=${encodeURIComponent(invoice_id)}`;
 
 
     console.log(
-        "BAYARGG CHECK INVOICE:",
-        invoice_id
+        "BAYARGG CHECK URL:",
+        url
     );
 
 
-    const response = await fetch(
-        "https://www.bayar.gg/api/check-payment.php",
+    const response =
+    await fetch(
+        url,
         {
-            method:"POST",
+            method:"GET",
 
             headers:{
-                "Content-Type":
-                "application/x-www-form-urlencoded",
-
                 "X-API-Key":
                 env.BAYARGG_API_KEY
-            },
-
-            body:
-            formData.toString()
+            }
         }
     );
 
@@ -411,13 +402,13 @@ async function bayarGGCheckPayment(
     );
 
 
-
     let data;
 
 
     try{
 
-        data = JSON.parse(text);
+        data =
+        JSON.parse(text);
 
     }catch{
 
@@ -443,19 +434,13 @@ async function bayarGGCheckPayment(
 
         throw new Error(
             data.error ||
-            data.message ||
             "Check payment gagal"
         );
 
     }
 
 
-
-    return (
-        data.data ||
-        data.result ||
-        data
-    );
+    return data;
 
 }
 
