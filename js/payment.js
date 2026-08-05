@@ -174,58 +174,28 @@ async function loadBalance(){
 
     try{
 
-        const profile =
-            await window.database.getCurrentProfile();
-
+        const profile = await window.database.getCurrentProfile();
 
         if(!profile){
             console.log("[ERROR] Profile gagal diambil");
             return;
         }
 
-
         user = profile;
 
-
-        const {data:sales,error:salesError}=await db
-        .from("sell_orders")
-        .select("seller_receive")
-        .eq("seller_id",user.id)
-        .eq("status","paid");
-
-
-        if(salesError)
-            throw salesError;
-
-
-        const totalSell =
-            (sales || []).reduce(
-                (sum,item)=>
-                sum + Number(item.seller_receive || 0),
-                0
-            );
-
-
         updateBalanceUI(
-
-            profile.balance || 0,
-
-            profile.total_ads || 0,
-
-            totalSell
-
+            Number(profile.balance || 0),
+            Number(profile.ads_earning_total || 0),
+            Number(profile.sell_earning_total || 0)
         );
 
-
-        console.log("SELL TOTAL:",totalSell);
-
+        console.log("PROFILE:", profile);
+        console.log("ADS:", profile.ads_earning_total);
+        console.log("SELL:", profile.sell_earning_total);
 
     }catch(err){
 
-        console.log(
-            "[LOAD BALANCE ERROR]",
-            err
-        );
+        console.log("[LOAD BALANCE ERROR]", err);
 
     }
 
