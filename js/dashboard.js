@@ -837,101 +837,95 @@ document.getElementById("sellReportTable");
 
 if(sellReportTable){
 
-    console.log("SELL REPORT DATA:", sellOrders);
+console.log("SELL REPORT DATA:",sellOrders);
 
 
-    if(Array.isArray(sellOrders) && sellOrders.length){
+if(Array.isArray(sellOrders) && sellOrders.length){
 
 
-        sellReportTable.innerHTML =
-        sellOrders.map(order=>{
+sellReportTable.innerHTML =
+sellOrders.map(order=>{
 
 
-            const date =
-            new Date(
-                order.created_at ||
-                order.date ||
-                Date.now()
-            )
-            .toLocaleDateString("id-ID");
+const date =
+new Date(
+order.created_at ||
+order.created ||
+Date.now()
+)
+.toLocaleDateString("id-ID");
 
 
-            const qty =
-            Number(
-                order.quantity ||
-                order.qty ||
-                1
-            );
+const qty =
+Number(
+order.quantity ??
+order.qty ??
+1
+);
 
 
-            const price =
-            Number(
-                order.price ||
-                order.amount ||
-                order.total_price ||
-                0
-            );
+const receive =
+Number(
+order.seller_receive ??
+order.seller_earning ??
+order.earning ??
+order.net_amount ??
+0
+);
 
 
-            const receive =
-            Number(
-                order.seller_receive ??
-                order.seller_earning ??
-                order.earning ??
-                order.amount_receive ??
-                order.net_amount ??
-                order.price ??
-                0
-            );
+const views =
+Number(
+order.views ??
+order.total_views ??
+0
+);
 
 
-            const status =
-            order.status ||
-            "success";
+const total =
+Number(
+order.price ??
+order.amount ??
+order.total_price ??
+0
+);
 
 
-            return `
+
+return `
 <tr>
 
 <td>
 ${date}
 </td>
 
-
 <td>
 ${qty}x
 </td>
-
 
 <td class="earning">
 Rp ${receive.toLocaleString("id-ID")}
 </td>
 
-
 <td>
-${Number(
-order.views ??
-order.total_views ??
-0
-).toLocaleString("id-ID")}
+${views.toLocaleString("id-ID")}
 </td>
 
-
 <td>
-Rp ${price.toLocaleString("id-ID")}
+Rp ${total.toLocaleString("id-ID")}
 </td>
-
 
 </tr>
 `;
 
-        }).join("");
+}).join("");
 
 
-    }else{
+
+}else{
 
 
-        sellReportTable.innerHTML = `
+sellReportTable.innerHTML=`
 <tr>
 <td colspan="5">
 Belum ada transaksi sell.
@@ -939,8 +933,8 @@ Belum ada transaksi sell.
 </tr>
 `;
 
+}
 
-    }
 
 }
 
