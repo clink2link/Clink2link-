@@ -54,7 +54,7 @@ export async function onRequestPost(context) {
 
         const sellers = await supabaseRequest(
             env,
-            "users",
+            "profiles",
             "GET",
             null,
             `?id=eq.${seller_id}&select=id`
