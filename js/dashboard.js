@@ -421,13 +421,12 @@ month:"short"
 });
 
 sellViewsChart = chartData.map(item =>
-    Number(
-        item.sell_views ||
-        item.sell_total_views ||
-        item.total_sell_views ||
-        item.sell_clicks ||
-        0
-    )
+Number(
+    item.sell_views ??
+    item.sell_total_views ??
+    item.total_sell_views ??
+    0
+)
 );
 
 earnings = chartData.map(item =>
@@ -876,10 +875,13 @@ if(sellReportTable){
 
             const receive =
             Number(
-                order.seller_receive ||
-                order.seller_earning ||
-                order.earning ||
-                price
+                order.seller_receive ??
+                order.seller_earning ??
+                order.earning ??
+                order.amount_receive ??
+                order.net_amount ??
+                order.price ??
+                0
             );
 
 
@@ -907,7 +909,11 @@ Rp ${receive.toLocaleString("id-ID")}
 
 
 <td>
-${status}
+${Number(
+order.views ??
+order.total_views ??
+0
+).toLocaleString("id-ID")}
 </td>
 
 
