@@ -139,14 +139,14 @@ links.forEach(link=>{
 if(link.type==="ads"){
 
     adsViews += Number(
-        link.total_views ||
-        link.views ||
+        link.total_views ??
+        link.views ??
         0
     );
 
     adsClicks += Number(
-        link.total_clicks ||
-        link.clicks ||
+        link.total_clicks ??
+        link.clicks ??
         0
     );
 
@@ -166,13 +166,11 @@ if(
 
     totalSell++;
 
-
     totalSellViews += Number(
         link.total_views ??
         link.views ??
         0
     );
-
 
     totalSellClicks += Number(
         link.total_clicks ??
@@ -180,8 +178,13 @@ if(
         0
     );
 
+}
+
+
+});
 
 }
+
 
 // ===========================
 // SELL ORDERS
