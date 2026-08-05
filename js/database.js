@@ -1029,10 +1029,12 @@ paid_at,
 fee,
 seller_receive,
 invoice_id,
+payment_url,
+qris_string,
+expires_at,
 balance_processed,
 quantity,
-views,
-total_views
+views
 `)
 
 .eq(
@@ -1048,7 +1050,6 @@ ascending:false
 );
 
 
-
 if(error){
 
 console.error(
@@ -1062,7 +1063,13 @@ return [];
 
 
 console.log(
-"SELL ORDERS RESULT:",
+"SELL ORDERS USER:",
+userId
+);
+
+
+console.log(
+"SELL ORDERS DATA:",
 data
 );
 
