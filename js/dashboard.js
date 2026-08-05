@@ -35,8 +35,6 @@ const sellToday=document.getElementById("sellToday");
 const sellMonth=document.getElementById("sellMonth");
 const sellLastMonth=document.getElementById("sellLastMonth");
 
-let totalSellEarning = 0;
-
 // ===========================
 // DATE
 // ===========================
@@ -233,34 +231,26 @@ if(sellTotalSold){
 
 }
 
-totalSellEarn =
-totalSellEarning;
-
 
 if(sellToday){
-
-sellToday.textContent =
-"Rp " +
-totalSellEarn.toLocaleString("id-ID");
-
+    sellToday.textContent =
+        "Rp " +
+        Number(profile.sell_earning_today || 0)
+        .toLocaleString("id-ID");
 }
-
 
 if(sellMonth){
-
-sellMonth.textContent =
-"Rp " +
-totalSellEarn.toLocaleString("id-ID");
-
+    sellMonth.textContent =
+        "Rp " +
+        Number(profile.sell_earning_month || 0)
+        .toLocaleString("id-ID");
 }
 
-
 if(sellLastMonth){
-
-sellLastMonth.textContent =
-"Rp " +
-totalSellEarn.toLocaleString("id-ID");
-
+    sellLastMonth.textContent =
+        "Rp " +
+        Number(profile.sell_earning_total || 0)
+        .toLocaleString("id-ID");
 }
 
 // ===========================
