@@ -1005,6 +1005,8 @@ async function checkSellPayment(invoice_id){
 
 async function getSellOrders(userId){
 
+try{
+
 const {
 data,
 error
@@ -1014,15 +1016,25 @@ await supabaseClient
 
 .from("sell_orders")
 
-.select("*")
+.select(`
+id,
+link_id,
+buyer_id,
+seller_id,
+price,
+status,
+created_at,
+payment_id,
+paid_at,
+fee,
+seller_receive,
+invoice_id,
+balance_processed
+`)
 
 .eq(
 "seller_id",
 userId
-)
-.eq(
-"status",
-"paid"
 )
 
 .order(
@@ -1046,7 +1058,25 @@ return [];
 }
 
 
-return data||[];
+console.log(
+"SELL ORDERS RESULT:",
+data
+);
+
+
+return data || [];
+
+
+}catch(err){
+
+console.error(
+"GET SELL ORDERS EXCEPTION:",
+err
+);
+
+return [];
+
+}
 
 }
 
