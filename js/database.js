@@ -1022,9 +1022,6 @@ link_id,
 buyer_id,
 seller_id,
 price,
-amount,
-total,
-seller_amount,
 seller_receive,
 status,
 created_at,
@@ -1037,7 +1034,6 @@ qris_string,
 expires_at,
 balance_processed,
 quantity,
-qty,
 views
 `)
 
