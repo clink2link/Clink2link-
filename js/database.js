@@ -1,717 +1,496 @@
 // js/database.js
 
-// ===============================
-// SUPABASE CONFIG
-// ===============================
-
 const SUPABASE_URL="https://lwjtagxkqeprjpupmadf.supabase.co";
-
 const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3anRhZ3hrcWVwcmpwdXBtYWRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMDExNzYsImV4cCI6MjA5OTg3NzE3Nn0.Cg8TIBtOE4PHmnSybJtMqEoCFx-Qm4Kkl8exSOanTes";
-
 
 const supabaseClient=supabase.createClient(
 SUPABASE_URL,
 SUPABASE_ANON_KEY
 );
 
+const API_URL="https://click2pay.my.id";
 
-// ===============================
-// AUTH USER TABLE
-// ===============================
+
+// ================= USER =================
 
 async function getUser(){
 try{
-const userId=localStorage.getItem("user_id");
-if(!userId){
-return null;
-}
+const id=localStorage.getItem("user_id");
+if(!id)return null;
+
 const {data,error}=await supabaseClient
 .from("users")
 .select("*")
-.eq("id",userId)
+.eq("id",id)
 .maybeSingle();
+
 if(error){
-console.error("GET USER ERROR:",error);
+console.error("GET USER:",error);
 return null;
-}
-return data;
-}catch(err){
-console.error("AUTH ERROR:",err);
-return null;
-}
 }
 
+return data;
+
+}catch(e){
+console.error(e);
+return null;
+}
+}
 
 
 async function logout(){
-
-
-    localStorage.removeItem(
-        "user_id"
-    );
-
-
-    console.log(
-        "LOGOUT SUCCESS"
-    );
-
-
-    location.replace(
-        "index.html"
-    );
-
-
+localStorage.removeItem("user_id");
+location.replace("index.html");
 }
 
-
-// ===============================
-// PASSWORD
-// ===============================
-
-async function verifyPassword(password,hash){
-
-if(typeof bcrypt==="undefined"){
-throw new Error("bcrypt belum dimuat");
-}
-
-return bcrypt.compareSync(
-password,
-hash
-);
-
-}
-
-// ===============================
-// USERS
-// ===============================
 
 async function getUsers(){
-
 const {data,error}=await supabaseClient
 .from("users")
 .select("*")
 .order("created_at",{ascending:false});
 
 if(error){
-console.error("GET USERS ERROR:",error);
+console.error(error);
 return [];
 }
 
-return data || [];
-
+return data||[];
 }
 
-// ===============================
-// PROFILE
-// ===============================
+
+// ================= PROFILE =================
 
 async function getProfile(userId){
 
-    if(!userId){
-        return null;
-    }
+if(!userId)return null;
 
+const {data,error}=await supabaseClient
+.from("users")
+.select(`
+id,
+username,
+email,
+balance,
+total_ads,
+total_sell,
+total_views,
+total_clicks,
+sell_unlocked,
+sell_earning_today,
+sell_earning_month,
+sell_earning_total,
+withdraw_count,
+is_admin,
+is_banned,
+created_at
+`)
+.eq("id",userId)
+.maybeSingle();
 
-    const {
-        data,
-        error
-    } = await supabaseClient
-
-    .from("profiles")
-
-    .select("*")
-
-    .eq(
-        "id",
-        userId
-    )
-
-    .maybeSingle();
-
-
-
-    if(error){
-
-        console.error(
-            "GET PROFILE ERROR:",
-            error
-        );
-
-        return null;
-
-    }
-
-
-
-    return data;
-
+if(error){
+console.error("PROFILE:",error);
+return null;
 }
 
-// ===============================
-// UPDATE USER PROFILE
-// ===============================
+return data;
+}
+
+
+async function getCurrentProfile(){
+const id=localStorage.getItem("user_id");
+return await getProfile(id);
+}
+
+
+async function getProfiles(){
+const {data,error}=await supabaseClient
+.from("users")
+.select("*");
+
+if(error){
+console.error(error);
+return [];
+}
+
+return data||[];
+}
+
 
 async function updateProfile(payload){
 
-    const userId =
-    localStorage.getItem("user_id");
+const id=localStorage.getItem("user_id");
 
+if(!id)return null;
 
-    if(!userId){
-        return null;
-    }
+const {data,error}=await supabaseClient
+.from("users")
+.update(payload)
+.eq("id",id)
+.select()
+.single();
 
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-
-    .from("profiles")
-
-    .update(payload)
-
-    .eq(
-        "id",
-        userId
-    )
-
-    .select()
-
-    .single();
-
-
-
-    if(error){
-
-        console.error(
-            "UPDATE PROFILE ERROR:",
-            error
-        );
-
-        throw error;
-
-    }
-
-
-    return data;
-
+if(error){
+console.error("UPDATE PROFILE:",error);
+throw error;
 }
 
-// ===============================
-// CURRENT PROFILE
-// ===============================
-
-async function getCurrentProfile(){
-
-    const userId =
-    localStorage.getItem("user_id");
-
-
-    if(!userId){
-
-        return null;
-
-    }
-
-
-    return await getProfile(userId);
-
+return data;
 }
 
 
-
-// ===============================
-// ALL PROFILES
-// ===============================
-
-async function getProfiles(){
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-
-    .from("profiles")
-
-    .select("*");
-
-
-    if(error){
-
-        console.error(
-            "GET PROFILES ERROR:",
-            error
-        );
-
-        return [];
-
-    }
-
-
-    return data || [];
-
-}
-
-
-// ===============================
-// SELL FEE SYSTEM
-// ===============================
-
-function calculateSellPayment(price){
-
-    const amount = Number(price || 0);
-
-    const fee = Math.floor(
-        amount * 0.20
-    );
-
-    const seller_receive =
-        amount - fee;
-
-
-    return {
-        fee,
-        seller_receive
-    };
-
-}
-
-
-// ===============================
-// LINKS
-// ===============================
-
+// ================= LINKS =================
 
 async function getLinks(userId){
 
-const {
-data,
-error
-}=await supabaseClient
-
+const {data,error}=await supabaseClient
 .from("links")
-
-.select(`
-id,
-user_id,
-type,
-link_type,
-title,
-alias,
-custom_alias,
-short_code,
-destination,
-destination_url,
-price,
-status,
-views,
-clicks,
-earnings,
-total_views,
-total_clicks,
-total_earnings,
-sold,
-sales,
-campaign,
-campaign_name,
-device,
-target_device,
-expired,
-expired_at,
-created_at,
-updated_at
-`)
-
-.eq(
-"user_id",
-userId
-)
-
-.order(
-"created_at",
-{
-ascending:false
-}
-);
-
-
+.select("*")
+.eq("user_id",userId)
+.order("created_at",{ascending:false});
 
 if(error){
-
-console.error(
-"GET LINKS ERROR:",
-error
-);
-
+console.error("GET LINKS:",error);
 return [];
+}
 
+return data||[];
 }
 
 
-return data || [];
+async function getLinkByCode(code){
 
+const {data,error}=await supabaseClient
+.from("links")
+.select("*")
+.eq("short_code",code)
+.maybeSingle();
+
+if(error){
+console.error(error);
+return null;
 }
 
-
+return data;
+}
 
 
 async function createLink(payload){
 
-const {
-data,
-error
-}=await supabaseClient
-
-.from("links")
-
-.insert({
-
+const insert={
 user_id:payload.user_id,
-
-type:payload.type || "ads",
-
-link_type:payload.link_type || "ads",
-
-title:payload.title || null,
-
-alias:payload.alias || null,
-
-custom_alias:
-payload.custom_alias || null,
-
-short_code:
-payload.short_code,
-
-destination:
-payload.destination || null,
-
-destination_url:
-payload.destination_url || null,
-
-price:
-Number(payload.price || 0),
-
-status:
-payload.status || "active",
-
-campaign:
-payload.campaign || null,
-
-campaign_name:
-payload.campaign_name || null,
-
-device:
-payload.device || "all",
-
-target_device:
-payload.target_device || "all",
-
-expired:
-payload.expired || "never",
-
+type:payload.type||"ads",
+link_type:payload.link_type||"ads",
+title:payload.title||null,
+alias:payload.alias||null,
+custom_alias:payload.custom_alias||null,
+short_code:payload.short_code,
+destination:payload.destination||null,
+destination_url:payload.destination_url||null,
+campaign:payload.campaign||null,
+campaign_name:payload.campaign_name||null,
+device:payload.device||"all",
+target_device:payload.target_device||"all",
+expired:payload.expired||"never",
+expired_at:payload.expired_at||null,
+price:Number(payload.price||0),
+status:payload.status||"active",
 views:0,
-
 clicks:0,
-
 earnings:0,
-
 total_views:0,
-
 total_clicks:0,
-
 total_earnings:0,
-
 sold:0,
-
 sales:0
+};
 
-})
-
+const {data,error}=await supabaseClient
+.from("links")
+.insert(insert)
 .select()
-
 .single();
 
-
-
 if(error){
-
-console.error(
-"CREATE LINK ERROR:",
-error
-);
-
+console.error("CREATE LINK:",error);
 throw error;
-
 }
-
 
 return data;
-
 }
-
-
 
 
 async function updateLink(id,payload){
 
-
-const {
-data,
-error
-}=await supabaseClient
-
+const {data,error}=await supabaseClient
 .from("links")
-
-.update({
-
-title:payload.title,
-
-destination:payload.destination,
-
-destination_url:
-payload.destination_url || payload.destination,
-
-price:payload.price || 0
-
-})
-
-.eq(
-"id",
-id
-)
-
+.update(payload)
+.eq("id",id)
 .select()
-
 .single();
 
-
-
 if(error){
-
-console.error(
-"UPDATE LINK ERROR:",
-error
-);
-
+console.error("UPDATE LINK:",error);
 throw error;
-
 }
-
 
 return data;
-
-
 }
-
-
 
 
 async function deleteLink(id){
 
-
-const {
-error
-}=await supabaseClient
+const {error}=await supabaseClient
 .from("links")
 .delete()
-.eq(
-"id",
-id
-);
+.eq("id",id);
 
 if(error){
-
-console.error(
-"DELETE LINK ERROR:",
-error
-);
-
+console.error(error);
 throw error;
 }
 
 return true;
 }
 
-async function getLinkByCode(shortCode){
+
+// ================= SELL FEE =================
+
+function calculateSellPayment(price){
+const amount=Number(price||0);
+const fee=Math.floor(amount*0.20);
+const seller_receive=amount-fee;
+
+return {
+fee,
+seller_receive
+};
+}
+
+
+// ================= SELL ORDERS =================
+
+async function createSellOrder(payload){
 
 const {data,error}=await supabaseClient
-.from("links")
-.select("*")
-.eq("short_code",shortCode)
+.from("sell_orders")
+.insert({
+link_id:payload.link_id,
+buyer_id:payload.buyer_id,
+seller_id:payload.seller_id,
+price:Number(payload.price||0),
+status:payload.status||"pending",
+payment_id:payload.payment_id||null,
+paid_at:payload.paid_at||null,
+fee:Number(payload.fee||0),
+seller_receive:Number(payload.seller_receive||0),
+expires_at:payload.expires_at||null,
+invoice_id:payload.invoice_id||null,
+payment_url:payload.payment_url||null,
+qris_string:payload.qris_string||null,
+balance_processed:false,
+quantity:Number(payload.quantity||1),
+views:Number(payload.views||0)
+})
+.select()
 .single();
 
 if(error){
-console.error("GET LINK BY CODE ERROR:",error);
-return null;
+console.error("CREATE SELL ORDER:",error);
+throw error;
 }
 
 return data;
-
 }
 
-// ===============================
-// SHORTLINKS
-// ===============================
 
-async function getShortlinks(){
+async function getSellOrders(userId){
 
 const {data,error}=await supabaseClient
-.from("shortlinks")
+.from("sell_orders")
 .select("*")
-.order("id",{ascending:false});
-
+.eq("seller_id",userId)
+.order("created_at",{ascending:false});
 
 if(error){
-console.error(error);
+console.error("GET SELL ORDERS:",error);
 return [];
 }
 
-return data;
+return data||[];
 
 }
 
 
-// ===============================
-// CLICKS
-// ===============================
+// ================= PAYMENT API =================
 
-async function getClicks(){
+async function createPayment(payload){
+
+const response=await fetch(
+`${API_URL}/api/create-payment`,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(payload)
+}
+);
+
+const result=await response.json();
+
+if(!response.ok){
+throw new Error(result.error||"Payment gagal");
+}
+
+return result.data||result;
+}
+
+
+async function getPaymentStatus(orderId){
+
+const response=await fetch(
+`${API_URL}/api/payment-status/${orderId}`
+);
+
+const result=await response.json();
+
+if(!response.ok){
+throw new Error(result.error||"Status gagal");
+}
+
+return result.data||result;
+}
+
+
+async function checkSellPayment(invoice_id){
+
+if(!invoice_id){
+throw new Error("Invoice kosong");
+}
+
+const response=await fetch(
+`${API_URL}/api/check-payment?invoice_id=${encodeURIComponent(invoice_id)}`
+);
+
+const result=await response.json();
+
+if(!response.ok){
+throw new Error(result.error||"Check gagal");
+}
+
+return result.data||result;
+}
+
+
+// ================= WALLET =================
+
+async function getWalletTransactions(userId){
 
 const {data,error}=await supabaseClient
-.from("clicks")
+.from("wallet_transactions")
 .select("*")
-.order("id",{ascending:false});
-
+.eq("user_id",userId)
+.order("created_at",{ascending:false});
 
 if(error){
-console.error(error);
+console.error("WALLET:",error);
 return [];
 }
 
-return data;
-
+return data||[];
 }
 
 
-// ===============================
-// TRANSACTIONS
-// ===============================
-
-async function getTransactions(){
+async function createWalletTransaction(payload){
 
 const {data,error}=await supabaseClient
-.from("transactions")
-.select("*")
-.order("id",{ascending:false});
-
+.from("wallet_transactions")
+.insert({
+user_id:payload.user_id,
+type:payload.type,
+amount:Number(payload.amount||0),
+title:payload.title||null,
+description:payload.description||null,
+status:payload.status||"success"
+})
+.select()
+.single();
 
 if(error){
-console.error(error);
+console.error("CREATE WALLET:",error);
+throw error;
+}
+
+return data;
+}
+
+
+// ================= WITHDRAW =================
+
+async function getWithdraws(userId=null){
+
+let query=supabaseClient
+.from("withdraws")
+.select("*")
+.order("created_at",{ascending:false});
+
+if(userId){
+query=query.eq("user_id",userId);
+}
+
+const {data,error}=await query;
+
+if(error){
+console.error("WITHDRAW:",error);
 return [];
 }
 
-return data;
-
+return data||[];
 }
 
 
-// ===============================
-// WITHDRAWALS
-// ===============================
-
-async function getWithdrawals(){
-
-const {data,error}=await supabaseClient
-.from("withdrawals")
-.select("*")
-.order("id",{ascending:false});
-
-
-if(error){
-console.error(error);
-return [];
-}
-
-return data;
-
-}
-
-
-async function getWithdraws(){
+async function createWithdraw(payload){
 
 const {data,error}=await supabaseClient
 .from("withdraws")
-.select("*")
-.order("id",{ascending:false});
-
+.insert({
+user_id:payload.user_id,
+method:payload.method,
+account_number:payload.account_number,
+amount:Number(payload.amount||0),
+type:payload.type||"withdraw",
+fee:Number(payload.fee||0),
+status:payload.status||"pending"
+})
+.select()
+.single();
 
 if(error){
-console.error(error);
-return [];
+console.error("CREATE WITHDRAW:",error);
+throw error;
 }
 
 return data;
-
 }
 
 
-// ===============================
-// ANNOUNCEMENTS
-// ===============================
 
-async function getAnnouncements(){
-
-const {
-data,
-error
-}=await supabaseClient
-
-.from("announcements")
-
-.select("*")
-
-.order(
-"created_at",
-{
-ascending:false
-}
-);
-
-
-if(error){
-
-console.error(
-"GET ANNOUNCEMENTS ERROR:",
-error
-);
-
-return [];
-
-}
-
-
-return data || [];
-
-}
-
-
-// ===============================
-// REPORT
-// ===============================
+// ================= REPORT =================
 
 async function getDashboardReport(){
+
 const {data,error}=await supabaseClient
 .from("daily_reports")
 .select("*")
 .order("report_date",{ascending:false});
 
 if(error){
-console.error("Dashboard Report Error:",error);
+console.error("REPORT:",error);
 return [];
 }
 
-return data || [];
+return data||[];
 }
 
 
@@ -725,430 +504,62 @@ const {data,error}=await supabaseClient
 .limit(30);
 
 if(error){
-console.error("REPORT ERROR:",error);
+console.error("USER REPORT:",error);
 return [];
 }
 
-return data ? data.reverse() : [];
-
+return data||[];
 }
 
-// ===============================
-// CPM MARKET
-// ===============================
+
+// ================= ANNOUNCEMENT =================
+
+async function getAnnouncements(){
+
+const {data,error}=await supabaseClient
+.from("announcements")
+.select("*")
+.order("created_at",{ascending:false});
+
+if(error){
+console.error("ANNOUNCEMENT:",error);
+return [];
+}
+
+return data||[];
+}
+
+
+// ================= CPM MARKET =================
 
 async function getCPMMarket(){
 
-const {
-data,
-error
-}=await supabaseClient
-
+const {data,error}=await supabaseClient
 .from("cpm_market")
-
 .select("*")
-
-.order(
-"cpm",
-{
-ascending:false
-}
-);
-
+.order("cpm",{ascending:false});
 
 if(error){
-
-console.error(
-"GET CPM MARKET ERROR:",
-error
-);
-
+console.error("CPM:",error);
 return [];
+}
 
+return data||[];
 }
 
 
-return data || [];
-
-}
-
-
-// ===============================
-// MENUS (WAJIB TAMBAH INI)
-// ===============================
-
-async function getMenusByRole(role){
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("menus")
-        .select("*")
-        .eq("role", role)
-        .order("id", {
-            ascending:true
-        });
-
-
-    if(error){
-
-        console.error(
-            "MENU ERROR:",
-            error
-        );
-
-        throw error;
-
-    }
-
-
-    return data || [];
-
-}
-
-
-// ===============================
-// SELL ORDERS PAGES FUNCTION API
-// ===============================
-
-const API_URL="https://click2pay.my.id";
-
-
-// ===============================
-// CREATE SELL ORDER
-// ===============================
-
-async function createSellOrder(payload){
-
-try{
-
-console.log(
-"CREATE ORDER PAYLOAD",
-payload
-);
-
-
-const response = await fetch(
-`${API_URL}/api/create-sell-order`,
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify(payload)
-}
-);
-
-
-const text = await response.text();
-
-
-console.log(
-"STATUS:",
-response.status
-);
-
-
-console.log(
-"RAW RESPONSE:",
-text
-);
-
-
-
-let result;
-
-try{
-
-result=JSON.parse(text);
-
-}catch(e){
-
-throw new Error(
-"SERVER BUKAN JSON:\n"+text.substring(0,200)
-);
-
-}
-
-
-
-if(!response.ok){
-
-throw new Error(
-result.error || "REQUEST ERROR"
-);
-
-}
-
-
-return result.data || result;
-
-
-
-}catch(err){
-
-console.error(
-"CREATE SELL ORDER ERROR:",
-err
-);
-
-throw err;
-
-}
-
-}
-
-// ===============================
-// CREATE PAYMENT
-// ===============================
-
-async function createPayment(payload){
-
-    const response=await fetch(
-        `${API_URL}/api/create-payment`,
-        {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify(payload)
-        }
-    );
-
-    const text=await response.text();
-
-    console.log("STATUS:",response.status);
-    console.log("RAW PAYMENT:",text);
-
-    let result;
-
-    try{
-        result=JSON.parse(text);
-    }catch{
-
-        throw new Error(
-`HTTP ${response.status}
-
-${text}`
-        );
-
-    }
-
-    if(!response.ok||!result.success){
-
-        throw new Error(
-            JSON.stringify(result,null,2)
-        );
-
-    }
-
-    return result.data||result;
-
-}
-
-async function getPaymentStatus(orderId){
-
-    const response=await fetch(
-        `${API_URL}/api/payment-status/${orderId}`
-    );
-
-    const result=await response.json();
-
-    if(!response.ok){
-
-        throw new Error(
-            result.error||"Status gagal"
-        );
-
-    }
-
-    return result.data||result;
-
-}
-
-// ===============================
-// CHECK SELL PAYMENT
-// ===============================
-
-async function checkSellPayment(invoice_id){
-
-    if(!invoice_id){
-        throw new Error(
-            "Invoice ID kosong"
-        );
-    }
-
-
-    console.log(
-        "CHECK PAYMENT INVOICE:",
-        invoice_id
-    );
-
-
-    const response = await fetch(
-        `${API_URL}/api/check-payment?invoice_id=${encodeURIComponent(invoice_id)}&t=${Date.now()}`
-    );
-
-
-
-    const text =
-    await response.text();
-
-
-
-    console.log(
-        "CHECK PAYMENT RAW:",
-        text
-    );
-
-
-
-    let result;
-
-
-    try{
-
-        result = JSON.parse(text);
-
-    }
-    catch{
-
-        throw new Error(
-            "Response check payment bukan JSON"
-        );
-
-    }
-
-
-
-    if(!response.ok || !result.success){
-
-        throw new Error(
-            result.error ||
-            "Gagal cek pembayaran"
-        );
-
-    }
-
-
-
-    return result.data || result;
-
-}
-
-// ===============================
-// GET SELL ORDERS
-// ===============================
-
-async function getSellOrders(userId){
-
-try{
-
-const {
-data,
-error
-}
-=
-await supabaseClient
-
-.from("sell_orders")
-
-.select(`
-id,
-link_id,
-buyer_id,
-seller_id,
-price,
-seller_receive,
-status,
-created_at,
-payment_id,
-paid_at,
-fee,
-invoice_id,
-payment_url,
-qris_string,
-expires_at,
-balance_processed,
-quantity,
-views
-`)
-
-.eq(
-"seller_id",
-userId
-)
-
-.order(
-"created_at",
-{
-ascending:false
-}
-);
-
-
-if(error){
-
-console.error(
-"GET SELL ORDERS ERROR:",
-error
-);
-
-return [];
-
-}
-
-
-console.log(
-"SELL ORDERS USER:",
-userId
-);
-
-
-console.log(
-"SELL ORDERS DATA:",
-data
-);
-
-
-return data || [];
-
-
-}catch(err){
-
-console.error(
-"GET SELL ORDERS EXCEPTION:",
-err
-);
-
-return [];
-
-}
-
-}
-
-// ===============================
-// EXPORT
-// ===============================
+// ================= EXPORT =================
 
 window.database={
-
 supabase:supabaseClient,
 
-verifyPassword,
-
 getUser,
-logout,
-
 getUsers,
-
 getProfile,
 getCurrentProfile,
 getProfiles,
 updateProfile,
-
-getMenusByRole,
+logout,
 
 getLinks,
 getLinkByCode,
@@ -1156,30 +567,25 @@ createLink,
 updateLink,
 deleteLink,
 
+calculateSellPayment,
 createSellOrder,
+getSellOrders,
+
 createPayment,
 getPaymentStatus,
 checkSellPayment,
-getSellOrders,
 
-getShortlinks,
+getWalletTransactions,
+createWalletTransaction,
 
-getClicks,
-calculateSellPayment,
-
-getTransactions,
-
-getWithdrawals,
 getWithdraws,
-
-getAnnouncements,
+createWithdraw,
 
 getDashboardReport,
 getReports,
 
+getAnnouncements,
 getCPMMarket
-
 };
-
 
 console.log("DATABASE JS READY",window.database);
