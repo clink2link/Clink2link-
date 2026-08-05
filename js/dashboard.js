@@ -101,7 +101,9 @@ Number(profile.total_views||0).toLocaleString("id-ID");
 // LINK STATISTICS
 // ===========================
 
-const links=await database.getLinks(authId);
+const links = await database.getLinks(authId);
+
+const sellOrders = await database.getSellOrders(authId);
 
 let adsViews = 0;
 let adsClicks = 0;
@@ -111,146 +113,229 @@ let totalSellClicks = 0;
 let totalSell = 0;
 let totalSellPrice = 0;
 let totalSold = 0;
-let totalSellEarning = Number(
-    profile.sell_earning_total || 0
-);
+
+
+// ===========================
+// PROCESS LINKS
+// ===========================
 
 if(Array.isArray(links)){
 
 links.forEach(link=>{
 
+
 if(link.type==="ads"){
-adsViews+=Number(link.total_views||0);
-adsClicks+=Number(link.total_clicks||0);
-}
 
-if(
-    link.type === "sell" ||
-    link.link_type === "sell"
-){
-
-    const price = Number(
-        link.price || 0
-    );
-
-    const sold = Number(
-        link.sold ??
-        link.sales ??
+    adsViews += Number(
+        link.total_views ||
+        link.views ||
         0
     );
 
+    adsClicks += Number(
+        link.total_clicks ||
+        link.clicks ||
+        0
+    );
+
+}
+
+
+// ===========================
+// SELL LINK
+// ===========================
+
+if(
+    link.type==="sell" ||
+    link.link_type==="sell"
+){
+
+    totalSell++;
+
 
     totalSellViews += Number(
-        link.total_views ??
-        link.views ??
+        link.total_views ||
+        link.views ||
         0
     );
 
 
     totalSellClicks += Number(
-        link.total_clicks ??
-        link.clicks ??
+        link.total_clicks ||
+        link.clicks ||
         0
     );
 
-
-    // Total omzet kotor
-    totalSellPrice +=
-        price * sold;
-
-
-    // Total barang terjual
-    totalSold += sold;
-
-
-    // Total jumlah sell link
-    totalSell++;
-
 }
+
 
 });
 
 }
 
-const adsViewsEl=document.getElementById("adsViews");
-if(adsViewsEl){
-adsViewsEl.textContent=
-adsViews.toLocaleString("id-ID");
+
+
+// ===========================
+// SELL ORDERS
+// ===========================
+
+if(Array.isArray(sellOrders)){
+
+sellOrders.forEach(order=>{
+
+
+totalSold++;
+
+
+totalSellPrice += Number(
+    order.price || 0
+);
+
+
+});
+
 }
 
-const adsClicksEl=document.getElementById("adsClicks");
-if(adsClicksEl){
-adsClicksEl.textContent=
-adsClicks.toLocaleString("id-ID");
+
+
+// ===========================
+// DISPLAY ADS
+// ===========================
+
+const adsViewsEl=document.getElementById("adsViews");
+
+if(adsViewsEl){
+
+adsViewsEl.textContent =
+adsViews.toLocaleString("id-ID");
+
 }
+
+
+const adsClicksEl=document.getElementById("adsClicks");
+
+if(adsClicksEl){
+
+adsClicksEl.textContent =
+adsClicks.toLocaleString("id-ID");
+
+}
+
 
 const adsViewsMonthEl=document.getElementById("adsViewsMonth");
 
 if(adsViewsMonthEl){
+
 adsViewsMonthEl.textContent =
 adsViews.toLocaleString("id-ID");
+
 }
 
+
+
+// ===========================
+// DISPLAY SELL
+// ===========================
 
 const sellViewsEl=document.getElementById("sellViews");
+
 if(sellViewsEl){
-sellViewsEl.textContent=
+
+sellViewsEl.textContent =
 totalSellViews.toLocaleString("id-ID");
+
 }
+
+
 
 const sellClicksEl=document.getElementById("sellClicks");
+
 if(sellClicksEl){
-sellClicksEl.textContent=
+
+sellClicksEl.textContent =
 totalSellClicks.toLocaleString("id-ID");
+
 }
+
+
 
 const sellTotalLink=document.getElementById("sellTotalLink");
+
 if(sellTotalLink){
-sellTotalLink.textContent=
+
+sellTotalLink.textContent =
 totalSell.toLocaleString("id-ID");
+
 }
 
+
+
 const sellTotalPrice =
-    document.getElementById("sellTotalPrice");
+document.getElementById("sellTotalPrice");
+
 
 if(sellTotalPrice){
 
-    sellTotalPrice.textContent =
-        "Rp " +
-        totalSellPrice.toLocaleString("id-ID");
+sellTotalPrice.textContent =
+"Rp " +
+totalSellPrice.toLocaleString("id-ID");
 
 }
 
+
+
 const sellTotalSold =
-    document.getElementById("sellTotalSold");
+document.getElementById("sellTotalSold");
+
 
 if(sellTotalSold){
 
-    sellTotalSold.textContent =
-        totalSold.toLocaleString("id-ID");
+sellTotalSold.textContent =
+totalSold.toLocaleString("id-ID");
 
 }
 
+
+
+// ===========================
+// SELL EARNING PROFILE
+// ===========================
 
 if(sellToday){
-    sellToday.textContent =
-        "Rp " +
-        Number(profile.sell_earning_today || 0)
-        .toLocaleString("id-ID");
+
+sellToday.textContent =
+"Rp " +
+Number(
+profile.sell_earning_today || 0
+)
+.toLocaleString("id-ID");
+
 }
+
+
 
 if(sellMonth){
-    sellMonth.textContent =
-        "Rp " +
-        Number(profile.sell_earning_month || 0)
-        .toLocaleString("id-ID");
+
+sellMonth.textContent =
+"Rp " +
+Number(
+profile.sell_earning_month || 0
+)
+.toLocaleString("id-ID");
+
 }
 
+
+
 if(sellLastMonth){
-    sellLastMonth.textContent =
-        "Rp " +
-        Number(profile.sell_earning_total || 0)
-        .toLocaleString("id-ID");
+
+sellLastMonth.textContent =
+"Rp " +
+Number(
+profile.sell_earning_total || 0
+)
+.toLocaleString("id-ID");
+
 }
 
 // ===========================
@@ -630,49 +715,58 @@ document.getElementById("sellReportTable");
 
 if(sellReportTable){
 
-    if(reports.length){
+    const sellOrders = await database.getSellOrders(authId);
+
+
+    if(Array.isArray(sellOrders) && sellOrders.length){
+
 
         sellReportTable.innerHTML =
-        reports.map(row=>{
+        sellOrders.map(order=>{
 
-            const sellViews = Number(
-                row.sell_views || 0
-            );
 
-            const sellSold = Number(
-                row.sell_sold ??
-                row.sell_orders ??
-                0
-            );
+            const date =
+            new Date(order.created_at)
+            .toLocaleDateString("id-ID");
 
-            const sellRevenue = Number(
-                row.sell_earnings || 0
-            );
+
+            const price =
+            Number(order.price || 0);
+
+
+            const receive =
+            Number(order.seller_receive || 0);
+
+
 
             return `
 
 <tr>
 
 <td>
-${new Date(row.report_date)
-.toLocaleDateString("id-ID")}
+${date}
 </td>
 
+
 <td>
-${sellSold.toLocaleString("id-ID")}x
+1x
 </td>
+
 
 <td class="earning">
-Rp ${sellRevenue.toLocaleString("id-ID")}
+Rp ${receive.toLocaleString("id-ID")}
 </td>
 
-<td>
-${sellViews.toLocaleString("id-ID")}
-</td>
 
 <td>
-Rp ${sellRevenue.toLocaleString("id-ID")}
+-
 </td>
+
+
+<td>
+Rp ${price.toLocaleString("id-ID")}
+</td>
+
 
 </tr>
 
@@ -680,14 +774,17 @@ Rp ${sellRevenue.toLocaleString("id-ID")}
 
         }).join("");
 
+
+
     }else{
+
 
         sellReportTable.innerHTML = `
 
 <tr>
 
 <td colspan="5">
-Belum ada data report.
+Belum ada transaksi sell.
 </td>
 
 </tr>
