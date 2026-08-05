@@ -2,7 +2,8 @@
 
 let adsChartInstance=null;
 let sellChartInstance=null;
-let marketChartInstance = null;
+let marketChartInstance=null;
+let marketData=[];
 
 async function loadDashboard(){
 
@@ -105,6 +106,17 @@ const links = await database.getLinks(authId);
 
 const sellOrders = await database.getSellOrders(authId);
 
+
+console.log(
+    "SELL LINKS:",
+    links
+);
+
+console.log(
+    "SELL ORDERS:",
+    sellOrders
+);
+
 let adsViews = 0;
 let adsClicks = 0;
 
@@ -146,34 +158,30 @@ if(link.type==="ads"){
 // ===========================
 
 if(
-    link.type==="sell" ||
-    link.link_type==="sell"
+    link.type === "sell" ||
+    link.link_type === "sell" ||
+    link.type === "sell_link" ||
+    link.link_type === "sell_link"
 ){
 
     totalSell++;
 
 
     totalSellViews += Number(
-        link.total_views ||
-        link.views ||
+        link.total_views ??
+        link.views ??
         0
     );
 
 
     totalSellClicks += Number(
-        link.total_clicks ||
-        link.clicks ||
+        link.total_clicks ??
+        link.clicks ??
         0
     );
 
-}
-
-
-});
 
 }
-
-
 
 // ===========================
 // SELL ORDERS
@@ -184,19 +192,24 @@ if(Array.isArray(sellOrders)){
 sellOrders.forEach(order=>{
 
 
-totalSold++;
+    totalSold += Number(
+        order.quantity ??
+        order.qty ??
+        1
+    );
 
 
-totalSellPrice += Number(
-    order.price || 0
-);
+    totalSellPrice += Number(
+        order.price ??
+        order.amount ??
+        order.total_price ??
+        0
+    );
 
 
 });
 
 }
-
-
 
 // ===========================
 // DISPLAY ADS
@@ -241,8 +254,9 @@ const sellViewsEl=document.getElementById("sellViews");
 
 if(sellViewsEl){
 
-sellViewsEl.textContent =
-totalSellViews.toLocaleString("id-ID");
+    sellViewsEl.textContent =
+    Number(totalSellViews || 0)
+    .toLocaleString("id-ID");
 
 }
 
@@ -252,8 +266,9 @@ const sellClicksEl=document.getElementById("sellClicks");
 
 if(sellClicksEl){
 
-sellClicksEl.textContent =
-totalSellClicks.toLocaleString("id-ID");
+    sellClicksEl.textContent =
+    Number(totalSellClicks || 0)
+    .toLocaleString("id-ID");
 
 }
 
@@ -263,8 +278,9 @@ const sellTotalLink=document.getElementById("sellTotalLink");
 
 if(sellTotalLink){
 
-sellTotalLink.textContent =
-totalSell.toLocaleString("id-ID");
+    sellTotalLink.textContent =
+    Number(totalSell || 0)
+    .toLocaleString("id-ID");
 
 }
 
@@ -276,9 +292,10 @@ document.getElementById("sellTotalPrice");
 
 if(sellTotalPrice){
 
-sellTotalPrice.textContent =
-"Rp " +
-totalSellPrice.toLocaleString("id-ID");
+    sellTotalPrice.textContent =
+    "Rp " +
+    Number(totalSellPrice || 0)
+    .toLocaleString("id-ID");
 
 }
 
@@ -290,12 +307,22 @@ document.getElementById("sellTotalSold");
 
 if(sellTotalSold){
 
-sellTotalSold.textContent =
-totalSold.toLocaleString("id-ID");
+    sellTotalSold.textContent =
+    Number(totalSold || 0)
+    .toLocaleString("id-ID");
 
 }
 
 
+// DEBUG SELL STATISTIC
+
+console.log("SELL STATISTIC:",{
+    totalSellViews,
+    totalSellClicks,
+    totalSell,
+    totalSellPrice,
+    totalSold
+});
 
 // ===========================
 // SELL EARNING PROFILE
@@ -392,8 +419,10 @@ month:"short"
 
 sellViewsChart = chartData.map(item =>
     Number(
-        item.sell_total_views ??
-        item.sell_views ??
+        item.sell_views ||
+        item.sell_total_views ||
+        item.total_sell_views ||
+        item.sell_clicks ||
         0
     )
 );
@@ -583,38 +612,97 @@ const sellCanvas = document.getElementById("sellChart");
 
 if (sellCanvas) {
 
-if(sellChartInstance){
-sellChartInstance.destroy();
-}
 
-sellChartInstance=new Chart(sellCanvas, {
+    if(sellChartInstance){
+        sellChartInstance.destroy();
+    }
 
-type: "line",
 
-data: {
-labels,
-datasets:[{
-label:"Views",
-data:sellViewsChart,
+    sellChartInstance = new Chart(sellCanvas, {
 
-borderColor: "#8b5cf6",
-backgroundColor: "rgba(139,92,246,.12)",
+        type:"line",
 
-borderWidth: 3,
-fill: true,
-tension: .45,
+        data:{
 
-pointRadius: 5,
-pointHoverRadius: 8,
-pointBackgroundColor: "#8b5cf6",
-pointBorderWidth: 2
+            labels,
 
-}]
-},
+            datasets:[{
 
-options: commonOptions
+                label:"Sell Link Views",
 
-});
+                data:sellViewsChart,
+
+
+                borderColor:"#8b5cf6",
+
+                backgroundColor:
+                "rgba(139,92,246,.12)",
+
+
+                borderWidth:3,
+
+                fill:true,
+
+                tension:.45,
+
+
+                pointRadius:5,
+
+                pointHoverRadius:8,
+
+
+                pointBackgroundColor:"#8b5cf6",
+
+                pointBorderWidth:2
+
+            }]
+
+        },
+
+
+        options:{
+
+            ...commonOptions,
+
+
+            plugins:{
+
+                ...commonOptions.plugins,
+
+
+                tooltip:{
+
+                    ...commonOptions.plugins.tooltip,
+
+
+                    callbacks:{
+
+
+                        label(context){
+
+
+                            return (
+                                " " +
+                                Number(
+                                    context.parsed.y || 0
+                                )
+                                .toLocaleString("id-ID") +
+                                " views"
+                            );
+
+
+                        }
+
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
 
 }
 
@@ -642,22 +730,47 @@ if (adsCpm) {
     adsCpm.textContent = cpm.toLocaleString("id-ID");
 }
 
-// CPM Sell
+// ===========================
+// CPM SELL
+// ===========================
+
 if (sellCpm) {
 
     let cpm = 0;
 
-    if (
-        lastReport &&
-        Number(lastReport.sell_views || 0) > 0
-    ) {
-        cpm = Math.round(
-            (Number(lastReport.sell_earnings) * 1000) /
-            Number(lastReport.sell_views)
+
+    if(lastReport){
+
+        const sellViews = Number(
+            lastReport.sell_total_views ??
+            lastReport.sell_views ??
+            0
         );
+
+
+        const sellEarnings = Number(
+            lastReport.sell_total_earnings ??
+            lastReport.sell_earnings ??
+            lastReport.total_sell_earnings ??
+            0
+        );
+
+
+        if(sellViews > 0){
+
+            cpm = Math.round(
+                (sellEarnings * 1000) /
+                sellViews
+            );
+
+        }
+
     }
 
-    sellCpm.textContent = cpm.toLocaleString("id-ID");
+
+    sellCpm.textContent =
+    "Rp " + cpm.toLocaleString("id-ID");
+
 }
 
 // ===========================
@@ -722,46 +835,92 @@ document.getElementById("sellReportTable");
 
 if(sellReportTable){
 
+    console.log("SELL REPORT DATA:", sellOrders);
+
+
     if(Array.isArray(sellOrders) && sellOrders.length){
+
 
         sellReportTable.innerHTML =
         sellOrders.map(order=>{
 
+
             const date =
-            new Date(order.created_at)
+            new Date(
+                order.created_at ||
+                order.date ||
+                Date.now()
+            )
             .toLocaleDateString("id-ID");
 
+
+            const qty =
+            Number(
+                order.quantity ||
+                order.qty ||
+                1
+            );
+
+
             const price =
-            Number(order.price || 0);
+            Number(
+                order.price ||
+                order.amount ||
+                order.total_price ||
+                0
+            );
+
 
             const receive =
-            Number(order.seller_receive || 0);
+            Number(
+                order.seller_receive ||
+                order.seller_earning ||
+                order.earning ||
+                price
+            );
+
+
+            const status =
+            order.status ||
+            "success";
+
 
             return `
 <tr>
 
-<td>${date}</td>
+<td>
+${date}
+</td>
 
-<td>1x</td>
+
+<td>
+${qty}x
+</td>
+
 
 <td class="earning">
 Rp ${receive.toLocaleString("id-ID")}
 </td>
 
+
 <td>
--
+${status}
 </td>
+
 
 <td>
 Rp ${price.toLocaleString("id-ID")}
 </td>
+
 
 </tr>
 `;
 
         }).join("");
 
+
     }else{
+
 
         sellReportTable.innerHTML = `
 <tr>
@@ -770,6 +929,7 @@ Belum ada transaksi sell.
 </td>
 </tr>
 `;
+
 
     }
 
@@ -904,8 +1064,6 @@ block:"start"
 
 
 });
-
-let marketData = [];
 
 function selectCountry(id){
 
