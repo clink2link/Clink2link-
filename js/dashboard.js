@@ -835,9 +835,15 @@ if (reportTable) {
 const sellReportTable =
 document.getElementById("sellReportTable");
 
+
 if(sellReportTable){
 
-console.log("SELL REPORT DATA:",sellOrders);
+
+console.log(
+    "SELL REPORT DATA:",
+    sellOrders
+);
+
 
 
 if(Array.isArray(sellOrders) && sellOrders.length){
@@ -849,74 +855,80 @@ sellOrders.map(order=>{
 
 const date =
 new Date(
-order.created_at ||
-order.created ||
-Date.now()
+    order.created_at ||
+    Date.now()
 )
 .toLocaleDateString("id-ID");
 
 
+
 const qty =
 Number(
-order.quantity ??
-order.qty ??
-1
+    order.quantity ||
+    order.qty ||
+    1
 );
+
 
 
 const receive =
 Number(
-order.seller_receive ??
-order.seller_earning ??
-order.earning ??
-order.net_amount ??
-0
+    order.seller_receive ||
+    0
 );
+
 
 
 const views =
 Number(
-order.views ??
-order.total_views ??
-0
+    order.views ||
+    order.total_views ||
+    0
 );
+
 
 
 const total =
 Number(
-order.price ??
-order.amount ??
-order.total_price ??
-0
+    order.price ||
+    0
 );
 
 
 
 return `
+
 <tr>
 
 <td>
 ${date}
 </td>
 
+
 <td>
 ${qty}x
 </td>
+
 
 <td class="earning">
 Rp ${receive.toLocaleString("id-ID")}
 </td>
 
+
 <td>
 ${views.toLocaleString("id-ID")}
 </td>
+
 
 <td>
 Rp ${total.toLocaleString("id-ID")}
 </td>
 
+
 </tr>
+
 `;
+
 
 }).join("");
 
@@ -925,19 +937,24 @@ Rp ${total.toLocaleString("id-ID")}
 }else{
 
 
-sellReportTable.innerHTML=`
+sellReportTable.innerHTML = `
+
 <tr>
-<td colspan="5">
+
+<td colspan="5" class="empty">
+
 Belum ada transaksi sell.
+
 </td>
+
 </tr>
+
 `;
 
 }
 
 
 }
-
 // ===========================
 // ANNOUNCEMENT
 // ===========================
