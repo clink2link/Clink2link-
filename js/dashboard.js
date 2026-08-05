@@ -195,18 +195,21 @@ if(Array.isArray(sellOrders)){
 sellOrders.forEach(order=>{
 
 
+    // semua order
     totalSold += Number(
-        order.quantity ??
-        order.qty ??
-        1
+        order.quantity || 1
     );
 
 
+    // total nominal transaksi
     totalSellPrice += Number(
-        order.price ??
-        order.amount ??
-        order.total_price ??
-        0
+        order.price || 0
+    );
+
+
+    // views sell
+    totalSellViews += Number(
+        order.views || 0
     );
 
 
@@ -328,43 +331,91 @@ console.log("SELL STATISTIC:",{
 });
 
 // ===========================
-// SELL EARNING PROFILE
+// SELL EARNING
 // ===========================
+
+let sellTodayEarn = 0;
+let sellMonthEarn = 0;
+let sellTotalEarn = 0;
+
+
+if(Array.isArray(sellOrders)){
+
+sellOrders.forEach(order=>{
+
+    if(order.status==="paid"){
+
+        const receive =
+        Number(order.seller_receive || 0);
+
+
+        sellTotalEarn += receive;
+
+
+        const date =
+        new Date(order.created_at);
+
+
+        const today =
+        new Date();
+
+
+        if(
+            date.toDateString()
+            ===
+            today.toDateString()
+        ){
+
+            sellTodayEarn += receive;
+
+        }
+
+
+        if(
+            date.getMonth()
+            ===
+            today.getMonth()
+            &&
+            date.getFullYear()
+            ===
+            today.getFullYear()
+        ){
+
+            sellMonthEarn += receive;
+
+        }
+
+    }
+
+});
+
+}
+
+
 
 if(sellToday){
 
 sellToday.textContent =
-"Rp " +
-Number(
-profile.sell_earning_today || 0
-)
-.toLocaleString("id-ID");
+"Rp "+
+sellTodayEarn.toLocaleString("id-ID");
 
 }
-
 
 
 if(sellMonth){
 
 sellMonth.textContent =
-"Rp " +
-Number(
-profile.sell_earning_month || 0
-)
-.toLocaleString("id-ID");
+"Rp "+
+sellMonthEarn.toLocaleString("id-ID");
 
 }
-
 
 
 if(sellLastMonth){
 
 sellLastMonth.textContent =
-"Rp " +
-Number(
-profile.sell_earning_total || 0
-)
-.toLocaleString("id-ID");
+"Rp "+
+sellTotalEarn.toLocaleString("id-ID");
 
 }
 
