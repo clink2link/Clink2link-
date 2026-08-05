@@ -341,53 +341,80 @@ let sellTotalEarn = 0;
 
 if(Array.isArray(sellOrders)){
 
-sellOrders.forEach(order=>{
-
-    if(order.status==="paid"){
-
-        const receive =
-        Number(order.seller_receive || 0);
+    sellOrders.forEach(order=>{
 
 
-        sellTotalEarn += receive;
+        const status =
+        String(order.status || "")
+        .toLowerCase();
 
 
-        const date =
-        new Date(order.created_at);
+        const paidStatus =
+        [
+            "paid",
+            "success",
+            "completed",
+            "settled"
+        ].includes(status);
 
 
-        const today =
-        new Date();
+
+        if(paidStatus){
 
 
-        if(
-            date.toDateString()
-            ===
-            today.toDateString()
-        ){
+            const receive =
+            Number(
+                order.seller_receive || 0
+            );
 
-            sellTodayEarn += receive;
+
+            sellTotalEarn += receive;
+
+
+
+            const date =
+            new Date(
+                order.created_at
+            );
+
+
+            const today =
+            new Date();
+
+
+
+            if(
+                date.toDateString()
+                ===
+                today.toDateString()
+            ){
+
+                sellTodayEarn += receive;
+
+            }
+
+
+
+            if(
+                date.getMonth()
+                ===
+                today.getMonth()
+                &&
+                date.getFullYear()
+                ===
+                today.getFullYear()
+            ){
+
+                sellMonthEarn += receive;
+
+            }
+
 
         }
 
 
-        if(
-            date.getMonth()
-            ===
-            today.getMonth()
-            &&
-            date.getFullYear()
-            ===
-            today.getFullYear()
-        ){
+    });
 
-            sellMonthEarn += receive;
-
-        }
-
-    }
-
-});
 
 }
 
@@ -395,29 +422,39 @@ sellOrders.forEach(order=>{
 
 if(sellToday){
 
-sellToday.textContent =
-"Rp "+
-sellTodayEarn.toLocaleString("id-ID");
+    sellToday.textContent =
+    "Rp " +
+    sellTodayEarn.toLocaleString("id-ID");
 
 }
+
 
 
 if(sellMonth){
 
-sellMonth.textContent =
-"Rp "+
-sellMonthEarn.toLocaleString("id-ID");
+    sellMonth.textContent =
+    "Rp " +
+    sellMonthEarn.toLocaleString("id-ID");
 
 }
+
 
 
 if(sellLastMonth){
 
-sellLastMonth.textContent =
-"Rp "+
-sellTotalEarn.toLocaleString("id-ID");
+    sellLastMonth.textContent =
+    "Rp " +
+    sellTotalEarn.toLocaleString("id-ID");
 
 }
+
+
+
+console.log("SELL EARNING:",{
+    sellTodayEarn,
+    sellMonthEarn,
+    sellTotalEarn
+});
 
 // ===========================
 // CPM SAAT INI (REAL)
