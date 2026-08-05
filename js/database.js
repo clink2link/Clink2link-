@@ -285,7 +285,6 @@ function calculateSellPayment(price){
 
 async function getLinks(userId){
 
-
 const {
 data,
 error
@@ -299,6 +298,8 @@ user_id,
 type,
 link_type,
 title,
+alias,
+custom_alias,
 short_code,
 destination,
 destination_url,
@@ -311,11 +312,15 @@ total_views,
 total_clicks,
 total_earnings,
 sold,
-alias,
+sales,
 campaign,
-expired,
+campaign_name,
 device,
-created_at
+target_device,
+expired,
+expired_at,
+created_at,
+updated_at
 `)
 
 .eq(
@@ -339,13 +344,12 @@ console.error(
 error
 );
 
-throw error;
+return [];
 
 }
 
 
 return data || [];
-
 
 }
 
@@ -353,7 +357,6 @@ return data || [];
 
 
 async function createLink(payload){
-
 
 const {
 data,
@@ -370,39 +373,57 @@ type:payload.type || "ads",
 
 link_type:payload.link_type || "ads",
 
-title:payload.title,
+title:payload.title || null,
 
-destination:payload.destination,
+alias:payload.alias || null,
 
-destination_url:payload.destination_url,
+custom_alias:
+payload.custom_alias || null,
 
-price:payload.price || 0,
+short_code:
+payload.short_code,
 
-short_code:payload.short_code,
+destination:
+payload.destination || null,
 
-status:payload.status || "active",
+destination_url:
+payload.destination_url || null,
 
-alias:
-payload.alias || null,
+price:
+Number(payload.price || 0),
+
+status:
+payload.status || "active",
 
 campaign:
 payload.campaign || null,
 
-expired:
-payload.expired || "never",
+campaign_name:
+payload.campaign_name || null,
 
 device:
 payload.device || "all",
 
+target_device:
+payload.target_device || "all",
+
+expired:
+payload.expired || "never",
+
 views:0,
+
 clicks:0,
+
 earnings:0,
 
 total_views:0,
+
 total_clicks:0,
+
 total_earnings:0,
 
 sold:0,
+
 sales:0
 
 })
@@ -426,7 +447,6 @@ throw error;
 
 
 return data;
-
 
 }
 
@@ -642,18 +662,36 @@ return data;
 
 async function getAnnouncements(){
 
-const {data,error}=await supabaseClient
+const {
+data,
+error
+}=await supabaseClient
+
 .from("announcements")
+
 .select("*")
-.order("id",{ascending:false});
+
+.order(
+"created_at",
+{
+ascending:false
+}
+);
 
 
 if(error){
-console.error(error);
+
+console.error(
+"GET ANNOUNCEMENTS ERROR:",
+error
+);
+
 return [];
+
 }
 
-return data;
+
+return data || [];
 
 }
 
