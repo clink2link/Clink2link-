@@ -1029,7 +1029,10 @@ paid_at,
 fee,
 seller_receive,
 invoice_id,
-balance_processed
+balance_processed,
+quantity,
+views,
+total_views
 `)
 
 .eq(
