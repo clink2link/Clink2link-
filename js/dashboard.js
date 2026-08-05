@@ -369,6 +369,11 @@ currentCpm.textContent=
 
 const reports=await database.getReports(authId)||[];
 
+console.log(
+    "REPORT DATA:",
+    reports
+);
+
 let labels = [];
 let earnings = [];
 let sellViewsChart = [];
@@ -561,10 +566,12 @@ if (marketList && marketData.length) {
 
     selectCountry(marketData[0].id);
 
-} else {
+}else{
 
-    marketList.innerHTML =
+    if(marketList){
+        marketList.innerHTML =
         "<div>Belum ada data CPM.</div>";
+    }
 
 }
 
@@ -715,80 +722,53 @@ document.getElementById("sellReportTable");
 
 if(sellReportTable){
 
-    const sellOrders = await database.getSellOrders(authId);
-
-
     if(Array.isArray(sellOrders) && sellOrders.length){
-
 
         sellReportTable.innerHTML =
         sellOrders.map(order=>{
-
 
             const date =
             new Date(order.created_at)
             .toLocaleDateString("id-ID");
 
-
             const price =
             Number(order.price || 0);
-
 
             const receive =
             Number(order.seller_receive || 0);
 
-
-
             return `
-
 <tr>
 
-<td>
-${date}
-</td>
+<td>${date}</td>
 
-
-<td>
-1x
-</td>
-
+<td>1x</td>
 
 <td class="earning">
 Rp ${receive.toLocaleString("id-ID")}
 </td>
 
-
 <td>
 -
 </td>
-
 
 <td>
 Rp ${price.toLocaleString("id-ID")}
 </td>
 
-
 </tr>
-
 `;
 
         }).join("");
 
-
-
     }else{
 
-
         sellReportTable.innerHTML = `
-
 <tr>
-
 <td colspan="5">
 Belum ada transaksi sell.
 </td>
-
 </tr>
-
 `;
 
     }
