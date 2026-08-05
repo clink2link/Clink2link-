@@ -113,9 +113,11 @@ console.log(
 );
 
 console.log(
-    "SELL ORDERS:",
-    sellOrders
+    "SELL ORDERS LENGTH:",
+    sellOrders.length
 );
+
+console.table(sellOrders);
 
 let adsViews = 0;
 let adsClicks = 0;
