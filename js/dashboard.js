@@ -208,13 +208,6 @@ sellOrders.forEach(order=>{
         order.price || 0
     );
 
-
-    // views sell
-    totalSellViews += Number(
-        order.views || 0
-    );
-
-
 });
 
 }
@@ -340,117 +333,62 @@ let sellTodayEarn = 0;
 let sellMonthEarn = 0;
 let sellTotalEarn = 0;
 
-
 if(Array.isArray(sellOrders)){
 
     sellOrders.forEach(order=>{
 
+        const status = String(order.status || "").toLowerCase();
 
-        const status =
-        String(order.status || "")
-        .toLowerCase();
-
-
-        const paidStatus =
-        [
+        const paidStatus = [
             "paid",
             "success",
             "completed",
             "settled"
         ].includes(status);
 
-
-
         if(paidStatus){
 
-
-            const receive =
-            Number(
-                order.seller_receive || 0
-            );
-
+            const receive = Number(order.seller_receive || 0);
 
             sellTotalEarn += receive;
 
+            const date = new Date(order.created_at);
+            const today = new Date();
 
-
-            const date =
-            new Date(
-                order.created_at
-            );
-
-
-            const today =
-            new Date();
-
-
-
-            if(
-                date.toDateString()
-                ===
-                today.toDateString()
-            ){
-
+            if(date.toDateString() === today.toDateString()){
                 sellTodayEarn += receive;
-
             }
-
-
 
             if(
-                date.getMonth()
-                ===
-                today.getMonth()
-                &&
-                date.getFullYear()
-                ===
-                today.getFullYear()
+                date.getMonth() === today.getMonth() &&
+                date.getFullYear() === today.getFullYear()
             ){
-
                 sellMonthEarn += receive;
-
             }
-
 
         }
 
-
     });
 
-
 }
-
-
 
 if(sellToday){
-
     sellToday.textContent =
-    "Rp " +
-    sellTodayEarn.toLocaleString("id-ID");
-
+        "Rp " + sellTodayEarn.toLocaleString("id-ID");
 }
-
-
 
 if(sellMonth){
-
     sellMonth.textContent =
-    "Rp " +
-    sellMonthEarn.toLocaleString("id-ID");
-
+        "Rp " + sellMonthEarn.toLocaleString("id-ID");
 }
 
+// Ganti id HTML menjadi sellTotalEarn jika memang kartu ini Total Earnings
+const sellTotalEarnEl = document.getElementById("sellTotalEarn");
 
-
-if(sellLastMonth){
-
-    sellLastMonth.textContent =
-    "Rp " +
-    sellTotalEarn.toLocaleString("id-ID");
-
+if(sellTotalEarnEl){
+    sellTotalEarnEl.textContent =
+        "Rp " + sellTotalEarn.toLocaleString("id-ID");
 }
-
-
 
 console.log("SELL EARNING:",{
     sellTodayEarn,
@@ -511,12 +449,7 @@ month:"short"
 });
 
 sellViewsChart = chartData.map(item =>
-Number(
-    item.sell_views ??
-    item.sell_total_views ??
-    item.total_sell_views ??
-    0
-)
+    Number(item.sell_views || 0)
 );
 
 earnings = chartData.map(item =>
@@ -833,19 +766,11 @@ if (sellCpm) {
 
     if(lastReport){
 
-        const sellViews = Number(
-            lastReport.sell_total_views ??
-            lastReport.sell_views ??
-            0
-        );
+        const sellViews =
+        Number(lastReport.sell_views || 0);
 
-
-        const sellEarnings = Number(
-            lastReport.sell_total_earnings ??
-            lastReport.sell_earnings ??
-            lastReport.total_sell_earnings ??
-            0
-        );
+        const sellEarnings =
+        Number(lastReport.sell_earnings || 0);
 
 
         if(sellViews > 0){
@@ -922,127 +847,54 @@ if (reportTable) {
 // SELL REPORT TABLE
 // ===========================
 
-const sellReportTable =
-document.getElementById("sellReportTable");
+const sellReportTable = document.getElementById("sellReportTable");
 
+if (sellReportTable) {
 
-if(sellReportTable){
+    if (reports.length) {
 
+        sellReportTable.innerHTML = reports.map(row => {
 
-console.log(
-    "SELL REPORT DATA:",
-    sellOrders
-);
+            const sellViews = Number(row.sell_views || 0);
+            const sellClicks = Number(row.sell_clicks || 0);
+            const sellEarnings = Number(row.sell_earnings || 0);
 
+            const cpm =
+                sellViews > 0
+                ? Math.round((sellEarnings * 1000) / sellViews)
+                : 0;
 
-
-if(Array.isArray(sellOrders) && sellOrders.length){
-
-
-sellReportTable.innerHTML =
-sellOrders.map(order=>{
-
-
-const date =
-new Date(
-    order.created_at ||
-    Date.now()
-)
-.toLocaleDateString("id-ID");
-
-
-
-const qty =
-Number(
-    order.quantity ||
-    order.qty ||
-    1
-);
-
-
-
-const receive =
-Number(
-    order.seller_receive ||
-    0
-);
-
-
-
-const views =
-Number(
-    order.views ||
-    order.total_views ||
-    0
-);
-
-
-
-const total =
-Number(
-    order.price ||
-    0
-);
-
-
-
-return `
-
+            return `
 <tr>
+    <td>${new Date(row.report_date).toLocaleDateString("id-ID")}</td>
 
-<td>
-${date}
-</td>
+    <td>${sellViews.toLocaleString("id-ID")}</td>
 
+    <td>${sellClicks.toLocaleString("id-ID")}</td>
 
-<td>
-${qty}x
-</td>
+    <td class="earning">
+        Rp ${sellEarnings.toLocaleString("id-ID")}
+    </td>
 
-
-<td class="earning">
-Rp ${receive.toLocaleString("id-ID")}
-</td>
-
-
-<td>
-${views.toLocaleString("id-ID")}
-</td>
-
-
-<td>
-Rp ${total.toLocaleString("id-ID")}
-</td>
-
-
+    <td>
+        Rp ${cpm.toLocaleString("id-ID")}
+    </td>
 </tr>
-
 `;
 
+        }).join("");
 
-}).join("");
+    } else {
 
-
-
-}else{
-
-
-sellReportTable.innerHTML = `
-
+        sellReportTable.innerHTML = `
 <tr>
-
-<td colspan="5" class="empty">
-
-Belum ada transaksi sell.
-
-</td>
-
+    <td colspan="5">
+        Belum ada laporan sell.
+    </td>
 </tr>
-
 `;
 
-}
-
+    }
 
 }
 // ===========================
