@@ -92,7 +92,7 @@ buyer_id:body.buyer_id || null
 
 const sellers = await supabaseRequest(
     env,
-    "users",
+    "profiles",
     "GET",
     null,
     `?id=eq.${order.seller_id}&select=id,balance,sell_earning_total,sell_earning_month,sell_earning_today`
@@ -128,7 +128,7 @@ const newSellToday =
 
 await supabaseRequest(
     env,
-    "users",
+    "profiles",
     "PATCH",
     {
         balance: newBalance,
