@@ -90,12 +90,12 @@ buyer_id:body.buyer_id || null
 // GET SELLER
 // =====================
 
-const sellers=await supabaseRequest(
-env,
-"users",
-"GET",
-null,
-`?id=eq.${order.seller_id}&select=id,balance,total_sell`
+const sellers = await supabaseRequest(
+    env,
+    "users",
+    "GET",
+    null,
+    `?id=eq.${order.seller_id}&select=id,balance,sell_earning_total,sell_earning_month,sell_earning_today`
 );
 
 
@@ -106,13 +106,19 @@ throw new Error("User seller tidak ditemukan");
 const seller=sellers[0];
 
 
-const receive=Number(order.seller_receive||0);
+const receive = Number(order.seller_receive || 0);
 
-const newBalance=
-Number(seller.balance||0)+receive;
+const newBalance =
+    Number(seller.balance || 0) + receive;
 
-const newTotalSell=
-Number(seller.total_sell||0)+receive;
+const newSellTotal =
+    Number(seller.sell_earning_total || 0) + receive;
+
+const newSellMonth =
+    Number(seller.sell_earning_month || 0) + receive;
+
+const newSellToday =
+    Number(seller.sell_earning_today || 0) + receive;
 
 
 
@@ -121,16 +127,17 @@ Number(seller.total_sell||0)+receive;
 // =====================
 
 await supabaseRequest(
-env,
-"users",
-"PATCH",
-{
-balance:newBalance,
-total_sell:newTotalSell
-},
-`?id=eq.${order.seller_id}`
+    env,
+    "users",
+    "PATCH",
+    {
+        balance: newBalance,
+        sell_earning_total: newSellTotal,
+        sell_earning_month: newSellMonth,
+        sell_earning_today: newSellToday
+    },
+    `?id=eq.${order.seller_id}`
 );
-
 
 // =====================
 // LOCK PROCESSED
@@ -148,26 +155,29 @@ balance_processed:true
 
 
 console.log(
-"SELL SALDO MASUK",
-{
-seller:order.seller_id,
-receive,
-balance:newBalance,
-total_sell:newTotalSell
-}
+    "SELL SALDO MASUK",
+    {
+        seller: order.seller_id,
+        receive,
+        balance: newBalance,
+        sell_earning_total: newSellTotal,
+        sell_earning_month: newSellMonth,
+        sell_earning_today: newSellToday
+    }
 );
 
-
 return json({
-success:true,
-message:"Pembayaran berhasil",
-data:{
-order_id:order.id,
-seller_id:order.seller_id,
-receive,
-balance:newBalance,
-total_sell:newTotalSell
-}
+    success: true,
+    message: "Pembayaran berhasil",
+    data: {
+        order_id: order.id,
+        seller_id: order.seller_id,
+        receive,
+        balance: newBalance,
+        sell_earning_total: newSellTotal,
+        sell_earning_month: newSellMonth,
+        sell_earning_today: newSellToday
+    }
 });
 
 
