@@ -1500,12 +1500,21 @@ announcementBox.innerHTML=
 
 }catch(error){
 
+    console.group("🚨 Dashboard Error");
 
-console.error(
-"Dashboard Error:",
-error
-);
+    console.error(error);
 
+    console.log("Type :", typeof error);
+    console.log("Constructor :", error?.constructor?.name);
+    console.log("Keys :", Object.keys(error || {}));
+    console.dir(error);
+
+    if(error instanceof Error){
+        console.log("Message :", error.message);
+        console.log("Stack :", error.stack);
+    }
+
+    console.groupEnd();
 
 }
 
@@ -1673,211 +1682,75 @@ block:"start"
 // MARKET DETAIL
 //======================================================
 
-
 function selectCountry(id){
 
-
-const item=
-marketData.find(
-x=>x.id==id
-);
-
-
-
+const item=marketData.find(x=>x.id==id);
 if(!item)return;
 
+const history=Array.isArray(item.history)?item.history:[];
 
-
-const country=
-document.getElementById(
-"marketCountry"
-);
-
-
-
-const price=
-document.getElementById(
-"marketPrice"
-);
-
-
-
-const change=
-document.getElementById(
-"marketChange"
-);
-
-
+const country=document.getElementById("marketCountry");
+const price=document.getElementById("marketPrice");
+const change=document.getElementById("marketChange");
 
 if(country){
-
-country.textContent=
-item.country;
-
+country.textContent=item.country;
 }
-
-
 
 if(price){
-
-price.textContent=
-"Rp "+
-Number(item.cpm)
-.toLocaleString("id-ID");
-
+price.textContent="Rp "+Number(item.cpm).toLocaleString("id-ID");
 }
-
-
 
 if(change){
-
-change.innerHTML=
-
-(Number(item.change)>=0?"▲ ":"▼ ")
-
-+
-Math.abs(
-Number(item.change)
-)
-.toFixed(2)
-+"%";
-
+change.innerHTML=(Number(item.change)>=0?"▲ ":"▼ ")+Math.abs(Number(item.change)).toFixed(2)+"%";
 }
 
-
-
-
-const canvas=
-document.getElementById(
-"marketChart"
-);
-
-
-
+const canvas=document.getElementById("marketChart");
 if(!canvas)return;
-
-
 
 if(!marketChartInstance){
 
-
-marketChartInstance=
-new Chart(
-canvas,
-{
-
+marketChartInstance=new Chart(canvas,{
 type:"line",
-
 data:{
-
-labels:
-item.history.map(
-(_,i)=>i+1
-),
-
-
+labels:history.map((_,i)=>i+1),
 datasets:[{
-
-
-data:item.history,
-
-
+data:history,
 borderColor:"#2563eb",
-
-
-backgroundColor:
-"rgba(37,99,235,.12)",
-
-
+backgroundColor:"rgba(37,99,235,.12)",
 fill:true,
-
-
 tension:.4,
-
-
 pointRadius:0
-
-
 }]
-
 },
-
-
 options:{
-
-
 responsive:true,
-
-
 maintainAspectRatio:false,
-
-
 plugins:{
-
-
 legend:{
-
 display:false
-
 }
-
 },
-
-
 scales:{
-
-
 x:{
-
 display:false
-
 },
-
-
 y:{
-
 display:false
-
 }
-
-
 }
-
-
 }
-
-
-}
-
-);
-
+});
 
 }else{
 
-
-marketChartInstance.data.labels=
-item.history.map(
-(_,i)=>i+1
-);
-
-
-
-marketChartInstance.data.datasets[0].data=
-item.history;
-
-
-
+marketChartInstance.data.labels=history.map((_,i)=>i+1);
+marketChartInstance.data.datasets[0].data=history;
 marketChartInstance.update();
 
-
 }
 
-
-
 }
-
-
-
 
 //======================================================
 // TOGGLE GUIDE
