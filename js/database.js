@@ -72,18 +72,33 @@ id,
 username,
 email,
 balance,
+
+country,
+
 total_ads,
 total_sell,
+
 total_views,
 total_clicks,
-sell_unlocked,
+
+ads_earning_today,
+ads_earning_month,
+ads_earning_total,
+
 sell_earning_today,
 sell_earning_month,
 sell_earning_total,
+
+sell_unlocked,
+sell_link_enabled,
+
 withdraw_count,
+
 is_admin,
 is_banned,
-created_at
+
+created_at,
+updated_at
 `)
 .eq("id",userId)
 .maybeSingle();
@@ -145,7 +160,28 @@ async function getLinks(userId){
 
 const {data,error}=await supabaseClient
 .from("links")
-.select("*")
+.select(`
+id,
+user_id,
+
+type,
+link_type,
+
+views,
+clicks,
+
+total_views,
+total_clicks,
+
+earnings,
+total_earnings,
+
+price,
+sales,
+sold,
+
+created_at
+`)
 .eq("user_id",userId)
 .order("created_at",{ascending:false});
 
@@ -308,7 +344,27 @@ async function getSellOrders(userId){
 
 const {data,error}=await supabaseClient
 .from("sell_orders")
-.select("*")
+.select(`
+id,
+seller_id,
+buyer_id,
+
+status,
+
+price,
+fee,
+
+seller_receive,
+
+quantity,
+views,
+
+payment_id,
+invoice_id,
+
+created_at,
+paid_at
+`)
 .eq("seller_id",userId)
 .order("created_at",{ascending:false});
 
@@ -498,7 +554,21 @@ async function getReports(userId){
 
 const {data,error}=await supabaseClient
 .from("daily_reports")
-.select("*")
+.select(`
+id,
+user_id,
+report_date,
+
+ads_views,
+ads_clicks,
+ads_earnings,
+
+sell_views,
+sell_clicks,
+sell_earnings,
+
+created_at
+`)
 .eq("user_id",userId)
 .order("report_date",{ascending:false})
 .limit(30);
@@ -509,6 +579,71 @@ return [];
 }
 
 return data||[];
+}
+
+async function getStatistics(userId){
+
+    const links = await getLinks(userId);
+    const orders = await getSellOrders(userId);
+
+    return {
+
+        links,
+        orders,
+
+        totalAdsLinks:
+            links.filter(x=>x.type==="ads").length,
+
+        totalSellLinks:
+            links.filter(x=>x.type==="sell").length,
+
+        totalAdsViews:
+            links
+            .filter(x=>x.type==="ads")
+            .reduce((a,b)=>a+Number(b.total_views||0),0),
+
+        totalAdsClicks:
+            links
+            .filter(x=>x.type==="ads")
+            .reduce((a,b)=>a+Number(b.total_clicks||0),0),
+
+        totalSellViews:
+            links
+            .filter(x=>x.type==="sell")
+            .reduce((a,b)=>a+Number(b.total_views||0),0),
+
+        totalSellClicks:
+            links
+            .filter(x=>x.type==="sell")
+            .reduce((a,b)=>a+Number(b.total_clicks||0),0),
+
+        totalSold:
+            orders.reduce(
+                (a,b)=>a+Number(b.quantity||1),
+                0
+            ),
+
+        totalSellPrice:
+            orders.reduce(
+                (a,b)=>a+Number(b.price||0),
+                0
+            ),
+
+        totalSellEarn:
+            orders
+            .filter(x=>
+                ["paid","completed","success","settled"]
+                .includes(
+                    String(x.status).toLowerCase()
+                )
+            )
+            .reduce(
+                (a,b)=>a+Number(b.seller_receive||0),
+                0
+            )
+
+    };
+
 }
 
 
@@ -583,6 +718,7 @@ createWithdraw,
 
 getDashboardReport,
 getReports,
+getStatistics,
 
 getAnnouncements,
 getCPMMarket
