@@ -272,6 +272,96 @@ return data;
 
 }
 
+
+
+// =====================================================
+// SELL LINK ACCESS
+// =====================================================
+
+async function getSellAccess(userId) {
+
+    if (!userId) return null;
+
+    const { data, error } =
+        await supabaseClient
+            .from("users")
+            .select(`
+                id,
+                username,
+                is_premium,
+                premium_expires_at,
+                sell_link_enabled,
+                sell_unlocked,
+                withdraw_count
+            `)
+            .eq("id", userId)
+            .maybeSingle();
+
+    if (error) {
+        console.error(
+            "GET SELL ACCESS:",
+            error
+        );
+        return null;
+    }
+
+    return data || null;
+}
+
+
+// =====================================================
+// CHECK SELL LINK ACCESS
+// =====================================================
+
+async function canUseSellLink(userId) {
+
+    const user =
+        await getSellAccess(userId);
+
+    if (!user) {
+        return false;
+    }
+
+    // =========================================
+    // ADMIN MANUAL UNLOCK
+    // =========================================
+
+    if (
+        user.sell_link_enabled === true ||
+        user.sell_unlocked === true
+    ) {
+        return true;
+    }
+
+    // =========================================
+    // PREMIUM
+    // =========================================
+
+    if (user.is_premium === true) {
+
+        // Jika premium tidak memiliki
+        // tanggal expired
+        if (!user.premium_expires_at) {
+            return true;
+        }
+
+        const expiredAt =
+            new Date(
+                user.premium_expires_at
+            );
+
+        if (
+            !isNaN(expiredAt.getTime()) &&
+            expiredAt > new Date()
+        ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 // =====================================================
 // LINKS
 // =====================================================
@@ -1218,6 +1308,8 @@ getLinkViews,
 calculateSellPayment,
 createSellOrder,
 getSellOrders,
+getSellAccess,
+canUseSellLink,
 // PAYMENT
 createPayment,
 getPaymentStatus,
