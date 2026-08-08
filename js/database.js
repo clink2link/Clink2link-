@@ -8,7 +8,14 @@ const SUPABASE_ANON_KEY =
 
 const supabaseClient = supabase.createClient(
     SUPABASE_URL,
-    SUPABASE_ANON_KEY
+    SUPABASE_ANON_KEY,
+    {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+        }
+    }
 );
 
 const API_URL =
@@ -111,32 +118,56 @@ async function getProfile(userId) {
 }
 
 async function getCurrentProfile() {
+
     try {
-        // =========================
-        // GET AUTH USER
-        // =========================
+
+        // =========================================
+        // GET SUPABASE SESSION
+        // =========================================
+
         const {
-            data: authData,
-            error: authError
-        } = await supabaseClient.auth.getUser();
-        if (authError) {
+            data: sessionData,
+            error: sessionError
+        } = await supabaseClient.auth.getSession();
+
+        if (sessionError) {
+
             console.error(
-                "GET AUTH USER ERROR:",
-                authError
+                "GET SESSION ERROR:",
+                sessionError
             );
+
             return null;
         }
+
+        const session =
+            sessionData?.session;
+
         const authUser =
-            authData?.user;
+            session?.user;
+
+        // =========================================
+        // FALLBACK CHECK AUTH USER
+        // =========================================
+
         if (!authUser) {
+
             console.warn(
-                "SUPABASE AUTH USER TIDAK ADA"
+                "SUPABASE SESSION TIDAK ADA"
             );
+
             return null;
         }
-        // =========================
-        // GET USER PROFILE
-        // =========================
+
+        console.log(
+            "SUPABASE AUTH USER:",
+            authUser.id
+        );
+
+        // =========================================
+        // GET PROFILE FROM USERS
+        // =========================================
+
         const {
             data: profile,
             error: profileError
@@ -146,6 +177,7 @@ async function getCurrentProfile() {
                 id,
                 username,
                 email,
+                status,
                 balance,
                 country,
                 total_ads,
@@ -166,42 +198,57 @@ async function getCurrentProfile() {
                 created_at,
                 updated_at
             `)
-            .eq(
-                "id",
-                authUser.id
-            )
+            .eq("id", authUser.id)
             .maybeSingle();
+
         if (profileError) {
+
             console.error(
                 "GET CURRENT PROFILE ERROR:",
                 profileError
             );
+
             return null;
         }
+
         if (!profile) {
+
             console.warn(
                 "PROFILE USERS TIDAK DITEMUKAN:",
                 authUser.id
             );
+
             return null;
         }
-        // =========================
+
+        // =========================================
         // SYNC LOCAL STORAGE
-        // =========================
+        // =========================================
+
         localStorage.setItem(
             "user_id",
             profile.id
         );
+
         localStorage.setItem(
             "username",
             profile.username || ""
         );
+
+        console.log(
+            "CURRENT PROFILE:",
+            profile
+        );
+
         return profile;
+
     } catch (error) {
+
         console.error(
             "GET CURRENT PROFILE EXCEPTION:",
             error
         );
+
         return null;
     }
 }
