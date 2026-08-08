@@ -82,9 +82,9 @@
     function applyLanguage(
         language = getLanguage()
     ){
-        /*
-         * Validasi bahasa
-         */
+        /* =============================================
+           VALIDATE LANGUAGE
+        ============================================= */
         if(
             !translations[language]
         ){
@@ -92,11 +92,13 @@
         }
         const data =
             translations[language];
-        /* =================================================
+        /* =============================================
            TEXT
-        ================================================= */
+        ============================================= */
         document
-            .querySelectorAll("[data-i18n]")
+            .querySelectorAll(
+                "[data-i18n]"
+            )
             .forEach(function(element){
                 const key =
                     element.dataset.i18n;
@@ -107,9 +109,9 @@
                         data[key];
                 }
             });
-        /* =================================================
+        /* =============================================
            PLACEHOLDER
-        ================================================= */
+        ============================================= */
         document
             .querySelectorAll(
                 "[data-i18n-placeholder]"
@@ -125,9 +127,9 @@
                         data[key];
                 }
             });
-        /* =================================================
+        /* =============================================
            LANGUAGE SELECTOR
-        ================================================= */
+        ============================================= */
         const selector =
             document.getElementById(
                 "languageSelect"
@@ -136,24 +138,24 @@
             selector.value =
                 language;
         }
-        /* =================================================
+        /* =============================================
            SAVE LANGUAGE
-        ================================================= */
+        ============================================= */
         localStorage.setItem(
             "language",
             language
         );
-        /* =================================================
+        /* =============================================
            HTML LANG
-        ================================================= */
+        ============================================= */
         document.documentElement
             .setAttribute(
                 "lang",
                 language
             );
-        /* =================================================
-           EVENT
-        ================================================= */
+        /* =============================================
+           LANGUAGE CHANGE EVENT
+        ============================================= */
         document.dispatchEvent(
             new CustomEvent(
                 "languageChanged",
@@ -177,7 +179,7 @@
         applyLanguage(language);
     }
     /* =================================================
-       LANGUAGE SELECTOR
+       INITIALIZE LANGUAGE SELECTOR
     ================================================= */
     function initLanguageSelector(){
         const selector =
@@ -185,35 +187,32 @@
                 "languageSelect"
             );
         /*
-         * Navbar belum masuk.
+         * Navbar belum dimuat.
          *
-         * Jangan error.
-         * Nanti bisa dipanggil lagi
-         * setelah navbar selesai load.
+         * Tidak dianggap error.
          */
         if(!selector){
             return false;
         }
-        /*
-         * Set bahasa yang tersimpan
-         */
+        /* =============================================
+           SET CURRENT LANGUAGE
+        ============================================= */
         selector.value =
             getLanguage();
-        /*
-         * Hindari event listener
-         * dipasang dua kali.
-         */
+        /* =============================================
+           PREVENT DUPLICATE EVENT
+        ============================================= */
         if(
-            selector.dataset
-                .languageReady === "true"
+            selector.dataset.languageReady ===
+            "true"
         ){
             return true;
         }
-        selector.dataset
-            .languageReady = "true";
-        /* =================================================
+        selector.dataset.languageReady =
+            "true";
+        /* =============================================
            CHANGE EVENT
-        ================================================= */
+        ============================================= */
         selector.addEventListener(
             "change",
             function(){
@@ -229,22 +228,32 @@
     ================================================= */
     function initLanguage(){
         /*
-         * Coba pasang selector.
+         * Coba cari selector.
+         *
+         * Navbar mungkin belum tersedia.
          */
         initLanguageSelector();
         /*
-         * Terapkan bahasa ke elemen
-         * yang sudah tersedia.
+         * Terapkan bahasa ke seluruh
+         * elemen yang sudah tersedia.
          */
         applyLanguage();
     }
     /* =================================================
-       RE-INITIALIZE
-       Dipanggil setelah navbar.html
-       selesai dimuat.
+       REFRESH LANGUAGE
+       
+       Digunakan setelah komponen dinamis
+       seperti navbar/footer selesai dimuat.
     ================================================= */
     function refreshLanguage(){
+        /*
+         * Cari kembali language selector.
+         */
         initLanguageSelector();
+        /*
+         * Terapkan kembali bahasa
+         * ke seluruh halaman.
+         */
         applyLanguage();
     }
     /* =================================================
@@ -273,12 +282,14 @@
         initLanguageSelector,
         translations
     };
-    /*
-     * Compatibility:
-     *
-     * navbar.js sebelumnya memanggil
-     * applyLanguage() secara langsung.
-     */
+    /* =================================================
+       COMPATIBILITY
+       
+       Mempertahankan fungsi lama
+       jika ada file lain yang memanggil:
+       
+       applyLanguage()
+    ================================================= */
     window.applyLanguage =
         applyLanguage;
 })();
