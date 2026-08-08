@@ -1,693 +1,1076 @@
 // js/database.js
 
-const SUPABASE_URL="https://lwjtagxkqeprjpupmadf.supabase.co";
-const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3anRhZ3hrcWVwcmpwdXBtYWRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMDExNzYsImV4cCI6MjA5OTg3NzE3Nn0.Cg8TIBtOE4PHmnSybJtMqEoCFx-Qm4Kkl8exSOanTes";
+const SUPABASE_URL =
+“https://lwjtagxkqeprjpupmadf.supabase.co”;
 
-const supabaseClient=supabase.createClient(
+const SUPABASE_ANON_KEY =
+“eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3anRhZ3hrcWVwcmpwdXBtYWRmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NDMwMTE3NiwiZXhwIjoyMDk5ODc3MTc2fQ.jaiA6dZ2IWMh2gJuS9qPEorNlXpMT5BgyXaRRSJCSvk”
+
+const supabaseClient = supabase.createClient(
 SUPABASE_URL,
 SUPABASE_ANON_KEY
 );
 
-const API_URL="https://click2pay.my.id";
+const API_URL = “https://click2pay.my.id”;
 
+// =====================================================
+// USER
+// =====================================================
 
-// ================= USER =================
+async function getUser() {
 
-async function getUser(){
-try{
-const id=localStorage.getItem("user_id");
-if(!id)return null;
-
-const {data,error}=await supabaseClient
-.from("users")
-.select("*")
-.eq("id",id)
-.maybeSingle();
-
-if(error){
-console.error("GET USER:",error);
-return null;
+try {
+    const id = localStorage.getItem("user_id");
+    if (!id) return null;
+    const { data, error } = await supabaseClient
+        .from("users")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
+    if (error) {
+        console.error("GET USER:", error);
+        return null;
+    }
+    return data;
+} catch (error) {
+    console.error("GET USER EXCEPTION:", error);
+    return null;
 }
 
-return data;
-
-}catch(e){
-console.error(e);
-return null;
-}
 }
 
+async function getUsers() {
 
-async function logout(){
+const { data, error } = await supabaseClient
+    .from("users")
+    .select("*")
+    .order("created_at", {
+        ascending: false
+    });
+if (error) {
+    console.error("GET USERS:", error);
+    return [];
+}
+return data || [];
+
+}
+
+async function logout() {
+
 localStorage.removeItem("user_id");
+sessionStorage.clear();
 location.replace("index.html");
+
 }
 
+// =====================================================
+// PROFILE
+// =====================================================
 
-async function getUsers(){
-const {data,error}=await supabaseClient
-.from("users")
-.select("*")
-.order("created_at",{ascending:false});
+async function getProfile(userId) {
 
-if(error){
-console.error(error);
-return [];
+if (!userId) return null;
+const { data, error } = await supabaseClient
+    .from("users")
+    .select(`
+        id,
+        username,
+        email,
+        balance,
+        country,
+        total_ads,
+        total_sell,
+        total_views,
+        total_clicks,
+        ads_earning_today,
+        ads_earning_month,
+        ads_earning_total,
+        sell_earning_today,
+        sell_earning_month,
+        sell_earning_total,
+        sell_unlocked,
+        sell_link_enabled,
+        withdraw_count,
+        is_admin,
+        is_banned,
+        created_at,
+        updated_at
+    `)
+    .eq("id", userId)
+    .maybeSingle();
+if (error) {
+    console.error("GET PROFILE:", error);
+    return null;
 }
-
-return data||[];
-}
-
-
-// ================= PROFILE =================
-
-async function getProfile(userId){
-
-if(!userId)return null;
-
-const {data,error}=await supabaseClient
-.from("users")
-.select(`
-id,
-username,
-email,
-balance,
-
-country,
-
-total_ads,
-total_sell,
-
-total_views,
-total_clicks,
-
-ads_earning_today,
-ads_earning_month,
-ads_earning_total,
-
-sell_earning_today,
-sell_earning_month,
-sell_earning_total,
-
-sell_unlocked,
-sell_link_enabled,
-
-withdraw_count,
-
-is_admin,
-is_banned,
-
-created_at,
-updated_at
-`)
-.eq("id",userId)
-.maybeSingle();
-
-if(error){
-console.error("PROFILE:",error);
-return null;
-}
-
 return data;
+
 }
 
+async function getCurrentProfile() {
 
-async function getCurrentProfile(){
-const id=localStorage.getItem("user_id");
+const id = localStorage.getItem("user_id");
+if (!id) return null;
 return await getProfile(id);
+
 }
 
+async function getProfiles() {
 
-async function getProfiles(){
-const {data,error}=await supabaseClient
-.from("users")
-.select("*");
+const { data, error } = await supabaseClient
+    .from("users")
+    .select("*");
+if (error) {
+    console.error("GET PROFILES:", error);
+    return [];
+}
+return data || [];
 
-if(error){
-console.error(error);
-return [];
 }
 
-return data||[];
+async function updateProfile(payload) {
+
+const id = localStorage.getItem("user_id");
+if (!id) return null;
+const { data, error } = await supabaseClient
+    .from("users")
+    .update(payload)
+    .eq("id", id)
+    .select()
+    .single();
+if (error) {
+    console.error("UPDATE PROFILE:", error);
+    throw error;
 }
-
-
-async function updateProfile(payload){
-
-const id=localStorage.getItem("user_id");
-
-if(!id)return null;
-
-const {data,error}=await supabaseClient
-.from("users")
-.update(payload)
-.eq("id",id)
-.select()
-.single();
-
-if(error){
-console.error("UPDATE PROFILE:",error);
-throw error;
-}
-
 return data;
+
 }
 
+// =====================================================
+// LINKS
+// =====================================================
 
-// ================= LINKS =================
+async function getLinks(userId) {
 
-async function getLinks(userId){
+if (!userId) return [];
+const { data, error } = await supabaseClient
+    .from("links")
+    .select(`
+        id,
+        user_id,
+        type,
+        link_type,
+        title,
+        alias,
+        custom_alias,
+        short_code,
+        destination,
+        destination_url,
+        campaign,
+        campaign_name,
+        device,
+        target_device,
+        expired,
+        expired_at,
+        price,
+        status,
+        views,
+        clicks,
+        total_views,
+        total_clicks,
+        total_earnings,
+        earnings,
+        sales,
+        sold,
+        created_at,
+        updated_at
+    `)
+    .eq("user_id", userId)
+    .order("created_at", {
+        ascending: false
+    });
+if (error) {
+    console.error("GET LINKS:", error);
+    return [];
+}
+return data || [];
 
-const {data,error}=await supabaseClient
-.from("links")
-.select(`
-id,
-user_id,
-
-type,
-link_type,
-
-views,
-clicks,
-
-total_views,
-total_clicks,
-
-earnings,
-total_earnings,
-
-price,
-sales,
-sold,
-
-created_at
-`)
-.eq("user_id",userId)
-.order("created_at",{ascending:false});
-
-if(error){
-console.error("GET LINKS:",error);
-return [];
 }
 
-return data||[];
+async function getLinkByCode(code) {
+
+if (!code) return null;
+const { data, error } = await supabaseClient
+    .from("links")
+    .select("*")
+    .eq("short_code", String(code))
+    .maybeSingle();
+if (error) {
+    console.error("GET LINK BY CODE:", error);
+    return null;
 }
-
-
-async function getLinkByCode(code){
-
-const {data,error}=await supabaseClient
-.from("links")
-.select("*")
-.eq("short_code",code)
-.maybeSingle();
-
-if(error){
-console.error(error);
-return null;
-}
-
 return data;
+
 }
 
+async function createLink(payload) {
 
-async function createLink(payload){
-
-const insert={
-user_id:payload.user_id,
-type:payload.type||"ads",
-link_type:payload.link_type||"ads",
-title:payload.title||null,
-alias:payload.alias||null,
-custom_alias:payload.custom_alias||null,
-short_code:payload.short_code,
-destination:payload.destination||null,
-destination_url:payload.destination_url||null,
-campaign:payload.campaign||null,
-campaign_name:payload.campaign_name||null,
-device:payload.device||"all",
-target_device:payload.target_device||"all",
-expired:payload.expired||"never",
-expired_at:payload.expired_at||null,
-price:Number(payload.price||0),
-status:payload.status||"active",
-views:0,
-clicks:0,
-earnings:0,
-total_views:0,
-total_clicks:0,
-total_earnings:0,
-sold:0,
-sales:0
+if (!payload?.user_id) {
+    throw new Error("user_id wajib diisi");
+}
+if (!payload?.short_code) {
+    throw new Error("short_code wajib diisi");
+}
+if (!payload?.title) {
+    throw new Error("title wajib diisi");
+}
+if (!payload?.destination && !payload?.destination_url) {
+    throw new Error("destination wajib diisi");
+}
+const destination =
+    payload.destination ||
+    payload.destination_url;
+const destinationUrl =
+    payload.destination_url ||
+    payload.destination;
+const insert = {
+    user_id: payload.user_id,
+    type: payload.type || "ads",
+    title: payload.title,
+    alias: payload.alias || null,
+    custom_alias:
+        payload.custom_alias || null,
+    short_code:
+        payload.short_code,
+    destination,
+    destination_url:
+        destinationUrl,
+    campaign:
+        payload.campaign || null,
+    campaign_name:
+        payload.campaign_name || null,
+    device:
+        payload.device || "all",
+    target_device:
+        payload.target_device || "all",
+    expired:
+        payload.expired || "never",
+    expired_at:
+        payload.expired_at || null,
+    link_type:
+        payload.link_type ||
+        payload.type ||
+        "ads",
+    price:
+        Number(payload.price || 0),
+    status:
+        payload.status || "active",
+    views: 0,
+    clicks: 0,
+    earnings: 0,
+    total_views: 0,
+    total_clicks: 0,
+    total_earnings: 0,
+    sold: 0,
+    sales: 0
 };
-
-const {data,error}=await supabaseClient
-.from("links")
-.insert(insert)
-.select()
-.single();
-
-if(error){
-console.error("CREATE LINK:",error);
-throw error;
+const { data, error } = await supabaseClient
+    .from("links")
+    .insert(insert)
+    .select()
+    .single();
+if (error) {
+    console.error("CREATE LINK:", error);
+    throw error;
 }
-
 return data;
+
 }
 
+async function updateLink(id, payload) {
 
-async function updateLink(id,payload){
-
-const {data,error}=await supabaseClient
-.from("links")
-.update(payload)
-.eq("id",id)
-.select()
-.single();
-
-if(error){
-console.error("UPDATE LINK:",error);
-throw error;
+if (!id) {
+    throw new Error("Link ID wajib diisi");
 }
-
+const { data, error } = await supabaseClient
+    .from("links")
+    .update(payload)
+    .eq("id", id)
+    .select()
+    .single();
+if (error) {
+    console.error("UPDATE LINK:", error);
+    throw error;
+}
 return data;
+
 }
 
+async function deleteLink(id) {
 
-async function deleteLink(id){
-
-const {error}=await supabaseClient
-.from("links")
-.delete()
-.eq("id",id);
-
-if(error){
-console.error(error);
-throw error;
+if (!id) {
+    throw new Error("Link ID wajib diisi");
 }
-
+const { error } = await supabaseClient
+    .from("links")
+    .delete()
+    .eq("id", id);
+if (error) {
+    console.error("DELETE LINK:", error);
+    throw error;
+}
 return true;
+
 }
 
+// =====================================================
+// LINK VIEWS
+// =====================================================
 
-// ================= SELL FEE =================
+async function createLinkView(payload) {
 
-function calculateSellPayment(price){
-const amount=Number(price||0);
-const fee=Math.floor(amount*0.20);
-const seller_receive=amount-fee;
-
-return {
-fee,
-seller_receive
+if (!payload?.link_id) {
+    throw new Error("link_id wajib diisi");
+}
+const insert = {
+    link_id:
+        payload.link_id,
+    visitor_ip:
+        payload.visitor_ip || null,
+    country:
+        payload.country || null,
+    device:
+        payload.device || null,
+    browser:
+        payload.browser || null,
+    referer:
+        payload.referer || null,
+    is_valid:
+        payload.is_valid !== false,
+    earning:
+        Number(payload.earning || 0),
+    created_at:
+        payload.created_at ||
+        new Date().toISOString()
 };
+const { data, error } = await supabaseClient
+    .from("link_views")
+    .insert(insert)
+    .select()
+    .single();
+if (error) {
+    console.error("CREATE LINK VIEW:", error);
+    throw error;
 }
-
-
-// ================= SELL ORDERS =================
-
-async function createSellOrder(payload){
-
-const {data,error}=await supabaseClient
-.from("sell_orders")
-.insert({
-link_id:payload.link_id,
-buyer_id:payload.buyer_id,
-seller_id:payload.seller_id,
-price:Number(payload.price||0),
-status:payload.status||"pending",
-payment_id:payload.payment_id||null,
-paid_at:payload.paid_at||null,
-fee:Number(payload.fee||0),
-seller_receive:Number(payload.seller_receive||0),
-expires_at:payload.expires_at||null,
-invoice_id:payload.invoice_id||null,
-payment_url:payload.payment_url||null,
-qris_string:payload.qris_string||null,
-balance_processed:false,
-quantity:Number(payload.quantity||1),
-views:Number(payload.views||0)
-})
-.select()
-.single();
-
-if(error){
-console.error("CREATE SELL ORDER:",error);
-throw error;
-}
-
 return data;
-}
-
-
-async function getSellOrders(userId){
-
-const {data,error}=await supabaseClient
-.from("sell_orders")
-.select(`
-id,
-seller_id,
-buyer_id,
-
-status,
-
-price,
-fee,
-
-seller_receive,
-
-quantity,
-views,
-
-payment_id,
-invoice_id,
-
-created_at,
-paid_at
-`)
-.eq("seller_id",userId)
-.order("created_at",{ascending:false});
-
-if(error){
-console.error("GET SELL ORDERS:",error);
-return [];
-}
-
-return data||[];
 
 }
 
+async function getLinkViews(linkId) {
 
-// ================= PAYMENT API =================
-
-async function createPayment(payload){
-
-const response=await fetch(
-`${API_URL}/api/create-payment`,
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify(payload)
+if (!linkId) return [];
+const { data, error } = await supabaseClient
+    .from("link_views")
+    .select("*")
+    .eq("link_id", linkId)
+    .order("created_at", {
+        ascending: false
+    });
+if (error) {
+    console.error("GET LINK VIEWS:", error);
+    return [];
 }
-);
+return data || [];
 
-const result=await response.json();
-
-if(!response.ok){
-throw new Error(result.error||"Payment gagal");
 }
 
-return result.data||result;
+// =====================================================
+// SELL FEE
+// =====================================================
+
+function calculateSellPayment(price) {
+
+const amount =
+    Number(price || 0);
+const fee =
+    Math.floor(amount * 0.20);
+const seller_receive =
+    amount - fee;
+return {
+    fee,
+    seller_receive
+};
+
 }
 
+// =====================================================
+// SELL ORDERS
+// =====================================================
 
-async function getPaymentStatus(orderId){
+async function createSellOrder(payload) {
 
-const response=await fetch(
-`${API_URL}/api/payment-status/${orderId}`
-);
-
-const result=await response.json();
-
-if(!response.ok){
-throw new Error(result.error||"Status gagal");
+if (!payload?.link_id) {
+    throw new Error("link_id wajib diisi");
 }
-
-return result.data||result;
+if (!payload?.seller_id) {
+    throw new Error("seller_id wajib diisi");
 }
-
-
-async function checkSellPayment(invoice_id){
-
-if(!invoice_id){
-throw new Error("Invoice kosong");
+const insert = {
+    link_id:
+        payload.link_id,
+    buyer_id:
+        payload.buyer_id || null,
+    seller_id:
+        payload.seller_id,
+    price:
+        Number(payload.price || 0),
+    status:
+        payload.status || "pending",
+    payment_id:
+        payload.payment_id || null,
+    paid_at:
+        payload.paid_at || null,
+    fee:
+        Number(payload.fee || 0),
+    seller_receive:
+        Number(payload.seller_receive || 0),
+    expires_at:
+        payload.expires_at || null,
+    invoice_id:
+        payload.invoice_id || null,
+    payment_url:
+        payload.payment_url || null,
+    qris_string:
+        payload.qris_string || null,
+    balance_processed:
+        payload.balance_processed || false,
+    quantity:
+        Number(payload.quantity || 1),
+    views:
+        Number(payload.views || 0)
+};
+const { data, error } = await supabaseClient
+    .from("sell_orders")
+    .insert(insert)
+    .select()
+    .single();
+if (error) {
+    console.error("CREATE SELL ORDER:", error);
+    throw error;
 }
-
-const response=await fetch(
-`${API_URL}/api/check-payment?invoice_id=${encodeURIComponent(invoice_id)}`
-);
-
-const result=await response.json();
-
-if(!response.ok){
-throw new Error(result.error||"Check gagal");
-}
-
-return result.data||result;
-}
-
-
-// ================= WALLET =================
-
-async function getWalletTransactions(userId){
-
-const {data,error}=await supabaseClient
-.from("wallet_transactions")
-.select("*")
-.eq("user_id",userId)
-.order("created_at",{ascending:false});
-
-if(error){
-console.error("WALLET:",error);
-return [];
-}
-
-return data||[];
-}
-
-
-async function createWalletTransaction(payload){
-
-const {data,error}=await supabaseClient
-.from("wallet_transactions")
-.insert({
-user_id:payload.user_id,
-type:payload.type,
-amount:Number(payload.amount||0),
-title:payload.title||null,
-description:payload.description||null,
-status:payload.status||"success"
-})
-.select()
-.single();
-
-if(error){
-console.error("CREATE WALLET:",error);
-throw error;
-}
-
 return data;
+
 }
 
+async function getSellOrders(userId) {
 
-// ================= WITHDRAW =================
+if (!userId) return [];
+const { data, error } = await supabaseClient
+    .from("sell_orders")
+    .select(`
+        id,
+        link_id,
+        seller_id,
+        buyer_id,
+        price,
+        fee,
+        seller_receive,
+        status,
+        quantity,
+        views,
+        payment_id,
+        invoice_id,
+        payment_url,
+        qris_string,
+        balance_processed,
+        expires_at,
+        created_at,
+        paid_at
+    `)
+    .eq("seller_id", userId)
+    .order("created_at", {
+        ascending: false
+    });
+if (error) {
+    console.error("GET SELL ORDERS:", error);
+    return [];
+}
+return data || [];
 
-async function getWithdraws(userId=null){
-
-let query=supabaseClient
-.from("withdraws")
-.select("*")
-.order("created_at",{ascending:false});
-
-if(userId){
-query=query.eq("user_id",userId);
 }
 
-const {data,error}=await query;
+// =====================================================
+// PAYMENT API
+// =====================================================
 
-if(error){
-console.error("WITHDRAW:",error);
-return [];
+async function createPayment(payload) {
+
+const response = await fetch(
+    `${API_URL}/api/create-payment`,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type":
+                "application/json"
+        },
+        body:
+            JSON.stringify(payload)
+    }
+);
+const result =
+    await response.json();
+if (!response.ok) {
+    throw new Error(
+        result.error ||
+        "Payment gagal"
+    );
+}
+return result.data || result;
+
 }
 
-return data||[];
+async function getPaymentStatus(orderId) {
+
+const response = await fetch(
+    `${API_URL}/api/payment-status/${orderId}`
+);
+const result =
+    await response.json();
+if (!response.ok) {
+    throw new Error(
+        result.error ||
+        "Status pembayaran gagal"
+    );
+}
+return result.data || result;
+
 }
 
+async function checkSellPayment(invoiceId) {
 
-async function createWithdraw(payload){
+if (!invoiceId) {
+    throw new Error("Invoice kosong");
+}
+const response = await fetch(
+    `${API_URL}/api/check-payment?invoice_id=${encodeURIComponent(invoiceId)}`
+);
+const result =
+    await response.json();
+if (!response.ok) {
+    throw new Error(
+        result.error ||
+        "Check pembayaran gagal"
+    );
+}
+return result.data || result;
 
-const {data,error}=await supabaseClient
-.from("withdraws")
-.insert({
-user_id:payload.user_id,
-method:payload.method,
-account_number:payload.account_number,
-amount:Number(payload.amount||0),
-type:payload.type||"withdraw",
-fee:Number(payload.fee||0),
-status:payload.status||"pending"
-})
-.select()
-.single();
-
-if(error){
-console.error("CREATE WITHDRAW:",error);
-throw error;
 }
 
+// =====================================================
+// WALLET
+// =====================================================
+
+async function getWalletTransactions(userId) {
+
+if (!userId) return [];
+const { data, error } =
+    await supabaseClient
+        .from("wallet_transactions")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", {
+            ascending: false
+        });
+if (error) {
+    console.error("GET WALLET:", error);
+    return [];
+}
+return data || [];
+
+}
+
+async function createWalletTransaction(payload) {
+
+const insert = {
+    user_id:
+        payload.user_id,
+    type:
+        payload.type,
+    amount:
+        Number(payload.amount || 0),
+    title:
+        payload.title || null,
+    description:
+        payload.description || null,
+    status:
+        payload.status || "success"
+};
+const { data, error } =
+    await supabaseClient
+        .from("wallet_transactions")
+        .insert(insert)
+        .select()
+        .single();
+if (error) {
+    console.error(
+        "CREATE WALLET TRANSACTION:",
+        error
+    );
+    throw error;
+}
 return data;
+
 }
 
+// =====================================================
+// WITHDRAW
+// =====================================================
 
+async function getWithdraws(userId = null) {
 
-// ================= REPORT =================
+let query =
+    supabaseClient
+        .from("withdraws")
+        .select("*")
+        .order("created_at", {
+            ascending: false
+        });
+if (userId) {
+    query =
+        query.eq(
+            "user_id",
+            userId
+        );
+}
+const { data, error } =
+    await query;
+if (error) {
+    console.error(
+        "GET WITHDRAWS:",
+        error
+    );
+    return [];
+}
+return data || [];
 
-async function getDashboardReport(){
-
-const {data,error}=await supabaseClient
-.from("daily_reports")
-.select("*")
-.order("report_date",{ascending:false});
-
-if(error){
-console.error("REPORT:",error);
-return [];
 }
 
-return data||[];
+async function createWithdraw(payload) {
+
+const insert = {
+    user_id:
+        payload.user_id,
+    method:
+        payload.method,
+    account_number:
+        payload.account_number,
+    amount:
+        Number(payload.amount || 0),
+    type:
+        payload.type || "withdraw",
+    fee:
+        Number(payload.fee || 0),
+    status:
+        payload.status || "pending"
+};
+const { data, error } =
+    await supabaseClient
+        .from("withdraws")
+        .insert(insert)
+        .select()
+        .single();
+if (error) {
+    console.error(
+        "CREATE WITHDRAW:",
+        error
+    );
+    throw error;
+}
+return data;
+
 }
 
+// =====================================================
+// DAILY REPORT
+// =====================================================
 
-async function getReports(userId){
+async function getDashboardReport() {
 
-const {data,error}=await supabaseClient
-.from("daily_reports")
-.select(`
-id,
-user_id,
-report_date,
+const { data, error } =
+    await supabaseClient
+        .from("daily_reports")
+        .select("*")
+        .order("report_date", {
+            ascending: false
+        });
+if (error) {
+    console.error(
+        "GET DASHBOARD REPORT:",
+        error
+    );
+    return [];
+}
+return data || [];
 
-ads_views,
-ads_clicks,
-ads_earnings,
-
-sell_views,
-sell_clicks,
-sell_earnings,
-
-created_at
-`)
-.eq("user_id",userId)
-.order("report_date",{ascending:false})
-.limit(30);
-
-if(error){
-console.error("USER REPORT:",error);
-return [];
 }
 
-return data||[];
+async function getReports(userId) {
+
+if (!userId) return [];
+const { data, error } =
+    await supabaseClient
+        .from("daily_reports")
+        .select(`
+            id,
+            user_id,
+            report_date,
+            ads_views,
+            ads_clicks,
+            ads_earnings,
+            sell_views,
+            sell_clicks,
+            sell_earnings,
+            created_at
+        `)
+        .eq("user_id", userId)
+        .order("report_date", {
+            ascending: false
+        })
+        .limit(30);
+if (error) {
+    console.error(
+        "GET USER REPORT:",
+        error
+    );
+    return [];
+}
+return data || [];
+
 }
 
-async function getStatistics(userId){
+// =====================================================
+// UPSERT DAILY REPORT
+// =====================================================
 
-    const links = await getLinks(userId);
-    const orders = await getSellOrders(userId);
+async function upsertDailyReport(
+userId,
+reportDate,
+payload = {}
+) {
 
-    return {
+if (!userId) {
+    throw new Error("userId wajib diisi");
+}
+if (!reportDate) {
+    throw new Error("reportDate wajib diisi");
+}
+const row = {
+    user_id:
+        userId,
+    report_date:
+        reportDate,
+    ads_views:
+        Number(payload.ads_views || 0),
+    ads_clicks:
+        Number(payload.ads_clicks || 0),
+    ads_earnings:
+        Number(payload.ads_earnings || 0),
+    sell_views:
+        Number(payload.sell_views || 0),
+    sell_clicks:
+        Number(payload.sell_clicks || 0),
+    sell_earnings:
+        Number(payload.sell_earnings || 0)
+};
+const { data, error } =
+    await supabaseClient
+        .from("daily_reports")
+        .upsert(
+            row,
+            {
+                onConflict:
+                    "user_id,report_date"
+            }
+        )
+        .select()
+        .single();
+if (error) {
+    console.error(
+        "UPSERT DAILY REPORT:",
+        error
+    );
+    throw error;
+}
+return data;
 
-        links,
-        orders,
+}
 
-        totalAdsLinks:
-            links.filter(x=>x.type==="ads").length,
+// =====================================================
+// GET TODAY REPORT
+// =====================================================
 
-        totalSellLinks:
-            links.filter(x=>x.type==="sell").length,
+async function getTodayReport(userId) {
 
-        totalAdsViews:
-            links
-            .filter(x=>x.type==="ads")
-            .reduce((a,b)=>a+Number(b.total_views||0),0),
+if (!userId) return null;
+const now =
+    new Date();
+const jakarta =
+    new Intl.DateTimeFormat(
+        "en-CA",
+        {
+            timeZone:
+                "Asia/Jakarta",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+        }
+    ).format(now);
+const { data, error } =
+    await supabaseClient
+        .from("daily_reports")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("report_date", jakarta)
+        .maybeSingle();
+if (error) {
+    console.error(
+        "GET TODAY REPORT:",
+        error
+    );
+    return null;
+}
+return data;
 
-        totalAdsClicks:
-            links
-            .filter(x=>x.type==="ads")
-            .reduce((a,b)=>a+Number(b.total_clicks||0),0),
+}
 
-        totalSellViews:
-            links
-            .filter(x=>x.type==="sell")
-            .reduce((a,b)=>a+Number(b.total_views||0),0),
+// =====================================================
+// STATISTICS
+// =====================================================
 
-        totalSellClicks:
-            links
-            .filter(x=>x.type==="sell")
-            .reduce((a,b)=>a+Number(b.total_clicks||0),0),
+async function getStatistics(userId) {
 
-        totalSold:
-            orders.reduce(
-                (a,b)=>a+Number(b.quantity||1),
-                0
-            ),
-
-        totalSellPrice:
-            orders.reduce(
-                (a,b)=>a+Number(b.price||0),
-                0
-            ),
-
-        totalSellEarn:
-            orders
-            .filter(x=>
-                ["paid","completed","success","settled"]
-                .includes(
-                    String(x.status).toLowerCase()
-                )
+const links =
+    await getLinks(userId);
+const orders =
+    await getSellOrders(userId);
+const paidOrders =
+    orders.filter(order =>
+        [
+            "paid",
+            "completed",
+            "success",
+            "settled"
+        ].includes(
+            String(
+                order.status
+            ).toLowerCase()
+        )
+    );
+return {
+    links,
+    orders,
+    paidOrders,
+    totalAdsLinks:
+        links.filter(
+            x =>
+                String(x.type)
+                    .toLowerCase() ===
+                "ads"
+        ).length,
+    totalSellLinks:
+        links.filter(
+            x =>
+                String(x.type)
+                    .toLowerCase() ===
+                "sell"
+        ).length,
+    totalAdsViews:
+        links
+            .filter(
+                x =>
+                    String(x.type)
+                        .toLowerCase() ===
+                    "ads"
             )
             .reduce(
-                (a,b)=>a+Number(b.seller_receive||0),
+                (total, item) =>
+                    total +
+                    Number(
+                        item.total_views || 0
+                    ),
                 0
+            ),
+    totalAdsClicks:
+        links
+            .filter(
+                x =>
+                    String(x.type)
+                        .toLowerCase() ===
+                    "ads"
             )
-
-    };
+            .reduce(
+                (total, item) =>
+                    total +
+                    Number(
+                        item.total_clicks || 0
+                    ),
+                0
+            ),
+    totalSellViews:
+        links
+            .filter(
+                x =>
+                    String(x.type)
+                        .toLowerCase() ===
+                    "sell"
+            )
+            .reduce(
+                (total, item) =>
+                    total +
+                    Number(
+                        item.total_views || 0
+                    ),
+                0
+            ),
+    totalSellClicks:
+        links
+            .filter(
+                x =>
+                    String(x.type)
+                        .toLowerCase() ===
+                    "sell"
+            )
+            .reduce(
+                (total, item) =>
+                    total +
+                    Number(
+                        item.total_clicks || 0
+                    ),
+                0
+            ),
+    totalSold:
+        paidOrders.reduce(
+            (total, item) =>
+                total +
+                Number(
+                    item.quantity || 1
+                ),
+            0
+        ),
+    totalSellPrice:
+        paidOrders.reduce(
+            (total, item) =>
+                total +
+                Number(
+                    item.price || 0
+                ),
+            0
+        ),
+    totalSellFee:
+        paidOrders.reduce(
+            (total, item) =>
+                total +
+                Number(
+                    item.fee || 0
+                ),
+            0
+        ),
+    totalSellEarn:
+        paidOrders.reduce(
+            (total, item) =>
+                total +
+                Number(
+                    item.seller_receive || 0
+                ),
+            0
+        )
+};
 
 }
 
+// =====================================================
+// ANNOUNCEMENT
+// =====================================================
 
-// ================= ANNOUNCEMENT =================
+async function getAnnouncements() {
 
-async function getAnnouncements(){
+const { data, error } =
+    await supabaseClient
+        .from("announcements")
+        .select("*")
+        .order("created_at", {
+            ascending: false
+        });
+if (error) {
+    console.error(
+        "GET ANNOUNCEMENTS:",
+        error
+    );
+    return [];
+}
+return data || [];
 
-const {data,error}=await supabaseClient
-.from("announcements")
-.select("*")
-.order("created_at",{ascending:false});
-
-if(error){
-console.error("ANNOUNCEMENT:",error);
-return [];
 }
 
-return data||[];
+// =====================================================
+// CPM MARKET
+// =====================================================
+
+async function getCPMMarket() {
+
+const { data, error } =
+    await supabaseClient
+        .from("cpm_market")
+        .select("*")
+        .order("cpm", {
+            ascending: false
+        });
+if (error) {
+    console.error(
+        "GET CPM MARKET:",
+        error
+    );
+    return [];
+}
+return data || [];
+
 }
 
+// =====================================================
+// CPM RATE
+// =====================================================
 
-// ================= CPM MARKET =================
+async function getCPMRate(
+country = “Indonesia”
+) {
 
-async function getCPMMarket(){
+const { data, error } =
+    await supabaseClient
+        .from("cpm_rates")
+        .select("cpm")
+        .eq("country", country)
+        .maybeSingle();
+if (error) {
+    console.error(
+        "GET CPM RATE:",
+        error
+    );
+    return 0;
+}
+return Number(
+    data?.cpm || 0
+);
 
-const {data,error}=await supabaseClient
-.from("cpm_market")
-.select("*")
-.order("cpm",{ascending:false});
-
-if(error){
-console.error("CPM:",error);
-return [];
 }
 
-return data||[];
-}
+// =====================================================
+// EXPORT
+// =====================================================
 
+window.database = {
 
-// ================= EXPORT =================
-
-window.database={
-supabase:supabaseClient,
-
+supabase:
+    supabaseClient,
+// USER
 getUser,
 getUsers,
 getProfile,
@@ -695,33 +1078,45 @@ getCurrentProfile,
 getProfiles,
 updateProfile,
 logout,
-
+// LINKS
 getLinks,
 getLinkByCode,
 createLink,
 updateLink,
 deleteLink,
-
+// LINK VIEWS
+createLinkView,
+getLinkViews,
+// SELL
 calculateSellPayment,
 createSellOrder,
 getSellOrders,
-
+// PAYMENT
 createPayment,
 getPaymentStatus,
 checkSellPayment,
-
+// WALLET
 getWalletTransactions,
 createWalletTransaction,
-
+// WITHDRAW
 getWithdraws,
 createWithdraw,
-
+// REPORT
 getDashboardReport,
 getReports,
+getTodayReport,
+upsertDailyReport,
+// STATISTICS
 getStatistics,
-
+// ANNOUNCEMENT
 getAnnouncements,
-getCPMMarket
+// CPM
+getCPMMarket,
+getCPMRate
+
 };
 
-console.log("DATABASE JS READY",window.database);
+console.log(
+“DATABASE JS READY”,
+window.database
+);
