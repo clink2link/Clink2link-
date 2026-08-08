@@ -351,13 +351,11 @@ if (
 // =========================
 
 await database.supabase
-.from("profiles")
-.update({
-
-updated_at:new Date().toISOString()
-
-})
-.eq("id",profile.id);
+    .from("users")
+    .update({
+        updated_at: new Date().toISOString()
+    })
+    .eq("id", profile.id);
 
 
 
