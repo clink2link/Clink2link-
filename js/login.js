@@ -329,25 +329,22 @@ return;
 
 
 // =========================
-// STATUS
+// STATUS AKUN
 // =========================
-
-if(profile.status!=="active"){
-
-
-await database.supabase.auth.signOut();
-
-
-showAlert(
-"🚫 Akun tidak aktif."
-);
-
-
-return;
-
+const accountStatus =
+    String(
+        profile.status ||
+        "active"
+    ).toLowerCase();
+if (
+    accountStatus !== "active"
+) {
+    await database.supabase.auth.signOut();
+    showAlert(
+        "🚫 Akun tidak aktif."
+    );
+    return;
 }
-
-
 
 // =========================
 // UPDATE LOGIN
