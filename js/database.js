@@ -108,11 +108,99 @@ return data;
 }
 
 async function getCurrentProfile() {
-
-const id = localStorage.getItem("user_id");
-if (!id) return null;
-return await getProfile(id);
-
+    try {
+        // =========================
+        // GET AUTH USER
+        // =========================
+        const {
+            data: authData,
+            error: authError
+        } = await supabaseClient.auth.getUser();
+        if (authError) {
+            console.error(
+                "GET AUTH USER ERROR:",
+                authError
+            );
+            return null;
+        }
+        const authUser =
+            authData?.user;
+        if (!authUser) {
+            console.warn(
+                "SUPABASE AUTH USER TIDAK ADA"
+            );
+            return null;
+        }
+        // =========================
+        // GET USER PROFILE
+        // =========================
+        const {
+            data: profile,
+            error: profileError
+        } = await supabaseClient
+            .from("users")
+            .select(`
+                id,
+                username,
+                email,
+                balance,
+                country,
+                total_ads,
+                total_sell,
+                total_views,
+                total_clicks,
+                ads_earning_today,
+                ads_earning_month,
+                ads_earning_total,
+                sell_earning_today,
+                sell_earning_month,
+                sell_earning_total,
+                sell_unlocked,
+                sell_link_enabled,
+                withdraw_count,
+                is_admin,
+                is_banned,
+                created_at,
+                updated_at
+            `)
+            .eq(
+                "id",
+                authUser.id
+            )
+            .maybeSingle();
+        if (profileError) {
+            console.error(
+                "GET CURRENT PROFILE ERROR:",
+                profileError
+            );
+            return null;
+        }
+        if (!profile) {
+            console.warn(
+                "PROFILE USERS TIDAK DITEMUKAN:",
+                authUser.id
+            );
+            return null;
+        }
+        // =========================
+        // SYNC LOCAL STORAGE
+        // =========================
+        localStorage.setItem(
+            "user_id",
+            profile.id
+        );
+        localStorage.setItem(
+            "username",
+            profile.username || ""
+        );
+        return profile;
+    } catch (error) {
+        console.error(
+            "GET CURRENT PROFILE EXCEPTION:",
+            error
+        );
+        return null;
+    }
 }
 
 async function getProfiles() {
