@@ -152,7 +152,7 @@ async function loadDashboard() {
         const profile =
             await database.getCurrentProfile();
         if (!profile) {
-            location.href = "index.html";
+            location.href = "login.html";
             return;
         }
         const authId = profile.id;
