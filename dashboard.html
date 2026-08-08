@@ -2,23 +2,24 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Dashboard - Click2Pay</title>
-<!-- =====================================================
+<!-- =========================
      INITIAL THEME
-===================================================== -->
+========================= -->
 <script>
 (function(){
-    const theme =
-        localStorage.getItem("theme");
+    const theme = localStorage.getItem("theme");
     if(theme === "dark"){
-        document.documentElement
-            .classList.add("dark");
+        document.documentElement.classList.add("dark");
     }
 })();
 </script>
-<!-- =====================================================
-     FONT
-===================================================== -->
+<!-- =========================
+     FONT & ICON
+========================= -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="preconnect"
       href="https://fonts.googleapis.com">
 <link rel="preconnect"
@@ -26,48 +27,36 @@
       crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet">
-<!-- =====================================================
-     FONT AWESOME
-===================================================== -->
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<!-- =====================================================
+<!-- =========================
      CSS
-===================================================== -->
-<link rel="stylesheet"
-      href="css/theme.css">
-<link rel="stylesheet"
-      href="css/navbar.css">
-<link rel="stylesheet"
-      href="css/footer.css">
-<link rel="stylesheet"
-      href="css/dashboard.css">
+========================= -->
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body class="dash-body">
-<!-- =====================================================
-     DASHBOARD BACKGROUND
-===================================================== -->
 <div class="dash-bg"></div>
-<!-- =====================================================
+<!-- =========================
      NAVBAR
-===================================================== -->
+========================= -->
 <div id="navbar"></div>
-<!-- =====================================================
+<!-- =========================
      DASHBOARD CONTAINER
-===================================================== -->
+========================= -->
 <div class="dash-container">
-<!-- =====================================================
+<!-- =========================
      WELCOME
-===================================================== -->
+========================= -->
 <div class="dash-welcome">
 <h1>
     <i class="fa-solid fa-house"></i>
     Dashboard Click2Pay
 </h1>
 </div>
-<!-- =====================================================
+<!-- =========================
      RUNNING NOTICE
-===================================================== -->
+========================= -->
 <div class="notice-bar">
 <div class="notice-icon">
     <i class="fa-solid fa-bell"></i>
@@ -85,9 +74,9 @@
     <i class="fa-solid fa-circle-check"></i>
 </div>
 </div>
-<!-- =====================================================
+<!-- =========================
      QUICK GUIDE
-===================================================== -->
+========================= -->
 <div class="dash-box guide-wrapper">
 <div class="guide-toggle"
      onclick="toggleGuide()">
@@ -252,9 +241,9 @@
     </div>
 </div>
 </div>
-<!-- =====================================================
+<!-- =========================
      GLOBAL CPM MARKET
-===================================================== -->
+========================= -->
 <div class="cpm-market">
 <div class="guide-toggle"
      onclick="toggleMarket()">
@@ -267,7 +256,6 @@
 </div>
 <div id="marketContent"
      class="guide-content">
-    <!-- MARKET HEADER -->
     <div class="cpm-header">
         <p id="countryNotice">
             Memuat CPM negara...
@@ -277,7 +265,6 @@
             LIVE
         </div>
     </div>
-    <!-- MARKET LIST -->
     <div class="market-layout">
         <div id="cpmMarketList"
              class="market-list">
@@ -299,15 +286,14 @@
             0.00%
         </div>
     </div>
-    <!-- MARKET CHART -->
     <div class="market-chart-wrapper">
         <canvas id="marketChart"></canvas>
     </div>
 </div>
 </div>
-<!-- =====================================================
-     ADS REPORT
-===================================================== -->
+<!-- =========================
+     REPORT ADS
+========================= -->
 <div class="report-section">
 <div class="report-title">
     <div>
@@ -357,7 +343,7 @@
             Rp 0
         </h2>
     </div>
-    <!-- ADS VIEWS -->
+    <!-- VIEWS -->
     <div class="report-card">
         <div class="report-icon orange">
             <i class="fa-solid fa-eye"></i>
@@ -371,9 +357,9 @@
     </div>
 </div>
 </div>
-<!-- =====================================================
-     SELL REPORT
-===================================================== -->
+<!-- =========================
+     REPORT SELL
+========================= -->
 <div class="report-section">
 <div class="report-title">
     <div>
@@ -420,7 +406,7 @@
             Total Terjual
         </h4>
         <h2 id="sellTotalSold">
-            0
+            0x
         </h2>
     </div>
     <!-- TOTAL SELL LINK -->
@@ -437,14 +423,12 @@
     </div>
 </div>
 </div>
-<!-- =====================================================
+<!-- =========================
      STATISTICS
-===================================================== -->
+========================= -->
 <div id="statistics"
      class="stats-container">
-<!-- =================================================
-     ADS STATISTICS
-================================================== -->
+<!-- ADS STATISTICS -->
 <div class="stats-box">
     <div class="stats-head">
         <h2>
@@ -457,11 +441,9 @@
             </option>
         </select>
     </div>
-    <!-- ADS CHART -->
     <div class="chart-wrapper">
         <canvas id="adsChart"></canvas>
     </div>
-    <!-- ADS INFO -->
     <div class="stats-info">
         <div>
             <span>
@@ -493,9 +475,7 @@
         Asia/Jakarta.
     </p>
 </div>
-<!-- =================================================
-     SELL STATISTICS
-================================================== -->
+<!-- SELL STATISTICS -->
 <div class="stats-box sell-card locked">
     <div class="stats-head">
         <h2>
@@ -508,11 +488,9 @@
             </option>
         </select>
     </div>
-    <!-- SELL CHART -->
     <div class="chart-wrapper">
         <canvas id="sellChart"></canvas>
     </div>
-    <!-- SELL INFO -->
     <div class="stats-info">
         <div>
             <span>
@@ -545,9 +523,9 @@
     </p>
 </div>
 </div>
-<!-- =====================================================
+<!-- =========================
      DAILY ADS REPORT
-===================================================== -->
+========================= -->
 <div class="daily-report-section">
 <div class="report-card daily-report-card">
     <div class="report-header">
@@ -589,9 +567,9 @@
     </div>
 </div>
 </div>
-<!-- =====================================================
+<!-- =========================
      DAILY SELL REPORT
-===================================================== -->
+========================= -->
 <div class="daily-report-section">
 <div class="report-card daily-report-card sell-report">
     <div class="report-header">
@@ -633,9 +611,9 @@
     </div>
 </div>
 </div>
-<!-- =====================================================
+<!-- =========================
      ANNOUNCEMENT
-===================================================== -->
+========================= -->
 <div class="dash-box">
 <h2>
     <i class="fa-solid fa-bullhorn"></i>
@@ -646,39 +624,46 @@
 </div>
 </div>
 </div>
-<!-- END DASH CONTAINER -->
-<!-- =====================================================
+<!-- =========================
      FOOTER
-===================================================== -->
+========================= -->
 <div id="footer"></div>
-<!-- =====================================================
+<!-- =========================
      LIBRARIES
-===================================================== -->
-<!-- SUPABASE -->
+========================= -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- CHART.JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- =====================================================
-     CLICK2PAY CORE
-===================================================== -->
-<!-- DATABASE -->
+<!-- =========================
+     DATABASE
+========================= -->
 <script src="js/database.js"></script>
-<!-- ACTIVITY -->
+<!-- =========================
+     ACTIVITY
+========================= -->
 <script src="js/activity.js"></script>
-<!-- SESSION -->
+<!-- =========================
+     SESSION
+========================= -->
 <script src="js/session.js"></script>
-<!-- THEME -->
+<!-- =========================
+     THEME
+========================= -->
 <script src="js/theme.js"></script>
-<!-- ADMIN CPM -->
+<!-- =========================
+     FOOTER
+========================= -->
+<script src="js/footer.js"></script>
+<!-- =========================
+     ADMIN CPM
+========================= -->
 <script src="js/admin-cpm.js"></script>
-<!-- =====================================================
+<!-- =========================
      DASHBOARD
-     HARUS SETELAH DATABASE + CHART.JS
-===================================================== -->
+========================= -->
 <script src="js/dashboard.js"></script>
-<!-- =====================================================
+<!-- =========================
      NAVBAR
-===================================================== -->
+========================= -->
 <script>
 fetch("components/navbar.html")
 .then(res => res.text())
@@ -692,20 +677,13 @@ fetch("components/navbar.html")
         document.createElement("script");
     script.src =
         "js/navbar.js";
-    script.onload = function(){
-        console.log(
-            "NAVBAR READY"
-        );
-        if(
-            typeof c2pInit ===
-            "function"
-        ){
+    script.onload = () => {
+        console.log("NAVBAR READY");
+        if(typeof c2pInit === "function"){
             c2pInit();
         }
         document
-            .querySelectorAll(
-                ".c2p-sidebar a"
-            )
+            .querySelectorAll(".c2p-sidebar a")
             .forEach(link => {
                 link.addEventListener(
                     "click",
@@ -742,9 +720,7 @@ fetch("components/navbar.html")
                 };
         }
     };
-    document.body.appendChild(
-        script
-    );
+    document.body.appendChild(script);
 })
 .catch(err => {
     console.error(
@@ -753,17 +729,15 @@ fetch("components/navbar.html")
     );
 });
 </script>
-<!-- =====================================================
+<!-- =========================
      FOOTER LOAD
-===================================================== -->
+========================= -->
 <script>
 fetch("components/footer.html")
 .then(res => res.text())
 .then(data => {
     const footer =
-        document.getElementById(
-            "footer"
-        );
+        document.getElementById("footer");
     if(footer){
         footer.innerHTML = data;
     }
@@ -781,9 +755,9 @@ fetch("components/footer.html")
     );
 });
 </script>
-<!-- =====================================================
+<!-- =========================
      DEBUG
-===================================================== -->
+========================= -->
 <script src="assets/js/debug.js"></script>
 </body>
 </html>
