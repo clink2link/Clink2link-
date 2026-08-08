@@ -1,196 +1,261 @@
 <header class="c2p-navbar">
-
-  <button class="c2p-menu-btn" type="button">
+  <!-- MENU -->
+  <button
+    class="c2p-menu-btn"
+    type="button"
+    aria-label="Open menu"
+  >
     <i class="fa-solid fa-bars"></i>
   </button>
-
+  <!-- LOGO -->
   <div class="c2p-logo">
     CLICK<span>2PAY</span>
   </div>
-
+  <!-- RIGHT NAVBAR -->
   <div class="c2p-navbar-right">
-
-    <button id="themeToggle" class="c2p-theme-btn" type="button">
+    <!-- THEME -->
+    <button
+      id="themeToggle"
+      class="c2p-theme-btn"
+      type="button"
+      aria-label="Toggle theme"
+    >
       <i class="fa-solid fa-moon"></i>
     </button>
-
-    <select class="c2p-lang">
-      <option value="id">ID</option>
-      <option value="en">EN</option>
-    </select>
-
+    <!-- LANGUAGE -->
+    <div class="c2p-language">
+      <i class="fa-solid fa-language"></i>
+      <select
+        id="languageSelect"
+        class="c2p-lang"
+        aria-label="Language"
+      >
+        <option value="id">🇮🇩 Indonesia</option>
+        <option value="en">🇬🇧 English</option>
+      </select>
+    </div>
   </div>
-
 </header>
-
-
-<!-- SIDEBAR -->
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
 <div class="c2p-sidebar">
-
+  <!-- SIDEBAR LOGO -->
   <div class="c2p-side-logo">
- CLICK<span>2PAY</span>
-</div>
-
+    CLICK<span>2PAY</span>
+  </div>
+  <!-- SEARCH -->
   <div class="c2p-search-box">
-    <input 
-      type="text" 
+    <input
+      type="text"
       placeholder="Cari menu..."
       id="menuSearch"
     >
   </div>
-
-
+  <!-- DASHBOARD -->
   <a href="dashboard.html">
     <i class="fa-solid fa-house"></i>
     Dashboard
   </a>
-
-
+  <!-- CREATE LINK -->
   <a href="create-link.html">
     <i class="fa-solid fa-link"></i>
     Create Link
   </a>
-
-
+  <!-- CREATE SELL LINK -->
   <a href="sell-link.html">
     <i class="fa-solid fa-cart-plus"></i>
     Create Sell Link
   </a>
-
-
+  <!-- MY LINK -->
   <a href="my-link.html">
     <i class="fa-solid fa-list"></i>
     My Link
   </a>
-
-
+  <!-- PAYMENT -->
   <a href="payment.html">
     <i class="fa-solid fa-wallet"></i>
     Payment
   </a>
-
-
+  <!-- BALANCE HISTORY -->
   <a href="history.html">
     <i class="fa-solid fa-clock-rotate-left"></i>
     History Saldo
   </a>
-
-
+  <!-- REFERRAL -->
   <a href="referral.html">
     <i class="fa-solid fa-users"></i>
     Referral
   </a>
-
-
+  <!-- NOTIFICATION -->
   <a href="notification.html">
     <i class="fa-solid fa-bell"></i>
     Notifikasi
   </a>
-
-
+  <!-- ACCOUNT -->
   <div class="c2p-divider">
     Akun
   </div>
-
+  <!-- PROFILE -->
   <a href="profile.html">
     <i class="fa-solid fa-user"></i>
     Profil
   </a>
-
-
+  <!-- SETTINGS -->
   <a href="settings.html">
     <i class="fa-solid fa-gear"></i>
     Pengaturan
   </a>
-
-
+  <!-- LOGIN ACTIVITY -->
   <a href="activity.html">
     <i class="fa-solid fa-user-clock"></i>
     Aktivitas Login
   </a>
-
-
+  <!-- SUPPORT -->
   <div class="c2p-divider">
     Support
   </div>
-
-
+  <!-- TELEGRAM -->
   <a href="#">
     <i class="fa-brands fa-telegram"></i>
     Telegram
   </a>
-
-
+  <!-- FACEBOOK -->
   <a href="#">
     <i class="fa-brands fa-facebook"></i>
     Facebook
   </a>
-
-
-  <button class="c2p-logout" id="logoutBtn">
+  <!-- LOGOUT -->
+  <button
+    class="c2p-logout"
+    id="logoutBtn"
+    type="button"
+  >
     Logout
   </button>
-
-
+  <!-- SIDEBAR FOOTER -->
   <div class="c2p-side-footer">
     © 2026 Click2Pay
   </div>
-
-
 </div>
-
-
+<!-- OVERLAY -->
 <div class="c2p-overlay"></div>
-
-
-<!-- MOBILE BOTTOM -->
+<!-- =====================================================
+     MOBILE BOTTOM NAV
+===================================================== -->
 <div class="c2p-bottom-nav">
-
-<a href="/dashboard">
-<i class="fa-solid fa-house"></i>
-Dashboard
-</a>
-
-<a href="withdraw.html">
-<i class="fa-solid fa-money-bill-wave"></i>
-Withdraw
-</a>
-
-
-<div class="create-wrapper">
-
-<div class="create-menu" id="createMenu">
-
-<a href="sell-link.html">
-<i class="fa-solid fa-cart-plus"></i>
-Sell Link
-</a>
-
-<a href="create-link.html">
-<i class="fa-solid fa-bullhorn"></i>
-Ads Link
-</a>
-
+  <!-- DASHBOARD -->
+  <a href="/dashboard">
+    <i class="fa-solid fa-house"></i>
+    Dashboard
+  </a>
+  <!-- WITHDRAW -->
+  <a href="withdraw.html">
+    <i class="fa-solid fa-money-bill-wave"></i>
+    Withdraw
+  </a>
+  <!-- CREATE -->
+  <div class="create-wrapper">
+    <!-- CREATE MENU -->
+    <div
+      class="create-menu"
+      id="createMenu"
+    >
+      <!-- SELL LINK -->
+      <a href="sell-link.html">
+        <i class="fa-solid fa-cart-plus"></i>
+        Sell Link
+      </a>
+      <!-- ADS LINK -->
+      <a href="create-link.html">
+        <i class="fa-solid fa-bullhorn"></i>
+        Ads Link
+      </a>
+    </div>
+    <!-- CREATE BUTTON -->
+    <button
+      class="center-btn"
+      id="createBtn"
+      type="button"
+      aria-label="Create"
+    >
+      <i class="fa-solid fa-plus"></i>
+    </button>
+  </div>
+  <!-- PREMIUM -->
+  <a href="/premium">
+    <i class="fa-solid fa-crown"></i>
+    Premium
+  </a>
+  <!-- PROFILE -->
+  <a href="/profile">
+    <i class="fa-solid fa-user"></i>
+    Profil
+  </a>
 </div>
-
-
-<button class="center-btn" id="createBtn">
-<i class="fa-solid fa-plus"></i>
-</button>
-
-
-</div>
-
-
-<a href="/premium">
-<i class="fa-solid fa-crown"></i>
-Premium
-</a>
-
-
-<a href="/profile">
-<i class="fa-solid fa-user"></i>
-Profil
-</a>
-
-</div>
+<!-- =====================================================
+     LANGUAGE SELECTOR
+===================================================== -->
+<script>
+document.addEventListener(
+  "DOMContentLoaded",
+  function(){
+    const languageSelect =
+      document.getElementById(
+        "languageSelect"
+      );
+    /*
+     * Stop if selector does not exist.
+     */
+    if(!languageSelect){
+      return;
+    }
+    /*
+     * Get saved language.
+     *
+     * Default:
+     * Indonesian
+     */
+    const currentLanguage =
+      localStorage.getItem(
+        "language"
+      ) || "id";
+    /*
+     * Set current language
+     * inside selector.
+     */
+    languageSelect.value =
+      currentLanguage;
+    /*
+     * Change language.
+     */
+    languageSelect.addEventListener(
+      "change",
+      function(){
+        const selectedLanguage =
+          this.value;
+        /*
+         * Save selected language.
+         */
+        localStorage.setItem(
+          "language",
+          selectedLanguage
+        );
+        /*
+         * Apply translation
+         * immediately if language.js
+         * is already loaded.
+         */
+        if(
+          typeof applyLanguage ===
+          "function"
+        ){
+          applyLanguage(
+            selectedLanguage
+          );
+        }
+      }
+    );
+  }
+);
+</script>
