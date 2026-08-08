@@ -151,8 +151,16 @@ async function loadDashboard() {
         //==================================================
         const profile =
             await database.getCurrentProfile();
+
         if (!profile) {
-            location.href = "login.html";
+
+            console.error(
+                "DASHBOARD: USER TIDAK TERDETEKSI"
+            );
+
+    // JANGAN REDIRECT LANGSUNG
+    // supaya tidak terjadi loop login ↔ dashboard
+
             return;
         }
         const authId = profile.id;
