@@ -1691,38 +1691,120 @@ function toggleMarket() {
 }
 //======================================================
 // CHECK SELL STATUS
+// PREMIUM USER = SELL LINK UNLOCK
 //======================================================
 async function checkSellStatus() {
+
     try {
+
         const profile =
             await database.getCurrentProfile();
+
         if (!profile) {
             return;
         }
+
+        //==================================================
+        // CHECK PREMIUM
+        //==================================================
+        let premiumActive =
+            profile.is_premium === true;
+
+        //==================================================
+        // CHECK PREMIUM EXPIRATION
+        //==================================================
+        if (
+            premiumActive &&
+            profile.premium_expires_at
+        ) {
+
+            const expires =
+                new Date(
+                    profile.premium_expires_at
+                );
+
+            if (
+                isNaN(expires.getTime()) ||
+                expires <= new Date()
+            ) {
+
+                premiumActive = false;
+
+            }
+
+        }
+
+        //==================================================
+        // SELL ACCESS
+        //==================================================
         const enabled =
-            profile.sell_link_enabled === true
-            ||
-            profile.sell_unlocked === true
-            ||
+            premiumActive ||
+            profile.sell_link_enabled === true ||
+            profile.sell_unlocked === true ||
             Number(
                 profile.withdraw_count || 0
             ) >= 3;
+
+        //==================================================
+        // APPLY LOCK
+        //==================================================
         document
-            .querySelectorAll(
-                ".sell-card"
-            )
-            .forEach(
-                card => {
-                    card.classList.toggle(
-                        "locked",
-                        !enabled
-                    );
-                }
-            );
+            .querySelectorAll(".sell-card")
+            .forEach(card => {
+
+                card.classList.toggle(
+                    "locked",
+                    !enabled
+                );
+
+            });
+
+        //==================================================
+        // DEBUG
+        //==================================================
+        console.log(
+            "================================"
+        );
+
+        console.log(
+            "SELL ACCESS"
+        );
+
+        console.log({
+            username:
+                profile.username,
+
+            is_premium:
+                profile.is_premium,
+
+            premium_expires_at:
+                profile.premium_expires_at,
+
+            premiumActive,
+
+            sell_link_enabled:
+                profile.sell_link_enabled,
+
+            sell_unlocked:
+                profile.sell_unlocked,
+
+            withdraw_count:
+                profile.withdraw_count,
+
+            enabled
+        });
+
+        console.log(
+            "================================"
+        );
+
     } catch (error) {
+
         console.error(
             "CHECK SELL ERROR:",
             error
         );
+
     }
+
 }
