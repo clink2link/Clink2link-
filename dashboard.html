@@ -654,7 +654,7 @@
 ========================= -->
 <script src="js/language.js"></script>
 <!-- =========================
-     FOOTER
+     FOOTER JS
 ========================= -->
 <script src="js/footer.js"></script>
 <!-- =========================
@@ -666,171 +666,222 @@
 ========================= -->
 <script src="js/dashboard.js"></script>
 <!-- =====================================================
-     NAVBAR
+     NAVBAR LOAD
 ===================================================== -->
 <script>
-document.addEventListener("DOMContentLoaded", function(){
-    fetch("components/navbar.html")
-        .then(response => {
-            if(!response.ok){
-                throw new Error(
-                    "Gagal memuat navbar: " +
-                    response.status
-                );
-            }
-            return response.text();
-        })
-        .then(html => {
-            const navbar =
-                document.getElementById("navbar");
-            if(!navbar){
-                console.error(
-                    "ELEMENT #navbar TIDAK DITEMUKAN"
-                );
-                return;
-            }
-            /* Masukkan navbar */
-            navbar.innerHTML = html;
-            console.log(
-                "NAVBAR HTML LOADED"
-            );
-            /*
-             * Load navbar.js setelah navbar
-             * berhasil dimasukkan ke halaman.
-             */
-            const script =
-                document.createElement("script");
-            script.src = "js/navbar.js";
-            script.onload = function(){
-                console.log(
-                    "NAVBAR JS READY"
-                );
-                /*
-                 * Jalankan sistem navbar.
-                 */
-                if(
-                    typeof c2pInit ===
-                    "function"
-                ){
-                    c2pInit();
-                }
-                /*
-                 * Tutup sidebar ketika
-                 * menu diklik.
-                 */
-                document
-                    .querySelectorAll(
-                        ".c2p-sidebar a"
-                    )
-                    .forEach(function(link){
-                        link.addEventListener(
-                            "click",
-                            function(){
-                                if(
-                                    typeof c2pClose ===
-                                    "function"
-                                ){
-                                    c2pClose();
-                                }
-                            }
-                        );
-                    });
-                /*
-                 * LOGOUT
-                 */
-                const logoutBtn =
-                    document.getElementById(
-                        "logoutBtn"
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+        fetch("components/navbar.html")
+            .then(function(response){
+                if(!response.ok){
+                    throw new Error(
+                        "Gagal memuat navbar: " +
+                        response.status
                     );
-                if(logoutBtn){
-                    logoutBtn.addEventListener(
-                        "click",
-                        async function(){
-                            try{
-                                if(
-                                    window.database &&
-                                    typeof database.logout ===
-                                    "function"
-                                ){
-                                    await database.logout();
-                                }
-                            }catch(error){
-                                console.error(
-                                    "LOGOUT ERROR:",
-                                    error
-                                );
-                            }
-                            localStorage.clear();
-                            sessionStorage.clear();
-                            window.location.replace(
-                                "index.html"
+                }
+                return response.text();
+            })
+            .then(function(html){
+                const navbar =
+                    document.getElementById(
+                        "navbar"
+                    );
+                if(!navbar){
+                    console.error(
+                        "ELEMENT #navbar TIDAK DITEMUKAN"
+                    );
+                    return;
+                }
+                /* =========================
+                   INSERT NAVBAR
+                ========================= */
+                navbar.innerHTML = html;
+                console.log(
+                    "NAVBAR HTML LOADED"
+                );
+                /* =========================
+                   LOAD NAVBAR JS
+                ========================= */
+                const script =
+                    document.createElement(
+                        "script"
+                    );
+                script.src =
+                    "js/navbar.js";
+                script.onload =
+                    function(){
+                        console.log(
+                            "NAVBAR JS READY"
+                        );
+                        /* =========================
+                           INIT NAVBAR
+                        ========================= */
+                        if(
+                            typeof c2pInit ===
+                            "function"
+                        ){
+                            c2pInit();
+                        }
+                        /* =========================
+                           REFRESH LANGUAGE
+                           AFTER NAVBAR LOADED
+                        ========================= */
+                        if(
+                            window.c2pLanguage &&
+                            typeof c2pLanguage.refreshLanguage ===
+                            "function"
+                        ){
+                            c2pLanguage.refreshLanguage();
+                            console.log(
+                                "NAVBAR LANGUAGE REFRESHED"
                             );
                         }
-                    );
-                }
-            };
-            script.onerror = function(){
-                console.error(
-                    "GAGAL LOAD js/navbar.js"
+                        /* =========================
+                           CLOSE SIDEBAR
+                        ========================= */
+                        document
+                            .querySelectorAll(
+                                ".c2p-sidebar a"
+                            )
+                            .forEach(
+                                function(link){
+                                    link.addEventListener(
+                                        "click",
+                                        function(){
+                                            if(
+                                                typeof c2pClose ===
+                                                "function"
+                                            ){
+                                                c2pClose();
+                                            }
+                                        }
+                                    );
+                                }
+                            );
+                        /* =========================
+                           LOGOUT
+                        ========================= */
+                        const logoutBtn =
+                            document.getElementById(
+                                "logoutBtn"
+                            );
+                        if(logoutBtn){
+                            logoutBtn.addEventListener(
+                                "click",
+                                async function(){
+                                    try{
+                                        if(
+                                            window.database &&
+                                            typeof database.logout ===
+                                            "function"
+                                        ){
+                                            await database.logout();
+                                        }
+                                    }catch(error){
+                                        console.error(
+                                            "LOGOUT ERROR:",
+                                            error
+                                        );
+                                    }
+                                    localStorage.clear();
+                                    sessionStorage.clear();
+                                    window.location.replace(
+                                        "index.html"
+                                    );
+                                }
+                            );
+                        }
+                    };
+                /* =========================
+                   NAVBAR LOAD ERROR
+                ========================= */
+                script.onerror =
+                    function(){
+                        console.error(
+                            "GAGAL LOAD js/navbar.js"
+                        );
+                    };
+                document.body.appendChild(
+                    script
                 );
-            };
-            document.body.appendChild(
-                script
-            );
-        })
-        .catch(function(error){
-            console.error(
-                "NAVBAR LOAD ERROR:",
-                error
-            );
-        });
-});
+            })
+            .catch(function(error){
+                console.error(
+                    "NAVBAR LOAD ERROR:",
+                    error
+                );
+            });
+    }
+);
 </script>
 <!-- =====================================================
      FOOTER LOAD
 ===================================================== -->
 <script>
-document.addEventListener("DOMContentLoaded", function(){
-    fetch("components/footer.html")
-        .then(response => {
-            if(!response.ok){
-                throw new Error(
-                    "Gagal memuat footer: " +
-                    response.status
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+        fetch("components/footer.html")
+            .then(function(response){
+                if(!response.ok){
+                    throw new Error(
+                        "Gagal memuat footer: " +
+                        response.status
+                    );
+                }
+                return response.text();
+            })
+            .then(function(html){
+                const footer =
+                    document.getElementById(
+                        "footer"
+                    );
+                if(!footer){
+                    console.error(
+                        "ELEMENT #footer TIDAK DITEMUKAN"
+                    );
+                    return;
+                }
+                /* =========================
+                   INSERT FOOTER
+                ========================= */
+                footer.innerHTML = html;
+                console.log(
+                    "FOOTER HTML LOADED"
                 );
-            }
-            return response.text();
-        })
-        .then(html => {
-            const footer =
-                document.getElementById("footer");
-            if(!footer){
+                /* =========================
+                   INIT FOOTER
+                ========================= */
+                if(
+                    typeof c2pFooterInit ===
+                    "function"
+                ){
+                    c2pFooterInit();
+                }
+                /* =========================
+                   REFRESH LANGUAGE
+                   AFTER FOOTER LOADED
+                ========================= */
+                if(
+                    window.c2pLanguage &&
+                    typeof c2pLanguage.refreshLanguage ===
+                    "function"
+                ){
+                    c2pLanguage.refreshLanguage();
+                    console.log(
+                        "FOOTER LANGUAGE REFRESHED"
+                    );
+                }
+            })
+            .catch(function(error){
                 console.error(
-                    "ELEMENT #footer TIDAK DITEMUKAN"
+                    "FOOTER LOAD ERROR:",
+                    error
                 );
-                return;
-            }
-            footer.innerHTML = html;
-            console.log(
-                "FOOTER HTML LOADED"
-            );
-            /*
-             * Jalankan footer.js jika tersedia.
-             */
-            if(
-                typeof c2pFooterInit ===
-                "function"
-            ){
-                c2pFooterInit();
-            }
-        })
-        .catch(function(error){
-            console.error(
-                "FOOTER LOAD ERROR:",
-                error
-            );
-        });
-});
+            });
+    }
+);
 </script>
 <!-- =====================================================
      DEBUG
