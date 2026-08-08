@@ -69,42 +69,45 @@ location.replace("index.html");
 // =====================================================
 
 async function getProfile(userId) {
-
-if (!userId) return null;
-const { data, error } = await supabaseClient
-    .from("users")
-    .select(`
-        id,
-        username,
-        email,
-        balance,
-        country,
-        total_ads,
-        total_sell,
-        total_views,
-        total_clicks,
-        ads_earning_today,
-        ads_earning_month,
-        ads_earning_total,
-        sell_earning_today,
-        sell_earning_month,
-        sell_earning_total,
-        sell_unlocked,
-        sell_link_enabled,
-        withdraw_count,
-        is_admin,
-        is_banned,
-        created_at,
-        updated_at
-    `)
-    .eq("id", userId)
-    .maybeSingle();
-if (error) {
-    console.error("GET PROFILE:", error);
-    return null;
-}
-return data;
-
+    if (!userId) return null;
+    const { data, error } =
+        await supabaseClient
+            .from("users")
+            .select(`
+                id,
+                username,
+                email,
+                status,
+                balance,
+                country,
+                total_ads,
+                total_sell,
+                total_views,
+                total_clicks,
+                ads_earning_today,
+                ads_earning_month,
+                ads_earning_total,
+                sell_earning_today,
+                sell_earning_month,
+                sell_earning_total,
+                sell_unlocked,
+                sell_link_enabled,
+                withdraw_count,
+                is_admin,
+                is_banned,
+                created_at,
+                updated_at
+            `)
+            .eq("id", userId)
+            .maybeSingle();
+    if (error) {
+        console.error(
+            "GET PROFILE:",
+            error
+        );
+        return null;
+    }
+    return data;
 }
 
 async function getCurrentProfile() {
