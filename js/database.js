@@ -74,181 +74,169 @@ location.replace("index.html");
 // =====================================================
 // PROFILE
 // =====================================================
-
 async function getProfile(userId) {
-    if (!userId) return null;
-    const { data, error } =
-        await supabaseClient
+    try {
+        // =========================================
+        // VALIDATE USER ID
+        // =========================================
+        if (!userId) {
+            console.warn(
+                "GET PROFILE: USER ID KOSONG"
+            );
+            return null;
+        }
+        // =========================================
+        // GET PROFILE
+        // =========================================
+        const {
+            data,
+            error
+        } = await supabaseClient
             .from("users")
-            .select(`
-                id,
-                username,
-                email,
-                status,
-                balance,
-                country,
-                total_ads,
-                total_sell,
-                total_views,
-                total_clicks,
-                ads_earning_today,
-                ads_earning_month,
-                ads_earning_total,
-                sell_earning_today,
-                sell_earning_month,
-                sell_earning_total,
-                sell_unlocked,
-                sell_link_enabled,
-                withdraw_count,
-                is_admin,
-                is_banned,
-                created_at,
-                updated_at
-            `)
+            .select("*")
             .eq("id", userId)
             .maybeSingle();
-    if (error) {
+        // =========================================
+        // HANDLE ERROR
+        // =========================================
+        if (error) {
+            console.error(
+                "GET PROFILE ERROR:",
+                error
+            );
+            return null;
+        }
+        // =========================================
+        // PROFILE NOT FOUND
+        // =========================================
+        if (!data) {
+            console.warn(
+                "GET PROFILE: USER TIDAK DITEMUKAN:",
+                userId
+            );
+            return null;
+        }
+        // =========================================
+        // SYNC LOCAL STORAGE
+        // =========================================
+        localStorage.setItem(
+            "user_id",
+            data.id
+        );
+        localStorage.setItem(
+            "username",
+            data.username || ""
+        );
+        // =========================================
+        // LOG
+        // =========================================
+        console.log(
+            "GET PROFILE SUCCESS:",
+            data
+        );
+        return data;
+    } catch (error) {
         console.error(
-            "GET PROFILE:",
+            "GET PROFILE EXCEPTION:",
             error
         );
         return null;
     }
-    return data;
 }
-
+// =====================================================
+// GET CURRENT PROFILE
+// =====================================================
 async function getCurrentProfile() {
-
     try {
-
         // =========================================
         // GET SUPABASE SESSION
         // =========================================
-
         const {
             data: sessionData,
             error: sessionError
         } = await supabaseClient.auth.getSession();
-
         if (sessionError) {
-
             console.error(
                 "GET SESSION ERROR:",
                 sessionError
             );
-
             return null;
         }
-
+        // =========================================
+        // GET SESSION
+        // =========================================
         const session =
-            sessionData?.session;
-
+            sessionData?.session || null;
         const authUser =
-            session?.user;
-
+            session?.user || null;
         // =========================================
-        // FALLBACK CHECK AUTH USER
+        // CHECK AUTH USER
         // =========================================
-
         if (!authUser) {
-
             console.warn(
                 "SUPABASE SESSION TIDAK ADA"
             );
-
             return null;
         }
-
         console.log(
             "SUPABASE AUTH USER:",
             authUser.id
         );
-
         // =========================================
         // GET PROFILE FROM USERS
         // =========================================
-
         const {
             data: profile,
             error: profileError
         } = await supabaseClient
             .from("users")
-            .select(`
-                id,
-                username,
-                email,
-                status,
-                balance,
-                country,
-                total_ads,
-                total_sell,
-                total_views,
-                total_clicks,
-                ads_earning_today,
-                ads_earning_month,
-                ads_earning_total,
-                sell_earning_today,
-                sell_earning_month,
-                sell_earning_total,
-                sell_unlocked,
-                sell_link_enabled,
-                withdraw_count,
-                is_admin,
-                is_banned,
-                created_at,
-                updated_at
-            `)
+            .select("*")
             .eq("id", authUser.id)
             .maybeSingle();
-
+        // =========================================
+        // HANDLE DATABASE ERROR
+        // =========================================
         if (profileError) {
-
             console.error(
                 "GET CURRENT PROFILE ERROR:",
                 profileError
             );
-
             return null;
         }
-
+        // =========================================
+        // PROFILE NOT FOUND
+        // =========================================
         if (!profile) {
-
             console.warn(
                 "PROFILE USERS TIDAK DITEMUKAN:",
                 authUser.id
             );
-
             return null;
         }
-
         // =========================================
         // SYNC LOCAL STORAGE
         // =========================================
-
         localStorage.setItem(
             "user_id",
             profile.id
         );
-
         localStorage.setItem(
             "username",
             profile.username || ""
         );
-
+        // =========================================
+        // LOG SUCCESS
+        // =========================================
         console.log(
             "CURRENT PROFILE:",
             profile
         );
-
         return profile;
-
     } catch (error) {
-
         console.error(
             "GET CURRENT PROFILE EXCEPTION:",
             error
         );
-
         return null;
     }
 }
