@@ -517,692 +517,797 @@ async function loadDashboard() {
             currentCpm.textContent =
                 formatRupiah(cpm);
         }
-        //==================================================
-        // DETAIL REPORT HARIAN
-        // DATABASE + CURRENT DATA FALLBACK
-        //==================================================
-        let reports = [];
-        //==================================================
-        // LOAD EXISTING DAILY REPORTS
-        //==================================================
-        try {
-            const existingReports =
-                await database.getReports(
-                    authId
-                ) || [];
-            if (Array.isArray(existingReports)) {
-                reports = existingReports;
-            }
-            console.log(
-                "================================"
-            );
-            console.log(
-                "EXISTING DAILY REPORTS:"
-            );
-            console.table(reports);
-            console.log(
-                "TOTAL EXISTING REPORT:",
-                reports.length
-            );
-        } catch (reportError) {
-            console.warn(
-                "GET DAILY REPORTS FALLBACK:",
-                reportError
-            );
-            reports = [];
-        }
-        //==================================================
-        // CURRENT DATE JAKARTA
-        //==================================================
-        const todayJakarta =
-            getJakartaDate(
-                new Date()
-            );
-        //==================================================
-        // CURRENT ADS DATA
-        //
-        // Data diambil langsung dari links
-        //==================================================
-        let currentAdsViews = 0;
-        let currentAdsClicks = 0;
-        for (const link of links) {
-            const type =
-                String(
-                    link.type ||
-                    link.link_type ||
-                    ""
-                ).toLowerCase();
-            if (type !== "ads") {
-                continue;
-            }
-            currentAdsViews +=
-                Number(
-                    link.total_views ??
-                    link.views ??
-                    0
-                );
-            currentAdsClicks +=
-                Number(
-                    link.total_clicks ??
-                    link.clicks ??
-                    0
-                );
-        }
-        //==================================================
-        // CURRENT ADS EARNING
-        //
-        // Prioritas:
-        // ads_earning_today
-        //==================================================
-        const currentAdsEarning =
-            Number(
-                profile.ads_earning_today || 0
-            );
-        //==================================================
-        // CURRENT SELL DATA
-        //==================================================
-        let currentSellViews = 0;
-        let currentSellClicks = 0;
-        for (const link of links) {
-            const type =
-                String(
-                    link.type ||
-                    link.link_type ||
-                    ""
-                ).toLowerCase();
-            if (
-                type !== "sell" &&
-                type !== "sell_link"
-            ) {
-                continue;
-            }
-            currentSellViews +=
-                Number(
-                    link.total_views ??
-                    link.views ??
-                    0
-                );
-            currentSellClicks +=
-                Number(
-                    link.total_clicks ??
-                    link.clicks ??
-                    0
-                );
-        }
-        //==================================================
-        // CURRENT SELL EARNING TODAY
-        //==================================================
-        let currentSellEarning = 0;
-        for (const order of sellOrders) {
-            const status =
-                String(
-                    order.status || ""
-                ).toLowerCase();
-            if (!isPaidStatus(status)) {
-                continue;
-            }
-            const receive =
-                Number(
-                    order.seller_receive || 0
-                );
-            const paidDate =
-                order.paid_at ||
-                order.created_at;
-            if (
-                paidDate &&
-                isSameJakartaDay(
-                    paidDate
-                )
-            ) {
-                currentSellEarning +=
-                    receive;
-            }
-        }
-        //==================================================
-        // FIND TODAY REPORT
-        //==================================================
-        let todayReport =
-            reports.find(
-                row => {
-                    if (!row.report_date) {
-                        return false;
-                    }
-                    return (
-                        getJakartaDate(
-                            row.report_date
-                        ) ===
-                        todayJakarta
-                    );
-                }
-            );
-        //==================================================
-        // CREATE / UPDATE TODAY REPORT
-        //
-        // PENTING:
-        // Data hari ini selalu menggunakan
-        // data aktual yang sudah tersedia.
-        //==================================================
-        if (todayReport) {
-            todayReport = {
-                ...todayReport,
-                ads_views:
-                    currentAdsViews,
-                ads_clicks:
-                    currentAdsClicks,
-                ads_earnings:
-                    currentAdsEarning,
-                sell_views:
-                    currentSellViews,
-                sell_clicks:
-                    currentSellClicks,
-                sell_earnings:
-                    currentSellEarning
-            };
-            reports =
-                reports.map(
-                    row =>
-                        row ===
-                        reports.find(
-                            r =>
-                                r.report_date ===
-                                todayReport.report_date
-                        )
-                            ? todayReport
-                            : row
-                );
-        } else {
-            todayReport = {
-                id:
-                    "current-" +
-                    todayJakarta,
-                user_id:
-                    authId,
-                report_date:
-                    todayJakarta,
-                ads_views:
-                    currentAdsViews,
-                ads_clicks:
-                    currentAdsClicks,
-                ads_earnings:
-                    currentAdsEarning,
-                sell_views:
-                    currentSellViews,
-                sell_clicks:
-                    currentSellClicks,
-                sell_earnings:
-                    currentSellEarning
-            };
-            reports.unshift(
-                todayReport
-            );
-        }
-        //==================================================
-        // NORMALIZE
-        //==================================================
+ //======================================================
+// DETAIL REPORT HARIAN
+// DATABASE + CURRENT DATA FALLBACK
+//======================================================
+let reports = [];
+//======================================================
+// LOAD EXISTING DAILY REPORTS
+//======================================================
+try {
+    const existingReports =
+        await database.getReports(authId) || [];
+    if (Array.isArray(existingReports)) {
         reports =
-            reports.map(
-                row => ({
-                    ...row,
-                    ads_views:
-                        Number(
-                            row.ads_views || 0
-                        ),
-                    ads_clicks:
-                        Number(
-                            row.ads_clicks || 0
-                        ),
-                    ads_earnings:
-                        Number(
-                            row.ads_earnings || 0
-                        ),
-                    sell_views:
-                        Number(
-                            row.sell_views || 0
-                        ),
-                    sell_clicks:
-                        Number(
-                            row.sell_clicks || 0
-                        ),
-                    sell_earnings:
-                        Number(
-                            row.sell_earnings || 0
-                        )
-                })
+            existingReports.slice();
+    }
+    console.log(
+        "================================"
+    );
+    console.log(
+        "EXISTING DAILY REPORTS"
+    );
+    console.table(reports);
+    console.log(
+        "TOTAL EXISTING REPORT:",
+        reports.length
+    );
+} catch (reportError) {
+    console.error(
+        "GET DAILY REPORTS ERROR:",
+        reportError
+    );
+    reports = [];
+}
+//======================================================
+// CURRENT DATE — ASIA/JAKARTA
+//======================================================
+const todayJakarta =
+    getJakartaDate(
+        new Date()
+    );
+//======================================================
+// CURRENT ADS DATA
+// SOURCE: LINKS
+//======================================================
+let currentAdsViews = 0;
+let currentAdsClicks = 0;
+if (Array.isArray(links)) {
+    for (const link of links) {
+        const type =
+            String(
+                link.type ??
+                link.link_type ??
+                ""
+            ).toLowerCase();
+        if (type !== "ads") {
+            continue;
+        }
+        currentAdsViews +=
+            Number(
+                link.total_views ??
+                link.views ??
+                0
             );
-        //==================================================
-        // SORT TERBARU -> TERLAMA
-        //==================================================
-        reports.sort(
-            (a, b) =>
-                new Date(
-                    b.report_date
-                ).getTime()
-                -
-                new Date(
-                    a.report_date
-                ).getTime()
+        currentAdsClicks +=
+            Number(
+                link.total_clicks ??
+                link.clicks ??
+                0
+            );
+    }
+}
+//======================================================
+// CURRENT ADS EARNING TODAY
+// SOURCE: PROFILE
+//======================================================
+const currentAdsEarning =
+    Number(
+        profile.ads_earning_today ??
+        0
+    );
+//======================================================
+// CURRENT SELL DATA
+// SOURCE: LINKS
+//======================================================
+let currentSellViews = 0;
+let currentSellClicks = 0;
+if (Array.isArray(links)) {
+    for (const link of links) {
+        const type =
+            String(
+                link.type ??
+                link.link_type ??
+                ""
+            ).toLowerCase();
+        if (
+            type !== "sell" &&
+            type !== "sell_link"
+        ) {
+            continue;
+        }
+        currentSellViews +=
+            Number(
+                link.total_views ??
+                link.views ??
+                0
+            );
+        currentSellClicks +=
+            Number(
+                link.total_clicks ??
+                link.clicks ??
+                0
+            );
+    }
+}
+//======================================================
+// CURRENT SELL EARNING TODAY
+// SOURCE: SELL ORDERS
+//======================================================
+let currentSellEarning = 0;
+const safeSellOrders =
+    Array.isArray(sellOrders)
+        ? sellOrders
+        : [];
+for (
+    const order
+    of safeSellOrders
+) {
+    const status =
+        String(
+            order.status ??
+            ""
+        ).toLowerCase();
+    if (!isPaidStatus(status)) {
+        continue;
+    }
+    const receive =
+        Number(
+            order.seller_receive ??
+            0
         );
-        console.log(
-            "================================"
+    const paidDate =
+        order.paid_at ??
+        order.created_at ??
+        null;
+    if (!paidDate) {
+        continue;
+    }
+    if (
+        isSameJakartaDay(
+            paidDate
+        )
+    ) {
+        currentSellEarning +=
+            receive;
+    }
+}
+//======================================================
+// CURRENT REPORT OBJECT
+//======================================================
+const currentReport = {
+    id:
+        "current-" +
+        todayJakarta,
+    user_id:
+        authId,
+    report_date:
+        todayJakarta,
+    ads_views:
+        currentAdsViews,
+    ads_clicks:
+        currentAdsClicks,
+    ads_earnings:
+        currentAdsEarning,
+    sell_views:
+        currentSellViews,
+    sell_clicks:
+        currentSellClicks,
+    sell_earnings:
+        currentSellEarning
+};
+//======================================================
+// FIND TODAY REPORT
+//======================================================
+const todayReportIndex =
+    reports.findIndex(
+        row => {
+            if (!row?.report_date) {
+                return false;
+            }
+            return (
+                getJakartaDate(
+                    row.report_date
+                ) ===
+                todayJakarta
+            );
+        }
+    );
+//======================================================
+// CREATE / UPDATE TODAY REPORT
+//======================================================
+if (todayReportIndex >= 0) {
+    //==================================================
+    // TODAY SUDAH ADA DI DATABASE
+    // GUNAKAN DATA AKTUAL SEKARANG
+    //==================================================
+    reports[todayReportIndex] = {
+        ...reports[todayReportIndex],
+        ads_views:
+            currentAdsViews,
+        ads_clicks:
+            currentAdsClicks,
+        ads_earnings:
+            currentAdsEarning,
+        sell_views:
+            currentSellViews,
+        sell_clicks:
+            currentSellClicks,
+        sell_earnings:
+            currentSellEarning
+    };
+} else {
+    //==================================================
+    // TODAY BELUM ADA DI DATABASE
+    // TAMBAHKAN DATA AKTUAL SEKARANG
+    //==================================================
+    reports.push(
+        currentReport
+    );
+}
+//======================================================
+// NORMALIZE REPORT
+//======================================================
+reports =
+    reports.map(
+        row => {
+            return {
+                ...row,
+                ads_views:
+                    Number(
+                        row.ads_views ??
+                        0
+                    ),
+                ads_clicks:
+                    Number(
+                        row.ads_clicks ??
+                        0
+                    ),
+                ads_earnings:
+                    Number(
+                        row.ads_earnings ??
+                        0
+                    ),
+                sell_views:
+                    Number(
+                        row.sell_views ??
+                        0
+                    ),
+                sell_clicks:
+                    Number(
+                        row.sell_clicks ??
+                        0
+                    ),
+                sell_earnings:
+                    Number(
+                        row.sell_earnings ??
+                        0
+                    )
+            };
+        }
+    );
+//======================================================
+// REMOVE DUPLICATE REPORT DATE
+// KEEP FIRST / LATEST RECORD
+//======================================================
+const uniqueReports =
+    new Map();
+for (
+    const row
+    of reports
+) {
+    if (!row.report_date) {
+        continue;
+    }
+    const dateKey =
+        getJakartaDate(
+            row.report_date
         );
-        console.log(
-            "FINAL DETAIL REPORT HARIAN:"
+    if (!uniqueReports.has(dateKey)) {
+        uniqueReports.set(
+            dateKey,
+            row
         );
-        console.table(reports);
-        console.log(
-            "================================"
+    }
+}
+reports =
+    Array.from(
+        uniqueReports.values()
+    );
+//======================================================
+// SORT TERBARU → TERLAMA
+//======================================================
+reports.sort(
+    (a, b) => {
+        return (
+            new Date(
+                b.report_date
+            ).getTime()
+            -
+            new Date(
+                a.report_date
+            ).getTime()
         );
-        //==================================================
-        // CHART DATA
-        // LAST 7 REPORT
-        //==================================================
-        const chartData =
-            reports
-                .slice()
-                .sort(
-                    (a, b) =>
-                        new Date(
-                            a.report_date
-                        ) -
-                        new Date(
-                            b.report_date
-                        )
+    }
+);
+//======================================================
+// DEBUG FINAL
+//======================================================
+console.log(
+    "================================"
+);
+console.log(
+    "FINAL DETAIL REPORT HARIAN"
+);
+console.log(
+    "TODAY:",
+    todayJakarta
+);
+console.log(
+    "TOTAL REPORT:",
+    reports.length
+);
+console.table(
+    reports
+);
+console.log(
+    "CURRENT TODAY DATA:",
+    currentReport
+);
+console.log(
+    "================================"
+);
+//======================================================
+// CHART DATA — LAST 7 DAYS
+//======================================================
+const chartData =
+    reports
+        .slice()
+        .sort(
+            (a, b) => {
+                return (
+                    new Date(
+                        a.report_date
+                    ).getTime()
+                    -
+                    new Date(
+                        b.report_date
+                    ).getTime()
+                );
+            }
+        )
+        .slice(-7);
+let labels = [];
+let earnings = [];
+let sellEarnings = [];
+//======================================================
+// CHART LABELS + DATA
+//======================================================
+if (chartData.length) {
+    labels =
+        chartData.map(
+            row => {
+                return new Date(
+                    row.report_date
+                ).toLocaleDateString(
+                    "id-ID",
+                    {
+                        timeZone:
+                            "Asia/Jakarta",
+                        day:
+                            "2-digit",
+                        month:
+                            "short"
+                    }
+                );
+            }
+        );
+    earnings =
+        chartData.map(
+            row =>
+                Number(
+                    row.ads_earnings ??
+                    0
                 )
-                .slice(-7);
-        let labels = [];
-        let earnings = [];
-        let sellEarnings = [];
-        if (chartData.length) {
-            labels =
-                chartData.map(
-                    row =>
-                        new Date(
-                            row.report_date
-                        ).toLocaleDateString(
-                            "id-ID",
-                            {
-                                timeZone:
-                                    "Asia/Jakarta",
-                                day:
-                                    "2-digit",
-                                month:
-                                    "short"
-                            }
-                        )
-                );
-            earnings =
-                chartData.map(
-                    row =>
-                        Number(
-                            row.ads_earnings || 0
-                        )
-                );
-            sellEarnings =
-                chartData.map(
-                    row =>
-                        Number(
-                            row.sell_earnings || 0
-                        )
-                );
-        } else {
-            for (
-                let i = 6;
-                i >= 0;
-                i--
-            ) {
-                const date =
-                    new Date();
-                date.setDate(
-                    date.getDate() - i
-                );
-                labels.push(
-                    date.toLocaleDateString(
-                        "id-ID",
-                        {
-                            timeZone:
-                                "Asia/Jakarta",
-                            day:
-                                "2-digit",
-                            month:
-                                "short"
-                        }
-                    )
-                );
-                earnings.push(0);
-                sellEarnings.push(0);
-            }
-        }
-        //==================================================
-        // ADS CHART
-        //==================================================
-        const adsCanvas =
-            document.getElementById(
-                "adsChart"
-            );
-        if (adsCanvas) {
-            if (adsChartInstance) {
-                adsChartInstance.destroy();
-            }
-            adsChartInstance =
-                new Chart(
-                    adsCanvas,
-                    {
-                        type:
-                            "line",
-                        data: {
-                            labels:
-                                labels,
-                            datasets: [{
-                                label:
-                                    "Pendapatan",
-                                data:
-                                    earnings,
-                                borderColor:
-                                    "#2563eb",
-                                backgroundColor:
-                                    "rgba(37,99,235,.12)",
-                                borderWidth:
-                                    3,
-                                fill:
-                                    true,
-                                tension:
-                                    .45,
-                                pointRadius:
-                                    4,
-                                pointHoverRadius:
-                                    7
-                            }]
-                        },
-                        options:
-                            commonOptions
-                    }
-                );
-        }
-        //==================================================
-        // SELL CHART
-        //==================================================
-        const sellCanvas =
-            document.getElementById(
-                "sellChart"
-            );
-        if (sellCanvas) {
-            if (sellChartInstance) {
-                sellChartInstance.destroy();
-            }
-            sellChartInstance =
-                new Chart(
-                    sellCanvas,
-                    {
-                        type:
-                            "line",
-                        data: {
-                            labels:
-                                labels,
-                            datasets: [{
-                                label:
-                                    "Sell Earnings",
-                                data:
-                                    sellEarnings,
-                                borderColor:
-                                    "#8b5cf6",
-                                backgroundColor:
-                                    "rgba(139,92,246,.12)",
-                                borderWidth:
-                                    3,
-                                fill:
-                                    true,
-                                tension:
-                                    .45,
-                                pointRadius:
-                                    4,
-                                pointHoverRadius:
-                                    7
-                            }]
-                        },
-                        options:
-                            commonOptions
-                    }
-                );
-        }
-        //==================================================
-        // LAST REPORT
-        //==================================================
-        const lastReport =
-            reports.length
-                ? reports[0]
-                : null;
-        console.log(
-            "LAST REPORT:",
-            lastReport
         );
-        //==================================================
-        // ADS CPM
-        //==================================================
-        const adsCpm =
-            document.getElementById(
-                "adsCpm"
-            );
-        if (adsCpm) {
-            const views =
+    sellEarnings =
+        chartData.map(
+            row =>
                 Number(
-                    lastReport?.ads_views || 0
-                );
-            const earning =
-                Number(
-                    lastReport?.ads_earnings || 0
-                );
-            const cpm =
-                views > 0
-                    ?
-                    Math.round(
-                        (
-                            earning *
-                            1000
-                        ) /
-                        views
-                    )
-                    :
-                    0;
-            adsCpm.textContent =
-                formatRupiah(cpm);
-        }
-        //==================================================
-        // SELL CPM
-        //==================================================
-        const sellCpm =
-            document.getElementById(
-                "sellCpm"
-            );
-        if (sellCpm) {
-            const views =
-                Number(
-                    lastReport?.sell_views || 0
-                );
-            const earning =
-                Number(
-                    lastReport?.sell_earnings || 0
-                );
-            const cpm =
-                views > 0
-                    ?
-                    Math.round(
-                        (
-                            earning *
-                            1000
-                        ) /
-                        views
-                    )
-                    :
-                    0;
-            sellCpm.textContent =
-                formatRupiah(cpm);
-        }
-        //==================================================
-        // ADS DETAIL REPORT TABLE
-        //==================================================
-        const reportTable =
-            document.getElementById(
-                "reportTable"
-            );
-        if (reportTable) {
-            if (reports.length) {
-                reportTable.innerHTML =
-                    reports.map(
-                        row => {
-                            const views =
-                                Number(
-                                    row.ads_views || 0
-                                );
-                            const clicks =
-                                Number(
-                                    row.ads_clicks || 0
-                                );
-                            const earn =
-                                Number(
-                                    row.ads_earnings || 0
-                                );
-                            const cpm =
-                                views > 0
-                                    ?
-                                    Math.round(
-                                        (
-                                            earn *
-                                            1000
-                                        ) /
-                                        views
-                                    )
-                                    :
-                                    0;
-                            const date =
-                                new Date(
-                                    row.report_date
-                                ).toLocaleDateString(
-                                    "id-ID",
-                                    {
-                                        timeZone:
-                                            "Asia/Jakarta",
-                                        day:
-                                            "2-digit",
-                                        month:
-                                            "short",
-                                        year:
-                                            "numeric"
-                                    }
-                                );
-                            return `
+                    row.sell_earnings ??
+                    0
+                )
+        );
+} else {
+    for (
+        let i = 6;
+        i >= 0;
+        i--
+    ) {
+        const date =
+            new Date();
+        date.setDate(
+            date.getDate() - i
+        );
+        labels.push(
+            date.toLocaleDateString(
+                "id-ID",
+                {
+                    timeZone:
+                        "Asia/Jakarta",
+                    day:
+                        "2-digit",
+                    month:
+                        "short"
+                }
+            )
+        );
+        earnings.push(0);
+        sellEarnings.push(0);
+    }
+}
+//======================================================
+// ADS CHART
+//======================================================
+const adsCanvas =
+    document.getElementById(
+        "adsChart"
+    );
+if (adsCanvas) {
+    if (adsChartInstance) {
+        adsChartInstance.destroy();
+    }
+    adsChartInstance =
+        new Chart(
+            adsCanvas,
+            {
+                type:
+                    "line",
+                data: {
+                    labels:
+                        labels,
+                    datasets: [
+                        {
+                            label:
+                                "Pendapatan",
+                            data:
+                                earnings,
+                            borderColor:
+                                "#2563eb",
+                            backgroundColor:
+                                "rgba(37,99,235,.12)",
+                            borderWidth:
+                                3,
+                            fill:
+                                true,
+                            tension:
+                                .45,
+                            pointRadius:
+                                4,
+                            pointHoverRadius:
+                                7
+                        }
+                    ]
+                },
+                options:
+                    commonOptions
+            }
+        );
+}
+//======================================================
+// SELL CHART
+//======================================================
+const sellCanvas =
+    document.getElementById(
+        "sellChart"
+    );
+if (sellCanvas) {
+    if (sellChartInstance) {
+        sellChartInstance.destroy();
+    }
+    sellChartInstance =
+        new Chart(
+            sellCanvas,
+            {
+                type:
+                    "line",
+                data: {
+                    labels:
+                        labels,
+                    datasets: [
+                        {
+                            label:
+                                "Sell Earnings",
+                            data:
+                                sellEarnings,
+                            borderColor:
+                                "#8b5cf6",
+                            backgroundColor:
+                                "rgba(139,92,246,.12)",
+                            borderWidth:
+                                3,
+                            fill:
+                                true,
+                            tension:
+                                .45,
+                            pointRadius:
+                                4,
+                            pointHoverRadius:
+                                7
+                        }
+                    ]
+                },
+                options:
+                    commonOptions
+            }
+        );
+}
+//======================================================
+// LAST REPORT
+//======================================================
+const lastReport =
+    reports.length
+        ? reports[0]
+        : null;
+//======================================================
+// ADS CPM
+//======================================================
+const adsCpm =
+    document.getElementById(
+        "adsCpm"
+    );
+if (adsCpm) {
+    const views =
+        Number(
+            lastReport?.ads_views ??
+            0
+        );
+    const earning =
+        Number(
+            lastReport?.ads_earnings ??
+            0
+        );
+    const cpm =
+        views > 0
+            ? Math.round(
+                (
+                    earning *
+                    1000
+                ) /
+                views
+            )
+            : 0;
+    adsCpm.textContent =
+        formatRupiah(cpm);
+}
+//======================================================
+// SELL CPM
+//======================================================
+const sellCpm =
+    document.getElementById(
+        "sellCpm"
+    );
+if (sellCpm) {
+    const views =
+        Number(
+            lastReport?.sell_views ??
+            0
+        );
+    const earning =
+        Number(
+            lastReport?.sell_earnings ??
+            0
+        );
+    const cpm =
+        views > 0
+            ? Math.round(
+                (
+                    earning *
+                    1000
+                ) /
+                views
+            )
+            : 0;
+    sellCpm.textContent =
+        formatRupiah(cpm);
+}
+//======================================================
+// ADS DETAIL REPORT TABLE
+//======================================================
+const reportTable =
+    document.getElementById(
+        "reportTable"
+    );
+if (reportTable) {
+    if (reports.length) {
+        reportTable.innerHTML =
+            reports.map(
+                row => {
+                    const views =
+                        Number(
+                            row.ads_views ??
+                            0
+                        );
+                    const clicks =
+                        Number(
+                            row.ads_clicks ??
+                            0
+                        );
+                    const earning =
+                        Number(
+                            row.ads_earnings ??
+                            0
+                        );
+                    const cpm =
+                        views > 0
+                            ? Math.round(
+                                (
+                                    earning *
+                                    1000
+                                ) /
+                                views
+                            )
+                            : 0;
+                    const date =
+                        row.report_date
+                            ? new Date(
+                                row.report_date
+                            ).toLocaleDateString(
+                                "id-ID",
+                                {
+                                    timeZone:
+                                        "Asia/Jakarta",
+                                    day:
+                                        "2-digit",
+                                    month:
+                                        "short",
+                                    year:
+                                        "numeric"
+                                }
+                            )
+                            : "-";
+                    return `
 <tr>
-<td>
-    ${date}
-</td>
-<td>
-    ${views.toLocaleString("id-ID")}
-</td>
-<td>
-    ${clicks.toLocaleString("id-ID")}
-</td>
-<td class="earning">
-    Rp ${earn.toLocaleString("id-ID")}
-</td>
-<td>
-    Rp ${cpm.toLocaleString("id-ID")}
-</td>
+    <td>
+        ${date}
+    </td>
+    <td>
+        ${views.toLocaleString("id-ID")}
+    </td>
+    <td>
+        ${clicks.toLocaleString("id-ID")}
+    </td>
+    <td class="earning">
+        Rp ${earning.toLocaleString("id-ID")}
+    </td>
+    <td>
+        Rp ${cpm.toLocaleString("id-ID")}
+    </td>
 </tr>
 `;
-                        }
-                    ).join("");
-            } else {
-                reportTable.innerHTML = `
+                }
+            ).join("");
+    } else {
+        reportTable.innerHTML = `
 <tr>
     <td colspan="5">
         Belum ada data report ADS.
     </td>
 </tr>
 `;
-            }
-        }
-        //==================================================
-        // SELL DETAIL REPORT TABLE
-        //==================================================
-        const sellReportTable =
-            document.getElementById(
-                "sellReportTable"
-            );
-        if (sellReportTable) {
-            if (reports.length) {
-                sellReportTable.innerHTML =
-                    reports.map(
-                        row => {
-                            const views =
-                                Number(
-                                    row.sell_views || 0
-                                );
-                            const clicks =
-                                Number(
-                                    row.sell_clicks || 0
-                                );
-                            const earn =
-                                Number(
-                                    row.sell_earnings || 0
-                                );
-                            const cpm =
-                                views > 0
-                                    ?
-                                    Math.round(
-                                        (
-                                            earn *
-                                            1000
-                                        ) /
-                                        views
-                                    )
-                                    :
-                                    0;
-                            const date =
-                                new Date(
-                                    row.report_date
-                                ).toLocaleDateString(
-                                    "id-ID",
-                                    {
-                                        timeZone:
-                                            "Asia/Jakarta",
-                                        day:
-                                            "2-digit",
-                                        month:
-                                            "short",
-                                        year:
-                                            "numeric"
-                                    }
-                                );
-                            return `
+    }
+}
+//======================================================
+// SELL DETAIL REPORT TABLE
+//======================================================
+const sellReportTable =
+    document.getElementById(
+        "sellReportTable"
+    );
+if (sellReportTable) {
+    if (reports.length) {
+        sellReportTable.innerHTML =
+            reports.map(
+                row => {
+                    const views =
+                        Number(
+                            row.sell_views ??
+                            0
+                        );
+                    const clicks =
+                        Number(
+                            row.sell_clicks ??
+                            0
+                        );
+                    const earning =
+                        Number(
+                            row.sell_earnings ??
+                            0
+                        );
+                    const cpm =
+                        views > 0
+                            ? Math.round(
+                                (
+                                    earning *
+                                    1000
+                                ) /
+                                views
+                            )
+                            : 0;
+                    const date =
+                        row.report_date
+                            ? new Date(
+                                row.report_date
+                            ).toLocaleDateString(
+                                "id-ID",
+                                {
+                                    timeZone:
+                                        "Asia/Jakarta",
+                                    day:
+                                        "2-digit",
+                                    month:
+                                        "short",
+                                    year:
+                                        "numeric"
+                                }
+                            )
+                            : "-";
+                    return `
 <tr>
-<td>
-    ${date}
-</td>
-<td>
-    ${views.toLocaleString("id-ID")}
-</td>
-<td>
-    ${clicks.toLocaleString("id-ID")}
-</td>
-<td class="earning">
-    Rp ${earn.toLocaleString("id-ID")}
-</td>
-<td>
-    Rp ${cpm.toLocaleString("id-ID")}
-</td>
+    <td>
+        ${date}
+    </td>
+    <td>
+        ${views.toLocaleString("id-ID")}
+    </td>
+    <td>
+        ${clicks.toLocaleString("id-ID")}
+    </td>
+    <td class="earning">
+        Rp ${earning.toLocaleString("id-ID")}
+    </td>
+    <td>
+        Rp ${cpm.toLocaleString("id-ID")}
+    </td>
 </tr>
 `;
-                        }
-                    ).join("");
-            } else {
-                sellReportTable.innerHTML = `
+                }
+            ).join("");
+    } else {
+        sellReportTable.innerHTML = `
 <tr>
     <td colspan="5">
         Belum ada laporan SELL.
     </td>
 </tr>
 `;
-            }
-        }
+    }
+}
+//======================================================
+// REPORT READY
+//======================================================
+console.log(
+    "================================"
+);
+console.log(
+    "DETAIL REPORT HARIAN READY"
+);
+console.log(
+    "REPORT COUNT:",
+    reports.length
+);
+console.log(
+    "ADS TABLE:",
+    !!reportTable
+);
+console.log(
+    "SELL TABLE:",
+    !!sellReportTable
+);
+console.log(
+    "================================"
+);
         //==================================================
         // CPM MARKET
         //==================================================
