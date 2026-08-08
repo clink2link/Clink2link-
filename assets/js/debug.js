@@ -1,2067 +1,1245 @@
-/* =========================================
-   CLICK2PAY DEBUG PANEL v2.0
+/* =========================================================
+   CLICK2PAY CONSOLE DEBUGGER
    File : assets/js/debug.js
-   Author : ChatGPT
-========================================= */
-
-(function(){
-
+   Version : 3.0
+   Fokus :
+   LOGIN ↔ DASHBOARD ↔ SELL LINK
+========================================================= */
+(function () {
 "use strict";
-
-/* =========================================
+/* =========================================================
    CONFIG
-========================================= */
-
-const DEBUG_KEY="debug111";
-
-if(new URLSearchParams(location.search).get("debug")!==DEBUG_KEY){
+========================================================= */
+const DEBUG_KEY = "debug111";
+const params = new URLSearchParams(location.search);
+if (params.get("debug") !== DEBUG_KEY) {
     return;
 }
-
-/* =========================================
-   STORAGE
-========================================= */
-
-const logs=[];
-
-const stats={
-    info:0,
-    warn:0,
-    error:0,
-    fetch:0
+/* =========================================================
+   CONFIG
+========================================================= */
+const PREFIX = "[CLICK2PAY DEBUG]";
+const logs = [];
+const stats = {
+    info: 0,
+    warn: 0,
+    error: 0,
+    db: 0,
+    auth: 0,
+    redirect: 0
 };
-
-/* =========================================
-   STYLE
-========================================= */
-
-const css=document.createElement("style");
-
-css.textContent=`
-
-#c2pDebug{
-
-position:fixed;
-
-top:10px;
-
-right:10px;
-
-width:420px;
-
-height:650px;
-
-background:#111;
-
-color:#fff;
-
-border-radius:16px;
-
-overflow:hidden;
-
-font-family:monospace;
-
-font-size:12px;
-
-z-index:999999999;
-
-box-shadow:0 0 30px rgba(0,0,0,.4);
-
-display:flex;
-
-flex-direction:column;
-
-}
-
-#c2pHeader{
-
-background:#191919;
-
-padding:12px;
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-cursor:move;
-
-font-weight:bold;
-
-}
-
-#c2pToolbar{
-
-display:flex;
-
-gap:6px;
-
-}
-
-#c2pToolbar button{
-
-background:#222;
-
-color:#fff;
-
-border:none;
-
-padding:4px 8px;
-
-border-radius:8px;
-
-cursor:pointer;
-
-}
-
-#c2pToolbar button:hover{
-
-background:#333;
-
-}
-
-#c2pStats{
-
-display:grid;
-
-grid-template-columns:repeat(4,1fr);
-
-gap:4px;
-
-padding:10px;
-
-background:#161616;
-
-text-align:center;
-
-}
-
-#c2pStats div{
-
-background:#202020;
-
-padding:8px;
-
-border-radius:8px;
-
-}
-
-#c2pSearch{
-
-padding:10px;
-
-background:#111;
-
-}
-
-#c2pSearch input{
-
-width:100%;
-
-padding:8px;
-
-border:none;
-
-border-radius:8px;
-
-outline:none;
-
-background:#222;
-
-color:#fff;
-
-}
-
-#c2pLog{
-
-flex:1;
-
-overflow:auto;
-
-padding:10px;
-
-background:#000;
-
-}
-
-.c2pItem{
-
-margin-bottom:10px;
-
-padding:8px;
-
-border-radius:8px;
-
-word-break:break-word;
-
-}
-
-.c2pInfo{
-
-background:#14213d;
-
-}
-
-.c2pWarn{
-
-background:#7a4b00;
-
-}
-
-.c2pError{
-
-background:#6b0000;
-
-}
-
-.c2pFetch{
-
-background:#003b2e;
-
-}
-
-.c2pTime{
-
-color:#aaa;
-
-font-size:11px;
-
-margin-bottom:5px;
-
-}
-
-.c2pTitle{
-
-font-weight:bold;
-
-margin-bottom:5px;
-
-}
-
-.c2pBody{
-
-white-space:pre-wrap;
-
-color:#ddd;
-
-}
-
-`;
-
-document.head.appendChild(css);
-
-/* =========================================
-   CREATE PANEL
-========================================= */
-
-const panel=document.createElement("div");
-
-panel.id="c2pDebug";
-
-panel.innerHTML=`
-
-<div id="c2pHeader">
-
-<span>🐞 CLICK2PAY DEBUG</span>
-
-<div id="c2pToolbar">
-
-<button id="dbgClear">Clear</button>
-
-<button id="dbgCopy">Copy</button>
-
-<button id="dbgHide">Hide</button>
-
-</div>
-
-</div>
-
-<div id="c2pStats">
-
-<div>
-
-<b id="dbgInfo">0</b><br>
-
-INFO
-
-</div>
-
-<div>
-
-<b id="dbgWarn">0</b><br>
-
-WARN
-
-</div>
-
-<div>
-
-<b id="dbgError">0</b><br>
-
-ERROR
-
-</div>
-
-<div>
-
-<b id="dbgFetch">0</b><br>
-
-FETCH
-
-</div>
-
-</div>
-
-<div id="c2pSearch">
-
-<input
-id="dbgSearch"
-placeholder="Cari log...">
-
-</div>
-
-<div id="c2pLog"></div>
-
-`;
-
-document.body.appendChild(panel);
-
-/* =========================================
-   ELEMENT
-========================================= */
-
-const logBox=document.getElementById("c2pLog");
-
-const search=document.getElementById("dbgSearch");
-
-/* =========================================
-   HELPER
-========================================= */
-
-function stringify(data){
-
-    try{
-
-        if(typeof data==="object"){
-
-            return JSON.stringify(data,null,2);
-
+/* =========================================================
+   SAFE STRINGIFY
+========================================================= */
+function safeStringify(value) {
+    try {
+        if (value === undefined) {
+            return "undefined";
         }
-
-        return String(data);
-
-    }catch(e){
-
-        return String(data);
-
-    }
-
-}
-
-function now(){
-
-    return new Date().toLocaleTimeString();
-
-}
-
-/* =========================================
-   UPDATE STATS
-========================================= */
-
-function updateStats(){
-
-    document.getElementById("dbgInfo").textContent=
-    stats.info;
-
-    document.getElementById("dbgWarn").textContent=
-    stats.warn;
-
-    document.getElementById("dbgError").textContent=
-    stats.error;
-
-    document.getElementById("dbgFetch").textContent=
-    stats.fetch;
-
-}
-
-
-/* =========================================
-   CREATE LOG
-========================================= */
-
-function addLog(type,title,data=null){
-
-    const item={
-
-        time:now(),
-
-        type,
-
-        title,
-
-        data
-
-    };
-
-    logs.push(item);
-
-    switch(type){
-
-        case "info":
-            stats.info++;
-            break;
-
-        case "warn":
-            stats.warn++;
-            break;
-
-        case "error":
-            stats.error++;
-            break;
-
-        case "fetch":
-            stats.fetch++;
-            break;
-
-    }
-
-    updateStats();
-
-    renderItem(item);
-
-}
-
-
-/* =========================================
-   RENDER ITEM
-========================================= */
-
-function renderItem(item){
-
-    const div=document.createElement("div");
-
-    div.className="c2pItem c2p"+(
-        item.type.charAt(0).toUpperCase()+
-        item.type.slice(1)
-    );
-
-    div.dataset.search=(
-
-        item.title+
-
-        stringify(item.data)
-
-    ).toLowerCase();
-
-    div.innerHTML=`
-
-<div class="c2pTime">
-
-${item.time}
-
-</div>
-
-<div class="c2pTitle">
-
-${item.title}
-
-</div>
-
-<div class="c2pBody">
-
-${stringify(item.data)}
-
-</div>
-
-`;
-
-    logBox.prepend(div);
-
-}
-
-
-/* =========================================
-   SEARCH
-========================================= */
-
-search.addEventListener("input",()=>{
-
-    const keyword=
-    search.value
-    .toLowerCase()
-    .trim();
-
-    logBox
-    .querySelectorAll(".c2pItem")
-    .forEach(item=>{
-
-        item.style.display=
-
-        item.dataset.search
-        .includes(keyword)
-
-        ?
-
-        ""
-
-        :
-
-        "none";
-
-    });
-
-});
-
-
-/* =========================================
-   CLEAR
-========================================= */
-
-document
-.getElementById("dbgClear")
-.onclick=()=>{
-
-    logs.length=0;
-
-    logBox.innerHTML="";
-
-    stats.info=0;
-    stats.warn=0;
-    stats.error=0;
-    stats.fetch=0;
-
-    updateStats();
-
-};
-
-
-/* =========================================
-   COPY
-========================================= */
-
-document
-.getElementById("dbgCopy")
-.onclick=async()=>{
-
-    try{
-
-        await navigator.clipboard.writeText(
-
-            JSON.stringify(
-                logs,
-                null,
-                2
-            )
-
+        if (value === null) {
+            return "null";
+        }
+        if (typeof value === "string") {
+            return value;
+        }
+        return JSON.stringify(
+            value,
+            null,
+            2
         );
-
-        alert("Debug berhasil disalin.");
-
-    }catch(e){
-
-        alert("Gagal copy debug.");
-
+    } catch (error) {
+        return String(value);
     }
-
-};
-
-
-/* =========================================
-   HIDE
-========================================= */
-
-document
-.getElementById("dbgHide")
-.onclick=()=>{
-
-    panel.style.display="none";
-
-};
-
-
-/* =========================================
-   GLOBAL DEBUG
-========================================= */
-
-window.debug=function(
-
-title,
-
-data=null,
-
-type="info"
-
-){
-
-    addLog(
-
+}
+/* =========================================================
+   TIME
+========================================================= */
+function timestamp() {
+    return new Date()
+        .toLocaleTimeString(
+            "id-ID",
+            {
+                hour12: false
+            }
+        );
+}
+/* =========================================================
+   CORE LOGGER
+========================================================= */
+function addLog(
+    type,
+    title,
+    data = null
+) {
+    const item = {
+        time: timestamp(),
         type,
-
         title,
-
         data
-
+    };
+    logs.push(item);
+    if (stats[type] !== undefined) {
+        stats[type]++;
+    }
+    const prefix =
+        `${PREFIX} ${title}`;
+    if (type === "error") {
+        console.error(
+            prefix,
+            data
+        );
+    }
+    else if (type === "warn") {
+        console.warn(
+            prefix,
+            data
+        );
+    }
+    else if (type === "db") {
+        console.log(
+            "🗄️",
+            prefix,
+            data
+        );
+    }
+    else if (type === "auth") {
+        console.log(
+            "🔐",
+            prefix,
+            data
+        );
+    }
+    else if (type === "redirect") {
+        console.log(
+            "🔀",
+            prefix,
+            data
+        );
+    }
+    else {
+        console.log(
+            prefix,
+            data
+        );
+    }
+}
+/* =========================================================
+   GLOBAL DEBUG
+========================================================= */
+window.c2pDebug = function (
+    title,
+    data = null,
+    type = "info"
+) {
+    addLog(
+        type,
+        title,
+        data
     );
-
 };
-
-
-/* =========================================
-   START
-========================================= */
-
-debug(
-"CLICK2PAY DEBUG",
-"Panel berhasil dimuat"
+/* =========================================================
+   BASIC PAGE INFO
+========================================================= */
+addLog(
+    "info",
+    "DEBUG START",
+    {
+        url: location.href,
+        pathname: location.pathname,
+        search: location.search,
+        referrer: document.referrer,
+        online: navigator.onLine,
+        time: new Date().toISOString()
+    }
 );
-
-debug(
-"URL",
-location.href
+/* =========================================================
+   LOCAL STORAGE SNAPSHOT
+========================================================= */
+function getStorageSnapshot() {
+    const result = {};
+    try {
+        for (
+            let i = 0;
+            i < localStorage.length;
+            i++
+        ) {
+            const key =
+                localStorage.key(i);
+            result[key] =
+                localStorage.getItem(key);
+        }
+    } catch (error) {
+        result.error =
+            error.message;
+    }
+    return result;
+}
+addLog(
+    "info",
+    "LOCAL STORAGE SNAPSHOT",
+    getStorageSnapshot()
 );
-
-debug(
-"USER AGENT",
-navigator.userAgent
+/* =========================================================
+   AUTH STORAGE
+========================================================= */
+addLog(
+    "auth",
+    "AUTH STORAGE",
+    {
+        user_id:
+            localStorage.getItem(
+                "user_id"
+            ),
+        username:
+            localStorage.getItem(
+                "username"
+            ),
+        session:
+            localStorage.getItem(
+                "session_token"
+            )
+    }
 );
-
-debug(
-"ONLINE",
-navigator.onLine
+/* =========================================================
+   REDIRECT MONITOR
+========================================================= */
+(function monitorNavigation() {
+    const originalAssign =
+        window.location.assign;
+    const originalReplace =
+        window.location.replace;
+    window.location.assign =
+        function (url) {
+            addLog(
+                "redirect",
+                "LOCATION.ASSIGN",
+                {
+                    from:
+                        location.href,
+                    to:
+                        url
+                }
+            );
+            return originalAssign.call(
+                window.location,
+                url
+            );
+        };
+    window.location.replace =
+        function (url) {
+            addLog(
+                "redirect",
+                "LOCATION.REPLACE",
+                {
+                    from:
+                        location.href,
+                    to:
+                        url
+                }
+            );
+            return originalReplace.call(
+                window.location,
+                url
+            );
+        };
+    const originalPushState =
+        history.pushState;
+    history.pushState =
+        function (
+            state,
+            title,
+            url
+        ) {
+            addLog(
+                "redirect",
+                "HISTORY.PUSHSTATE",
+                {
+                    url
+                }
+            );
+            return originalPushState.apply(
+                history,
+                arguments
+            );
+        };
+    const originalReplaceState =
+        history.replaceState;
+    history.replaceState =
+        function (
+            state,
+            title,
+            url
+        ) {
+            addLog(
+                "redirect",
+                "HISTORY.REPLACESTATE",
+                {
+                    url
+                }
+            );
+            return originalReplaceState.apply(
+                history,
+                arguments
+            );
+        };
+})();
+/* =========================================================
+   PAGE HIDDEN / VISIBLE
+========================================================= */
+document.addEventListener(
+    "visibilitychange",
+    function () {
+        addLog(
+            "info",
+            "PAGE VISIBILITY",
+            document.hidden
+                ? "HIDDEN"
+                : "VISIBLE"
+        );
+    }
 );
-
-
-/* =========================================
-   CONSOLE MONITOR
-========================================= */
-
-["log","warn","error","info"].forEach(type=>{
-
-    const original=console[type];
-
-    console[type]=function(...args){
-
-        if(type==="warn"){
-
+/* =========================================================
+   ONLINE / OFFLINE
+========================================================= */
+window.addEventListener(
+    "online",
+    function () {
+        addLog(
+            "info",
+            "NETWORK",
+            "ONLINE"
+        );
+    }
+);
+window.addEventListener(
+    "offline",
+    function () {
+        addLog(
+            "warn",
+            "NETWORK",
+            "OFFLINE"
+        );
+    }
+);
+/* =========================================================
+   JAVASCRIPT ERROR
+========================================================= */
+window.addEventListener(
+    "error",
+    function (event) {
+        addLog(
+            "error",
+            "JAVASCRIPT ERROR",
+            {
+                message:
+                    event.message,
+                file:
+                    event.filename,
+                line:
+                    event.lineno,
+                column:
+                    event.colno,
+                stack:
+                    event.error?.stack
+            }
+        );
+    }
+);
+/* =========================================================
+   UNHANDLED PROMISE
+========================================================= */
+window.addEventListener(
+    "unhandledrejection",
+    function (event) {
+        addLog(
+            "error",
+            "UNHANDLED PROMISE",
+            {
+                reason:
+                    event.reason,
+                message:
+                    event.reason?.message,
+                stack:
+                    event.reason?.stack
+            }
+        );
+    }
+);
+/* =========================================================
+   LOCAL STORAGE MONITOR
+========================================================= */
+(function monitorStorage() {
+    const originalSet =
+        Storage.prototype.setItem;
+    const originalRemove =
+        Storage.prototype.removeItem;
+    const originalClear =
+        Storage.prototype.clear;
+    Storage.prototype.setItem =
+        function (
+            key,
+            value
+        ) {
+            addLog(
+                "info",
+                "LOCAL STORAGE SET",
+                {
+                    key,
+                    value
+                }
+            );
+            return originalSet.apply(
+                this,
+                arguments
+            );
+        };
+    Storage.prototype.removeItem =
+        function (key) {
             addLog(
                 "warn",
-                "CONSOLE WARN",
-                args
+                "LOCAL STORAGE REMOVE",
+                {
+                    key
+                }
             );
-
-        }
-
-        else if(type==="error"){
-
+            return originalRemove.apply(
+                this,
+                arguments
+            );
+        };
+    Storage.prototype.clear =
+        function () {
             addLog(
-                "error",
-                "CONSOLE ERROR",
-                args
+                "warn",
+                "LOCAL STORAGE CLEAR",
+                "SEMUA STORAGE DIHAPUS"
             );
-
-        }
-
-        else{
-
-            addLog(
-                "info",
-                "CONSOLE "+type.toUpperCase(),
-                args
+            return originalClear.apply(
+                this,
+                arguments
             );
-
-        }
-
-        original.apply(
-            console,
-            args
-        );
-
-    };
-
-});
-
-
-/* =========================================
-   JAVASCRIPT ERROR
-========================================= */
-
-window.addEventListener(
-"error",
-e=>{
-
-    addLog(
-
-        "error",
-
-        "JAVASCRIPT ERROR",
-
-        {
-
-            message:e.message,
-
-            file:e.filename,
-
-            line:e.lineno,
-
-            column:e.colno,
-
-            stack:e.error?.stack
-
-        }
-
-    );
-
-});
-
-
-/* =========================================
-   PROMISE ERROR
-========================================= */
-
-window.addEventListener(
-"unhandledrejection",
-e=>{
-
-    addLog(
-
-        "error",
-
-        "PROMISE ERROR",
-
-        e.reason
-
-    );
-
-});
-
-
-/* =========================================
-   NETWORK
-========================================= */
-
-window.addEventListener(
-"online",
-()=>{
-
-    addLog(
-        "info",
-        "NETWORK",
-        "ONLINE"
-    );
-
-});
-
-window.addEventListener(
-"offline",
-()=>{
-
-    addLog(
-        "warn",
-        "NETWORK",
-        "OFFLINE"
-    );
-
-});
-
-
-/* =========================================
-   PAGE LOAD
-========================================= */
-
-window.addEventListener(
-"load",
-()=>{
-
-    addLog(
-        "info",
-        "WINDOW",
-        "LOAD COMPLETE"
-    );
-
-});
-
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-    addLog(
-        "info",
-        "DOM",
-        "READY"
-    );
-
-});
-
-
-/* =========================================
-   LOCAL STORAGE
-========================================= */
-
-try{
-
-    addLog(
-
-        "info",
-
-        "LOCAL STORAGE",
-
-        {
-
-            user_id:
-            localStorage.getItem("user_id"),
-
-            total_key:
-            localStorage.length
-
-        }
-
-    );
-
-}catch(e){
-
-    addLog(
-        "warn",
-        "LOCAL STORAGE",
-        e.message
-    );
-
-}
-
-
-/* =========================================
-   PAGE INFO
-========================================= */
-
-addLog(
-
-    "info",
-
-    "PAGE INFO",
-
-    {
-
-        title:document.title,
-
-        path:location.pathname,
-
-        search:location.search,
-
-        hash:location.hash,
-
-        language:navigator.language,
-
-        platform:navigator.platform
-
-    }
-
-);
-
-
-/* =========================================
-   FETCH MONITOR
-========================================= */
-
-const originalFetch=window.fetch;
-
-window.fetch=async function(...args){
-
-    const started=performance.now();
-
-    const url=String(args[0]);
-
-    const options=args[1]||{};
-
-    const method=options.method||"GET";
-
-    addLog(
-        "fetch",
-        "FETCH START",
-        {
-            method,
-            url,
-            body:options.body||null
-        }
-    );
-
-    try{
-
-        const response=
-        await originalFetch(...args);
-
-        const ended=
-        performance.now();
-
-        let body="";
-
-        try{
-
-            body=
-            await response.clone().text();
-
-            if(body.length>1000){
-
-                body=
-                body.substring(0,1000)+
-                "\n...(dipotong)...";
-
-            }
-
-        }catch(e){
-
-            body=
-            "[Response tidak bisa dibaca]";
-
-        }
-
-        addLog(
-
-            response.ok
-            ?"fetch"
-            :"error",
-
-            "FETCH RESPONSE",
-
-            {
-
-                url,
-
-                method,
-
-                status:
-                response.status,
-
-                statusText:
-                response.statusText,
-
-                time:
-                (
-                    ended-started
-                ).toFixed(0)+" ms",
-
-                response:body
-
-            }
-
-        );
-
-        return response;
-
-    }
-
-    catch(err){
-
-        addLog(
-
-            "error",
-
-            "FETCH FAILED",
-
-            {
-
-                url,
-
-                method,
-
-                error:err.message,
-
-                stack:err.stack
-
-            }
-
-        );
-
-        throw err;
-
-    }
-
-};
-
-
-/* =========================================
-   XMLHTTPREQUEST MONITOR
-========================================= */
-
-(function(){
-
-const open=
-XMLHttpRequest.prototype.open;
-
-const send=
-XMLHttpRequest.prototype.send;
-
-XMLHttpRequest.prototype.open=function(
-
-method,
-
-url
-
-){
-
-this._debugMethod=method;
-
-this._debugUrl=url;
-
-return open.apply(
-
-this,
-
-arguments
-
-);
-
-};
-
-XMLHttpRequest.prototype.send=function(body){
-
-const start=
-performance.now();
-
-this.addEventListener(
-
-"load",
-
-()=>{
-
-addLog(
-
-this.status>=200&&this.status<300
-?"fetch"
-:"error",
-
-"XHR",
-
-{
-
-method:
-this._debugMethod,
-
-url:
-this._debugUrl,
-
-status:
-this.status,
-
-time:
-(
-performance.now()-start
-).toFixed(0)+" ms"
-
-}
-
-);
-
-}
-
-);
-
-return send.apply(
-
-this,
-
-arguments
-
-);
-
-};
-
+        };
 })();
-
-
-/* =========================================
-   PERFORMANCE
-========================================= */
-
-setInterval(()=>{
-
-if(performance.memory){
-
-addLog(
-
-"info",
-
-"MEMORY",
-
-{
-
-used:
-Math.round(
-
-performance.memory.usedJSHeapSize
-/1024/1024
-
-)+" MB",
-
-total:
-Math.round(
-
-performance.memory.totalJSHeapSize
-/1024/1024
-
-)+" MB"
-
-}
-
-);
-
-}
-
-},30000);
-
-/* =========================================
-   DATABASE MONITOR
-========================================= */
-
-setTimeout(async()=>{
-
-    if(!window.database){
-
-        addLog(
-            "error",
-            "DATABASE",
-            "window.database belum tersedia"
-        );
-
+/* =========================================================
+   FETCH MONITOR
+========================================================= */
+(function monitorFetch() {
+    if (!window.fetch) {
         return;
-
     }
-
-    addLog(
-        "info",
-        "DATABASE",
-        "READY"
-    );
-
-    if(!window.database.supabase){
-
-        addLog(
-            "error",
-            "SUPABASE",
-            "Client NULL"
-        );
-
-        return;
-
-    }
-
-    try{
-
-        const {data,error}=await window.database
-        .supabase
-        .from("profiles")
-        .select("id")
-        .limit(1);
-
-        if(error){
-
+    const originalFetch =
+        window.fetch;
+    window.fetch =
+        async function (...args) {
+            const started =
+                performance.now();
+            const url =
+                String(args[0]);
+            const options =
+                args[1] || {};
+            const method =
+                options.method || "GET";
             addLog(
-                "error",
-                "SUPABASE QUERY",
-                error
+                "db",
+                "FETCH START",
+                {
+                    method,
+                    url
+                }
             );
-
-        }else{
-
-            addLog(
-                "info",
-                "SUPABASE QUERY",
-                data
-            );
-
-        }
-
-    }catch(e){
-
-        addLog(
-            "error",
-            "SUPABASE FAILED",
-            e.message
-        );
-
-    }
-
-},1000);
-
-
-/* =========================================
-   CLICK2PAY USER
-========================================= */
-
-setTimeout(async()=>{
-
-    if(!window.database) return;
-
-    try{
-
-        const user=
-        await window.database.getUser();
-
-        addLog(
-            user
-            ?"info"
-            :"warn",
-            "CURRENT USER",
-            user
-        );
-
-        if(user){
-
-            const profile=
-            await window.database.getProfile(
-                user.id
-            );
-
-            addLog(
-                profile
-                ?"info"
-                :"warn",
-                "CURRENT PROFILE",
-                profile
-            );
-
-        }
-
-    }catch(e){
-
-        addLog(
-            "error",
-            "LOAD USER",
-            e
-        );
-
-    }
-
-},1500);
-
-
-/* =========================================
-   ELEMENT CHECK
-========================================= */
-
-setTimeout(()=>{
-
-    const ids=[
-
-        "sellTotalLink",
-        "sellTotalPrice",
-        "sellTotalView",
-        "sellTotalSold",
-        "sellList",
-        "generatedBox",
-        "createSellBtn"
-
-    ];
-
-    ids.forEach(id=>{
-
-        addLog(
-
-            document.getElementById(id)
-            ?"info"
-            :"warn",
-
-            "ELEMENT",
-
-            {
-
-                id,
-
-                exists:
-                !!document.getElementById(id)
-
+            try {
+                const response =
+                    await originalFetch.apply(
+                        this,
+                        args
+                    );
+                const duration =
+                    (
+                        performance.now()
+                        -
+                        started
+                    ).toFixed(0);
+                addLog(
+                    response.ok
+                        ? "db"
+                        : "error",
+                    "FETCH RESPONSE",
+                    {
+                        method,
+                        url,
+                        status:
+                            response.status,
+                        statusText:
+                            response.statusText,
+                        duration:
+                            duration + " ms"
+                    }
+                );
+                return response;
             }
-
-        );
-
-    });
-
-},2000);
-
-/* =========================================
+            catch (error) {
+                addLog(
+                    "error",
+                    "FETCH FAILED",
+                    {
+                        method,
+                        url,
+                        error:
+                            error.message,
+                        stack:
+                            error.stack
+                    }
+                );
+                throw error;
+            }
+        };
+})();
+/* =========================================================
+   DATABASE STATUS
+========================================================= */
+function checkDatabase() {
+    addLog(
+        window.database
+            ? "db"
+            : "error",
+        "DATABASE STATUS",
+        {
+            exists:
+                !!window.database,
+            supabase:
+                !!window.database?.supabase,
+            methods:
+                window.database
+                    ? Object.keys(
+                        window.database
+                    ).filter(
+                        key =>
+                            typeof
+                            window.database[key]
+                            ===
+                            "function"
+                    )
+                    : []
+        }
+    );
+}
+setTimeout(
+    checkDatabase,
+    1000
+);
+/* =========================================================
    DATABASE FUNCTION MONITOR
-========================================= */
-
-setTimeout(()=>{
-
-    if(!window.database){
-
+========================================================= */
+function monitorDatabaseFunctions() {
+    if (!window.database) {
         addLog(
             "warn",
             "DATABASE MONITOR",
             "window.database belum tersedia"
         );
-
         return;
-
     }
-
-    const functions=[
-
+    const functions = [
         "getUser",
+        "getCurrentUser",
         "getProfile",
+        "getCurrentProfile",
         "getProfiles",
         "getLinks",
-        "getLinkByCode",
-        "createLink",
-        "updateLink",
-        "deleteLink",
-        "createPayment",
-        "getPaymentStatus",
-        "checkSellPayment",
-        "createSellOrder",
         "getSellOrders",
+        "getReports",
         "getDashboardReport",
-        "getReports"
-
+        "getCPMMarket",
+        "getAnnouncements",
+        "createSellOrder",
+        "updateLink",
+        "createLink",
+        "deleteLink"
     ];
-
-    functions.forEach(name=>{
-
-        if(typeof window.database[name]!=="function"){
+    functions.forEach(
+        function (name) {
+            if (
+                typeof
+                window.database[name]
+                !==
+                "function"
+            ) {
+                return;
+            }
+            const original =
+                window.database[name];
+            if (
+                original.__c2pWrapped
+            ) {
+                return;
+            }
+            async function wrapped(
+                ...args
+            ) {
+                const started =
+                    performance.now();
+                addLog(
+                    "db",
+                    "DATABASE CALL",
+                    {
+                        function:
+                            name,
+                        arguments:
+                            args
+                    }
+                );
+                try {
+                    const result =
+                        await original.apply(
+                            this,
+                            args
+                        );
+                    addLog(
+                        "db",
+                        "DATABASE RESULT",
+                        {
+                            function:
+                                name,
+                            duration:
+                                (
+                                    performance.now()
+                                    -
+                                    started
+                                ).toFixed(0)
+                                +
+                                " ms",
+                            result
+                        }
+                    );
+                    return result;
+                }
+                catch (error) {
+                    addLog(
+                        "error",
+                        "DATABASE ERROR",
+                        {
+                            function:
+                                name,
+                            arguments:
+                                args,
+                            message:
+                                error.message,
+                            stack:
+                                error.stack
+                        }
+                    );
+                    throw error;
+                }
+            }
+            wrapped.__c2pWrapped =
+                true;
+            window.database[name] =
+                wrapped;
+        }
+    );
+    addLog(
+        "db",
+        "DATABASE MONITOR",
+        "Database function monitor aktif"
+    );
+}
+setTimeout(
+    monitorDatabaseFunctions,
+    1800
+);
+/* =========================================================
+   SUPABASE AUTH MONITOR
+========================================================= */
+async function monitorAuth() {
+    const supabase =
+        window.database?.supabase;
+    if (!supabase) {
+        addLog(
+            "error",
+            "SUPABASE AUTH",
+            "Supabase client tidak tersedia"
+        );
+        return;
+    }
+    try {
+        const {
+            data,
+            error
+        } =
+            await supabase.auth.getSession();
+        if (error) {
+            addLog(
+                "error",
+                "SUPABASE SESSION ERROR",
+                error
+            );
             return;
         }
-
-        const original=
-        window.database[name];
-
-        window.database[name]=async function(...args){
-
-            const start=
-            performance.now();
-
+        const session =
+            data?.session;
+        addLog(
+            "auth",
+            "SUPABASE SESSION",
+            {
+                exists:
+                    !!session,
+                user_id:
+                    session?.user?.id ||
+                    null,
+                email:
+                    session?.user?.email ||
+                    null,
+                expires_at:
+                    session?.expires_at ||
+                    null
+            }
+        );
+    }
+    catch (error) {
+        addLog(
+            "error",
+            "SUPABASE AUTH FAILED",
+            error
+        );
+    }
+}
+setTimeout(
+    monitorAuth,
+    1200
+);
+/* =========================================================
+   CURRENT USER / PROFILE
+========================================================= */
+async function inspectCurrentUser() {
+    if (!window.database) {
+        return;
+    }
+    addLog(
+        "auth",
+        "CHECK CURRENT USER",
+        "Mulai"
+    );
+    try {
+        let user = null;
+        let profile = null;
+        if (
+            typeof
+            window.database.getUser
+            ===
+            "function"
+        ) {
+            user =
+                await window.database.getUser();
+        }
+        addLog(
+            user
+                ? "auth"
+                : "warn",
+            "CURRENT USER",
+            user
+        );
+        if (
+            user &&
+            typeof
+            window.database.getProfile
+            ===
+            "function"
+        ) {
+            profile =
+                await window.database.getProfile(
+                    user.id
+                );
+        }
+        if (
+            !profile &&
+            typeof
+            window.database.getCurrentProfile
+            ===
+            "function"
+        ) {
+            profile =
+                await window.database.getCurrentProfile();
+        }
+        addLog(
+            profile
+                ? "auth"
+                : "warn",
+            "CURRENT PROFILE",
+            profile
+        );
+        if (profile) {
+            inspectSellAccess(
+                profile
+            );
+        }
+    }
+    catch (error) {
+        addLog(
+            "error",
+            "USER PROFILE ERROR",
+            {
+                message:
+                    error.message,
+                stack:
+                    error.stack
+            }
+        );
+    }
+}
+setTimeout(
+    inspectCurrentUser,
+    2500
+);
+/* =========================================================
+   SELL LINK ACCESS CHECK
+========================================================= */
+function inspectSellAccess(profile) {
+    if (!profile) {
+        addLog(
+            "error",
+            "SELL ACCESS",
+            "PROFILE TIDAK ADA"
+        );
+        return;
+    }
+    const status =
+        String(
+            profile.status ||
+            "active"
+        ).toLowerCase();
+    const sellLinkEnabled =
+        profile.sell_link_enabled
+        === true;
+    const sellUnlocked =
+        profile.sell_unlocked
+        === true;
+    const withdrawCount =
+        Number(
+            profile.withdraw_count ||
+            0
+        );
+    const withdrawRequirement =
+        withdrawCount >= 3;
+    const enabled =
+        sellLinkEnabled
+        ||
+        sellUnlocked
+        ||
+        withdrawRequirement;
+    addLog(
+        enabled
+            ? "auth"
+            : "warn",
+        enabled
+            ? "SELL LINK ACCESS: UNLOCKED"
+            : "SELL LINK ACCESS: LOCKED",
+        {
+            account_status:
+                status,
+            sell_link_enabled:
+                profile.sell_link_enabled,
+            sell_unlocked:
+                profile.sell_unlocked,
+            withdraw_count:
+                withdrawCount,
+            withdraw_requirement:
+                "withdraw_count >= 3",
+            requirement_pass:
+                withdrawRequirement,
+            FINAL_RESULT:
+                enabled
+                    ? "UNLOCKED"
+                    : "LOCKED"
+        }
+    );
+    /* -----------------------------------------
+       DOM CHECK
+    ----------------------------------------- */
+    setTimeout(
+        function () {
+            const cards =
+                document.querySelectorAll(
+                    ".sell-card"
+                );
             addLog(
-                "info",
-                "DATABASE CALL",
+                cards.length
+                    ? "info"
+                    : "warn",
+                "SELL CARD DOM",
                 {
-                    function:name,
-                    arguments:args
+                    total:
+                        cards.length,
+                    locked:
+                        Array.from(
+                            cards
+                        ).filter(
+                            card =>
+                                card.classList
+                                .contains(
+                                    "locked"
+                                )
+                        ).length
                 }
             );
-
-            try{
-
-                const result=
-                await original.apply(
-                    this,
-                    args
-                );
-
-                addLog(
-                    "info",
-                    "DATABASE RESULT",
-                    {
-                        function:name,
-                        time:
-                        (
-                            performance.now()-start
-                        ).toFixed(0)+" ms",
-                        result
-                    }
-                );
-
-                return result;
-
-            }catch(e){
-
-                addLog(
-                    "error",
-                    "DATABASE ERROR",
-                    {
-                        function:name,
-                        error:e.message,
-                        stack:e.stack
-                    }
-                );
-
-                throw e;
-
-            }
-
-        };
-
-    });
-
-    addLog(
-        "info",
-        "DATABASE MONITOR",
-        "Semua fungsi database dipasang"
+            cards.forEach(
+                function (
+                    card,
+                    index
+                ) {
+                    addLog(
+                        card.classList.contains(
+                            "locked"
+                        )
+                            ? "warn"
+                            : "info",
+                        `SELL CARD #${index + 1}`,
+                        {
+                            locked:
+                                card.classList.contains(
+                                    "locked"
+                                ),
+                            class:
+                                card.className
+                        }
+                    );
+                }
+            );
+        },
+        500
     );
-
-},2500);
-
-/* =========================================
-   DOM WATCHER
-========================================= */
-
-setTimeout(()=>{
-
-    const watchIds=[
-
-        "sellTotalLink",
-        "sellTotalPrice",
-        "sellTotalView",
-        "sellTotalSold",
-        "sellList",
-        "generatedBox",
-        "createResult",
-        "sellStatus"
-
-    ];
-
-    watchIds.forEach(id=>{
-
-        const element=
-        document.getElementById(id);
-
-        if(!element){
-
+}
+/* =========================================================
+   SELL STATUS FUNCTION MONITOR
+========================================================= */
+setTimeout(
+    function () {
+        if (
+            typeof
+            window.checkSellStatus
+            !==
+            "function"
+        ) {
             addLog(
                 "warn",
-                "DOM WATCH",
-                {
-                    id,
-                    status:"ELEMENT TIDAK DITEMUKAN"
-                }
+                "CHECK SELL STATUS",
+                "Function belum tersedia"
             );
-
             return;
-
         }
-
         addLog(
             "info",
-            "DOM WATCH",
-            {
-                id,
-                status:"AKTIF"
-            }
+            "CHECK SELL STATUS",
+            "Function tersedia"
         );
-
-        const observer=
-        new MutationObserver(()=>{
-
-            addLog(
-                "info",
-                "DOM UPDATE",
-                {
-                    id,
-                    text:
-                    element.innerText
-                    .substring(0,500),
-
-                    html:
-                    element.innerHTML
-                    .substring(0,500)
-                }
-            );
-
-        });
-
-        observer.observe(
-
-            element,
-
-            {
-
-                childList:true,
-
-                subtree:true,
-
-                characterData:true,
-
-                attributes:true
-
-            }
-
-        );
-
-    });
-
-},3000);
-
-/* =========================================
-   EVENT MONITOR
-========================================= */
-
-setTimeout(()=>{
-
-    const events=[
-
-        "click",
-        "change",
-        "input",
-        "submit",
-        "keydown"
-
-    ];
-
-    events.forEach(eventName=>{
-
-        document.addEventListener(
-
-            eventName,
-
-            e=>{
-
-                const target=e.target;
-
-                addLog(
-
-                    "info",
-
-                    "EVENT "+eventName.toUpperCase(),
-
-                    {
-
-                        tag:
-                        target.tagName,
-
-                        id:
-                        target.id||null,
-
-                        class:
-                        target.className||null,
-
-                        name:
-                        target.name||null,
-
-                        value:
-                        typeof target.value!=="undefined"
-                        ?target.value
-                        :null,
-
-                        text:
-                        (
-                            target.innerText||
-                            target.textContent||
-                            ""
-                        )
-                        .trim()
-                        .substring(0,100)
-
-                    }
-
-                );
-
-            },
-
-            true
-
-        );
-
-    });
-
-    addLog(
-        "info",
-        "EVENT MONITOR",
-        "Semua event aktif"
-    );
-
-},3500);
-
-/* =========================================
-   LOCAL STORAGE MONITOR
-========================================= */
-
-(function(){
-
-    const originalSet=
-    Storage.prototype.setItem;
-
-    const originalGet=
-    Storage.prototype.getItem;
-
-    const originalRemove=
-    Storage.prototype.removeItem;
-
-    const originalClear=
-    Storage.prototype.clear;
-
-    Storage.prototype.setItem=function(key,value){
-
-        addLog(
-
-            "info",
-
-            "LOCAL STORAGE SET",
-
-            {
-
-                key,
-
-                value
-
-            }
-
-        );
-
-        return originalSet.apply(
-            this,
-            arguments
-        );
-
-    };
-
-    Storage.prototype.getItem=function(key){
-
-        const value=
-        originalGet.apply(
-            this,
-            arguments
-        );
-
-        addLog(
-
-            "info",
-
-            "LOCAL STORAGE GET",
-
-            {
-
-                key,
-
-                value
-
-            }
-
-        );
-
-        return value;
-
-    };
-
-    Storage.prototype.removeItem=function(key){
-
-        addLog(
-
-            "warn",
-
-            "LOCAL STORAGE REMOVE",
-
-            {
-
-                key
-
-            }
-
-        );
-
-        return originalRemove.apply(
-            this,
-            arguments
-        );
-
-    };
-
-    Storage.prototype.clear=function(){
-
-        addLog(
-
-            "warn",
-
-            "LOCAL STORAGE CLEAR",
-
-            "Semua data dihapus"
-
-        );
-
-        return originalClear.apply(
-            this,
-            arguments
-        );
-
-    };
-
-    addLog(
-        "info",
-        "LOCAL STORAGE MONITOR",
-        "Aktif"
-    );
-
-})();
-
-/* =========================================
-   PERFORMANCE MONITOR
-========================================= */
-
-(function(){
-
-    const startTime=Date.now();
-
-    let frame=0;
-
-    let last=performance.now();
-
-    function fpsLoop(now){
-
-        frame++;
-
-        if(now-last>=1000){
-
-            addLog(
-
-                "info",
-
-                "PERFORMANCE",
-
-                {
-
-                    uptime:
-                    Math.floor(
-                        (Date.now()-startTime)/1000
-                    )+" detik",
-
-                    fps:frame,
-
-                    dom:
-                    document
-                    .getElementsByTagName("*")
-                    .length,
-
-                    memory:
-                    performance.memory
-                    ?{
-
-                        used:
-                        Math.round(
-                            performance.memory.usedJSHeapSize
-                            /1024/1024
-                        )+" MB",
-
-                        total:
-                        Math.round(
-                            performance.memory.totalJSHeapSize
-                            /1024/1024
-                        )+" MB",
-
-                        limit:
-                        Math.round(
-                            performance.memory.jsHeapSizeLimit
-                            /1024/1024
-                        )+" MB"
-
-                    }
-                    :"Tidak didukung"
-
-                }
-
-            );
-
-            frame=0;
-
-            last=now;
-
-        }
-
-        requestAnimationFrame(fpsLoop);
-
-    }
-
-    requestAnimationFrame(fpsLoop);
-
-})();
-
-/* =========================================
-   RESOURCE MONITOR
-========================================= */
-
-window.addEventListener("load",()=>{
-
-    const resources=
-    performance.getEntriesByType("resource");
-
-    resources.forEach(item=>{
-
-        addLog(
-
-            "info",
-
-            "RESOURCE",
-
-            {
-
-                name:item.name,
-
-                type:item.initiatorType,
-
-                duration:
-                item.duration.toFixed(0)+" ms",
-
-                size:
-                item.transferSize||0
-
-            }
-
-        );
-
-    });
-
-});
-
-/* =========================================
-   NAVIGATION TIMING
-========================================= */
-
-window.addEventListener("load",()=>{
-
-    const nav=
-    performance.getEntriesByType("navigation")[0];
-
-    if(!nav) return;
-
-    addLog(
-
-        "info",
-
-        "PAGE SPEED",
-
-        {
-
-            dns:
-            nav.domainLookupEnd-
-            nav.domainLookupStart,
-
-            connect:
-            nav.connectEnd-
-            nav.connectStart,
-
-            request:
-            nav.responseStart-
-            nav.requestStart,
-
-            response:
-            nav.responseEnd-
-            nav.responseStart,
-
-            dom:
-            nav.domComplete-
-            nav.domInteractive,
-
-            total:
-            nav.loadEventEnd-
-            nav.startTime
-
-        }
-
-    );
-
-});
-
-/* =========================================
-   COOKIE MONITOR
-========================================= */
-
-setInterval(()=>{
-
-    addLog(
-
-        "info",
-
-        "COOKIE",
-
-        document.cookie||
-
-        "Tidak ada cookie"
-
-    );
-
-},60000);
-
-
-/* =========================================
-   SCREEN INFO
-========================================= */
-
-addLog(
-
-    "info",
-
-    "SCREEN",
-
-    {
-
-        width:
-        screen.width,
-
-        height:
-        screen.height,
-
-        colorDepth:
-        screen.colorDepth,
-
-        pixelRatio:
-        window.devicePixelRatio
-
-    }
-
+    },
+    3000
 );
-
-/* =========================================
-   GEOLOCATION
-========================================= */
-
-if(navigator.geolocation){
-
-navigator.geolocation.getCurrentPosition(
-
-position=>{
-
-addLog(
-
-"info",
-
-"GEOLOCATION",
-
-{
-
-latitude:
-position.coords.latitude,
-
-longitude:
-position.coords.longitude,
-
-accuracy:
-position.coords.accuracy
-
-}
-
-);
-
-},
-
-error=>{
-
-addLog(
-
-"warn",
-
-"GEOLOCATION",
-
-error.message
-
-);
-
-}
-
-);
-
-}
-
-/* =========================================
-   BATTERY
-========================================= */
-
-if(navigator.getBattery){
-
-navigator.getBattery()
-
-.then(battery=>{
-
-addLog(
-
-"info",
-
-"BATTERY",
-
-{
-
-level:
-Math.round(
-battery.level*100
-)+"%",
-
-charging:
-battery.charging
-
-}
-
-);
-
-});
-
-}
-
-
-/* =========================================
-   WINDOW SIZE
-========================================= */
-
-window.addEventListener(
-
-"resize",
-
-()=>{
-
-addLog(
-
-"info",
-
-"WINDOW RESIZE",
-
-{
-
-width:
-window.innerWidth,
-
-height:
-window.innerHeight
-
-}
-
-);
-
-}
-
-);
-
-/* =========================================
-   VISIBILITY
-========================================= */
-
+/* =========================================================
+   DOM READY
+========================================================= */
 document.addEventListener(
-
-"visibilitychange",
-
-()=>{
-
-addLog(
-
-"info",
-
-"PAGE VISIBILITY",
-
-document.hidden
-?"HIDDEN"
-:"VISIBLE"
-
+    "DOMContentLoaded",
+    function () {
+        addLog(
+            "info",
+            "DOM READY",
+            {
+                url:
+                    location.href,
+                title:
+                    document.title
+            }
+        );
+        const sellCards =
+            document.querySelectorAll(
+                ".sell-card"
+            );
+        addLog(
+            sellCards.length
+                ? "info"
+                : "warn",
+            "SELL CARD DETECTION",
+            {
+                count:
+                    sellCards.length
+            }
+        );
+        const loginForm =
+            document.getElementById(
+                "loginForm"
+            );
+        if (loginForm) {
+            addLog(
+                "auth",
+                "LOGIN FORM",
+                "Ditemukan"
+            );
+        }
+        const loginBtn =
+            document.getElementById(
+                "loginBtn"
+            );
+        if (loginBtn) {
+            addLog(
+                "auth",
+                "LOGIN BUTTON",
+                "Ditemukan"
+            );
+        }
+    }
 );
-
-}
+/* =========================================================
+   LOGIN FORM MONITOR
+========================================================= */
+document.addEventListener(
+    "submit",
+    function (event) {
+        const form =
+            event.target;
+        if (
+            form?.id !==
+            "loginForm"
+        ) {
+            return;
+        }
+        addLog(
+            "auth",
+            "LOGIN SUBMIT",
+            {
+                action:
+                    form.action,
+                method:
+                    form.method,
+                url:
+                    location.href
+            }
+        );
+    },
+    true
 );
-
-
-/* =========================================
+/* =========================================================
+   BUTTON CLICK MONITOR
+========================================================= */
+document.addEventListener(
+    "click",
+    function (event) {
+        const target =
+            event.target.closest(
+                "button,a"
+            );
+        if (!target) {
+            return;
+        }
+        const text =
+            (
+                target.innerText ||
+                target.textContent ||
+                ""
+            )
+            .trim()
+            .substring(
+                0,
+                100
+            );
+        if (
+            text.toLowerCase()
+            .includes("sell")
+            ||
+            target.classList.contains(
+                "sell-card"
+            )
+        ) {
+            addLog(
+                "info",
+                "SELL CLICK",
+                {
+                    text,
+                    id:
+                        target.id ||
+                        null,
+                    class:
+                        target.className ||
+                        null
+                }
+            );
+        }
+        if (
+            text.toLowerCase()
+            .includes("login")
+            ||
+            target.id ===
+                "loginBtn"
+        ) {
+            addLog(
+                "auth",
+                "LOGIN CLICK",
+                {
+                    text,
+                    id:
+                        target.id ||
+                        null
+                }
+            );
+        }
+    },
+    true
+);
+/* =========================================================
+   STORAGE EVENT
+========================================================= */
+window.addEventListener(
+    "storage",
+    function (event) {
+        addLog(
+            "info",
+            "STORAGE EVENT",
+            {
+                key:
+                    event.key,
+                oldValue:
+                    event.oldValue,
+                newValue:
+                    event.newValue
+            }
+        );
+    }
+);
+/* =========================================================
+   SUPABASE AUTH STATE CHANGE
+========================================================= */
+setTimeout(
+    function () {
+        const supabase =
+            window.database?.supabase;
+        if (!supabase) {
+            return;
+        }
+        try {
+            supabase.auth.onAuthStateChange(
+                function (
+                    event,
+                    session
+                ) {
+                    addLog(
+                        "auth",
+                        "SUPABASE AUTH STATE",
+                        {
+                            event,
+                            user_id:
+                                session
+                                ?.user
+                                ?.id ||
+                                null,
+                            email:
+                                session
+                                ?.user
+                                ?.email ||
+                                null,
+                            session:
+                                !!session
+                        }
+                    );
+                }
+            );
+            addLog(
+                "auth",
+                "AUTH STATE MONITOR",
+                "Aktif"
+            );
+        }
+        catch (error) {
+            addLog(
+                "error",
+                "AUTH STATE MONITOR ERROR",
+                error
+            );
+        }
+    },
+    1500
+);
+/* =========================================================
+   CONSOLE COMMANDS
+========================================================= */
+window.c2p = {
+    logs,
+    stats,
+    storage() {
+        console.table(
+            getStorageSnapshot()
+        );
+    },
+    async auth() {
+        await monitorAuth();
+    },
+    async profile() {
+        await inspectCurrentUser();
+    },
+    sell(profile) {
+        if (!profile) {
+            console.warn(
+                "Gunakan c2p.sell(profile)"
+            );
+            return;
+        }
+        inspectSellAccess(
+            profile
+        );
+    },
+    page() {
+        console.table({
+            href:
+                location.href,
+            pathname:
+                location.pathname,
+            referrer:
+                document.referrer,
+            title:
+                document.title
+        });
+    },
+    clear() {
+        logs.length = 0;
+        console.clear();
+        console.log(
+            PREFIX,
+            "LOG CLEARED"
+        );
+    },
+    summary() {
+        console.table(
+            stats
+        );
+    }
+};
+/* =========================================================
    FINAL
-========================================= */
-
+========================================================= */
 addLog(
-
-"info",
-
-"DEBUG READY",
-
-{
-
-version:"2.0",
-
-time:new Date(),
-
-url:location.href
-
-}
-
+    "info",
+    "DEBUG READY",
+    {
+        version:
+            "3.0",
+        commands: [
+            "c2p.storage()",
+            "c2p.auth()",
+            "c2p.profile()",
+            "c2p.page()",
+            "c2p.summary()",
+            "c2p.clear()"
+        ]
+    }
 );
-
+console.log(
+    "%c CLICK2PAY DEBUG MODE ",
+    "background:#2563eb;color:white;padding:6px 10px;border-radius:6px;font-weight:bold;"
+);
+console.log(
+    "Gunakan:",
+    "c2p.profile()"
+);
+console.log(
+    "Untuk cek Sell Link:",
+    "c2p.sell(profile)"
+);
 })();
-
