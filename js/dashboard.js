@@ -10,8 +10,9 @@ let marketData = [];
 // HELPERS
 //======================================================
 function formatRupiah(value) {
-    return "Rp " + Number(value || 0)
-        .toLocaleString("id-ID");
+    return "Rp " +
+        Number(value || 0)
+            .toLocaleString("id-ID");
 }
 function formatNumber(value) {
     return Number(value || 0)
@@ -26,24 +27,40 @@ function getJakartaDate(dateValue = new Date()) {
     }).format(new Date(dateValue));
 }
 function isSameJakartaDay(dateValue) {
-    return getJakartaDate(dateValue) ===
-        getJakartaDate(new Date());
+    if (!dateValue) {
+        return false;
+    }
+    return (
+        getJakartaDate(dateValue) ===
+        getJakartaDate(new Date())
+    );
 }
 function isSameJakartaMonth(dateValue) {
+    if (!dateValue) {
+        return false;
+    }
     const date = new Date(dateValue);
     const now = new Date();
-    const dateParts = new Intl.DateTimeFormat("en-CA", {
-        timeZone: "Asia/Jakarta",
-        year: "numeric",
-        month: "2-digit"
-    }).formatToParts(date);
-    const nowParts = new Intl.DateTimeFormat("en-CA", {
-        timeZone: "Asia/Jakarta",
-        year: "numeric",
-        month: "2-digit"
-    }).formatToParts(now);
-    const getPart = (parts, type) =>
-        parts.find(x => x.type === type)?.value;
+    if (isNaN(date.getTime())) {
+        return false;
+    }
+    const dateParts =
+        new Intl.DateTimeFormat("en-CA", {
+            timeZone: "Asia/Jakarta",
+            year: "numeric",
+            month: "2-digit"
+        }).formatToParts(date);
+    const nowParts =
+        new Intl.DateTimeFormat("en-CA", {
+            timeZone: "Asia/Jakarta",
+            year: "numeric",
+            month: "2-digit"
+        }).formatToParts(now);
+    const getPart = (parts, type) => {
+        return parts.find(
+            item => item.type === type
+        )?.value;
+    };
     return (
         getPart(dateParts, "year") ===
         getPart(nowParts, "year")
@@ -59,9 +76,71 @@ function isPaidStatus(status) {
         "completed",
         "settled"
     ].includes(
-        String(status || "").toLowerCase()
+        String(status || "")
+            .toLowerCase()
     );
 }
+//======================================================
+// CHART OPTIONS
+//======================================================
+const commonOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+        mode: "index",
+        intersect: false
+    },
+    plugins: {
+        legend: {
+            display: false
+        },
+        tooltip: {
+            backgroundColor: "#0f172a",
+            padding: 12,
+            callbacks: {
+                label(context) {
+                    const value =
+                        Number(
+                            context.parsed.y || 0
+                        );
+                    if (
+                        context.dataset.label ===
+                        "Pendapatan"
+                        ||
+                        context.dataset.label ===
+                        "Sell Earnings"
+                    ) {
+                        return (
+                            "Rp " +
+                            value.toLocaleString(
+                                "id-ID"
+                            )
+                        );
+                    }
+                    return value.toLocaleString(
+                        "id-ID"
+                    );
+                }
+            }
+        }
+    },
+    scales: {
+        x: {
+            grid: {
+                display: false
+            }
+        },
+        y: {
+            beginAtZero: true,
+            ticks: {
+                callback(value) {
+                    return Number(value)
+                        .toLocaleString("id-ID");
+                }
+            }
+        }
+    }
+};
 //======================================================
 // LOAD DASHBOARD
 //======================================================
@@ -88,7 +167,9 @@ async function loadDashboard() {
         window.currentUserCountry =
             profile.country || "Indonesia";
         const countryNotice =
-            document.getElementById("countryNotice");
+            document.getElementById(
+                "countryNotice"
+            );
         if (countryNotice) {
             countryNotice.textContent =
                 `Data CPM berdasarkan negara ${window.currentUserCountry}`;
@@ -97,23 +178,41 @@ async function loadDashboard() {
         // ELEMENT
         //==================================================
         const adsToday =
-            document.getElementById("adsToday");
+            document.getElementById(
+                "adsToday"
+            );
         const adsMonth =
-            document.getElementById("adsMonth");
+            document.getElementById(
+                "adsMonth"
+            );
         const adsViewsMonth =
-            document.getElementById("adsViewsMonth");
+            document.getElementById(
+                "adsViewsMonth"
+            );
         const sellToday =
-            document.getElementById("sellToday");
+            document.getElementById(
+                "sellToday"
+            );
         const sellMonth =
-            document.getElementById("sellMonth");
+            document.getElementById(
+                "sellMonth"
+            );
         const todayDate =
-            document.getElementById("todayDate");
+            document.getElementById(
+                "todayDate"
+            );
         const todayDateSell =
-            document.getElementById("todayDateSell");
+            document.getElementById(
+                "todayDateSell"
+            );
         const adsMonthSelect =
-            document.getElementById("adsMonthSelect");
+            document.getElementById(
+                "adsMonthSelect"
+            );
         const sellMonthSelect =
-            document.getElementById("sellMonthSelect");
+            document.getElementById(
+                "sellMonthSelect"
+            );
         //==================================================
         // DATE DISPLAY
         //==================================================
@@ -122,12 +221,18 @@ async function loadDashboard() {
             now.toLocaleString(
                 "id-ID",
                 {
-                    timeZone: "Asia/Jakarta",
-                    day: "2-digit",
-                    month: "long",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit"
+                    timeZone:
+                        "Asia/Jakarta",
+                    day:
+                        "2-digit",
+                    month:
+                        "long",
+                    year:
+                        "numeric",
+                    hour:
+                        "2-digit",
+                    minute:
+                        "2-digit"
                 }
             );
         if (todayDate) {
@@ -142,9 +247,12 @@ async function loadDashboard() {
             now.toLocaleString(
                 "id-ID",
                 {
-                    timeZone: "Asia/Jakarta",
-                    month: "long",
-                    year: "numeric"
+                    timeZone:
+                        "Asia/Jakarta",
+                    month:
+                        "long",
+                    year:
+                        "numeric"
                 }
             );
         if (adsMonthSelect) {
@@ -191,7 +299,6 @@ async function loadDashboard() {
         let totalSellViews = 0;
         let totalSellClicks = 0;
         let totalSold = 0;
-        let totalSellPrice = 0;
         let sellTodayEarn = 0;
         let sellMonthEarn = 0;
         let sellTotalEarn = 0;
@@ -241,36 +348,35 @@ async function loadDashboard() {
         //==================================================
         for (const order of sellOrders) {
             const quantity =
-                Number(order.quantity || 1);
+                Number(
+                    order.quantity || 1
+                );
             const price =
-                Number(order.price || 0);
+                Number(
+                    order.price || 0
+                );
             const receive =
                 Number(
-                    order.seller_receive ||
-                    0
+                    order.seller_receive || 0
                 );
             const status =
                 String(
                     order.status || ""
                 ).toLowerCase();
             //==============================================
-            // HANYA ORDER PAID
+            // ONLY PAID
             //==============================================
             if (!isPaidStatus(status)) {
                 continue;
             }
             //==============================================
-            // TOTAL TERJUAL
+            // TOTAL SOLD
             //==============================================
             totalSold += quantity;
-            totalSellPrice +=
-                price * quantity;
-            sellTotalEarn +=
-                receive;
+            sellTotalEarn += receive;
             //==============================================
-            // TANGGAL PEMBAYARAN
-            // PENTING:
-            // gunakan paid_at, bukan created_at
+            // PAYMENT DATE
+            // paid_at lebih penting daripada created_at
             //==============================================
             const paidDate =
                 order.paid_at ||
@@ -314,15 +420,21 @@ async function loadDashboard() {
             );
         if (adsViewsEl) {
             adsViewsEl.textContent =
-                formatNumber(adsViews);
+                formatNumber(
+                    adsViews
+                );
         }
         if (adsClicksEl) {
             adsClicksEl.textContent =
-                formatNumber(adsClicks);
+                formatNumber(
+                    adsClicks
+                );
         }
         if (adsViewsMonth) {
             adsViewsMonth.textContent =
-                formatNumber(adsViews);
+                formatNumber(
+                    adsViews
+                );
         }
         //==================================================
         // DISPLAY SELL
@@ -389,8 +501,7 @@ async function loadDashboard() {
         if (currentCpm) {
             const totalAdsEarn =
                 Number(
-                    profile.ads_earning_total ||
-                    0
+                    profile.ads_earning_total || 0
                 );
             let cpm = 0;
             if (adsViews > 0) {
@@ -409,60 +520,143 @@ async function loadDashboard() {
         //==================================================
         // LOAD DAILY REPORTS
         //==================================================
-        const reports =
-            await database.getReports(
+        let reports = [];
+        try {
+            reports =
+                await database.getReports(
+                    authId
+                ) || [];
+            if (!Array.isArray(reports)) {
+                reports = [];
+            }
+            console.log(
+                "================================"
+            );
+            console.log(
+                "DAILY REPORTS RAW:"
+            );
+            console.table(reports);
+            console.log(
+                "TOTAL REPORT:",
+                reports.length
+            );
+            console.log(
+                "USER ID:",
                 authId
-            ) || [];
+            );
+            console.log(
+                "================================"
+            );
+        } catch (reportError) {
+            console.error(
+                "GET DAILY REPORTS ERROR:",
+                reportError
+            );
+            reports = [];
+        }
+        //==================================================
+        // SORT REPORT TERBARU -> TERLAMA
+        //==================================================
+        reports.sort(
+            (a, b) => {
+                const dateA =
+                    new Date(
+                        a.report_date
+                    ).getTime();
+                const dateB =
+                    new Date(
+                        b.report_date
+                    ).getTime();
+                return dateB - dateA;
+            }
+        );
+        //==================================================
+        // NORMALIZE REPORT
+        //==================================================
+        reports =
+            reports.map(
+                row => ({
+                    ...row,
+                    ads_views:
+                        Number(
+                            row.ads_views || 0
+                        ),
+                    ads_clicks:
+                        Number(
+                            row.ads_clicks || 0
+                        ),
+                    ads_earnings:
+                        Number(
+                            row.ads_earnings || 0
+                        ),
+                    sell_views:
+                        Number(
+                            row.sell_views || 0
+                        ),
+                    sell_clicks:
+                        Number(
+                            row.sell_clicks || 0
+                        ),
+                    sell_earnings:
+                        Number(
+                            row.sell_earnings || 0
+                        )
+                })
+            );
         console.log(
-            "DAILY REPORTS:",
+            "NORMALIZED REPORTS:",
             reports
         );
         //==================================================
-        // CHART DATA
+        // CHART DATA - LAST 7 REPORT
         //==================================================
-        let labels = [];
-        let earnings = [];
-        let sellEarnings = [];
         const chartData =
             reports
                 .slice()
                 .sort(
                     (a, b) =>
-                        new Date(a.report_date) -
-                        new Date(b.report_date)
+                        new Date(
+                            a.report_date
+                        ) -
+                        new Date(
+                            b.report_date
+                        )
                 )
                 .slice(-7);
+        let labels = [];
+        let earnings = [];
+        let sellEarnings = [];
         if (chartData.length) {
             labels =
                 chartData.map(
-                    item => {
-                        const date =
-                            new Date(
-                                item.report_date
-                            );
-                        return date.toLocaleDateString(
+                    row => {
+                        return new Date(
+                            row.report_date
+                        ).toLocaleDateString(
                             "id-ID",
                             {
                                 timeZone:
                                     "Asia/Jakarta",
-                                day: "2-digit",
-                                month: "short"
+                                day:
+                                    "2-digit",
+                                month:
+                                    "short"
                             }
                         );
                     }
                 );
             earnings =
                 chartData.map(
-                    item =>
+                    row =>
                         Number(
-                            item.ads_earnings || 0
+                            row.ads_earnings || 0
                         )
                 );
             sellEarnings =
                 chartData.map(
-                    item =>
+                    row =>
                         Number(
-                            item.sell_earnings || 0
+                            row.sell_earnings || 0
                         )
                 );
         } else {
@@ -482,8 +676,10 @@ async function loadDashboard() {
                         {
                             timeZone:
                                 "Asia/Jakarta",
-                            day: "2-digit",
-                            month: "short"
+                            day:
+                                "2-digit",
+                            month:
+                                "short"
                         }
                     )
                 );
@@ -491,71 +687,6 @@ async function loadDashboard() {
                 sellEarnings.push(0);
             }
         }
-        //==================================================
-        // CHART OPTIONS
-        //==================================================
-        const commonOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: {
-                mode: "index",
-                intersect: false
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    backgroundColor:
-                        "#0f172a",
-                    padding: 12,
-                    callbacks: {
-                        label(context) {
-                            const value =
-                                Number(
-                                    context.parsed.y ||
-                                    0
-                                );
-                            if (
-                                context.dataset.label ===
-                                "Pendapatan"
-                                ||
-                                context.dataset.label ===
-                                "Sell Earnings"
-                            ) {
-                                return (
-                                    "Rp " +
-                                    value.toLocaleString(
-                                        "id-ID"
-                                    )
-                                );
-                            }
-                            return value.toLocaleString(
-                                "id-ID"
-                            );
-                        }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    grid: {
-                        display: false
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback(value) {
-                            return Number(value)
-                                .toLocaleString(
-                                    "id-ID"
-                                );
-                        }
-                    }
-                }
-            }
-        };
         //==================================================
         // ADS CHART
         //==================================================
@@ -571,9 +702,11 @@ async function loadDashboard() {
                 new Chart(
                     adsCanvas,
                     {
-                        type: "line",
+                        type:
+                            "line",
                         data: {
-                            labels: labels,
+                            labels:
+                                labels,
                             datasets: [{
                                 label:
                                     "Pendapatan",
@@ -583,11 +716,16 @@ async function loadDashboard() {
                                     "#2563eb",
                                 backgroundColor:
                                     "rgba(37,99,235,.12)",
-                                borderWidth: 3,
-                                fill: true,
-                                tension: .45,
-                                pointRadius: 4,
-                                pointHoverRadius: 7
+                                borderWidth:
+                                    3,
+                                fill:
+                                    true,
+                                tension:
+                                    .45,
+                                pointRadius:
+                                    4,
+                                pointHoverRadius:
+                                    7
                             }]
                         },
                         options:
@@ -610,9 +748,11 @@ async function loadDashboard() {
                 new Chart(
                     sellCanvas,
                     {
-                        type: "line",
+                        type:
+                            "line",
                         data: {
-                            labels: labels,
+                            labels:
+                                labels,
                             datasets: [{
                                 label:
                                     "Sell Earnings",
@@ -622,11 +762,16 @@ async function loadDashboard() {
                                     "#8b5cf6",
                                 backgroundColor:
                                     "rgba(139,92,246,.12)",
-                                borderWidth: 3,
-                                fill: true,
-                                tension: .45,
-                                pointRadius: 4,
-                                pointHoverRadius: 7
+                                borderWidth:
+                                    3,
+                                fill:
+                                    true,
+                                tension:
+                                    .45,
+                                pointRadius:
+                                    4,
+                                pointHoverRadius:
+                                    7
                             }]
                         },
                         options:
@@ -635,73 +780,75 @@ async function loadDashboard() {
                 );
         }
         //==================================================
-        // ADS / SELL CPM FROM LAST REPORT
+        // LAST REPORT
+        //==================================================
+        const lastReport =
+            reports.length
+                ? reports[0]
+                : null;
+        console.log(
+            "LAST REPORT:",
+            lastReport
+        );
+        //==================================================
+        // ADS CPM
         //==================================================
         const adsCpm =
             document.getElementById(
                 "adsCpm"
             );
+        if (adsCpm) {
+            const views =
+                Number(
+                    lastReport?.ads_views || 0
+                );
+            const earning =
+                Number(
+                    lastReport?.ads_earnings || 0
+                );
+            const cpm =
+                views > 0
+                    ?
+                    Math.round(
+                        (
+                            earning *
+                            1000
+                        ) /
+                        views
+                    )
+                    :
+                    0;
+            adsCpm.textContent =
+                formatRupiah(cpm);
+        }
+        //==================================================
+        // SELL CPM
+        //==================================================
         const sellCpm =
             document.getElementById(
                 "sellCpm"
             );
-        const lastReport =
-            reports.length
-                ? reports[0]
-                : null;
-        //==============================================
-        // ADS CPM
-        //==============================================
-        if (adsCpm) {
-            let cpm = 0;
-            if (
-                lastReport &&
-                Number(
-                    lastReport.ads_views
-                ) > 0
-            ) {
-                cpm =
-                    Math.round(
-                        (
-                            Number(
-                                lastReport.ads_earnings ||
-                                0
-                            ) *
-                            1000
-                        ) /
-                        Number(
-                            lastReport.ads_views
-                        )
-                    );
-            }
-            adsCpm.textContent =
-                formatRupiah(cpm);
-        }
-        //==============================================
-        // SELL CPM
-        //==============================================
         if (sellCpm) {
-            let cpm = 0;
-            if (
-                lastReport &&
+            const views =
                 Number(
-                    lastReport.sell_views
-                ) > 0
-            ) {
-                cpm =
+                    lastReport?.sell_views || 0
+                );
+            const earning =
+                Number(
+                    lastReport?.sell_earnings || 0
+                );
+            const cpm =
+                views > 0
+                    ?
                     Math.round(
                         (
-                            Number(
-                                lastReport.sell_earnings ||
-                                0
-                            ) *
+                            earning *
                             1000
                         ) /
-                        Number(
-                            lastReport.sell_views
-                        )
-                    );
-            }
+                        views
+                    )
+                    :
+                    0;
             sellCpm.textContent =
                 formatRupiah(cpm);
         }
@@ -719,18 +866,15 @@ async function loadDashboard() {
                         row => {
                             const views =
                                 Number(
-                                    row.ads_views ||
-                                    0
+                                    row.ads_views || 0
                                 );
                             const clicks =
                                 Number(
-                                    row.ads_clicks ||
-                                    0
+                                    row.ads_clicks || 0
                                 );
                             const earn =
                                 Number(
-                                    row.ads_earnings ||
-                                    0
+                                    row.ads_earnings || 0
                                 );
                             const cpm =
                                 views > 0
@@ -744,18 +888,26 @@ async function loadDashboard() {
                                     )
                                     :
                                     0;
+                            const date =
+                                new Date(
+                                    row.report_date
+                                ).toLocaleDateString(
+                                    "id-ID",
+                                    {
+                                        timeZone:
+                                            "Asia/Jakarta",
+                                        day:
+                                            "2-digit",
+                                        month:
+                                            "short",
+                                        year:
+                                            "numeric"
+                                    }
+                                );
                             return `
 <tr>
 <td>
-${new Date(
-    row.report_date
-).toLocaleDateString(
-    "id-ID",
-    {
-        timeZone:
-            "Asia/Jakarta"
-    }
-)}
+${date}
 </td>
 <td>
 ${views.toLocaleString("id-ID")}
@@ -777,7 +929,7 @@ Rp ${cpm.toLocaleString("id-ID")}
                 reportTable.innerHTML = `
 <tr>
 <td colspan="5">
-Belum ada data report.
+Belum ada data report ADS.
 </td>
 </tr>
 `;
@@ -797,18 +949,15 @@ Belum ada data report.
                         row => {
                             const views =
                                 Number(
-                                    row.sell_views ||
-                                    0
+                                    row.sell_views || 0
                                 );
                             const clicks =
                                 Number(
-                                    row.sell_clicks ||
-                                    0
+                                    row.sell_clicks || 0
                                 );
                             const earn =
                                 Number(
-                                    row.sell_earnings ||
-                                    0
+                                    row.sell_earnings || 0
                                 );
                             const cpm =
                                 views > 0
@@ -822,18 +971,26 @@ Belum ada data report.
                                     )
                                     :
                                     0;
+                            const date =
+                                new Date(
+                                    row.report_date
+                                ).toLocaleDateString(
+                                    "id-ID",
+                                    {
+                                        timeZone:
+                                            "Asia/Jakarta",
+                                        day:
+                                            "2-digit",
+                                        month:
+                                            "short",
+                                        year:
+                                            "numeric"
+                                    }
+                                );
                             return `
 <tr>
 <td>
-${new Date(
-    row.report_date
-).toLocaleDateString(
-    "id-ID",
-    {
-        timeZone:
-            "Asia/Jakarta"
-    }
-)}
+${date}
 </td>
 <td>
 ${views.toLocaleString("id-ID")}
@@ -855,7 +1012,7 @@ Rp ${cpm.toLocaleString("id-ID")}
                 sellReportTable.innerHTML = `
 <tr>
 <td colspan="5">
-Belum ada laporan sell.
+Belum ada laporan SELL.
 </td>
 </tr>
 `;
@@ -871,7 +1028,9 @@ Belum ada laporan sell.
         const market =
             await database.getCPMMarket();
         marketData =
-            market || [];
+            Array.isArray(market)
+                ? market
+                : [];
         if (marketList) {
             if (marketData.length) {
                 marketList.innerHTML =
@@ -881,37 +1040,46 @@ Belum ada laporan sell.
     class="market-row"
     onclick="selectCountry(${item.id})"
 >
-<div class="flag">
-${item.flag || "🌍"}
-</div>
-<div>
-<div class="country">
-${item.country}
-</div>
-<div class="spark">
-<span
-    style="width:${item.trend || 50}%"
-></span>
-</div>
-</div>
-<div class="market-price">
-<b>
-Rp ${Number(item.cpm || 0)
-    .toLocaleString("id-ID")}
-</b>
-<div class="market-change ${
-    Number(item.change) >= 0
-        ? "up"
-        : "down"
-}">
-${Number(item.change) >= 0
-    ? "▲"
-    : "▼"}
-${Math.abs(
-    Number(item.change || 0)
-).toFixed(2)}%
-</div>
-</div>
+    <div class="flag">
+        ${item.flag || "🌍"}
+    </div>
+    <div>
+        <div class="country">
+            ${item.country || "-"}
+        </div>
+        <div class="spark">
+            <span
+                style="width:${Math.min(
+                    Math.max(
+                        Number(item.trend || 50),
+                        0
+                    ),
+                    100
+                )}%"
+            ></span>
+        </div>
+    </div>
+    <div class="market-price">
+        <b>
+            Rp ${Number(
+                item.cpm || 0
+            ).toLocaleString("id-ID")}
+        </b>
+        <div class="market-change ${
+            Number(item.change || 0) >= 0
+                ? "up"
+                : "down"
+        }">
+            ${
+                Number(item.change || 0) >= 0
+                    ? "▲"
+                    : "▼"
+            }
+            ${Math.abs(
+                Number(item.change || 0)
+            ).toFixed(2)}%
+        </div>
+    </div>
 </div>
 `
                     ).join("");
@@ -941,12 +1109,12 @@ ${Math.abs(
                     news.map(
                         item => `
 <div class="announcement-item">
-<b>
-${item.title || "Pengumuman"}
-</b>
-<p>
-${item.content || ""}
-</p>
+    <b>
+        ${item.title || "Pengumuman"}
+    </b>
+    <p>
+        ${item.content || ""}
+    </p>
 </div>
 `
                     ).join("");
@@ -978,11 +1146,15 @@ function autoTheme() {
     const theme =
         localStorage.getItem("theme");
     if (theme === "dark") {
-        document.body.classList.add("dark");
+        document.body.classList.add(
+            "dark"
+        );
         return;
     }
     if (theme === "light") {
-        document.body.classList.remove("dark");
+        document.body.classList.remove(
+            "dark"
+        );
         return;
     }
     const hour =
@@ -991,9 +1163,13 @@ function autoTheme() {
         hour >= 18 ||
         hour < 6
     ) {
-        document.body.classList.add("dark");
+        document.body.classList.add(
+            "dark"
+        );
     } else {
-        document.body.classList.remove("dark");
+        document.body.classList.remove(
+            "dark"
+        );
     }
 }
 autoTheme();
@@ -1045,7 +1221,9 @@ function selectCountry(id) {
         marketData.find(
             x => x.id == id
         );
-    if (!item) return;
+    if (!item) {
+        return;
+    }
     const history =
         Array.isArray(item.history)
             ? item.history
@@ -1064,7 +1242,7 @@ function selectCountry(id) {
         );
     if (country) {
         country.textContent =
-            item.country;
+            item.country || "-";
     }
     if (price) {
         price.textContent =
@@ -1073,17 +1251,19 @@ function selectCountry(id) {
             );
     }
     if (change) {
+        const changeValue =
+            Number(
+                item.change || 0
+            );
         change.innerHTML =
             (
-                Number(item.change) >= 0
+                changeValue >= 0
                     ? "▲ "
                     : "▼ "
             )
             +
             Math.abs(
-                Number(
-                    item.change || 0
-                )
+                changeValue
             ).toFixed(2)
             +
             "%";
@@ -1092,46 +1272,63 @@ function selectCountry(id) {
         document.getElementById(
             "marketChart"
         );
-    if (!canvas) return;
+    if (!canvas) {
+        return;
+    }
+    const chartLabels =
+        history.map(
+            (_, index) =>
+                index + 1
+        );
+    const chartValues =
+        history.map(
+            value =>
+                Number(value || 0)
+        );
     if (!marketChartInstance) {
         marketChartInstance =
             new Chart(
                 canvas,
                 {
-                    type: "line",
+                    type:
+                        "line",
                     data: {
                         labels:
-                            history.map(
-                                (_, i) =>
-                                    i + 1
-                            ),
+                            chartLabels,
                         datasets: [{
                             data:
-                                history,
+                                chartValues,
                             borderColor:
                                 "#2563eb",
                             backgroundColor:
                                 "rgba(37,99,235,.12)",
-                            fill: true,
-                            tension: .4,
-                            pointRadius: 0
+                            fill:
+                                true,
+                            tension:
+                                .4,
+                            pointRadius:
+                                0
                         }]
                     },
                     options: {
-                        responsive: true,
+                        responsive:
+                            true,
                         maintainAspectRatio:
                             false,
                         plugins: {
                             legend: {
-                                display: false
+                                display:
+                                    false
                             }
                         },
                         scales: {
                             x: {
-                                display: false
+                                display:
+                                    false
                             },
                             y: {
-                                display: false
+                                display:
+                                    false
                             }
                         }
                     }
@@ -1139,14 +1336,12 @@ function selectCountry(id) {
             );
     } else {
         marketChartInstance.data.labels =
-            history.map(
-                (_, i) => i + 1
-            );
+            chartLabels;
         marketChartInstance
             .data
             .datasets[0]
             .data =
-            history;
+            chartValues;
         marketChartInstance.update();
     }
 }
@@ -1203,7 +1398,9 @@ async function checkSellStatus() {
     try {
         const profile =
             await database.getCurrentProfile();
-        if (!profile) return;
+        if (!profile) {
+            return;
+        }
         const enabled =
             profile.sell_link_enabled === true
             ||
