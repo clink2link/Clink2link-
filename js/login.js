@@ -287,7 +287,7 @@ return;
 
 
 // =========================
-// PROFILE / USER
+// PROFILE
 // =========================
 const {
     data: profile,
@@ -298,21 +298,13 @@ const {
     .eq("id", authData.user.id)
     .maybeSingle();
 if (profileError) {
-    console.error(
-        "GET USER PROFILE ERROR:",
-        profileError
-    );
     throw profileError;
 }
 if (!profile) {
-    console.error(
-        "USER TIDAK DITEMUKAN:",
-        authData.user.id
-    );
+    await database.supabase.auth.signOut();
     showAlert(
         "❌ Data akun tidak ditemukan."
     );
-    await database.supabase.auth.signOut();
     return;
 }
 
