@@ -482,308 +482,415 @@ Open Link
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
-
 const SUPABASE_URL="https://lwjtagxkqeprjpupmadf.supabase.co";
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3anRhZ3hrcWVwcmpwdXBtYWRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMDExNzYsImV4cCI6MjA5OTg3NzE3Nn0.Cg8TIBtOE4PHmnSybJtMqEoCFx-Qm4Kkl8exSOanTes";
-
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsbXdqZ3hrcWVwcmpwdXBtYWRmIiwicmVmIjoibHdqdGFn eHhrcWVwcmpwdXBtYWRmIiwicm9sIjoiYW5vbiIsImlhdCI6MTc4NDMwMTE3NiwiZXhwIjoyMDk5ODc3MTc2fQ.Cg8TIBtOE4PHmnSybJtMqEoCFx-Qm4Kkl8exSOanTes";
 const supabaseClient=supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+    SUPABASE_URL,
+    SUPABASE_KEY
 );
-
+// =====================================================
+// GET CODE
+// =====================================================
 let code=new URLSearchParams(location.search).get("code");
-
 if(!code){
     code=localStorage.getItem("task_code");
 }
-
 console.log("FINAL CODE:",code);
-
+// =====================================================
+// ELEMENT
+// =====================================================
 const downloadBtn=document.getElementById("downloadBtn");
 const loading=document.getElementById("loading");
 const loadingText=document.getElementById("loadingText");
-
 const linkPanel=document.getElementById("linkPanel");
-
 const getBtn=document.getElementById("getBtn");
 const progress=document.getElementById("progress");
 const progressBar=document.getElementById("progressBar");
-
 const status=document.getElementById("status");
 const openBtn=document.getElementById("openBtn");
-
-
+// =====================================================
+// CODE CHECK
+// =====================================================
 if(!code){
-alert("Kode link tidak ditemukan");
+    downloadBtn.disabled=true;
+    status.innerHTML="Kode link tidak ditemukan.";
 }
-
-
-
-/* DOWNLOAD 5 DETIK */
-
+// =====================================================
+// DOWNLOAD 5 DETIK
+// =====================================================
 downloadBtn.onclick=()=>{
-
-downloadBtn.style.display="none";
-loading.style.display="block";
-
-let s=5;
-
-loadingText.innerHTML="Menyiapkan link "+s+" detik";
-
-let timer=setInterval(()=>{
-
-s--;
-
-loadingText.innerHTML="Menyiapkan link "+s+" detik";
-
-
-if(s<=0){
-
-clearInterval(timer);
-
-loading.style.display="none";
-
-linkPanel.style.display="block";
-
-status.innerHTML="Silahkan klik Get Link";
-
-}
-
-},1000);
-
+    downloadBtn.style.display="none";
+    loading.style.display="block";
+    let s=5;
+    loadingText.innerHTML=
+        "Menyiapkan link "+s+" detik";
+    const timer=setInterval(()=>{
+        s--;
+        loadingText.innerHTML=
+            "Menyiapkan link "+s+" detik";
+        if(s<=0){
+            clearInterval(timer);
+            loading.style.display="none";
+            linkPanel.style.display="block";
+            status.innerHTML=
+                "Silahkan klik Get Link";
+        }
+    },1000);
 };
-
-
-
-
-/* GET LINK 3 DETIK */
-
+// =====================================================
+// GET LINK 3 DETIK
+// =====================================================
 getBtn.onclick=()=>{
-
-getBtn.style.display="none";
-progress.style.display="block";
-
-let p=0;
-
-let timer=setInterval(()=>{
-
-p++;
-
-progressBar.style.width=p+"%";
-status.innerHTML="Memproses "+p+"%";
-
-if(p>=100){
-
-clearInterval(timer);
-
-status.innerHTML="Link berhasil dibuat";
-openBtn.style.display="inline-block";
-
-}
-
-},30);
-
+    getBtn.style.display="none";
+    progress.style.display="block";
+    let p=0;
+    const timer=setInterval(()=>{
+        p++;
+        progressBar.style.width=p+"%";
+        status.innerHTML=
+            "Memproses "+p+"%";
+        if(p>=100){
+            clearInterval(timer);
+            status.innerHTML=
+                "Link berhasil dibuat";
+            openBtn.style.display="inline-block";
+        }
+    },30);
 };
-
-
-/* OPEN LINK + TAMBAH VIEW + SALDO */
-
+// =====================================================
+// OPEN LINK
+// =====================================================
 openBtn.onclick=async()=>{
-
 try{
-
-if(!code){
-alert("Kode tidak valid");
-return;
-}
-
-
-const {data:link,error}=await supabaseClient
-.from("links")
-.select("*")
-.eq("short_code",String(code))
-.maybeSingle();
-
-
-if(error||!link){
-alert("Link tidak ditemukan");
-return;
-}
-
-
-if(link.status!=="active"){
-alert("Link sudah tidak aktif");
-return;
-}
-
-
-/* ANTI DOUBLE VIEW */
-
-const viewed=localStorage.getItem("view_"+code);
-
-if(viewed){
-window.location.href=link.destination_url;
-return;
-}
-
-localStorage.setItem("view_"+code,"true");
-
-
-/* EARNING */
-
-let earning=75;
-
-const {data:cpmData}=await supabaseClient
-.from("cpm_rates")
-.select("cpm")
-.eq("country","Indonesia")
-.single();
-
-if(cpmData){
-earning=Number(cpmData.cpm);
-}
-
-
-/* UPDATE LINK */
-
-await supabaseClient
-.from("links")
-.update({
-views:Number(link.views||0)+1,
-total_views:Number(link.total_views||0)+1,
-total_clicks:Number(link.total_clicks||0)+1
-})
-.eq("id",link.id);
-
-
-
-/* SIMPAN VIEW */
-
-await supabaseClient
-.from("link_views")
-.insert({
-link_id:link.id,
-earning:earning,
-is_valid:true,
-created_at:new Date()
-});
-
-
-
-/* SIMPAN ADS */
-
-await supabaseClient
-.from("ad_statistics")
-.insert({
-user_id:link.user_id,
-short_code:code,
-views:1,
-earning:earning,
-created_at:new Date()
-});
-
-
-
-/* UPDATE PROFILE */
-
-const {data:profile}=await supabaseClient
-.from("profiles")
-.select("*")
-.eq("id",link.user_id)
-.single();
-
-if(profile){
-
-const {error:updateError}=await supabaseClient
-.from("profiles")
-.update({
-
-balance:Number(profile.balance||0)+earning,
-
-ads_earning_total:
-Number(profile.ads_earning_total||0)+earning,
-
-ads_earning_today:
-Number(profile.ads_earning_today||0)+earning,
-
-ads_earning_month:
-Number(profile.ads_earning_month||0)+earning,
-
-total_views:
-Number(profile.total_views||0)+1,
-
-total_clicks:
-Number(profile.total_clicks||0)+1
-
-})
-.eq("id",link.user_id);
-
-if(updateError){
-console.log("PROFILE UPDATE ERROR:",updateError);
-}
-
-}
-
-/* REPORT HARIAN */
-
-const todayDate=new Date()
-.toISOString()
-.split("T")[0];
-
-
-const {data:report}=await supabaseClient
-.from("reports")
-.select("*")
-.eq("user_id",link.user_id)
-.eq("report_date",todayDate)
-.maybeSingle();
-
-
-if(report){
-
-await supabaseClient
-.from("reports")
-.update({
-
-ads_views:Number(report.ads_views||0)+1,
-
-ads_earnings:
-Number(report.ads_earnings||0)+earning
-
-})
-.eq("id",report.id);
-
-
-}else{
-
-await supabaseClient
-.from("reports")
-.insert({
-
-user_id:link.user_id,
-report_date:todayDate,
-ads_views:1,
-ads_earnings:earning
-
-});
-
-}
-
-
-/* REDIRECT */
-
-window.location.href=link.destination_url;
-
-
+    // =================================================
+    // VALIDASI CODE
+    // =================================================
+    if(!code){
+        alert("Kode tidak valid");
+        return;
+    }
+    // =================================================
+    // AMBIL LINK
+    // =================================================
+    const {
+        data:link,
+        error:linkError
+    }=await supabaseClient
+        .from("links")
+        .select("*")
+        .eq(
+            "short_code",
+            String(code)
+        )
+        .maybeSingle();
+    if(linkError){
+        console.error(
+            "GET LINK ERROR:",
+            linkError
+        );
+        alert("Gagal mengambil link");
+        return;
+    }
+    if(!link){
+        alert("Link tidak ditemukan");
+        return;
+    }
+    // =================================================
+    // STATUS LINK
+    // =================================================
+    if(link.status!=="active"){
+        alert("Link sudah tidak aktif");
+        return;
+    }
+    // =================================================
+    // ANTI DOUBLE VIEW
+    // =================================================
+    const viewedKey=
+        "view_"+code;
+    const viewed=
+        localStorage.getItem(viewedKey);
+    if(viewed){
+        window.location.href=
+            link.destination_url;
+        return;
+    }
+    // Tandai sudah dihitung
+    localStorage.setItem(
+        viewedKey,
+        "true"
+    );
+    // =================================================
+    // CPM
+    // =================================================
+    let earning=75;
+    const {
+        data:cpmData,
+        error:cpmError
+    }=await supabaseClient
+        .from("cpm_rates")
+        .select("cpm")
+        .eq(
+            "country",
+            "Indonesia"
+        )
+        .maybeSingle();
+    if(cpmError){
+        console.log(
+            "CPM ERROR:",
+            cpmError
+        );
+    }
+    if(cpmData){
+        earning=
+            Number(cpmData.cpm||75);
+    }
+    console.log(
+        "EARNING:",
+        earning
+    );
+    // =================================================
+    // UPDATE LINKS
+    // =================================================
+    const {
+        error:updateLinkError
+    }=await supabaseClient
+        .from("links")
+        .update({
+            views:
+                Number(link.views||0)+1,
+            total_views:
+                Number(link.total_views||0)+1,
+            total_earnings:
+                Number(link.total_earnings||0)+earning
+        })
+        .eq(
+            "id",
+            link.id
+        );
+    if(updateLinkError){
+        console.error(
+            "UPDATE LINKS ERROR:",
+            updateLinkError
+        );
+    }
+    // =================================================
+    // SIMPAN LINK VIEW
+    // =================================================
+    const {
+        error:viewError
+    }=await supabaseClient
+        .from("link_views")
+        .insert({
+            link_id:
+                link.id,
+            earning:
+                earning,
+            is_valid:
+                true,
+            created_at:
+                new Date().toISOString()
+        });
+    if(viewError){
+        console.error(
+            "LINK VIEWS ERROR:",
+            viewError
+        );
+    }
+    // =================================================
+    // UPDATE USERS
+    // =================================================
+    const {
+        data:user,
+        error:userError
+    }=await supabaseClient
+        .from("users")
+        .select(`
+            id,
+            balance,
+            ads_earning_today,
+            ads_earning_month,
+            ads_earning_total,
+            total_views,
+            total_clicks
+        `)
+        .eq(
+            "id",
+            link.user_id
+        )
+        .maybeSingle();
+    if(userError){
+        console.error(
+            "GET USER ERROR:",
+            userError
+        );
+    }
+    if(user){
+        const {
+            error:userUpdateError
+        }=await supabaseClient
+            .from("users")
+            .update({
+                balance:
+                    Number(user.balance||0)
+                    + earning,
+                ads_earning_today:
+                    Number(
+                        user.ads_earning_today||0
+                    )
+                    + earning,
+                ads_earning_month:
+                    Number(
+                        user.ads_earning_month||0
+                    )
+                    + earning,
+                ads_earning_total:
+                    Number(
+                        user.ads_earning_total||0
+                    )
+                    + earning,
+                total_views:
+                    Number(
+                        user.total_views||0
+                    )
+                    + 1,
+                total_clicks:
+                    Number(
+                        user.total_clicks||0
+                    )
+                    + 1
+            })
+            .eq(
+                "id",
+                link.user_id
+            );
+        if(userUpdateError){
+            console.error(
+                "USER UPDATE ERROR:",
+                userUpdateError
+            );
+        }
+    }
+    // =================================================
+    // DAILY REPORT
+    // ASIA/JAKARTA
+    // =================================================
+    const todayDate=
+        new Intl.DateTimeFormat(
+            "en-CA",
+            {
+                timeZone:
+                    "Asia/Jakarta"
+            }
+        ).format(
+            new Date()
+        );
+    console.log(
+        "REPORT DATE:",
+        todayDate
+    );
+    // =================================================
+    // CEK DAILY REPORT
+    // =================================================
+    const {
+        data:report,
+        error:reportSelectError
+    }=await supabaseClient
+        .from("daily_reports")
+        .select("*")
+        .eq(
+            "user_id",
+            link.user_id
+        )
+        .eq(
+            "report_date",
+            todayDate
+        )
+        .maybeSingle();
+    if(reportSelectError){
+        console.error(
+            "REPORT SELECT ERROR:",
+            reportSelectError
+        );
+    }
+    // =================================================
+    // UPDATE REPORT
+    // =================================================
+    if(report){
+        const {
+            error:reportUpdateError
+        }=await supabaseClient
+            .from("daily_reports")
+            .update({
+                ads_views:
+                    Number(
+                        report.ads_views||0
+                    )
+                    + 1,
+                ads_earnings:
+                    Number(
+                        report.ads_earnings||0
+                    )
+                    + earning
+            })
+            .eq(
+                "id",
+                report.id
+            );
+        if(reportUpdateError){
+            console.error(
+                "REPORT UPDATE ERROR:",
+                reportUpdateError
+            );
+        }
+    }
+    // =================================================
+    // INSERT REPORT
+    // =================================================
+    else{
+        const {
+            error:reportInsertError
+        }=await supabaseClient
+            .from("daily_reports")
+            .insert({
+                user_id:
+                    link.user_id,
+                report_date:
+                    todayDate,
+                ads_views:
+                    1,
+                ads_clicks:
+                    0,
+                ads_earnings:
+                    earning,
+                sell_views:
+                    0,
+                sell_clicks:
+                    0,
+                sell_earnings:
+                    0
+            });
+        if(reportInsertError){
+            console.error(
+                "REPORT INSERT ERROR:",
+                reportInsertError
+            );
+        }
+    }
+    // =================================================
+    // REDIRECT
+    // =================================================
+    window.location.href=
+        link.destination_url;
 }catch(err){
-
-console.log(err);
-alert("Terjadi kesalahan");
-
+    console.error(
+        "FINAL ERROR:",
+        err
+    );
+    alert(
+        "Terjadi kesalahan. Silakan coba lagi."
+    );
 }
-
 };
 </script>
 
