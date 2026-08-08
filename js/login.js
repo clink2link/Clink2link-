@@ -287,18 +287,34 @@ return;
 
 
 // =========================
-// PROFILE
+// PROFILE / USER
 // =========================
-
 const {
-data:profile,
-error:profileError
-
-}=await database.supabase
-.from("profiles")
-.select("*")
-.eq("id",authData.user.id)
-.maybeSingle();
+    data: profile,
+    error: profileError
+} = await database.supabase
+    .from("users")
+    .select("*")
+    .eq("id", authData.user.id)
+    .maybeSingle();
+if (profileError) {
+    console.error(
+        "GET USER PROFILE ERROR:",
+        profileError
+    );
+    throw profileError;
+}
+if (!profile) {
+    console.error(
+        "USER TIDAK DITEMUKAN:",
+        authData.user.id
+    );
+    showAlert(
+        "❌ Data akun tidak ditemukan."
+    );
+    await database.supabase.auth.signOut();
+    return;
+}
 
 
 
