@@ -1,17 +1,18 @@
 // js/database.js
 
 const SUPABASE_URL =
-“https://lwjtagxkqeprjpupmadf.supabase.co”;
+"https://lwjtagxkqeprjpupmadf.supabase.co";
 
 const SUPABASE_ANON_KEY =
-“eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3anRhZ3hrcWVwcmpwdXBtYWRmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NDMwMTE3NiwiZXhwIjoyMDk5ODc3MTc2fQ.jaiA6dZ2IWMh2gJuS9qPEorNlXpMT5BgyXaRRSJCSvk”
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3anRhZ3hrcWVwcmpwdXBtYWRmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NDMwMTE3NiwiZXhwIjoyMDk5ODc3MTc2fQ.jaiA6dZ2IWMh2gJuS9qPEorNlXpMT5BgyXaRRSJCSvk";
 
 const supabaseClient = supabase.createClient(
-SUPABASE_URL,
-SUPABASE_ANON_KEY
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
 );
 
-const API_URL = “https://click2pay.my.id”;
+const API_URL =
+"https://click2pay.my.id";
 
 // =====================================================
 // USER
@@ -1040,7 +1041,7 @@ return data || [];
 // =====================================================
 
 async function getCPMRate(
-country = “Indonesia”
+    country = "Indonesia"
 ) {
 
 const { data, error } =
@@ -1117,6 +1118,6 @@ getCPMRate
 };
 
 console.log(
-“DATABASE JS READY”,
-window.database
+    "DATABASE JS READY",
+    window.database
 );
