@@ -82,17 +82,22 @@
     function applyLanguage(
         language = getLanguage()
     ){
-        if(!translations[language]){
+        /*
+         * Validasi bahasa
+         */
+        if(
+            !translations[language]
+        ){
             language = "id";
         }
         const data =
             translations[language];
-        /*
-         * TEXT
-         */
+        /* =================================================
+           TEXT
+        ================================================= */
         document
             .querySelectorAll("[data-i18n]")
-            .forEach(element => {
+            .forEach(function(element){
                 const key =
                     element.dataset.i18n;
                 if(
@@ -102,14 +107,14 @@
                         data[key];
                 }
             });
-        /*
-         * PLACEHOLDER
-         */
+        /* =================================================
+           PLACEHOLDER
+        ================================================= */
         document
             .querySelectorAll(
                 "[data-i18n-placeholder]"
             )
-            .forEach(element => {
+            .forEach(function(element){
                 const key =
                     element.dataset
                         .i18nPlaceholder;
@@ -120,9 +125,9 @@
                         data[key];
                 }
             });
-        /*
-         * UPDATE SELECTOR
-         */
+        /* =================================================
+           LANGUAGE SELECTOR
+        ================================================= */
         const selector =
             document.getElementById(
                 "languageSelect"
@@ -131,30 +136,30 @@
             selector.value =
                 language;
         }
-        /*
-         * SAVE LANGUAGE
-         */
+        /* =================================================
+           SAVE LANGUAGE
+        ================================================= */
         localStorage.setItem(
             "language",
             language
         );
-        /*
-         * HTML LANGUAGE
-         */
+        /* =================================================
+           HTML LANG
+        ================================================= */
         document.documentElement
             .setAttribute(
                 "lang",
                 language
             );
-        /*
-         * EVENT
-         */
+        /* =================================================
+           EVENT
+        ================================================= */
         document.dispatchEvent(
             new CustomEvent(
                 "languageChanged",
                 {
                     detail:{
-                        language:language
+                        language: language
                     }
                 }
             )
@@ -179,28 +184,36 @@
             document.getElementById(
                 "languageSelect"
             );
+        /*
+         * Navbar belum masuk.
+         *
+         * Jangan error.
+         * Nanti bisa dipanggil lagi
+         * setelah navbar selesai load.
+         */
         if(!selector){
-            return;
+            return false;
         }
         /*
-         * Set current language
+         * Set bahasa yang tersimpan
          */
         selector.value =
             getLanguage();
         /*
-         * Avoid duplicate event
+         * Hindari event listener
+         * dipasang dua kali.
          */
         if(
             selector.dataset
                 .languageReady === "true"
         ){
-            return;
+            return true;
         }
         selector.dataset
             .languageReady = "true";
-        /*
-         * CHANGE
-         */
+        /* =================================================
+           CHANGE EVENT
+        ================================================= */
         selector.addEventListener(
             "change",
             function(){
@@ -209,11 +222,28 @@
                 );
             }
         );
+        return true;
     }
     /* =================================================
-       INITIALIZE
+       INITIALIZE LANGUAGE
     ================================================= */
     function initLanguage(){
+        /*
+         * Coba pasang selector.
+         */
+        initLanguageSelector();
+        /*
+         * Terapkan bahasa ke elemen
+         * yang sudah tersedia.
+         */
+        applyLanguage();
+    }
+    /* =================================================
+       RE-INITIALIZE
+       Dipanggil setelah navbar.html
+       selesai dimuat.
+    ================================================= */
+    function refreshLanguage(){
         initLanguageSelector();
         applyLanguage();
     }
@@ -238,6 +268,17 @@
         getLanguage,
         setLanguage,
         applyLanguage,
+        initLanguage,
+        refreshLanguage,
+        initLanguageSelector,
         translations
     };
+    /*
+     * Compatibility:
+     *
+     * navbar.js sebelumnya memanggil
+     * applyLanguage() secara langsung.
+     */
+    window.applyLanguage =
+        applyLanguage;
 })();
