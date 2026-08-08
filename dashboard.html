@@ -650,6 +650,10 @@
 ========================= -->
 <script src="js/theme.js"></script>
 <!-- =========================
+     LANGUAGE
+========================= -->
+<script src="js/language.js"></script>
+<!-- =========================
      FOOTER
 ========================= -->
 <script src="js/footer.js"></script>
@@ -661,103 +665,176 @@
      DASHBOARD
 ========================= -->
 <script src="js/dashboard.js"></script>
-<!-- =========================
+<!-- =====================================================
      NAVBAR
-========================= -->
+===================================================== -->
 <script>
-fetch("components/navbar.html")
-.then(res => res.text())
-.then(data => {
-    const navbar =
-        document.getElementById("navbar");
-    if(navbar){
-        navbar.innerHTML = data;
-    }
-    const script =
-        document.createElement("script");
-    script.src =
-        "js/navbar.js";
-    script.onload = () => {
-        console.log("NAVBAR READY");
-        if(typeof c2pInit === "function"){
-            c2pInit();
-        }
-        document
-            .querySelectorAll(".c2p-sidebar a")
-            .forEach(link => {
-                link.addEventListener(
-                    "click",
-                    () => {
-                        if(
-                            typeof c2pClose ===
-                            "function"
-                        ){
-                            c2pClose();
-                        }
-                    }
+document.addEventListener("DOMContentLoaded", function(){
+    fetch("components/navbar.html")
+        .then(response => {
+            if(!response.ok){
+                throw new Error(
+                    "Gagal memuat navbar: " +
+                    response.status
                 );
-            });
-        const logoutBtn =
-            document.getElementById(
-                "logoutBtn"
+            }
+            return response.text();
+        })
+        .then(html => {
+            const navbar =
+                document.getElementById("navbar");
+            if(!navbar){
+                console.error(
+                    "ELEMENT #navbar TIDAK DITEMUKAN"
+                );
+                return;
+            }
+            /* Masukkan navbar */
+            navbar.innerHTML = html;
+            console.log(
+                "NAVBAR HTML LOADED"
             );
-        if(logoutBtn){
-            logoutBtn.onclick =
-                async function(){
-                    try{
-                        await database.logout();
-                    }catch(error){
-                        console.error(
-                            "LOGOUT ERROR:",
-                            error
+            /*
+             * Load navbar.js setelah navbar
+             * berhasil dimasukkan ke halaman.
+             */
+            const script =
+                document.createElement("script");
+            script.src = "js/navbar.js";
+            script.onload = function(){
+                console.log(
+                    "NAVBAR JS READY"
+                );
+                /*
+                 * Jalankan sistem navbar.
+                 */
+                if(
+                    typeof c2pInit ===
+                    "function"
+                ){
+                    c2pInit();
+                }
+                /*
+                 * Tutup sidebar ketika
+                 * menu diklik.
+                 */
+                document
+                    .querySelectorAll(
+                        ".c2p-sidebar a"
+                    )
+                    .forEach(function(link){
+                        link.addEventListener(
+                            "click",
+                            function(){
+                                if(
+                                    typeof c2pClose ===
+                                    "function"
+                                ){
+                                    c2pClose();
+                                }
+                            }
                         );
-                    }
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    window.location.replace(
-                        "index.html"
+                    });
+                /*
+                 * LOGOUT
+                 */
+                const logoutBtn =
+                    document.getElementById(
+                        "logoutBtn"
                     );
-                };
-        }
-    };
-    document.body.appendChild(script);
-})
-.catch(err => {
-    console.error(
-        "NAVBAR LOAD ERROR:",
-        err
-    );
+                if(logoutBtn){
+                    logoutBtn.addEventListener(
+                        "click",
+                        async function(){
+                            try{
+                                if(
+                                    window.database &&
+                                    typeof database.logout ===
+                                    "function"
+                                ){
+                                    await database.logout();
+                                }
+                            }catch(error){
+                                console.error(
+                                    "LOGOUT ERROR:",
+                                    error
+                                );
+                            }
+                            localStorage.clear();
+                            sessionStorage.clear();
+                            window.location.replace(
+                                "index.html"
+                            );
+                        }
+                    );
+                }
+            };
+            script.onerror = function(){
+                console.error(
+                    "GAGAL LOAD js/navbar.js"
+                );
+            };
+            document.body.appendChild(
+                script
+            );
+        })
+        .catch(function(error){
+            console.error(
+                "NAVBAR LOAD ERROR:",
+                error
+            );
+        });
 });
 </script>
-<!-- =========================
+<!-- =====================================================
      FOOTER LOAD
-========================= -->
+===================================================== -->
 <script>
-fetch("components/footer.html")
-.then(res => res.text())
-.then(data => {
-    const footer =
-        document.getElementById("footer");
-    if(footer){
-        footer.innerHTML = data;
-    }
-    if(
-        typeof c2pFooterInit ===
-        "function"
-    ){
-        c2pFooterInit();
-    }
-})
-.catch(err => {
-    console.error(
-        "FOOTER LOAD ERROR:",
-        err
-    );
+document.addEventListener("DOMContentLoaded", function(){
+    fetch("components/footer.html")
+        .then(response => {
+            if(!response.ok){
+                throw new Error(
+                    "Gagal memuat footer: " +
+                    response.status
+                );
+            }
+            return response.text();
+        })
+        .then(html => {
+            const footer =
+                document.getElementById("footer");
+            if(!footer){
+                console.error(
+                    "ELEMENT #footer TIDAK DITEMUKAN"
+                );
+                return;
+            }
+            footer.innerHTML = html;
+            console.log(
+                "FOOTER HTML LOADED"
+            );
+            /*
+             * Jalankan footer.js jika tersedia.
+             */
+            if(
+                typeof c2pFooterInit ===
+                "function"
+            ){
+                c2pFooterInit();
+            }
+        })
+        .catch(function(error){
+            console.error(
+                "FOOTER LOAD ERROR:",
+                error
+            );
+        });
 });
 </script>
-<!-- =========================
+<!-- =====================================================
      DEBUG
-========================= -->
+===================================================== -->
 <script src="assets/js/debug.js"></script>
 </body>
 </html>
