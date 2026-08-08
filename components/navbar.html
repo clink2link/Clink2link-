@@ -50,80 +50,111 @@
       type="text"
       placeholder="Cari menu..."
       id="menuSearch"
+      data-i18n-placeholder="searchMenu"
     >
   </div>
   <!-- DASHBOARD -->
   <a href="dashboard.html">
     <i class="fa-solid fa-house"></i>
-    Dashboard
+    <span data-i18n="dashboard">
+      Dashboard
+    </span>
   </a>
   <!-- CREATE LINK -->
   <a href="create-link.html">
     <i class="fa-solid fa-link"></i>
-    Create Link
+    <span data-i18n="createLink">
+      Create Link
+    </span>
   </a>
   <!-- CREATE SELL LINK -->
   <a href="sell-link.html">
     <i class="fa-solid fa-cart-plus"></i>
-    Create Sell Link
+    <span data-i18n="createSellLink">
+      Create Sell Link
+    </span>
   </a>
   <!-- MY LINK -->
   <a href="my-link.html">
     <i class="fa-solid fa-list"></i>
-    My Link
+    <span data-i18n="myLink">
+      My Link
+    </span>
   </a>
   <!-- PAYMENT -->
   <a href="payment.html">
     <i class="fa-solid fa-wallet"></i>
-    Payment
+    <span data-i18n="payment">
+      Payment
+    </span>
   </a>
   <!-- BALANCE HISTORY -->
   <a href="history.html">
     <i class="fa-solid fa-clock-rotate-left"></i>
-    History Saldo
+    <span data-i18n="balanceHistory">
+      History Saldo
+    </span>
   </a>
   <!-- REFERRAL -->
   <a href="referral.html">
     <i class="fa-solid fa-users"></i>
-    Referral
+    <span data-i18n="referral">
+      Referral
+    </span>
   </a>
   <!-- NOTIFICATION -->
   <a href="notification.html">
     <i class="fa-solid fa-bell"></i>
-    Notifikasi
+    <span data-i18n="notification">
+      Notifikasi
+    </span>
   </a>
   <!-- ACCOUNT -->
   <div class="c2p-divider">
-    Akun
+    <span data-i18n="account">
+      Akun
+    </span>
   </div>
   <!-- PROFILE -->
   <a href="profile.html">
     <i class="fa-solid fa-user"></i>
-    Profil
+    <span data-i18n="profile">
+      Profil
+    </span>
   </a>
   <!-- SETTINGS -->
   <a href="settings.html">
     <i class="fa-solid fa-gear"></i>
-    Pengaturan
+    <span data-i18n="settings">
+      Pengaturan
+    </span>
   </a>
   <!-- LOGIN ACTIVITY -->
   <a href="activity.html">
     <i class="fa-solid fa-user-clock"></i>
-    Aktivitas Login
+    <span data-i18n="loginActivity">
+      Aktivitas Login
+    </span>
   </a>
   <!-- SUPPORT -->
   <div class="c2p-divider">
-    Support
+    <span data-i18n="support">
+      Support
+    </span>
   </div>
   <!-- TELEGRAM -->
   <a href="#">
     <i class="fa-brands fa-telegram"></i>
-    Telegram
+    <span data-i18n="telegram">
+      Telegram
+    </span>
   </a>
   <!-- FACEBOOK -->
   <a href="#">
     <i class="fa-brands fa-facebook"></i>
-    Facebook
+    <span data-i18n="facebook">
+      Facebook
+    </span>
   </a>
   <!-- LOGOUT -->
   <button
@@ -131,14 +162,18 @@
     id="logoutBtn"
     type="button"
   >
-    Logout
+    <span data-i18n="logout">
+      Logout
+    </span>
   </button>
   <!-- SIDEBAR FOOTER -->
   <div class="c2p-side-footer">
     © 2026 Click2Pay
   </div>
 </div>
-<!-- OVERLAY -->
+<!-- =====================================================
+     OVERLAY
+===================================================== -->
 <div class="c2p-overlay"></div>
 <!-- =====================================================
      MOBILE BOTTOM NAV
@@ -147,12 +182,16 @@
   <!-- DASHBOARD -->
   <a href="/dashboard">
     <i class="fa-solid fa-house"></i>
-    Dashboard
+    <span data-i18n="dashboard">
+      Dashboard
+    </span>
   </a>
   <!-- WITHDRAW -->
   <a href="withdraw.html">
     <i class="fa-solid fa-money-bill-wave"></i>
-    Withdraw
+    <span data-i18n="withdraw">
+      Withdraw
+    </span>
   </a>
   <!-- CREATE -->
   <div class="create-wrapper">
@@ -164,12 +203,16 @@
       <!-- SELL LINK -->
       <a href="sell-link.html">
         <i class="fa-solid fa-cart-plus"></i>
-        Sell Link
+        <span data-i18n="sellLink">
+          Sell Link
+        </span>
       </a>
       <!-- ADS LINK -->
       <a href="create-link.html">
         <i class="fa-solid fa-bullhorn"></i>
-        Ads Link
+        <span data-i18n="adsLink">
+          Ads Link
+        </span>
       </a>
     </div>
     <!-- CREATE BUTTON -->
@@ -185,77 +228,15 @@
   <!-- PREMIUM -->
   <a href="/premium">
     <i class="fa-solid fa-crown"></i>
-    Premium
+    <span data-i18n="premium">
+      Premium
+    </span>
   </a>
   <!-- PROFILE -->
   <a href="/profile">
     <i class="fa-solid fa-user"></i>
-    Profil
+    <span data-i18n="profile">
+      Profil
+    </span>
   </a>
 </div>
-<!-- =====================================================
-     LANGUAGE SELECTOR
-===================================================== -->
-<script>
-document.addEventListener(
-  "DOMContentLoaded",
-  function(){
-    const languageSelect =
-      document.getElementById(
-        "languageSelect"
-      );
-    /*
-     * Stop if selector does not exist.
-     */
-    if(!languageSelect){
-      return;
-    }
-    /*
-     * Get saved language.
-     *
-     * Default:
-     * Indonesian
-     */
-    const currentLanguage =
-      localStorage.getItem(
-        "language"
-      ) || "id";
-    /*
-     * Set current language
-     * inside selector.
-     */
-    languageSelect.value =
-      currentLanguage;
-    /*
-     * Change language.
-     */
-    languageSelect.addEventListener(
-      "change",
-      function(){
-        const selectedLanguage =
-          this.value;
-        /*
-         * Save selected language.
-         */
-        localStorage.setItem(
-          "language",
-          selectedLanguage
-        );
-        /*
-         * Apply translation
-         * immediately if language.js
-         * is already loaded.
-         */
-        if(
-          typeof applyLanguage ===
-          "function"
-        ){
-          applyLanguage(
-            selectedLanguage
-          );
-        }
-      }
-    );
-  }
-);
-</script>
