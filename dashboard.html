@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -51,7 +51,9 @@
 <div class="dash-welcome">
 <h1>
     <i class="fa-solid fa-house"></i>
+<span data-i18n="dashboard.title">
     Dashboard Click2Pay
+</span>
 </h1>
 </div>
 <!-- =========================
@@ -62,13 +64,13 @@
     <i class="fa-solid fa-bell"></i>
 </div>
 <div class="notice-content">
-    <div class="notice-track">
-        <span>
-            Jika belum tahu caranya, silakan klik panduan di bawah ini.
-            Jika ingin mengaktifkan fitur Sell Link, Anda dapat upgrade Premium
-            atau menghubungi admin.
-        </span>
-    </div>
+<div class="notice-track">
+    <span data-i18n="dashboard.notice">
+        Jika belum tahu caranya, silakan klik panduan di bawah ini.
+        Jika ingin mengaktifkan fitur Sell Link, Anda dapat upgrade Premium
+        atau menghubungi admin.
+    </span>
+</div>
 </div>
 <div class="notice-status">
     <i class="fa-solid fa-circle-check"></i>
@@ -80,165 +82,201 @@
 <div class="dash-box guide-wrapper">
 <div class="guide-toggle"
      onclick="toggleGuide()">
-    <h2>
-        <i class="fa-solid fa-book-open"></i>
+<h2>
+    <i class="fa-solid fa-book-open"></i>
+    <span data-i18n="dashboard.guide.title">
         Panduan Click2Pay
-    </h2>
-    <i id="guideArrow"
-       class="fa-solid fa-chevron-down"></i>
+    </span>
+</h2>
+<i id="guideArrow"
+   class="fa-solid fa-chevron-down">
+</i>
 </div>
 <div id="guideContent"
      class="guide-content">
-    <p style="margin:8px 0 18px;color:#64748b">
-        Pelajari semua fitur Click2Pay
-        sebelum mulai menghasilkan uang.
-    </p>
-    <div class="guide-grid">
-        <!-- ADS LINK -->
-        <div class="guide-card">
-            <div class="guide-icon">
-                <i class="fa-solid fa-link"></i>
-            </div>
-            <h3>
-                Buat Ads Link
-            </h3>
-            <p>
-                Pelajari cara membuat Ads Link
-                pertama dan membagikannya.
-            </p>
-            <button class="guide-btn"
-                    onclick="location.href='tutorial-ads.html'">
-                <i class="fa-solid fa-arrow-right"></i>
-                Buka
-            </button>
+<p style="margin:8px 0 18px;color:#64748b"
+   data-i18n="dashboard.guide.description">
+    Pelajari semua fitur Click2Pay
+    sebelum mulai menghasilkan uang.
+</p>
+<div class="guide-grid">
+    <!-- =========================
+         ADS LINK
+    ========================= -->
+    <div class="guide-card">
+        <div class="guide-icon">
+            <i class="fa-solid fa-link"></i>
         </div>
-        <!-- SELL LINK -->
-        <div class="guide-card">
-            <div class="guide-icon purple">
-                <i class="fa-solid fa-cart-shopping"></i>
-            </div>
-            <h3>
-                Buat Sell Link
-            </h3>
-            <p>
-                Cara mengaktifkan Sell Link
-                dan menjual akses premium.
-            </p>
-            <button class="guide-btn"
-                    onclick="location.href='tutorial-sell.html'">
-                <i class="fa-solid fa-arrow-right"></i>
+        <h3 data-i18n="dashboard.guide.ads.title">
+            Buat Ads Link
+        </h3>
+        <p data-i18n="dashboard.guide.ads.description">
+            Pelajari cara membuat Ads Link
+            pertama dan membagikannya.
+        </p>
+        <button class="guide-btn"
+                onclick="location.href='tutorial-ads.html'">
+            <i class="fa-solid fa-arrow-right"></i>
+            <span data-i18n="common.open">
                 Buka
-            </button>
-        </div>
-        <!-- STATISTIK -->
-        <div class="guide-card">
-            <div class="guide-icon green">
-                <i class="fa-solid fa-chart-line"></i>
-            </div>
-            <h3>
-                Lihat Statistik
-            </h3>
-            <p>
-                Pelajari arti Views, Click,
-                CPM dan Pendapatan.
-            </p>
-            <button class="guide-btn"
-                    onclick="location.href='tutorial-statistik.html'">
-                <i class="fa-solid fa-arrow-right"></i>
-                Buka
-            </button>
-        </div>
-        <!-- WITHDRAW -->
-        <div class="guide-card">
-            <div class="guide-icon orange">
-                <i class="fa-solid fa-wallet"></i>
-            </div>
-            <h3>
-                Withdraw
-            </h3>
-            <p>
-                Cara menarik saldo ke rekening
-                atau e-wallet.
-            </p>
-            <button class="guide-btn"
-                    onclick="location.href='tutorial-withdraw.html'">
-                <i class="fa-solid fa-arrow-right"></i>
-                Buka
-            </button>
-        </div>
-        <!-- PENGHASILAN -->
-        <div class="guide-card">
-            <div class="guide-icon red">
-                <i class="fa-solid fa-money-bill-trend-up"></i>
-            </div>
-            <h3>
-                Mendapatkan Penghasilan
-            </h3>
-            <p>
-                Tips meningkatkan traffic
-                dan pendapatan harian.
-            </p>
-            <button class="guide-btn"
-                    onclick="location.href='tutorial-penghasilan.html'">
-                <i class="fa-solid fa-arrow-right"></i>
-                Buka
-            </button>
-        </div>
-        <!-- AKUN -->
-        <div class="guide-card">
-            <div class="guide-icon cyan">
-                <i class="fa-solid fa-user-gear"></i>
-            </div>
-            <h3>
-                Pengaturan Akun
-            </h3>
-            <p>
-                Mengubah profil, password,
-                atau pengaturan akun.
-            </p>
-            <button class="guide-btn"
-                    onclick="location.href='tutorial-akun.html'">
-                <i class="fa-solid fa-arrow-right"></i>
-                Buka
-            </button>
-        </div>
-        <!-- HAPUS AKUN -->
-        <div class="guide-card">
-            <div class="guide-icon pink">
-                <i class="fa-solid fa-trash"></i>
-            </div>
-            <h3>
-                Hapus Akun
-            </h3>
-            <p>
-                Panduan menonaktifkan atau
-                menghapus akun permanen.
-            </p>
-            <button class="guide-btn"
-                    onclick="location.href='tutorial-hapus-akun.html'">
-                <i class="fa-solid fa-arrow-right"></i>
-                Buka
-            </button>
-        </div>
-        <!-- FAQ -->
-        <div class="guide-card">
-            <div class="guide-icon yellow">
-                <i class="fa-solid fa-circle-question"></i>
-            </div>
-            <h3>
-                Pusat Bantuan
-            </h3>
-            <p>
-                FAQ dan pertanyaan yang
-                sering ditanyakan pengguna.
-            </p>
-            <button class="guide-btn"
-                    onclick="location.href='tutorial-faq.html'">
-                <i class="fa-solid fa-arrow-right"></i>
-                Buka
-            </button>
-        </div>
+            </span>
+        </button>
     </div>
+    <!-- =========================
+         SELL LINK
+    ========================= -->
+    <div class="guide-card">
+        <div class="guide-icon purple">
+            <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+        <h3 data-i18n="dashboard.guide.sell.title">
+            Buat Sell Link
+        </h3>
+        <p data-i18n="dashboard.guide.sell.description">
+            Cara mengaktifkan Sell Link
+            dan menjual akses premium.
+        </p>
+        <button class="guide-btn"
+                onclick="location.href='tutorial-sell.html'">
+            <i class="fa-solid fa-arrow-right"></i>
+            <span data-i18n="common.open">
+                Buka
+            </span>
+        </button>
+    </div>
+    <!-- =========================
+         STATISTICS
+    ========================= -->
+    <div class="guide-card">
+        <div class="guide-icon green">
+            <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <h3 data-i18n="dashboard.guide.statistics.title">
+            Lihat Statistik
+        </h3>
+        <p data-i18n="dashboard.guide.statistics.description">
+            Pelajari arti Views, Click,
+            CPM dan Pendapatan.
+        </p>
+        <button class="guide-btn"
+                onclick="location.href='tutorial-statistik.html'">
+            <i class="fa-solid fa-arrow-right"></i>
+            <span data-i18n="common.open">
+                Buka
+            </span>
+        </button>
+    </div>
+    <!-- =========================
+         WITHDRAW
+    ========================= -->
+    <div class="guide-card">
+        <div class="guide-icon orange">
+            <i class="fa-solid fa-wallet"></i>
+        </div>
+        <h3 data-i18n="dashboard.guide.withdraw.title">
+            Withdraw
+        </h3>
+        <p data-i18n="dashboard.guide.withdraw.description">
+            Cara menarik saldo ke rekening
+            atau e-wallet.
+        </p>
+        <button class="guide-btn"
+                onclick="location.href='tutorial-withdraw.html'">
+            <i class="fa-solid fa-arrow-right"></i>
+            <span data-i18n="common.open">
+                Buka
+            </span>
+        </button>
+    </div>
+    <!-- =========================
+         EARNINGS
+    ========================= -->
+    <div class="guide-card">
+        <div class="guide-icon red">
+            <i class="fa-solid fa-money-bill-trend-up"></i>
+        </div>
+        <h3 data-i18n="dashboard.guide.earnings.title">
+            Mendapatkan Penghasilan
+        </h3>
+        <p data-i18n="dashboard.guide.earnings.description">
+            Tips meningkatkan traffic
+            dan pendapatan harian.
+        </p>
+        <button class="guide-btn"
+                onclick="location.href='tutorial-penghasilan.html'">
+            <i class="fa-solid fa-arrow-right"></i>
+            <span data-i18n="common.open">
+                Buka
+            </span>
+        </button>
+    </div>
+    <!-- =========================
+         ACCOUNT
+    ========================= -->
+    <div class="guide-card">
+        <div class="guide-icon cyan">
+            <i class="fa-solid fa-user-gear"></i>
+        </div>
+        <h3 data-i18n="dashboard.guide.account.title">
+            Pengaturan Akun
+        </h3>
+        <p data-i18n="dashboard.guide.account.description">
+            Mengubah profil, password,
+            atau pengaturan akun.
+        </p>
+        <button class="guide-btn"
+                onclick="location.href='tutorial-akun.html'">
+            <i class="fa-solid fa-arrow-right"></i>
+            <span data-i18n="common.open">
+                Buka
+            </span>
+        </button>
+    </div>
+    <!-- =========================
+         DELETE ACCOUNT
+    ========================= -->
+    <div class="guide-card">
+        <div class="guide-icon pink">
+            <i class="fa-solid fa-trash"></i>
+        </div>
+        <h3 data-i18n="dashboard.guide.delete.title">
+            Hapus Akun
+        </h3>
+        <p data-i18n="dashboard.guide.delete.description">
+            Panduan menonaktifkan atau
+            menghapus akun permanen.
+        </p>
+        <button class="guide-btn"
+                onclick="location.href='tutorial-hapus-akun.html'">
+            <i class="fa-solid fa-arrow-right"></i>
+            <span data-i18n="common.open">
+                Buka
+            </span>
+        </button>
+    </div>
+    <!-- =========================
+         FAQ
+    ========================= -->
+    <div class="guide-card">
+        <div class="guide-icon yellow">
+            <i class="fa-solid fa-circle-question"></i>
+        </div>
+        <h3 data-i18n="dashboard.guide.faq.title">
+            Pusat Bantuan
+        </h3>
+        <p data-i18n="dashboard.guide.faq.description">
+            FAQ dan pertanyaan yang
+            sering ditanyakan pengguna.
+        </p>
+        <button class="guide-btn"
+                onclick="location.href='tutorial-faq.html'">
+            <i class="fa-solid fa-arrow-right"></i>
+            <span data-i18n="common.open">
+                Buka
+            </span>
+        </button>
+    </div>
+</div>
 </div>
 </div>
 <!-- =========================
@@ -247,48 +285,54 @@
 <div class="cpm-market">
 <div class="guide-toggle"
      onclick="toggleMarket()">
-    <h2>
-        <i class="fa-solid fa-earth-asia"></i>
+<h2>
+    <i class="fa-solid fa-earth-asia"></i>
+    <span data-i18n="dashboard.market.title">
         Global CPM Market
-    </h2>
-    <i id="marketArrow"
-       class="fa-solid fa-chevron-down"></i>
+    </span>
+</h2>
+<i id="marketArrow"
+   class="fa-solid fa-chevron-down">
+</i>
 </div>
 <div id="marketContent"
      class="guide-content">
-    <div class="cpm-header">
-        <p id="countryNotice">
-            Memuat CPM negara...
-        </p>
-        <div class="market-live">
-            <span class="live-dot"></span>
+<div class="cpm-header">
+    <p id="countryNotice"
+       data-i18n="dashboard.market.loading">
+        Memuat CPM negara...
+    </p>
+    <div class="market-live">
+        <span class="live-dot"></span>
+        <span data-i18n="common.live">
             LIVE
-        </div>
+        </span>
     </div>
-    <div class="market-layout">
-        <div id="cpmMarketList"
-             class="market-list">
-        </div>
+</div>
+<div class="market-layout">
+    <div id="cpmMarketList"
+         class="market-list">
     </div>
-    <!-- MARKET DETAIL -->
-    <div class="market-detail">
-        <div>
-            <span id="marketCountry">
-                -
-            </span>
-        </div>
-        <div>
-            <strong id="marketPrice">
-                Rp 0
-            </strong>
-        </div>
-        <div id="marketChange">
-            0.00%
-        </div>
+</div>
+<!-- MARKET DETAIL -->
+<div class="market-detail">
+    <div>
+        <span id="marketCountry">
+            -
+        </span>
     </div>
-    <div class="market-chart-wrapper">
-        <canvas id="marketChart"></canvas>
+    <div>
+        <strong id="marketPrice">
+            Rp 0
+        </strong>
     </div>
+    <div id="marketChange">
+        0.00%
+    </div>
+</div>
+<div class="market-chart-wrapper">
+    <canvas id="marketChart"></canvas>
+</div>
 </div>
 </div>
 <!-- =========================
@@ -296,65 +340,65 @@
 ========================= -->
 <div class="report-section">
 <div class="report-title">
-    <div>
-        <i class="fa-solid fa-chart-line"></i>
-        <span>
-            Report Pendapatan Ads
-        </span>
-    </div>
-    <small id="todayDate">
-        -
-    </small>
+<div>
+    <i class="fa-solid fa-chart-line"></i>
+    <span data-i18n="dashboard.adsReport.title">
+        Report Pendapatan Ads
+    </span>
+</div>
+<small id="todayDate">
+    -
+</small>
 </div>
 <div class="report-grid">
-    <!-- ADS TODAY -->
-    <div class="report-card">
-        <div class="report-icon green">
-            <i class="fa-solid fa-calendar-day"></i>
-        </div>
-        <h4>
-            Ads Hari Ini
-        </h4>
-        <h2 id="adsToday">
-            Rp 0
-        </h2>
+<!-- ADS TODAY -->
+<div class="report-card">
+    <div class="report-icon green">
+        <i class="fa-solid fa-calendar-day"></i>
     </div>
-    <!-- ADS MONTH -->
-    <div class="report-card">
-        <div class="report-icon blue">
-            <i class="fa-solid fa-wallet"></i>
-        </div>
-        <h4>
-            Ads Bulan Ini
-        </h4>
-        <h2 id="adsMonth">
-            Rp 0
-        </h2>
+    <h4 data-i18n="dashboard.adsReport.today">
+        Ads Hari Ini
+    </h4>
+    <h2 id="adsToday">
+        Rp 0
+    </h2>
+</div>
+<!-- ADS MONTH -->
+<div class="report-card">
+    <div class="report-icon blue">
+        <i class="fa-solid fa-wallet"></i>
     </div>
-    <!-- CURRENT CPM -->
-    <div class="report-card">
-        <div class="report-icon purple">
-            <i class="fa-solid fa-arrow-trend-up"></i>
-        </div>
-        <h4>
-            CPM Saat Ini
-        </h4>
-        <h2 id="currentCpm">
-            Rp 0
-        </h2>
+    <h4 data-i18n="dashboard.adsReport.month">
+        Ads Bulan Ini
+    </h4>
+    <h2 id="adsMonth">
+        Rp 0
+    </h2>
+</div>
+<!-- CURRENT CPM -->
+<div class="report-card">
+    <div class="report-icon purple">
+        <i class="fa-solid fa-arrow-trend-up"></i>
     </div>
-    <!-- VIEWS -->
-    <div class="report-card">
-        <div class="report-icon orange">
-            <i class="fa-solid fa-eye"></i>
-        </div>
-        <h4>
-            Total Views
-        </h4>
-        <h2 id="adsViewsMonth">
-            0
-        </h2>
+    <h4 data-i18n="dashboard.adsReport.cpm">
+        CPM Saat Ini
+    </h4>
+    <h2 id="currentCpm">
+        Rp 0
+    </h2>
+</div>
+<!-- VIEWS -->
+<div class="report-card">
+    <div class="report-icon orange">
+        <i class="fa-solid fa-eye"></i>
     </div>
+    <h4 data-i18n="dashboard.adsReport.views">
+        Total Views
+    </h4>
+    <h2 id="adsViewsMonth">
+        0
+    </h2>
+</div>
 </div>
 </div>
 <!-- =========================
@@ -362,65 +406,65 @@
 ========================= -->
 <div class="report-section">
 <div class="report-title">
-    <div>
-        <i class="fa-solid fa-cart-shopping"></i>
-        <span>
-            Report Pendapatan Sell Link
-        </span>
-    </div>
-    <small id="todayDateSell">
-        -
-    </small>
+<div>
+    <i class="fa-solid fa-cart-shopping"></i>
+    <span data-i18n="dashboard.sellReport.title">
+        Report Pendapatan Sell Link
+    </span>
+</div>
+<small id="todayDateSell">
+    -
+</small>
 </div>
 <div class="report-grid">
-    <!-- SELL TODAY -->
-    <div class="report-card sell-card locked">
-        <div class="report-icon orange">
-            <i class="fa-solid fa-calendar-day"></i>
-        </div>
-        <h4>
-            Pendapatan Hari Ini
-        </h4>
-        <h2 id="sellToday">
-            Rp 0
-        </h2>
+<!-- SELL TODAY -->
+<div class="report-card sell-card locked">
+    <div class="report-icon orange">
+        <i class="fa-solid fa-calendar-day"></i>
     </div>
-    <!-- SELL MONTH -->
-    <div class="report-card sell-card locked">
-        <div class="report-icon purple">
-            <i class="fa-solid fa-wallet"></i>
-        </div>
-        <h4>
-            Pendapatan Bulan Ini
-        </h4>
-        <h2 id="sellMonth">
-            Rp 0
-        </h2>
+    <h4 data-i18n="dashboard.sellReport.today">
+        Pendapatan Hari Ini
+    </h4>
+    <h2 id="sellToday">
+        Rp 0
+    </h2>
+</div>
+<!-- SELL MONTH -->
+<div class="report-card sell-card locked">
+    <div class="report-icon purple">
+        <i class="fa-solid fa-wallet"></i>
     </div>
-    <!-- TOTAL SOLD -->
-    <div class="report-card sell-card locked">
-        <div class="report-icon blue">
-            <i class="fa-solid fa-cart-shopping"></i>
-        </div>
-        <h4>
-            Total Terjual
-        </h4>
-        <h2 id="sellTotalSold">
-            0x
-        </h2>
+    <h4 data-i18n="dashboard.sellReport.month">
+        Pendapatan Bulan Ini
+    </h4>
+    <h2 id="sellMonth">
+        Rp 0
+    </h2>
+</div>
+<!-- TOTAL SOLD -->
+<div class="report-card sell-card locked">
+    <div class="report-icon blue">
+        <i class="fa-solid fa-cart-shopping"></i>
     </div>
-    <!-- TOTAL SELL LINK -->
-    <div class="report-card sell-card locked">
-        <div class="report-icon green">
-            <i class="fa-solid fa-link"></i>
-        </div>
-        <h4>
-            Total Sell Link
-        </h4>
-        <h2 id="sellTotalLink">
-            0
-        </h2>
+    <h4 data-i18n="dashboard.sellReport.sold">
+        Total Terjual
+    </h4>
+    <h2 id="sellTotalSold">
+        0x
+    </h2>
+</div>
+<!-- TOTAL SELL LINK -->
+<div class="report-card sell-card locked">
+    <div class="report-icon green">
+        <i class="fa-solid fa-link"></i>
     </div>
+    <h4 data-i18n="dashboard.sellReport.links">
+        Total Sell Link
+    </h4>
+    <h2 id="sellTotalLink">
+        0
+    </h2>
+</div>
 </div>
 </div>
 <!-- =========================
@@ -428,99 +472,109 @@
 ========================= -->
 <div id="statistics"
      class="stats-container">
-<!-- ADS STATISTICS -->
+<!-- =========================
+     ADS STATISTICS
+========================= -->
 <div class="stats-box">
-    <div class="stats-head">
-        <h2>
-            <i class="fa-solid fa-chart-line"></i>
+<div class="stats-head">
+    <h2>
+        <i class="fa-solid fa-chart-line"></i>
+        <span data-i18n="dashboard.statistics.ads">
             Statistik Ads
-        </h2>
-        <select id="adsMonthSelect">
-            <option>
-                Memuat...
-            </option>
-        </select>
-    </div>
-    <div class="chart-wrapper">
-        <canvas id="adsChart"></canvas>
-    </div>
-    <div class="stats-info">
-        <div>
-            <span>
-                Views
-            </span>
-            <b id="adsViews">
-                0
-            </b>
-        </div>
-        <div>
-            <span>
-                Klik
-            </span>
-            <b id="adsClicks">
-                0
-            </b>
-        </div>
-        <div>
-            <span>
-                CPM
-            </span>
-            <b id="adsCpm">
-                Rp 0
-            </b>
-        </div>
-    </div>
-    <p class="stats-note">
-        Report berdasarkan waktu
-        Asia/Jakarta.
-    </p>
+        </span>
+    </h2>
+    <select id="adsMonthSelect">
+        <option data-i18n="common.loading">
+            Memuat...
+        </option>
+    </select>
 </div>
-<!-- SELL STATISTICS -->
+<div class="chart-wrapper">
+    <canvas id="adsChart"></canvas>
+</div>
+<div class="stats-info">
+    <div>
+        <span data-i18n="common.views">
+            Views
+        </span>
+        <b id="adsViews">
+            0
+        </b>
+    </div>
+    <div>
+        <span data-i18n="common.clicks">
+            Klik
+        </span>
+        <b id="adsClicks">
+            0
+        </b>
+    </div>
+    <div>
+        <span data-i18n="common.cpm">
+            CPM
+        </span>
+        <b id="adsCpm">
+            Rp 0
+        </b>
+    </div>
+</div>
+<p class="stats-note"
+   data-i18n="dashboard.statistics.timezone">
+    Report berdasarkan waktu
+    Asia/Jakarta.
+</p>
+</div>
+<!-- =========================
+     SELL STATISTICS
+========================= -->
 <div class="stats-box sell-card locked">
-    <div class="stats-head">
-        <h2>
-            <i class="fa-solid fa-cart-shopping"></i>
+<div class="stats-head">
+    <h2>
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span data-i18n="dashboard.statistics.sell">
             Statistik Sell Link
-        </h2>
-        <select id="sellMonthSelect">
-            <option>
-                Memuat...
-            </option>
-        </select>
+        </span>
+    </h2>
+    <select id="sellMonthSelect">
+        <option data-i18n="common.loading">
+            Memuat...
+        </option>
+    </select>
+</div>
+<div class="chart-wrapper">
+    <canvas id="sellChart"></canvas>
+</div>
+<div class="stats-info">
+    <div>
+        <span data-i18n="common.views">
+            Views
+        </span>
+        <b id="sellViews">
+            0
+        </b>
     </div>
-    <div class="chart-wrapper">
-        <canvas id="sellChart"></canvas>
+    <div>
+        <span data-i18n="common.clicks">
+            Klik
+        </span>
+        <b id="sellClicks">
+            0
+        </b>
     </div>
-    <div class="stats-info">
-        <div>
-            <span>
-                Views
-            </span>
-            <b id="sellViews">
-                0
-            </b>
-        </div>
-        <div>
-            <span>
-                Klik
-            </span>
-            <b id="sellClicks">
-                0
-            </b>
-        </div>
-        <div>
-            <span>
-                CPM
-            </span>
-            <b id="sellCpm">
-                Rp 0
-            </b>
-        </div>
+    <div>
+        <span data-i18n="common.cpm">
+            CPM
+        </span>
+        <b id="sellCpm">
+            Rp 0
+        </b>
     </div>
-    <p class="stats-note">
-        Report berdasarkan waktu
-        Asia/Jakarta.
-    </p>
+</div>
+<p class="stats-note"
+   data-i18n="dashboard.statistics.timezone">
+    Report berdasarkan waktu
+    Asia/Jakarta.
+</p>
 </div>
 </div>
 <!-- =========================
@@ -528,43 +582,44 @@
 ========================= -->
 <div class="daily-report-section">
 <div class="report-card daily-report-card">
-    <div class="report-header">
-        <i class="fa-solid fa-chart-column"></i>
-        <span>
-            Detail Report Harian Ads Link
-        </span>
-    </div>
-    <div class="report-table">
-        <table>
-            <thead>
-                <tr>
-                    <th>
-                        Tanggal
-                    </th>
-                    <th>
-                        Views
-                    </th>
-                    <th>
-                        Klik
-                    </th>
-                    <th>
-                        Pendapatan
-                    </th>
-                    <th>
-                        CPM
-                    </th>
-                </tr>
-            </thead>
-            <tbody id="reportTable">
-                <tr>
-                    <td colspan="5"
-                        class="empty">
-                        Belum ada data report ADS.
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<div class="report-header">
+    <i class="fa-solid fa-chart-column"></i>
+    <span data-i18n="dashboard.dailyAds.title">
+        Detail Report Harian Ads Link
+    </span>
+</div>
+<div class="report-table">
+    <table>
+        <thead>
+            <tr>
+                <th data-i18n="common.date">
+                    Tanggal
+                </th>
+                <th data-i18n="common.views">
+                    Views
+                </th>
+                <th data-i18n="common.clicks">
+                    Klik
+                </th>
+                <th data-i18n="common.earnings">
+                    Pendapatan
+                </th>
+                <th data-i18n="common.cpm">
+                    CPM
+                </th>
+            </tr>
+        </thead>
+        <tbody id="reportTable">
+            <tr>
+                <td colspan="5"
+                    class="empty"
+                    data-i18n="dashboard.dailyAds.empty">
+                    Belum ada data report ADS.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 </div>
 </div>
 <!-- =========================
@@ -572,43 +627,44 @@
 ========================= -->
 <div class="daily-report-section">
 <div class="report-card daily-report-card sell-report">
-    <div class="report-header">
-        <i class="fa-solid fa-cart-shopping"></i>
-        <span>
-            Detail Report Harian Sell Link
-        </span>
-    </div>
-    <div class="report-table">
-        <table>
-            <thead>
-                <tr>
-                    <th>
-                        Tanggal
-                    </th>
-                    <th>
-                        Views
-                    </th>
-                    <th>
-                        Klik
-                    </th>
-                    <th>
-                        Pendapatan
-                    </th>
-                    <th>
-                        CPM
-                    </th>
-                </tr>
-            </thead>
-            <tbody id="sellReportTable">
-                <tr>
-                    <td colspan="5"
-                        class="empty">
-                        Belum ada laporan SELL.
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<div class="report-header">
+    <i class="fa-solid fa-cart-shopping"></i>
+    <span data-i18n="dashboard.dailySell.title">
+        Detail Report Harian Sell Link
+    </span>
+</div>
+<div class="report-table">
+    <table>
+        <thead>
+            <tr>
+                <th data-i18n="common.date">
+                    Tanggal
+                </th>
+                <th data-i18n="common.views">
+                    Views
+                </th>
+                <th data-i18n="common.clicks">
+                    Klik
+                </th>
+                <th data-i18n="common.earnings">
+                    Pendapatan
+                </th>
+                <th data-i18n="common.cpm">
+                    CPM
+                </th>
+            </tr>
+        </thead>
+        <tbody id="sellReportTable">
+            <tr>
+                <td colspan="5"
+                    class="empty"
+                    data-i18n="dashboard.dailySell.empty">
+                    Belum ada laporan SELL.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 </div>
 </div>
 <!-- =========================
@@ -616,11 +672,14 @@
 ========================= -->
 <div class="dash-box">
 <h2>
-    <i class="fa-solid fa-bullhorn"></i>
+<i class="fa-solid fa-bullhorn"></i>
+<span data-i18n="dashboard.announcement.title">
     Pengumuman Admin
+</span>
 </h2>
-<div id="announcementBox">
-    Belum ada pengumuman.
+<div id="announcementBox"
+     data-i18n="dashboard.announcement.empty">
+Belum ada pengumuman.
 </div>
 </div>
 </div>
@@ -684,29 +743,19 @@ document.addEventListener(
             })
             .then(function(html){
                 const navbar =
-                    document.getElementById(
-                        "navbar"
-                    );
+                    document.getElementById("navbar");
                 if(!navbar){
                     console.error(
                         "ELEMENT #navbar TIDAK DITEMUKAN"
                     );
                     return;
                 }
-                /* =========================
-                   INSERT NAVBAR
-                ========================= */
                 navbar.innerHTML = html;
                 console.log(
                     "NAVBAR HTML LOADED"
                 );
-                /* =========================
-                   LOAD NAVBAR JS
-                ========================= */
                 const script =
-                    document.createElement(
-                        "script"
-                    );
+                    document.createElement("script");
                 script.src =
                     "js/navbar.js";
                 script.onload =
@@ -714,19 +763,16 @@ document.addEventListener(
                         console.log(
                             "NAVBAR JS READY"
                         );
-                        /* =========================
-                           INIT NAVBAR
-                        ========================= */
                         if(
                             typeof c2pInit ===
                             "function"
                         ){
                             c2pInit();
                         }
-                        /* =========================
-                           REFRESH LANGUAGE
-                           AFTER NAVBAR LOADED
-                        ========================= */
+                        /*
+                         * LANGUAGE REFRESH
+                         * AFTER NAVBAR LOAD
+                         */
                         if(
                             window.c2pLanguage &&
                             typeof c2pLanguage.refreshLanguage ===
@@ -734,12 +780,12 @@ document.addEventListener(
                         ){
                             c2pLanguage.refreshLanguage();
                             console.log(
-                                "NAVBAR LANGUAGE REFRESHED"
+                                "LANGUAGE REFRESHED"
                             );
                         }
-                        /* =========================
-                           CLOSE SIDEBAR
-                        ========================= */
+                        /*
+                         * CLOSE SIDEBAR
+                         */
                         document
                             .querySelectorAll(
                                 ".c2p-sidebar a"
@@ -759,9 +805,9 @@ document.addEventListener(
                                     );
                                 }
                             );
-                        /* =========================
-                           LOGOUT
-                        ========================= */
+                        /*
+                         * LOGOUT
+                         */
                         const logoutBtn =
                             document.getElementById(
                                 "logoutBtn"
@@ -793,9 +839,6 @@ document.addEventListener(
                             );
                         }
                     };
-                /* =========================
-                   NAVBAR LOAD ERROR
-                ========================= */
                 script.onerror =
                     function(){
                         console.error(
@@ -834,35 +877,27 @@ document.addEventListener(
             })
             .then(function(html){
                 const footer =
-                    document.getElementById(
-                        "footer"
-                    );
+                    document.getElementById("footer");
                 if(!footer){
                     console.error(
                         "ELEMENT #footer TIDAK DITEMUKAN"
                     );
                     return;
                 }
-                /* =========================
-                   INSERT FOOTER
-                ========================= */
                 footer.innerHTML = html;
                 console.log(
                     "FOOTER HTML LOADED"
                 );
-                /* =========================
-                   INIT FOOTER
-                ========================= */
                 if(
                     typeof c2pFooterInit ===
                     "function"
                 ){
                     c2pFooterInit();
                 }
-                /* =========================
-                   REFRESH LANGUAGE
-                   AFTER FOOTER LOADED
-                ========================= */
+                /*
+                 * LANGUAGE REFRESH
+                 * AFTER FOOTER LOAD
+                 */
                 if(
                     window.c2pLanguage &&
                     typeof c2pLanguage.refreshLanguage ===
@@ -880,6 +915,28 @@ document.addEventListener(
                     error
                 );
             });
+    }
+);
+</script>
+<!-- =====================================================
+     FINAL LANGUAGE REFRESH
+===================================================== -->
+<script>
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+        setTimeout(function(){
+            if(
+                window.c2pLanguage &&
+                typeof c2pLanguage.refreshLanguage ===
+                "function"
+            ){
+                c2pLanguage.refreshLanguage();
+                console.log(
+                    "DASHBOARD LANGUAGE FINAL REFRESH"
+                );
+            }
+        }, 300);
     }
 );
 </script>
