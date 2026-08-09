@@ -1,394 +1,499 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
 <title>Profile • Click2Pay</title>
-
+<!-- =========================
+     INITIAL THEME
+========================= -->
 <script>
-if(localStorage.getItem("theme")==="dark"){
-document.documentElement.classList.add("dark");
-}
+(function(){
+    const theme = localStorage.getItem("theme");
+    if(theme === "dark"){
+        document.documentElement.classList.add("dark");
+    }
+})();
 </script>
-
+<!-- =========================
+     FONT
+========================= -->
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet">
+<!-- =========================
+     ICON
+========================= -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- =========================
+     CSS
+========================= -->
 <link rel="stylesheet" href="css/theme.css">
 <link rel="stylesheet" href="css/navbar.css">
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/app-ui.css">
 <link rel="stylesheet" href="css/profile.css">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 </head>
-
 <body class="app-body">
-
+<!-- =========================
+     BACKGROUND
+========================= -->
 <div class="app-bg"></div>
-
+<!-- =========================
+     NAVBAR
+========================= -->
 <div id="navbar"></div>
-
+<!-- =========================
+     MAIN CONTAINER
+========================= -->
 <div class="app-container">
-
 <main class="app-main">
-
+<!-- =========================
+     PAGE TITLE
+========================= -->
 <section class="page-title">
-
 <i class="fa-solid fa-user"></i>
-
 <div>
-
-<h1>Profile</h1>
-
-<p>Kelola informasi akun Click2Pay kamu.</p>
-
+    <h1 data-i18n="profileTitle">
+        Profile
+    </h1>
+    <p data-i18n="profileDescription">
+        Kelola informasi akun Click2Pay kamu.
+    </p>
 </div>
-
 </section>
-
+<!-- =========================
+     PROFILE CARD
+========================= -->
 <section class="profile-card">
-
+<!-- PROFILE HEADER -->
 <div class="profile-header">
-
-<div class="profile-avatar">
-
-<i class="fa-solid fa-user"></i>
-
+    <div class="profile-avatar">
+        <i class="fa-solid fa-user"></i>
+    </div>
+    <div>
+        <h2 id="profileUsername">
+            User
+        </h2>
+        <p data-i18n="memberClick2Pay">
+            Member Click2Pay
+        </p>
+    </div>
 </div>
-
-<div>
-
-<h2 id="profileUsername">User</h2>
-
-<p>Member Click2Pay</p>
-
-</div>
-
-</div>
-
+<!-- PROFILE INFORMATION -->
 <div class="profile-info">
-
-<div class="profile-info">
-
-<div class="profile-item">
-<span>
-<i class="fa-solid fa-user"></i>
-Username
-</span>
-<b id="profileUsernameInfo">-</b>
+    <!-- USERNAME -->
+    <div class="profile-item">
+        <span>
+            <i class="fa-solid fa-user"></i>
+            <span data-i18n="username">
+                Username
+            </span>
+        </span>
+        <b id="profileUsernameInfo">
+            -
+        </b>
+    </div>
+    <!-- USER ID -->
+    <div class="profile-item">
+        <span>
+            <i class="fa-solid fa-id-card"></i>
+            <span data-i18n="userId">
+                ID User
+            </span>
+        </span>
+        <div class="id-copy">
+            <b id="profileId">
+                -
+            </b>
+            <button
+                type="button"
+                id="copyId"
+                data-i18n-title="copy">
+                <i class="fa-solid fa-copy"></i>
+            </button>
+        </div>
+    </div>
+    <!-- EMAIL -->
+    <div class="profile-item">
+        <span>
+            <i class="fa-solid fa-envelope"></i>
+            <span data-i18n="email">
+                Email
+            </span>
+        </span>
+        <b id="profileEmail">
+            -
+        </b>
+    </div>
+    <!-- BALANCE -->
+    <div class="profile-item">
+        <span>
+            <i class="fa-solid fa-wallet"></i>
+            <span data-i18n="balance">
+                Saldo
+            </span>
+        </span>
+        <b id="profileBalance">
+            Rp 0
+        </b>
+    </div>
+    <!-- REFERRAL -->
+    <div class="profile-item">
+        <span>
+            <i class="fa-solid fa-users"></i>
+            <span data-i18n="totalReferral">
+                Total Referral
+            </span>
+        </span>
+        <b id="profileReferral">
+            0
+            <span data-i18n="people">
+                Orang
+            </span>
+        </b>
+    </div>
+    <!-- REFERRAL INCOME -->
+    <div class="profile-item">
+        <span>
+            <i class="fa-solid fa-gift"></i>
+            <span data-i18n="referralIncome">
+                Pendapatan Referral
+            </span>
+        </span>
+        <b id="profileReferralIncome">
+            Rp 0
+        </b>
+    </div>
+    <!-- MEMBER STATUS -->
+    <div class="profile-item">
+        <span>
+            <i class="fa-solid fa-circle-check"></i>
+            <span data-i18n="memberStatus">
+                Status Member
+            </span>
+        </span>
+        <b id="profileStatus"
+           data-i18n="member">
+            Member
+        </b>
+    </div>
+    <!-- JOIN DATE -->
+    <div class="profile-item">
+        <span>
+            <i class="fa-solid fa-calendar"></i>
+            <span data-i18n="joined">
+                Bergabung
+            </span>
+        </span>
+        <b id="profileCreated">
+            -
+        </b>
+    </div>
 </div>
-
-<div class="profile-item">
-<span>
-<i class="fa-solid fa-id-card"></i>
-ID User
-</span>
-
-<div class="id-copy">
-<b id="profileId">-</b>
-
-<button id="copyId">
-<i class="fa-solid fa-copy"></i>
-</button>
-</div>
-</div>
-
-<div class="profile-item">
-<span>
-<i class="fa-solid fa-envelope"></i>
-Email
-</span>
-<b id="profileEmail">-</b>
-</div>
-
-
-
-<div class="profile-item">
-<span>
-<i class="fa-solid fa-wallet"></i>
-Saldo
-</span>
-<b id="profileBalance">Rp 0</b>
-</div>
-
-<div class="profile-item">
-<span>
-<i class="fa-solid fa-users"></i>
-Total Referral
-</span>
-<b id="profileReferral">0 Orang</b>
-</div>
-
-<div class="profile-item">
-<span>
-<i class="fa-solid fa-gift"></i>
-Pendapatan Referral
-</span>
-<b id="profileReferralIncome">Rp 0</b>
-</div>
-
-<div class="profile-item">
-<span>
-<i class="fa-solid fa-circle-check"></i>
-Status Member
-</span>
-<b id="profileStatus">Member</b>
-</div>
-
-<div class="profile-item">
-<span>
-<i class="fa-solid fa-calendar"></i>
-Bergabung
-</span>
-<b id="profileCreated">-</b>
-</div>
-
-</div>
-
 </section>
-
+<!-- =========================
+     ACCOUNT SECURITY
+========================= -->
 <section class="info-note">
-
 <i class="fa-solid fa-shield-halved"></i>
-
 <div>
-
-<h3>Keamanan Akun</h3>
-
-<p>
-Jangan pernah membagikan password, kode OTP, ataupun data pembayaran kepada siapa pun.
-</p>
-
+    <h3 data-i18n="accountSecurity">
+        Keamanan Akun
+    </h3>
+    <p data-i18n="securityDescription">
+        Jangan pernah membagikan password, kode OTP, ataupun data pembayaran kepada siapa pun.
+    </p>
 </div>
-
 </section>
-
+<!-- =========================
+     PAYMENT INFORMATION
+========================= -->
 <section class="setting-menu">
-
 <div class="setting-title">
-
-<i class="fa-solid fa-building-columns"></i>
-
-<h2>Informasi Pembayaran</h2>
-
+    <i class="fa-solid fa-building-columns"></i>
+    <h2 data-i18n="paymentInformation">
+        Informasi Pembayaran
+    </h2>
 </div>
-
 <div class="setting-list">
-
-<div class="payment-empty" id="paymentEmpty">
-
-<i class="fa-solid fa-wallet"></i>
-
-<h3>Belum ada metode pembayaran</h3>
-
-<p>
-Kamu belum menambahkan Bank atau E-Wallet.
-Tambahkan metode pembayaran agar dapat menerima penarikan saldo.
-</p>
-
-<a href="paymentsetting.html" class="payment-btn">
-
-<div class="payment-btn-icon">
-<i class="fa-solid fa-wallet"></i>
+    <!-- PAYMENT EMPTY -->
+    <div
+        class="payment-empty"
+        id="paymentEmpty">
+        <i class="fa-solid fa-wallet"></i>
+        <h3 data-i18n="noPaymentMethod">
+            Belum ada metode pembayaran
+        </h3>
+        <p data-i18n="noPaymentDescription">
+            Kamu belum menambahkan Bank atau E-Wallet.
+            Tambahkan metode pembayaran agar dapat menerima penarikan saldo.
+        </p>
+        <a
+            href="paymentsetting.html"
+            class="payment-btn">
+            <div class="payment-btn-icon">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+            <div class="payment-btn-text">
+                <b data-i18n="setupPayment">
+                    Atur Pembayaran
+                </b>
+                <small data-i18n="addBankWallet">
+                    Tambah Bank atau E-Wallet
+                </small>
+            </div>
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
+    </div>
+    <!-- PAYMENT LIST -->
+    <div
+        id="paymentList"
+        style="display:none;">
+        <!-- PAYMENT METHOD -->
+        <a
+            href="paymentsetting.html"
+            class="setting-item">
+            <div>
+                <i class="fa-solid fa-building-columns"></i>
+                <div>
+                    <b
+                        id="paymentMethod"
+                        data-i18n="bankEwallet">
+                        Bank / E-Wallet
+                    </b>
+                    <br>
+                    <small
+                        id="paymentNumber">
+                        Nomor Rekening / Nomor HP
+                    </small>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
+        <!-- ACCOUNT NAME -->
+        <a
+            href="paymentsetting.html"
+            class="setting-item">
+            <div>
+                <i class="fa-solid fa-user-check"></i>
+                <div>
+                    <b data-i18n="accountName">
+                        Atas Nama
+                    </b>
+                    <br>
+                    <small id="paymentName">
+                        -
+                    </small>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
+    </div>
 </div>
-
-<div class="payment-btn-text">
-<b>Atur Pembayaran</b>
-<small>Tambah Bank atau E-Wallet</small>
-</div>
-
-<i class="fa-solid fa-chevron-right"></i>
-
-</a>
-
-</div>
-
-<div id="paymentList" style="display:none;">
-
-<a href="payment-setting.html" class="setting-item">
-
-<div>
-
-<i class="fa-solid fa-building-columns"></i>
-
-<div>
-
-<b id="paymentMethod">Bank / E-Wallet</b><br>
-
-<small id="paymentNumber">Nomor Rekening / Nomor HP</small>
-
-</div>
-
-</div>
-
-<i class="fa-solid fa-chevron-right"></i>
-
-</a>
-
-<a href="payment-setting.html" class="setting-item">
-
-<div>
-
-<i class="fa-solid fa-user-check"></i>
-
-<div>
-
-<b>Atas Nama</b><br>
-
-<small id="paymentName">-</small>
-
-</div>
-
-</div>
-
-<i class="fa-solid fa-chevron-right"></i>
-
-</a>
-
-</div>
-
-</div>
-
 </section>
-
+<!-- =========================
+     ACCOUNT MANAGEMENT
+========================= -->
 <section class="setting-menu">
-
 <div class="setting-title">
-
-<i class="fa-solid fa-user-gear"></i>
-
-<h2>Manajemen Akun</h2>
-
+    <i class="fa-solid fa-user-gear"></i>
+    <h2 data-i18n="accountManagement">
+        Manajemen Akun
+    </h2>
 </div>
-
 <div class="setting-list">
-
-<a href="#" id="addAccountBtn" class="setting-item">
-
-<div>
-
-<i class="fa-solid fa-user-plus"></i>
-
-<span>Tambah Akun Baru</span>
-
+    <!-- ADD ACCOUNT -->
+    <a
+        href="#"
+        id="addAccountBtn"
+        class="setting-item">
+        <div>
+            <i class="fa-solid fa-user-plus"></i>
+            <span data-i18n="addNewAccount">
+                Tambah Akun Baru
+            </span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+    </a>
+    <!-- SWITCH ACCOUNT -->
+    <a
+        href="#"
+        id="switchAccountBtn"
+        class="setting-item">
+        <div>
+            <i class="fa-solid fa-right-left"></i>
+            <span data-i18n="switchAccount">
+                Ganti Akun
+            </span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+    </a>
+    <!-- LOGOUT -->
+    <a
+        href="#"
+        id="logoutBtn"
+        class="setting-item">
+        <div>
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span data-i18n="logout">
+                Keluar
+            </span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+    </a>
+    <!-- DELETE ACCOUNT -->
+    <a
+        href="#"
+        id="deleteAccountBtn"
+        class="setting-item danger">
+        <div>
+            <i class="fa-solid fa-trash"></i>
+            <span data-i18n="deleteAccount">
+                Hapus Akun
+            </span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+    </a>
 </div>
-
-<i class="fa-solid fa-chevron-right"></i>
-
-</a>
-
-<a href="#" id="switchAccountBtn" class="setting-item">
-
-<div>
-
-<i class="fa-solid fa-right-left"></i>
-
-<span>Ganti Akun</span>
-
-</div>
-
-<i class="fa-solid fa-chevron-right"></i>
-
-</a>
-
-<a href="#" id="logoutBtn" class="setting-item">
-
-<div>
-
-<i class="fa-solid fa-right-from-bracket"></i>
-
-<span>Keluar</span>
-
-</div>
-
-<i class="fa-solid fa-chevron-right"></i>
-
-</a>
-
-<a href="#" id="deleteAccountBtn" class="setting-item danger">
-
-<div>
-
-<i class="fa-solid fa-trash"></i>
-
-<span>Hapus Akun</span>
-
-</div>
-
-<i class="fa-solid fa-chevron-right"></i>
-
-</a>
-
-</div>
-
 </section>
-
 </main>
-
 </div>
-
+<!-- =========================
+     FOOTER
+========================= -->
 <div id="footer"></div>
-
-<!-- SUPABASE -->
+<!-- =========================
+     SUPABASE
+========================= -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- CORE -->
+<!-- =========================
+     CORE
+========================= -->
 <script src="js/database.js"></script>
 <script src="js/session.js"></script>
 <script src="js/theme.js"></script>
-
-<!-- COMPONENT -->
+<!-- =========================
+     LANGUAGE
+========================= -->
+<script src="js/language.js"></script>
+<!-- =========================
+     COMPONENT
+========================= -->
 <script src="js/navbar.js"></script>
 <script src="js/footer.js"></script>
-
-<!-- PAGE -->
+<!-- =========================
+     PAGE
+========================= -->
 <script src="js/profile.js"></script>
-
-<!-- DEBUG -->
+<!-- =========================
+     DEBUG
+========================= -->
 <script src="assets/js/debug.js"></script>
-
+<!-- =========================
+     LOAD NAVBAR + FOOTER
+========================= -->
 <script>
-
-fetch("components/navbar.html")
-.then(r=>r.text())
-.then(html=>{
-
-const navbar=document.getElementById("navbar");
-
-if(navbar){
-
-navbar.innerHTML=html;
-
-if(typeof c2pInit==="function"){
-c2pInit();
-}
-
-}
-
-});
-
-fetch("components/footer.html")
-.then(r=>r.text())
-.then(html=>{
-
-const footer=document.getElementById("footer");
-
-if(footer){
-
-footer.innerHTML=html;
-
-if(typeof c2pFooterInit==="function"){
-c2pFooterInit();
-}
-
-}
-
-});
-
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+        /* =========================
+           NAVBAR
+        ========================= */
+        fetch("components/navbar.html")
+            .then(function(response){
+                if(!response.ok){
+                    throw new Error(
+                        "Navbar tidak ditemukan"
+                    );
+                }
+                return response.text();
+            })
+            .then(function(html){
+                const navbar =
+                    document.getElementById("navbar");
+                if(!navbar){
+                    return;
+                }
+                navbar.innerHTML = html;
+                /* =========================
+                   NAVBAR INIT
+                ========================= */
+                if(
+                    typeof c2pInit ===
+                    "function"
+                ){
+                    c2pInit();
+                }
+                /* =========================
+                   REFRESH LANGUAGE
+                ========================= */
+                if(
+                    window.c2pLanguage &&
+                    typeof c2pLanguage.refreshLanguage ===
+                    "function"
+                ){
+                    c2pLanguage.refreshLanguage();
+                }
+            })
+            .catch(function(error){
+                console.error(
+                    "NAVBAR ERROR:",
+                    error
+                );
+            });
+        /* =========================
+           FOOTER
+        ========================= */
+        fetch("components/footer.html")
+            .then(function(response){
+                if(!response.ok){
+                    throw new Error(
+                        "Footer tidak ditemukan"
+                    );
+                }
+                return response.text();
+            })
+            .then(function(html){
+                const footer =
+                    document.getElementById("footer");
+                if(!footer){
+                    return;
+                }
+                footer.innerHTML = html;
+                /* =========================
+                   FOOTER INIT
+                ========================= */
+                if(
+                    typeof c2pFooterInit ===
+                    "function"
+                ){
+                    c2pFooterInit();
+                }
+                /* =========================
+                   REFRESH LANGUAGE
+                ========================= */
+                if(
+                    window.c2pLanguage &&
+                    typeof c2pLanguage.refreshLanguage ===
+                    "function"
+                ){
+                    c2pLanguage.refreshLanguage();
+                }
+            })
+            .catch(function(error){
+                console.error(
+                    "FOOTER ERROR:",
+                    error
+                );
+            });
+    }
+);
 </script>
-
 </body>
 </html>
