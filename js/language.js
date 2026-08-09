@@ -1,13 +1,11 @@
 /* =====================================================
-CLICK2PAY LANGUAGE SYSTEM
+   CLICK2PAY LANGUAGE SYSTEM
 ===================================================== */
-
 (function(){
-
 "use strict";
-/* =================================================
+/* =====================================================
    TRANSLATIONS
-================================================= */
+===================================================== */
 const translations = {
     /* =================================================
        INDONESIAN
@@ -51,6 +49,21 @@ const translations = {
             date: "Tanggal",
             earnings: "Pendapatan"
         },
+        /* =========================
+           LOGIN ACTIVITY
+        ========================= */
+        loginActivityDescription:
+            "Riwayat perangkat dan waktu login akun kamu.",
+        totalDevice:
+            "Total Device",
+        lastLogin:
+            "Login Terakhir",
+        currentDevice:
+            "Device Sekarang",
+        loginDevices:
+            "Perangkat Login",
+        loadingData:
+            "Memuat data...",
         /* =========================
            DASHBOARD
         ========================= */
@@ -244,17 +257,26 @@ const translations = {
             earnings: "Earnings"
         },
         /* =========================
+           LOGIN ACTIVITY
+        ========================= */
+        loginActivityDescription:
+            "History of devices and login times for your account.",
+        totalDevice:
+            "Total Devices",
+        lastLogin:
+            "Last Login",
+        currentDevice:
+            "Current Device",
+        loginDevices:
+            "Login Devices",
+        loadingData:
+            "Loading data...",
+        /* =========================
            DASHBOARD
         ========================= */
         dashboard: {
-            /* =====================
-               TITLE
-            ===================== */
             title:
                 "Click2Pay Dashboard",
-            /* =====================
-               NOTICE
-            ===================== */
             notice:
                 "If you don't know how to use it yet, please click the guide below. To activate Sell Link, you can upgrade to Premium or contact the admin.",
             /* =====================
@@ -394,15 +416,12 @@ const translations = {
         }
     }
 };
-/* =================================================
+/* =====================================================
    GET NESTED TRANSLATION
-   
    Example:
-   
    getTranslation(data, "dashboard.title")
-   
    => "Click2Pay Dashboard"
-================================================= */
+===================================================== */
 function getTranslation(
     data,
     key
@@ -439,9 +458,9 @@ function getTranslation(
     }
     return value;
 }
-/* =================================================
+/* =====================================================
    GET CURRENT LANGUAGE
-================================================= */
+===================================================== */
 function getLanguage(){
     const saved =
         localStorage.getItem(
@@ -455,15 +474,15 @@ function getLanguage(){
     }
     return "id";
 }
-/* =================================================
+/* =====================================================
    APPLY LANGUAGE
-================================================= */
+===================================================== */
 function applyLanguage(
     language = getLanguage()
 ){
-    /* =============================================
-       VALIDATE LANGUAGE
-    ============================================= */
+    /* =========================
+       VALIDATE
+    ========================= */
     if(
         !translations[language]
     ){
@@ -471,77 +490,83 @@ function applyLanguage(
     }
     const data =
         translations[language];
-    /* =============================================
-       TEXT TRANSLATION
-    ============================================= */
+    /* =========================
+       TEXT
+    ========================= */
     document
         .querySelectorAll(
             "[data-i18n]"
         )
-        .forEach(function(element){
-            const key =
-                element.dataset.i18n;
-            const translation =
-                getTranslation(
-                    data,
-                    key
-                );
-            if(
-                translation !== undefined
-            ){
-                element.textContent =
-                    translation;
+        .forEach(
+            function(element){
+                const key =
+                    element.dataset.i18n;
+                const translation =
+                    getTranslation(
+                        data,
+                        key
+                    );
+                if(
+                    translation !== undefined
+                ){
+                    element.textContent =
+                        translation;
+                }
             }
-        });
-    /* =============================================
-       PLACEHOLDER TRANSLATION
-    ============================================= */
+        );
+    /* =========================
+       PLACEHOLDER
+    ========================= */
     document
         .querySelectorAll(
             "[data-i18n-placeholder]"
         )
-        .forEach(function(element){
-            const key =
-                element.dataset
-                    .i18nPlaceholder;
-            const translation =
-                getTranslation(
-                    data,
-                    key
-                );
-            if(
-                translation !== undefined
-            ){
-                element.placeholder =
-                    translation;
+        .forEach(
+            function(element){
+                const key =
+                    element.dataset
+                        .i18nPlaceholder;
+                const translation =
+                    getTranslation(
+                        data,
+                        key
+                    );
+                if(
+                    translation !== undefined
+                ){
+                    element.placeholder =
+                        translation;
+                }
             }
-        });
-    /* =============================================
-       TITLE TRANSLATION
-    ============================================= */
+        );
+    /* =========================
+       TITLE
+    ========================= */
     document
         .querySelectorAll(
             "[data-i18n-title]"
         )
-        .forEach(function(element){
-            const key =
-                element.dataset
-                    .i18nTitle;
-            const translation =
-                getTranslation(
-                    data,
-                    key
-                );
-            if(
-                translation !== undefined
-            ){
-                element.title =
-                    translation;
+        .forEach(
+            function(element){
+                const key =
+                    element.dataset
+                        .i18nTitle;
+                const translation =
+                    getTranslation(
+                        data,
+                        key
+                    );
+                if(
+                    translation !== undefined
+                ){
+                    element.title =
+                        translation;
+                }
             }
-        });
-    /* =============================================
+        );
+    /* =========================
        LANGUAGE SELECTOR
-    ============================================= */
+    ========================= */
     const selector =
         document.getElementById(
             "languageSelect"
@@ -550,38 +575,38 @@ function applyLanguage(
         selector.value =
             language;
     }
-    /* =============================================
+    /* =========================
        SAVE LANGUAGE
-    ============================================= */
+    ========================= */
     localStorage.setItem(
         "language",
         language
     );
-    /* =============================================
+    /* =========================
        HTML LANG
-    ============================================= */
+    ========================= */
     document.documentElement
         .setAttribute(
             "lang",
             language
         );
-    /* =============================================
-       LANGUAGE CHANGE EVENT
-    ============================================= */
+    /* =========================
+       LANGUAGE EVENT
+    ========================= */
     document.dispatchEvent(
         new CustomEvent(
             "languageChanged",
             {
-                detail:{
+                detail: {
                     language: language
                 }
             }
         )
     );
 }
-/* =================================================
+/* =====================================================
    CHANGE LANGUAGE
-================================================= */
+===================================================== */
 function setLanguage(
     language
 ){
@@ -594,9 +619,9 @@ function setLanguage(
         language
     );
 }
-/* =================================================
+/* =====================================================
    INITIALIZE LANGUAGE SELECTOR
-================================================= */
+===================================================== */
 function initLanguageSelector(){
     const selector =
         document.getElementById(
@@ -604,20 +629,18 @@ function initLanguageSelector(){
         );
     /*
      * Navbar belum dimuat.
-     *
-     * Tidak dianggap error.
      */
     if(!selector){
         return false;
     }
-    /* =============================================
-       SET CURRENT LANGUAGE
-    ============================================= */
+    /* =========================
+       CURRENT LANGUAGE
+    ========================= */
     selector.value =
         getLanguage();
-    /* =============================================
+    /* =========================
        PREVENT DUPLICATE EVENT
-    ============================================= */
+    ========================= */
     if(
         selector.dataset
             .languageReady ===
@@ -628,9 +651,9 @@ function initLanguageSelector(){
     selector.dataset
         .languageReady =
         "true";
-    /* =============================================
+    /* =========================
        CHANGE EVENT
-    ============================================= */
+    ========================= */
     selector.addEventListener(
         "change",
         function(){
@@ -641,42 +664,32 @@ function initLanguageSelector(){
     );
     return true;
 }
-/* =================================================
+/* =====================================================
    INITIALIZE LANGUAGE
-================================================= */
+===================================================== */
 function initLanguage(){
     /*
-     * Coba cari selector.
-     *
      * Navbar mungkin belum tersedia.
      */
     initLanguageSelector();
     /*
-     * Terapkan bahasa ke seluruh
-     * elemen yang sudah tersedia.
+     * Terapkan bahasa
+     * ke halaman.
      */
     applyLanguage();
 }
-/* =================================================
+/* =====================================================
    REFRESH LANGUAGE
-   
-   Digunakan setelah komponen dinamis
-   seperti navbar/footer selesai dimuat.
-================================================= */
+   Digunakan setelah navbar/footer
+   dimuat secara dinamis.
+===================================================== */
 function refreshLanguage(){
-    /*
-     * Cari kembali language selector.
-     */
     initLanguageSelector();
-    /*
-     * Terapkan kembali bahasa
-     * ke seluruh halaman.
-     */
     applyLanguage();
 }
-/* =================================================
+/* =====================================================
    DOM READY
-================================================= */
+===================================================== */
 if(
     document.readyState ===
     "loading"
@@ -688,9 +701,9 @@ if(
 }else{
     initLanguage();
 }
-/* =================================================
+/* =====================================================
    GLOBAL API
-================================================= */
+===================================================== */
 window.c2pLanguage = {
     getLanguage,
     setLanguage,
@@ -701,15 +714,11 @@ window.c2pLanguage = {
     getTranslation,
     translations
 };
-/* =================================================
+/* =====================================================
    COMPATIBILITY
-   
-   Mempertahankan fungsi lama
-   jika ada file lain yang memanggil:
-   
+   File lama masih bisa memanggil:
    applyLanguage()
-================================================= */
+===================================================== */
 window.applyLanguage =
     applyLanguage;
-
 })();
