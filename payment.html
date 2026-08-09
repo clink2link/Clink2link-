@@ -3,512 +3,539 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Payment • Click2Pay</title>
-
+<!-- =========================
+     INITIAL THEME
+========================= -->
 <script>
-if(localStorage.getItem("theme")==="dark"){
-document.documentElement.classList.add("dark");
-}
+(function(){
+    const theme = localStorage.getItem("theme");
+    if(theme === "dark"){
+        document.documentElement.classList.add("dark");
+    }
+})();
 </script>
-
+<!-- =========================
+     FAVICON
+========================= -->
 <link rel="icon" href="favicon.ico">
-
+<!-- =========================
+     FONT
+========================= -->
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet">
+<!-- =========================
+     ICON
+========================= -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<!-- =========================
+     CSS
+========================= -->
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/theme.css">
 <link rel="stylesheet" href="css/navbar.css">
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/app-ui.css">
 <link rel="stylesheet" href="css/payment.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
-
 <body class="app-body">
-
 <div class="app-bg"></div>
-
-<div id="navbar"></div> <!-- TAMBAHAN -->
-
-<div class="app-container">
-
-<div class="page-title">
+<!-- =========================
+     NAVBAR
+========================= -->
+<div id="navbar"></div>
+<!-- =========================
+     MAIN
+========================= -->
+<main class="app-container">
+<!-- =========================
+     PAGE TITLE
+========================= -->
+<section class="page-title">
 <h1>
-<i class="fa-solid fa-wallet"></i>
-Payment
+    <i class="fa-solid fa-wallet"></i>
+    <span data-i18n="payment">
+        Payment
+    </span>
 </h1>
-
-<p>
-Kelola saldo dan lakukan penarikan dana melalui Click2Pay.
+<p data-i18n="paymentDescription">
+    Kelola saldo dan lakukan penarikan dana
+    melalui Click2Pay.
 </p>
-</div>
-
-
-<!-- STATUS LAYANAN WD -->
-
-<div id="withdrawService" class="payment-status">
+</section>
+<!-- =========================
+     WITHDRAW SERVICE STATUS
+========================= -->
+<div
+    id="withdrawService"
+    class="payment-status"
+    data-i18n="checkingWithdraw">
 Memeriksa layanan withdraw...
 </div>
-
-
-
-<!-- STATISTIK PAYMENT -->
-
-<div class="payment-grid">
-
+<!-- =========================
+     PAYMENT STATISTICS
+========================= -->
+<section class="payment-grid">
+<!-- CURRENT BALANCE -->
 <div class="pay-card">
-<div class="card-icon blue">
-<i class="fa-solid fa-wallet"></i>
+    <div class="card-icon blue">
+        <i class="fa-solid fa-wallet"></i>
+    </div>
+    <span data-i18n="currentBalance">
+        Saldo Saat Ini
+    </span>
+    <h2 id="balance">
+        Rp0
+    </h2>
 </div>
-<span>Saldo Saat Ini</span>
-<h2 id="balance">Rp0</h2>
-</div>
-
-
+<!-- ADS BALANCE -->
 <div class="pay-card">
-<div class="card-icon cyan">
-<i class="fa-solid fa-bullhorn"></i>
+    <div class="card-icon cyan">
+        <i class="fa-solid fa-bullhorn"></i>
+    </div>
+    <span data-i18n="adsBalance">
+        Saldo Ads
+    </span>
+    <h2 id="adsBalance">
+        Rp0
+    </h2>
 </div>
-<span>Saldo Ads</span>
-<h2 id="adsBalance">Rp0</h2>
-</div>
-
-
+<!-- SELL BALANCE -->
 <div class="pay-card">
-<div class="card-icon purple">
-<i class="fa-solid fa-link"></i>
+    <div class="card-icon purple">
+        <i class="fa-solid fa-link"></i>
+    </div>
+    <span data-i18n="sellBalance">
+        Saldo Sell Link
+    </span>
+    <h2 id="sellBalance">
+        Rp0
+    </h2>
 </div>
-<span>Saldo Sell Link</span>
-<h2 id="sellBalance">Rp0</h2>
-</div>
-
-
+<!-- SUCCESS -->
 <div class="pay-card">
-<div class="card-icon green">
-<i class="fa-solid fa-circle-check"></i>
+    <div class="card-icon green">
+        <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <span data-i18n="wdSuccess">
+        WD Success
+    </span>
+    <h2 id="successWD">
+        Rp0
+    </h2>
 </div>
-<span>WD Success</span>
-<h2 id="successWD">Rp0</h2>
-</div>
-
-
+<!-- PENDING -->
 <div class="pay-card">
-<div class="card-icon orange">
-<i class="fa-solid fa-clock"></i>
+    <div class="card-icon orange">
+        <i class="fa-solid fa-clock"></i>
+    </div>
+    <span data-i18n="wdPending">
+        WD Pending
+    </span>
+    <h2 id="pendingWD">
+        Rp0
+    </h2>
 </div>
-<span>WD Pending</span>
-<h2 id="pendingWD">Rp0</h2>
-</div>
-
-
+<!-- FAILED -->
 <div class="pay-card">
-<div class="card-icon red">
-<i class="fa-solid fa-xmark"></i>
+    <div class="card-icon red">
+        <i class="fa-solid fa-xmark"></i>
+    </div>
+    <span data-i18n="wdFailed">
+        WD Failed
+    </span>
+    <h2 id="failedWD">
+        Rp0
+    </h2>
 </div>
-<span>WD Failed</span>
-<h2 id="failedWD">Rp0</h2>
-</div>
-
-</div>
-
-
-
-<!-- WARNING REKENING -->
-
-<div id="paymentWarning" class="warning-box" style="display:none;">
-
+</section>
+<!-- =========================
+     PAYMENT ACCOUNT WARNING
+========================= -->
+<div
+    id="paymentWarning"
+    class="warning-box"
+    style="display:none;">
 <i class="fa-solid fa-triangle-exclamation"></i>
-
 <div>
-
-<h3>Rekening belum disimpan</h3>
-
-<p>
-Silakan simpan rekening pembayaran terlebih dahulu sebelum melakukan withdraw.
-</p>
-
-<a href="paymentsetting.html" class="btn-secondary">
-<i class="fa-solid fa-gear"></i>
-Payment Setting
-</a>
-
-</div>
-
-</div>
-
-
-
-<!-- BUTTON REQUEST WD -->
-
-<div class="payment-action">
-
-    <button id="manualScrollBtn" class="btn-primary">
-        <i class="fa-solid fa-money-bill-transfer"></i>
-        Request Withdraw
-    </button>
-
-    <a href="wdtransaksi.html" class="btn-secondary">
-        <i class="fa-solid fa-clock-rotate-left"></i>
-        WD Transaksi
+    <h3 data-i18n="accountNotSaved">
+        Rekening belum disimpan
+    </h3>
+    <p data-i18n="accountNotSavedDescription">
+        Silakan simpan rekening pembayaran
+        terlebih dahulu sebelum melakukan withdraw.
+    </p>
+    <a
+        href="paymentsetting.html"
+        class="btn-secondary">
+        <i class="fa-solid fa-gear"></i>
+        <span data-i18n="paymentSetting">
+            Payment Setting
+        </span>
     </a>
-
 </div>
-
-
-
-<!-- INFORMASI WITHDRAW -->
-
-<div class="info-box">
-
+</div>
+<!-- =========================
+     PAYMENT ACTION
+========================= -->
+<div class="payment-action">
+<button
+    id="manualScrollBtn"
+    class="btn-primary">
+    <i class="fa-solid fa-money-bill-transfer"></i>
+    <span data-i18n="requestWithdraw">
+        Request Withdraw
+    </span>
+</button>
+<a
+    href="wdtransaksi.html"
+    class="btn-secondary">
+    <i class="fa-solid fa-clock-rotate-left"></i>
+    <span data-i18n="wdTransactions">
+        WD Transaksi
+    </span>
+</a>
+</div>
+<!-- =========================
+     WITHDRAW INFORMATION
+========================= -->
+<section class="info-box">
 <div class="info-header">
-<i class="fa-solid fa-circle-info"></i>
-<h3>Informasi Withdraw</h3>
+    <i class="fa-solid fa-circle-info"></i>
+    <h3 data-i18n="withdrawInformation">
+        Informasi Withdraw
+    </h3>
 </div>
-
-
 <div class="info-list">
-
-
-<div class="info-item">
-<i class="fa-solid fa-calendar-days"></i>
-<span>
-Layanan withdraw dibuka <b>Senin - Jumat</b>.
-</span>
+    <div class="info-item">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span data-i18n="withdrawSchedule">
+            Layanan withdraw dibuka
+            <b>Senin - Jumat</b>.
+        </span>
+    </div>
+    <div class="info-item">
+        <i class="fa-solid fa-clock"></i>
+        <span data-i18n="withdrawHours">
+            Jam operasional withdraw:
+            <b>08:00 - 18:00 WIB</b>.
+        </span>
+    </div>
+    <div class="info-item">
+        <i class="fa-solid fa-lock"></i>
+        <span data-i18n="withdrawWeekend">
+            Sabtu dan Minggu layanan withdraw
+            otomatis ditutup.
+        </span>
+    </div>
+    <div class="info-item">
+        <i class="fa-solid fa-building-columns"></i>
+        <span data-i18n="paymentAccountRequired">
+            Pastikan rekening pembayaran sudah
+            tersimpan di menu
+            <b>Payment Setting</b>.
+        </span>
+    </div>
+    <div class="info-item">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span data-i18n="accountResponsibility">
+            Kesalahan rekening atau e-wallet
+            menjadi tanggung jawab pengguna.
+        </span>
+    </div>
+    <div class="info-item">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span data-i18n="manualPending">
+            Withdraw manual akan masuk status
+            <b>Pending</b> sebelum diproses admin.
+        </span>
+    </div>
+    <div class="info-item">
+        <i class="fa-solid fa-bolt"></i>
+        <span data-i18n="instantAutomatic">
+            Withdraw instant diproses otomatis
+            apabila layanan tersedia.
+        </span>
+    </div>
+    <div class="info-item">
+        <i class="fa-solid fa-check"></i>
+        <span data-i18n="withdrawSuccessTransaction">
+            Withdraw berhasil akan masuk ke menu
+            <b>WD Transaksi</b>.
+        </span>
+    </div>
 </div>
-
-
-<div class="info-item">
-<i class="fa-solid fa-clock"></i>
-<span>
-Jam operasional withdraw:
-<b>08:00 - 18:00 WIB</b>.
-</span>
-</div>
-
-
-<div class="info-item">
-<i class="fa-solid fa-lock"></i>
-<span>
-Sabtu dan Minggu layanan withdraw otomatis ditutup.
-</span>
-</div>
-
-
-<div class="info-item">
-<i class="fa-solid fa-building-columns"></i>
-<span>
-Pastikan rekening pembayaran sudah tersimpan di menu <b>Payment Setting</b>.
-</span>
-</div>
-
-
-<div class="info-item">
-<i class="fa-solid fa-shield-halved"></i>
-<span>
-Kesalahan rekening atau e-wallet menjadi tanggung jawab pengguna.
-</span>
-</div>
-
-
-<div class="info-item">
-<i class="fa-solid fa-clock-rotate-left"></i>
-<span>
-Withdraw manual akan masuk status <b>Pending</b> sebelum diproses admin.
-</span>
-</div>
-
-
-<div class="info-item">
-<i class="fa-solid fa-bolt"></i>
-<span>
-Withdraw instant diproses otomatis apabila layanan tersedia.
-</span>
-</div>
-
-
-<div class="info-item">
-<i class="fa-solid fa-check"></i>
-<span>
-Withdraw berhasil akan masuk ke menu <b>WD Transaksi</b>.
-</span>
-</div>
-
-
-</div>
-
-</div>
-
-
-
-
-<!-- MANUAL WITHDRAW -->
-
-<div id="manualWithdrawBox" class="payment-box">
-
-
+</section>
+<!-- =========================
+     MANUAL WITHDRAW
+========================= -->
+<section
+    id="manualWithdrawBox"
+    class="payment-box">
 <h2>
-<i class="fa-solid fa-money-bill-transfer"></i>
-Withdraw Manual
+    <i class="fa-solid fa-money-bill-transfer"></i>
+    <span data-i18n="manualWithdraw">
+        Withdraw Manual
+    </span>
 </h2>
-
-
-<p>
-Tarik saldo menggunakan rekening yang sudah tersimpan pada Payment Setting.
+<p data-i18n="manualWithdrawDescription">
+    Tarik saldo menggunakan rekening yang
+    sudah tersimpan pada Payment Setting.
 </p>
-
-
-
-<label>
-Nominal Withdraw
+<label data-i18n="withdrawAmount">
+    Nominal Withdraw
 </label>
-
-
 <div class="input-box">
-
-<i class="fa-solid fa-rupiah-sign"></i>
-
-<input
-id="manualAmount"
-type="number"
-placeholder="Minimal Rp100.000"
-min="100000">
-
+    <i class="fa-solid fa-rupiah-sign"></i>
+    <input
+        id="manualAmount"
+        type="number"
+        data-i18n-placeholder="manualAmountPlaceholder"
+        placeholder="Minimal Rp100.000"
+        min="100000">
 </div>
-
-
-
+<!-- MANUAL RULES -->
 <div class="withdraw-note">
-
-<b>Ketentuan Withdraw Manual</b>
-
-<ul>
-
-<li>
-Minimal withdraw Rp100.000.
-</li>
-
-<li>
-Saldo akan dipotong setelah request berhasil.
-</li>
-
-<li>
-Status awal withdraw adalah Pending.
-</li>
-
-<li>
-Admin akan melakukan pengecekan sebelum pembayaran.
-</li>
-
-<li>
-Jika berhasil status berubah menjadi Success.
-</li>
-
-<li>
-Jika gagal status berubah menjadi Failed.
-</li>
-
-</ul>
-
+    <b data-i18n="manualRules">
+        Ketentuan Withdraw Manual
+    </b>
+    <ul>
+        <li data-i18n="manualRuleMin">
+            Minimal withdraw Rp100.000.
+        </li>
+        <li data-i18n="manualRuleBalance">
+            Saldo akan dipotong setelah request berhasil.
+        </li>
+        <li data-i18n="manualRulePending">
+            Status awal withdraw adalah Pending.
+        </li>
+        <li data-i18n="manualRuleAdmin">
+            Admin akan melakukan pengecekan sebelum pembayaran.
+        </li>
+        <li data-i18n="manualRuleSuccess">
+            Jika berhasil status berubah menjadi Success.
+        </li>
+        <li data-i18n="manualRuleFailed">
+            Jika gagal status berubah menjadi Failed.
+        </li>
+    </ul>
 </div>
-
-
-
-<button id="manualWithdrawBtn" class="btn-primary">
-
-<i class="fa-solid fa-paper-plane"></i>
-
-Request Withdraw Manual
-
+<button
+    id="manualWithdrawBtn"
+    class="btn-primary">
+    <i class="fa-solid fa-paper-plane"></i>
+    <span data-i18n="requestManualWithdraw">
+        Request Withdraw Manual
+    </span>
 </button>
-
-
-</div>
-
-
-
-
-
-<!-- INSTANT WITHDRAW -->
-
-
-<div id="instantWithdrawBox" class="payment-box">
-
-
+</section>
+<!-- =========================
+     INSTANT WITHDRAW
+========================= -->
+<section
+    id="instantWithdrawBox"
+    class="payment-box">
 <h2>
-<i class="fa-solid fa-bolt"></i>
-Withdraw Instant
+    <i class="fa-solid fa-bolt"></i>
+    <span data-i18n="instantWithdraw">
+        Withdraw Instant
+    </span>
 </h2>
-
-
-<p>
-Tarik saldo otomatis dengan batas maksimal sesuai aturan sistem.
+<p data-i18n="instantWithdrawDescription">
+    Tarik saldo otomatis dengan batas maksimal
+    sesuai aturan sistem.
 </p>
-
-
-
+<!-- INSTANT LIMIT -->
 <div class="instant-limit">
-
-
-<div>
-
-<b>
-Limit Instant Hari Ini
-</b>
-
-<span id="instantLimit">
-Rp500.000
-</span>
-
+    <div>
+        <b data-i18n="instantDailyLimit">
+            Limit Instant Hari Ini
+        </b>
+        <span id="instantLimit">
+            Rp500.000
+        </span>
+    </div>
+    <div class="progress">
+        <div id="instantProgress"></div>
+    </div>
 </div>
-
-
-
-<div class="progress">
-
-<div id="instantProgress"></div>
-
-</div>
-
-
-</div>
-
-
-
-
-
-<label>
-Nominal Withdraw
+<label data-i18n="withdrawAmount">
+    Nominal Withdraw
 </label>
-
-
+<!-- INSTANT OPTIONS -->
 <div class="instant-options">
-
-
-<button data-value="50000">
-Rp50.000
-</button>
-
-
-<button data-value="100000">
-Rp100.000
-</button>
-
-
-<button data-value="250000">
-Rp250.000
-</button>
-
-
-<button data-value="500000">
-Rp500.000
-</button>
-
-
+    <button data-value="50000">
+        Rp50.000
+    </button>
+    <button data-value="100000">
+        Rp100.000
+    </button>
+    <button data-value="250000">
+        Rp250.000
+    </button>
+    <button data-value="500000">
+        Rp500.000
+    </button>
 </div>
-
-
-
-<input type="hidden" id="instantAmount">
-
-
-
-
-
+<input
+    type="hidden"
+    id="instantAmount">
+<!-- INSTANT RULES -->
 <div class="withdraw-note">
-
-<b>Ketentuan Withdraw Instant</b>
-
-<ul>
-
-<li>
-Biaya layanan instant Rp15.000.
-</li>
-
-<li>
-Saldo harus mencukupi nominal + biaya.
-</li>
-
-<li>
-Contoh Rp50.000 membutuhkan saldo Rp65.000.
-</li>
-
-<li>
-Batas instant maksimal Rp500.000 per hari.
-</li>
-
-<li>
-Withdraw diproses otomatis oleh sistem.
-</li>
-
-</ul>
-
+    <b data-i18n="instantRules">
+        Ketentuan Withdraw Instant
+    </b>
+    <ul>
+        <li data-i18n="instantRuleFee">
+            Biaya layanan instant Rp15.000.
+        </li>
+        <li data-i18n="instantRuleBalance">
+            Saldo harus mencukupi nominal + biaya.
+        </li>
+        <li data-i18n="instantRuleExample">
+            Contoh Rp50.000 membutuhkan saldo Rp65.000.
+        </li>
+        <li data-i18n="instantRuleLimit">
+            Batas instant maksimal Rp500.000 per hari.
+        </li>
+        <li data-i18n="instantRuleAuto">
+            Withdraw diproses otomatis oleh sistem.
+        </li>
+    </ul>
 </div>
-
-
-
-<button id="instantWithdrawBtn" class="btn-primary">
-
-<i class="fa-solid fa-bolt"></i>
-
-Withdraw Instant
-
+<button
+    id="instantWithdrawBtn"
+    class="btn-primary">
+    <i class="fa-solid fa-bolt"></i>
+    <span data-i18n="instantWithdrawButton">
+        Withdraw Instant
+    </span>
 </button>
-
-
-</div>
-
-
-
-
-
-<!-- FOOTER -->
-
-
-</div> <!-- TAMBAHAN (nutup app-container) -->
-
+</section>
+</main>
+<!-- =========================
+     FOOTER
+========================= -->
 <div id="footer"></div>
-
-<!-- DEBUG -->
+<!-- =========================
+     DEBUG
+========================= -->
 <script defer src="assets/js/debug.js"></script>
-
-<!-- CORE (WAJIB PALING ATAS) -->
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- =========================
+     CORE
+========================= -->
+<script
+    defer
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
 <script defer src="js/database.js"></script>
 <script defer src="js/session.js"></script>
-
-<!-- UI -->
 <script defer src="js/theme.js"></script>
+<script defer src="js/language.js"></script>
+<!-- =========================
+     NAVBAR / FOOTER
+========================= -->
 <script defer src="js/navbar.js"></script>
 <script defer src="js/footer.js"></script>
-
-<!-- PAYMENT (PALING AKHIR) -->
+<!-- =========================
+     PAYMENT
+========================= -->
 <script defer src="js/payment.js"></script>
+<!-- =========================
+     DYNAMIC COMPONENTS
+========================= -->
 <script>
-fetch("components/navbar.html")
-.then(res=>{
-if(!res.ok)throw new Error("Navbar tidak ditemukan");
-return res.text();
-})
-.then(html=>{
-document.getElementById("navbar").innerHTML=html;
-if(typeof c2pInit==="function")c2pInit();
-})
-.catch(err=>console.error("NAVBAR ERROR:",err));
-
-fetch("components/footer.html")
-.then(res=>{
-if(!res.ok)throw new Error("Footer tidak ditemukan");
-return res.text();
-})
-.then(html=>{
-document.getElementById("footer").innerHTML=html;
-if(typeof c2pFooterInit==="function")c2pFooterInit();
-})
-.catch(err=>console.error("FOOTER ERROR:",err));
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+        /* =========================
+           NAVBAR
+        ========================= */
+        fetch("components/navbar.html")
+        .then(function(response){
+            if(!response.ok){
+                throw new Error(
+                    "Navbar tidak ditemukan: " +
+                    response.status
+                );
+            }
+            return response.text();
+        })
+        .then(function(html){
+            const navbar =
+                document.getElementById("navbar");
+            if(!navbar){
+                return;
+            }
+            navbar.innerHTML = html;
+            if(typeof c2pInit === "function"){
+                c2pInit();
+            }
+            /* =========================
+               REFRESH LANGUAGE
+            ========================= */
+            if(
+                window.c2pLanguage &&
+                typeof c2pLanguage.refreshLanguage ===
+                "function"
+            ){
+                c2pLanguage.refreshLanguage();
+            }
+        })
+        .catch(function(error){
+            console.error(
+                "NAVBAR ERROR:",
+                error
+            );
+        });
+        /* =========================
+           FOOTER
+        ========================= */
+        fetch("components/footer.html")
+        .then(function(response){
+            if(!response.ok){
+                throw new Error(
+                    "Footer tidak ditemukan: " +
+                    response.status
+                );
+            }
+            return response.text();
+        })
+        .then(function(html){
+            const footer =
+                document.getElementById("footer");
+            if(!footer){
+                return;
+            }
+            footer.innerHTML = html;
+            if(typeof c2pFooterInit === "function"){
+                c2pFooterInit();
+            }
+            /* =========================
+               REFRESH LANGUAGE
+            ========================= */
+            if(
+                window.c2pLanguage &&
+                typeof c2pLanguage.refreshLanguage ===
+                "function"
+            ){
+                c2pLanguage.refreshLanguage();
+            }
+        })
+        .catch(function(error){
+            console.error(
+                "FOOTER ERROR:",
+                error
+            );
+        });
+    }
+);
 </script>
-
-
 </body>
 </html>
