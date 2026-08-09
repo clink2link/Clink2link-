@@ -2,7 +2,7 @@
 CLICK2PAY LANGUAGE SYSTEM
 ===================================================== */
 (function(){
-“use strict”;
+"use strict";
 
 /* =====================================================
 TRANSLATIONS
@@ -2209,7 +2209,7 @@ DOM READY
 
 if(
 document.readyState ===
-“loading”
+"loading"
 ){
 
 document.addEventListener(
