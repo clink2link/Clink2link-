@@ -1,216 +1,245 @@
 (function(){
 
+“use strict”;
+
 let navbarLoaded = false;
+
+/* =====================================================
+CLICK2PAY NAVBAR INIT
+===================================================== */
 
 window.c2pInit = function(){
 
-if(navbarLoaded) return;
-navbarLoaded = true;
-
-const sidebar = document.querySelector(".c2p-sidebar");
-const overlay = document.querySelector(".c2p-overlay");
-const menuBtn = document.querySelector(".c2p-menu-btn");
-const search = document.querySelector("#menuSearch");
-const logout = document.querySelector(".c2p-logout");
-const themeBtn = document.querySelector("#themeToggle");
-
+/*
+ * Jangan blokir terlalu awal.
+ * Navbar bisa dimuat ulang secara dinamis.
+ */
+if(navbarLoaded){
+    console.log("NAVBAR ALREADY INITIALIZED");
+    return;
+}
+const sidebar =
+    document.querySelector(".c2p-sidebar");
+const overlay =
+    document.querySelector(".c2p-overlay");
+const menuBtn =
+    document.querySelector(".c2p-menu-btn");
+const search =
+    document.querySelector("#menuSearch");
+const logout =
+    document.querySelector(".c2p-logout");
+const themeBtn =
+    document.querySelector("#themeToggle");
+/* =================================================
+   SIDEBAR CHECK
+================================================= */
 if(!sidebar){
-console.log("SIDEBAR NOT FOUND");
-return;
+    console.warn(
+        "SIDEBAR NOT FOUND"
+    );
+    return;
 }
-
-
-/* =========================
+/*
+ * Tandai setelah navbar benar-benar ditemukan.
+ */
+navbarLoaded = true;
+/* =================================================
    SIDEBAR
-========================= */
-
+================================================= */
 function openSidebar(){
-sidebar.classList.add("active");
-overlay?.classList.add("active");
+    sidebar.classList.add("active");
+    overlay?.classList.add("active");
 }
-
 function closeSidebar(){
-sidebar.classList.remove("active");
-overlay?.classList.remove("active");
+    sidebar.classList.remove("active");
+    overlay?.classList.remove("active");
 }
-
-menuBtn?.addEventListener("click", openSidebar);
-overlay?.addEventListener("click", closeSidebar);
-
-sidebar.querySelectorAll("a").forEach(a=>{
-a.addEventListener("click", closeSidebar);
-});
-
-
-/* =========================
+menuBtn?.addEventListener(
+    "click",
+    openSidebar
+);
+overlay?.addEventListener(
+    "click",
+    closeSidebar
+);
+sidebar
+    .querySelectorAll("a")
+    .forEach(function(a){
+        a.addEventListener(
+            "click",
+            closeSidebar
+        );
+    });
+/* =================================================
    SEARCH
-========================= */
-
+================================================= */
 if(search){
-
-search.addEventListener("input", ()=>{
-
-const key = search.value.toLowerCase();
-
-sidebar.querySelectorAll("a").forEach(item=>{
-
-item.style.display =
-item.innerText.toLowerCase().includes(key)
-? "flex"
-: "none";
-
-});
-
-});
-
+    search.addEventListener(
+        "input",
+        function(){
+            const key =
+                search.value
+                    .toLowerCase()
+                    .trim();
+            sidebar
+                .querySelectorAll("a")
+                .forEach(function(item){
+                    const text =
+                        item.innerText
+                            .toLowerCase();
+                    item.style.display =
+                        text.includes(key)
+                            ? "flex"
+                            : "none";
+                });
+        }
+    );
 }
-
-
-/* =========================
-   DARK / NIGHT MODE
-========================= */
-
+/* =================================================
+   THEME
+================================================= */
 function applyTheme(theme){
-
-const icon = themeBtn?.querySelector("i");
-
-
-if(theme === "dark"){
-
-document.documentElement.classList.add("dark");
-
-
-if(icon){
-icon.classList.remove("fa-moon");
-icon.classList.add("fa-sun");
+    const icon =
+        themeBtn?.querySelector("i");
+    if(theme === "dark"){
+        document.documentElement
+            .classList
+            .add("dark");
+        if(icon){
+            icon.classList
+                .remove("fa-moon");
+            icon.classList
+                .add("fa-sun");
+        }
+    }else{
+        document.documentElement
+            .classList
+            .remove("dark");
+        if(icon){
+            icon.classList
+                .remove("fa-sun");
+            icon.classList
+                .add("fa-moon");
+        }
+    }
 }
-
-
-}else{
-
-
-document.documentElement.classList.remove("dark");
-
-
-if(icon){
-icon.classList.remove("fa-sun");
-icon.classList.add("fa-moon");
-}
-
-
-}
-
-}
-
-// =========================
-// LOAD THEME
-// =========================
-
-const savedTheme = localStorage.getItem("theme");
-
-
-
+/* =================================================
+   LOAD SAVED THEME
+================================================= */
+const savedTheme =
+    localStorage.getItem("theme");
 if(savedTheme){
-
-
-applyTheme(savedTheme);
-
-
-
+    applyTheme(savedTheme);
 }else{
-
-
-const prefersDark =
-window.matchMedia(
-"(prefers-color-scheme: dark)"
-).matches;
-
-
-
-applyTheme(
-prefersDark ? "dark" : "light"
-);
-
-
-
+    const prefersDark =
+        window.matchMedia(
+            "(prefers-color-scheme: dark)"
+        ).matches;
+    applyTheme(
+        prefersDark
+            ? "dark"
+            : "light"
+    );
 }
-
-
-
-// =========================
-// BUTTON TOGGLE
-// =========================
-
+/* =================================================
+   THEME TOGGLE
+================================================= */
 themeBtn?.addEventListener(
-"click",
-()=>{
-
-
-const isDark =
-document.documentElement.classList.contains("dark");
-
-
-
-const newTheme =
-isDark ? "light" : "dark";
-
-
-
-localStorage.setItem(
-"theme",
-newTheme
+    "click",
+    function(){
+        const isDark =
+            document.documentElement
+                .classList
+                .contains("dark");
+        const newTheme =
+            isDark
+                ? "light"
+                : "dark";
+        localStorage.setItem(
+            "theme",
+            newTheme
+        );
+        applyTheme(newTheme);
+    }
 );
-
-
-
-applyTheme(newTheme);
-
-
-
-});
-
-
-const createBtn=document.getElementById("createBtn");
-const createMenu=document.getElementById("createMenu");
-
-if(createBtn&&createMenu){
-
-createBtn.onclick=()=>{
-
-createMenu.classList.toggle("active");
-
-createBtn.classList.toggle("active");
-
-};
-
+/* =================================================
+   CREATE MENU
+================================================= */
+const createBtn =
+    document.getElementById(
+        "createBtn"
+    );
+const createMenu =
+    document.getElementById(
+        "createMenu"
+    );
+if(createBtn && createMenu){
+    createBtn.addEventListener(
+        "click",
+        function(){
+            createMenu
+                .classList
+                .toggle("active");
+            createBtn
+                .classList
+                .toggle("active");
+        }
+    );
 }
-
-
-/* =========================
+/* =================================================
    LOGOUT
-========================= */
-
-logout?.addEventListener("click", async()=>{
-
-try{
-
-if(window.database){
-await database.logout();
+================================================= */
+if(logout){
+    logout.addEventListener(
+        "click",
+        async function(e){
+            e.preventDefault();
+            try{
+                if(
+                    window.database &&
+                    typeof database.logout ===
+                    "function"
+                ){
+                    await database.logout();
+                }
+            }catch(error){
+                console.warn(
+                    "Logout error:",
+                    error
+                );
+            }
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace(
+                "index.html"
+            );
+        }
+    );
 }
-
-}catch(e){
-console.warn("Logout error:", e);
+/* =================================================
+   LANGUAGE
+================================================= */
+/*
+ * Navbar HTML baru saja dimasukkan.
+ * Jadi selector bahasa sekarang sudah tersedia.
+ */
+if(
+    window.c2pLanguage &&
+    typeof c2pLanguage.refreshLanguage ===
+    "function"
+){
+    c2pLanguage.refreshLanguage();
+    console.log(
+        "NAVBAR LANGUAGE APPLIED:",
+        c2pLanguage.getLanguage()
+    );
 }
-
-localStorage.clear();
-sessionStorage.clear();
-
-location.replace("index.html");
-
-});
-
-
-console.log("NAVBAR READY 🚀");
+/* =================================================
+   READY
+================================================= */
+console.log(
+    "NAVBAR READY 🚀"
+);
 
 };
 
