@@ -2,15 +2,16 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aktivitas Login - Click2Pay</title>
 <!-- =========================
      INITIAL THEME
 ========================= -->
 <script>
-(function(){
-    const theme = localStorage.getItem("theme");
-    if(theme === "dark"){
+(function () {
+    const theme =
+        localStorage.getItem("theme");
+    if (theme === "dark") {
         document.documentElement.classList.add("dark");
     }
 })();
@@ -18,27 +19,41 @@
 <!-- =========================
      FONT
 ========================= -->
-<link rel="preconnect"
-      href="https://fonts.googleapis.com">
-<link rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet">
+<link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+>
+<link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+>
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+>
 <!-- =========================
      ICON
 ========================= -->
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+>
 <!-- =========================
      CSS
 ========================= -->
-<link rel="stylesheet"
-      href="css/theme.css">
-<link rel="stylesheet"
-      href="css/navbar.css">
-<link rel="stylesheet"
-      href="css/activity.css">
+<link
+    rel="stylesheet"
+    href="css/theme.css"
+>
+<link
+    rel="stylesheet"
+    href="css/navbar.css"
+>
+<link
+    rel="stylesheet"
+    href="css/activity.css"
+>
 </head>
 <body class="app-body">
 <!-- =========================
@@ -49,80 +64,89 @@
      MAIN
 ========================= -->
 <main class="container">
-<!-- =========================
-     PAGE TITLE
-========================= -->
-<div class="page-title">
-    <h1>
-        <i class="fa-solid fa-user-clock"></i>
-        <span data-i18n="loginActivity">
-            Aktivitas Login
-        </span>
-    </h1>
-    <p data-i18n="loginActivityDescription">
-        Riwayat perangkat dan waktu login akun kamu.
-    </p>
-</div>
-<!-- =========================
-     LOGIN SUMMARY
-========================= -->
-<div class="payment-grid">
-    <!-- TOTAL DEVICE -->
-    <div class="pay-card">
-        <div class="card-icon blue">
-            <i class="fa-solid fa-right-to-bracket"></i>
+    <!-- =========================
+         PAGE TITLE
+    ========================= -->
+    <section class="page-title">
+        <h1>
+            <i class="fa-solid fa-user-clock"></i>
+            <span data-i18n="loginActivity">
+                Aktivitas Login
+            </span>
+        </h1>
+        <p data-i18n="loginActivityDescription">
+            Riwayat perangkat dan waktu login akun kamu.
+        </p>
+    </section>
+    <!-- =========================
+         LOGIN SUMMARY
+    ========================= -->
+    <section class="payment-grid">
+        <!-- =====================
+             TOTAL DEVICE
+        ===================== -->
+        <div class="pay-card">
+            <div class="card-icon blue">
+                <i class="fa-solid fa-right-to-bracket"></i>
+            </div>
+            <span data-i18n="totalDevice">
+                Total Device
+            </span>
+            <h2 id="totalLogin">
+                0
+            </h2>
         </div>
-        <span data-i18n="totalDevice">
-            Total Device
-        </span>
-        <h2 id="totalLogin">
-            0
-        </h2>
-    </div>
-    <!-- LAST LOGIN -->
-    <div class="pay-card">
-        <div class="card-icon green">
-            <i class="fa-solid fa-clock"></i>
+        <!-- =====================
+             LAST LOGIN
+        ===================== -->
+        <div class="pay-card">
+            <div class="card-icon green">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <span data-i18n="lastLogin">
+                Login Terakhir
+            </span>
+            <h2 id="lastLogin">
+                -
+            </h2>
         </div>
-        <span data-i18n="lastLogin">
-            Login Terakhir
-        </span>
-        <h2 id="lastLogin">
-            -
-        </h2>
-    </div>
-    <!-- CURRENT DEVICE -->
-    <div class="pay-card">
-        <div class="card-icon purple">
-            <i class="fa-solid fa-laptop"></i>
+        <!-- =====================
+             CURRENT DEVICE
+        ===================== -->
+        <div class="pay-card">
+            <div class="card-icon purple">
+                <i class="fa-solid fa-laptop"></i>
+            </div>
+            <span data-i18n="currentDevice">
+                Device Sekarang
+            </span>
+            <h2 id="lastDevice">
+                -
+            </h2>
         </div>
-        <span data-i18n="currentDevice">
-            Device Sekarang
-        </span>
-        <h2 id="lastDevice">
-            -
-        </h2>
-    </div>
-</div>
-<!-- =========================
-     LOGIN DEVICE LIST
-========================= -->
-<div class="info-box">
-    <div class="info-header">
-        <i class="fa-solid fa-list"></i>
-        <h3 data-i18n="loginDevices">
-            Perangkat Login
-        </h3>
-    </div>
-    <div id="loginList"
-         class="info-list"
-         data-i18n="loadingData">
-        Memuat data...
-    </div>
-</div>
+    </section>
+    <!-- =========================
+         LOGIN DEVICE LIST
+    ========================= -->
+    <section class="info-box">
+        <div class="info-header">
+            <i class="fa-solid fa-list"></i>
+            <h3 data-i18n="loginDevices">
+                Perangkat Login
+            </h3>
+        </div>
+        <div
+            id="loginList"
+            class="info-list"
+        >
+            <span data-i18n="loadingData">
+                Memuat data...
+            </span>
+        </div>
+    </section>
 </main>
 <!-- =========================
-     LIBRARIES
+     SUPABASE
 ========================= -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- =========================
@@ -149,12 +173,11 @@
      NAVBAR LOAD
 ===================================================== -->
 <script>
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
+(function () {
+    function loadNavbar() {
         fetch("components/navbar.html")
-            .then(function(response){
-                if(!response.ok){
+            .then(function (response) {
+                if (!response.ok) {
                     throw new Error(
                         "Gagal memuat navbar: " +
                         response.status
@@ -162,10 +185,10 @@ document.addEventListener(
                 }
                 return response.text();
             })
-            .then(function(html){
+            .then(function (html) {
                 const navbar =
                     document.getElementById("navbar");
-                if(!navbar){
+                if (!navbar) {
                     console.error(
                         "ELEMENT #navbar TIDAK DITEMUKAN"
                     );
@@ -186,74 +209,78 @@ document.addEventListener(
                 script.src =
                     "js/navbar.js";
                 script.onload =
-                    function(){
+                    function () {
                         console.log(
                             "NAVBAR JS READY"
                         );
-                        /* =========================
+                        /* =====================
                            INIT NAVBAR
-                        ========================= */
-                        if(
+                        ===================== */
+                        if (
                             typeof c2pInit ===
                             "function"
-                        ){
+                        ) {
                             c2pInit();
                         }
-                        /* =========================
-                           REFRESH LANGUAGE
-                        ========================= */
-                        if(
+                        /* =====================
+                           LANGUAGE REFRESH
+                        ===================== */
+                        if (
                             window.c2pLanguage &&
-                            typeof c2pLanguage.refreshLanguage ===
+                            typeof window.c2pLanguage
+                                .refreshLanguage ===
                             "function"
-                        ){
-                            c2pLanguage.refreshLanguage();
+                        ) {
+                            window.c2pLanguage
+                                .refreshLanguage();
                             console.log(
                                 "NAVBAR LANGUAGE REFRESHED"
                             );
                         }
-                        /* =========================
+                        /* =====================
                            CLOSE SIDEBAR
-                        ========================= */
+                        ===================== */
                         document
                             .querySelectorAll(
                                 ".c2p-sidebar a"
                             )
                             .forEach(
-                                function(link){
+                                function (link) {
                                     link.addEventListener(
                                         "click",
-                                        function(){
-                                            if(
+                                        function () {
+                                            if (
                                                 typeof c2pClose ===
                                                 "function"
-                                            ){
+                                            ) {
                                                 c2pClose();
                                             }
                                         }
                                     );
                                 }
                             );
-                        /* =========================
+                        /* =====================
                            LOGOUT
-                        ========================= */
+                        ===================== */
                         const logoutBtn =
                             document.getElementById(
                                 "logoutBtn"
                             );
-                        if(logoutBtn){
+                        if (logoutBtn) {
                             logoutBtn.addEventListener(
                                 "click",
-                                async function(){
-                                    try{
-                                        if(
+                                async function () {
+                                    try {
+                                        if (
                                             window.database &&
-                                            typeof database.logout ===
+                                            typeof window.database
+                                                .logout ===
                                             "function"
-                                        ){
-                                            await database.logout();
+                                        ) {
+                                            await window.database
+                                                .logout();
                                         }
-                                    }catch(error){
+                                    } catch (error) {
                                         console.error(
                                             "LOGOUT ERROR:",
                                             error
@@ -272,7 +299,7 @@ document.addEventListener(
                    NAVBAR LOAD ERROR
                 ========================= */
                 script.onerror =
-                    function(){
+                    function () {
                         console.error(
                             "GAGAL LOAD js/navbar.js"
                         );
@@ -281,14 +308,28 @@ document.addEventListener(
                     script
                 );
             })
-            .catch(function(error){
+            .catch(function (error) {
                 console.error(
                     "NAVBAR LOAD ERROR:",
                     error
                 );
             });
     }
-);
+    /* =========================
+       DOM READY
+    ========================= */
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+        document.addEventListener(
+            "DOMContentLoaded",
+            loadNavbar
+        );
+    } else {
+        loadNavbar();
+    }
+})();
 </script>
 <!-- =========================
      DEBUG
