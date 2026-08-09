@@ -1,554 +1,465 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>Create Link Ads • Click2Pay</title>
-
+<title data-i18n="createLink">Create Link Ads • Click2Pay</title>
+<!-- =========================
+     INITIAL THEME
+========================= -->
 <script>
-if(localStorage.getItem("theme")==="dark"){
-document.documentElement.classList.add("dark");
-}
+(function(){
+    const theme = localStorage.getItem("theme");
+    if(theme === "dark"){
+        document.documentElement.classList.add("dark");
+    }
+})();
 </script>
-
+<!-- =========================
+     FONT
+========================= -->
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet">
+<!-- =========================
+     ICON
+========================= -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- =========================
+     CSS
+========================= -->
 <link rel="stylesheet" href="css/theme.css">
 <link rel="stylesheet" href="css/navbar.css">
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/app-ui.css">
 <link rel="stylesheet" href="css/create-link.css">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 </head>
 <body class="app-body">
-
 <div class="app-bg"></div>
-
-<div id="navbar"></div> <!-- TAMBAHAN -->
-
-<div class="app-container">
+<!-- =========================
+     NAVBAR
+========================= -->
+<div id="navbar"></div>
+<!-- =========================
+     MAIN
+========================= -->
+<main class="app-container">
+<!-- =========================
+     PAGE TITLE
+========================= -->
 <section class="page-title">
-
 <i class="fa-solid fa-link"></i>
-
 <div>
-<h1>Create Link Ads</h1>
-<p>Buat shortlink iklan dan dapatkan penghasilan dari traffic valid.</p>
+    <h1 data-i18n="createLink">
+        Create Link Ads
+    </h1>
+    <p>
+        Buat shortlink iklan dan dapatkan
+        penghasilan dari traffic valid.
+    </p>
 </div>
-
 </section>
-
-
-
-
-
+<!-- =========================
+     INFORMATION
+========================= -->
 <section class="info-box">
-
-
 <div class="info-header">
-
-<i class="fa-solid fa-circle-info"></i>
-
-<h3>Informasi Ads Link</h3>
-
+    <i class="fa-solid fa-circle-info"></i>
+    <h3>
+        Informasi Ads Link
+    </h3>
 </div>
-
-
-
 <ul>
-
-<li>
-<i class="fa-solid fa-check"></i>
-Gunakan URL tujuan yang valid.
-</li>
-
-
-<li>
-<i class="fa-solid fa-check"></i>
-Shortlink dibuat otomatis oleh sistem.
-</li>
-
-
-<li>
-<i class="fa-solid fa-check"></i>
-Link dapat dicopy, edit, dan hapus kapan saja.
-</li>
-
-
-<li>
-<i class="fa-solid fa-check"></i>
-Statistik View, Click dan Earnings diperbarui otomatis.
-</li>
-
-
+    <li>
+        <i class="fa-solid fa-check"></i>
+        Gunakan URL tujuan yang valid.
+    </li>
+    <li>
+        <i class="fa-solid fa-check"></i>
+        Shortlink dibuat otomatis oleh sistem.
+    </li>
+    <li>
+        <i class="fa-solid fa-check"></i>
+        Link dapat dicopy, edit, dan hapus kapan saja.
+    </li>
+    <li>
+        <i class="fa-solid fa-check"></i>
+        Statistik View, Click dan Earnings
+        diperbarui otomatis.
+    </li>
 </ul>
-
-
 </section>
-
-
-
-
-
-
+<!-- =========================
+     CREATE FORM
+========================= -->
 <section class="create-form">
-
-
 <div class="create-header">
-
-
-<div class="create-icon">
-
-<i class="fa-solid fa-plus"></i>
-
+    <div class="create-icon">
+        <i class="fa-solid fa-plus"></i>
+    </div>
+    <div>
+        <h2>
+            Buat Ads Link Baru
+        </h2>
+        <p>
+            Masukkan tujuan link yang ingin dimonetisasi.
+        </p>
+    </div>
 </div>
-
-
-<div>
-
-<h2>
-Buat Ads Link Baru
-</h2>
-
-
-<p>
-Masukkan tujuan link yang ingin dimonetisasi.
-</p>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
 <form id="createForm">
-
-
-
-<label>
-Nama Link
-</label>
-
-
-<div class="input-box">
-
-<i class="fa-solid fa-tag"></i>
-
-<input
-id="linkName"
-type="text"
-placeholder="Contoh : Promo Produk">
-
-
-</div>
-
-
-
-
-
-
-<label>
-Destination URL
-</label>
-
-
-<div class="input-box">
-
-<i class="fa-solid fa-globe"></i>
-
-<input
-id="linkUrl"
-type="url"
-placeholder="https://example.com">
-
-
-</div>
-
-
-
-
-
-
-
-<div class="btn-group">
-
-
-<button
-type="submit"
-class="btn-primary">
-
-<i class="fa-solid fa-link"></i>
-
-Buat Ads Link
-
-</button>
-
-
-
-<button
-type="reset"
-class="btn-secondary">
-<i class="fa-solid fa-rotate-right"></i>
-Reset
-</button>
-
-
-
-</div>
-
-
-
-<div id="createResult" class="create-result"></div>
-
-
-<div class="create-note">
-
-<i class="fa-solid fa-shield-halved"></i>
-
-Pastikan URL tujuan aman dan benar.
-
-</div>
-
-
-
+    <!-- LINK NAME -->
+    <label>
+        Nama Link
+    </label>
+    <div class="input-box">
+        <i class="fa-solid fa-tag"></i>
+        <input
+            id="linkName"
+            type="text"
+            data-i18n-placeholder="linkNamePlaceholder"
+            placeholder="Contoh: Promo Produk"
+            autocomplete="off">
+    </div>
+    <!-- DESTINATION URL -->
+    <label>
+        Destination URL
+    </label>
+    <div class="input-box">
+        <i class="fa-solid fa-globe"></i>
+        <input
+            id="linkUrl"
+            type="url"
+            data-i18n-placeholder="destinationUrlPlaceholder"
+            placeholder="https://example.com"
+            autocomplete="off">
+    </div>
+    <!-- BUTTON -->
+    <div class="btn-group">
+        <button
+            type="submit"
+            class="btn-primary">
+            <i class="fa-solid fa-link"></i>
+            Buat Ads Link
+        </button>
+        <button
+            type="reset"
+            class="btn-secondary">
+            <i class="fa-solid fa-rotate-right"></i>
+            Reset
+        </button>
+    </div>
+    <div
+        id="createResult"
+        class="create-result">
+    </div>
+    <div class="create-note">
+        <i class="fa-solid fa-shield-halved"></i>
+        Pastikan URL tujuan aman dan benar.
+    </div>
 </form>
-
-
-
 </section>
-
+<!-- =========================
+     QUICK STATISTICS
+========================= -->
 <section class="quick-stats">
-
-
 <div class="stat-card">
-
-<i class="fa-solid fa-link"></i>
-
-<h4>
-Total Ads Link
-</h4>
-
-<h2 id="totalLink">
-0
-</h2>
-
+    <i class="fa-solid fa-link"></i>
+    <h4>
+        Total Ads Link
+    </h4>
+    <h2 id="totalLink">
+        0
+    </h2>
 </div>
-
-
-
-
 <div class="stat-card">
-
-<i class="fa-solid fa-eye"></i>
-
-<h4>
-Total View
-</h4>
-
-<h2 id="totalView">
-0
-</h2>
-
+    <i class="fa-solid fa-eye"></i>
+    <h4>
+        Total View
+    </h4>
+    <h2 id="totalView">
+        0
+    </h2>
 </div>
-
-
-
-
-
 <div class="stat-card">
-
-<i class="fa-solid fa-hand-pointer"></i>
-
-<h4>
-Total Click
-</h4>
-
-<h2 id="totalClick">
-0
-</h2>
-
+    <i class="fa-solid fa-hand-pointer"></i>
+    <h4>
+        Total Click
+    </h4>
+    <h2 id="totalClick">
+        0
+    </h2>
 </div>
-
-
-
-
-
 <div class="stat-card">
-
-<i class="fa-solid fa-wallet"></i>
-
-<h4>
-Total Earnings
-</h4>
-
-<h2 id="totalEarning">
-Rp0
-</h2>
-
+    <i class="fa-solid fa-wallet"></i>
+    <h4>
+        Total Earnings
+    </h4>
+    <h2 id="totalEarning">
+        Rp0
+    </h2>
 </div>
-
-
-
 </section>
-
-
-
-
-
-
+<!-- =========================
+     SEARCH + FILTER
+========================= -->
 <section class="search-area">
-
-
 <div class="search-box">
-
-
-<i class="fa-solid fa-magnifying-glass"></i>
-
-
-<input
-
-id="searchInput"
-
-type="text"
-
-placeholder="Cari nama link atau URL..."
-
->
-
-
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input
+        id="searchInput"
+        type="text"
+        data-i18n-placeholder="searchLink"
+        placeholder="Cari nama link atau URL..."
+        autocomplete="off">
 </div>
-
-
-
 <div class="link-filter">
-
-
-<button 
-class="active"
-data-filter="all">
-
-<i class="fa-solid fa-layer-group"></i>
-
-Semua
-
-</button>
-
-
-
-<button
-data-filter="active">
-
-<i class="fa-solid fa-circle-check"></i>
-
-Aktif
-
-</button>
-
-
-
-<button
-data-filter="expired">
-
-<i class="fa-solid fa-clock"></i>
-
-Expired
-
-</button>
-
-
+    <button
+        class="active"
+        data-filter="all">
+        <i class="fa-solid fa-layer-group"></i>
+        Semua
+    </button>
+    <button
+        data-filter="active">
+        <i class="fa-solid fa-circle-check"></i>
+        Aktif
+    </button>
+    <button
+        data-filter="expired">
+        <i class="fa-solid fa-clock"></i>
+        Expired
+    </button>
 </div>
-
-
-
 </section>
-
-
-
-
-
-
+<!-- =========================
+     TIPS
+========================= -->
 <section class="info-note">
-
-
 <i class="fa-solid fa-lightbulb"></i>
-
-
 <div>
-
-<h4>
-Tips
-</h4>
-
-
-<p>
-
-Bagikan Ads Link melalui media sosial, website, atau komunitas.
-Gunakan traffic berkualitas agar CPM tetap optimal.
-
-</p>
-
-
+    <h4>
+        Tips
+    </h4>
+    <p>
+        Bagikan Ads Link melalui media sosial,
+        website, atau komunitas.
+        Gunakan traffic berkualitas agar CPM
+        tetap optimal.
+    </p>
 </div>
-
-
 </section>
-
-
-
-
-
-
-
+<!-- =========================
+     LINK LIST
+========================= -->
 <section class="link-section card-section">
-
-    <div class="section-title">
-
-        <div class="title-left">
-            <i class="fa-solid fa-list"></i>
-
-            <div>
-                <h2>Daftar Ads Link</h2>
-                <p>Kelola semua shortlink iklan Anda.</p>
-            </div>
+<div class="section-title">
+    <div class="title-left">
+        <i class="fa-solid fa-list"></i>
+        <div>
+            <h2>
+                Daftar Ads Link
+            </h2>
+            <p>
+                Kelola semua shortlink iklan Anda.
+            </p>
         </div>
-
-        <a href="dashboard.html" class="back-btn">
-            <i class="fa-solid fa-arrow-left"></i>
-            Dashboard
-        </a>
-
     </div>
-
-    <div id="linkList"></div>
-
+    <a
+        href="dashboard.html"
+        class="back-btn">
+        <i class="fa-solid fa-arrow-left"></i>
+        Dashboard
+    </a>
+</div>
+<div id="linkList"></div>
 </section>
-
-
-<section id="editModal" class="advanced-modal">
-
-    <div class="advanced-box">
-
-        <div class="advanced-header">
-
-            <div>
-                <h3>
-                    <i class="fa-solid fa-pen-to-square"></i>
-                    Edit Ads Link
-                </h3>
-
-                <p>Perbarui nama dan tujuan link.</p>
-            </div>
-
-            <button type="button" onclick="closeEdit()">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
+<!-- =========================
+     EDIT MODAL
+========================= -->
+<section
+    id="editModal"
+    class="advanced-modal">
+<div class="advanced-box">
+    <div class="advanced-header">
+        <div>
+            <h3>
+                <i class="fa-solid fa-pen-to-square"></i>
+                Edit Ads Link
+            </h3>
+            <p>
+                Perbarui nama dan tujuan link.
+            </p>
         </div>
-
-        <input type="hidden" id="editId">
-
-        <label>Nama Link</label>
-
-        <div class="input-box">
-            <i class="fa-solid fa-tag"></i>
-            <input
-                type="text"
-                id="editTitle"
-                placeholder="Contoh: Promo Produk">
-        </div>
-
-        <label>Destination URL</label>
-
-        <div class="input-box">
-            <i class="fa-solid fa-globe"></i>
-            <input
-                type="url"
-                id="editUrl"
-                placeholder="https://example.com">
-        </div>
-
-        <div class="btn-group">
-            <button
-                type="button"
-                class="btn-primary"
-                onclick="saveEdit()">
-                <i class="fa-solid fa-floppy-disk"></i>
-                Simpan Perubahan
-            </button>
-
-            <button
-                type="button"
-                class="btn-secondary"
-                onclick="closeEdit()">
-                <i class="fa-solid fa-xmark"></i>
-                Batal
-            </button>
-        </div>
-
+        <button
+            type="button"
+            onclick="closeEdit()"
+            aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
     </div>
-
+    <input
+        type="hidden"
+        id="editId">
+    <!-- EDIT NAME -->
+    <label>
+        Nama Link
+    </label>
+    <div class="input-box">
+        <i class="fa-solid fa-tag"></i>
+        <input
+            type="text"
+            id="editTitle"
+            placeholder="Contoh: Promo Produk">
+    </div>
+    <!-- EDIT URL -->
+    <label>
+        Destination URL
+    </label>
+    <div class="input-box">
+        <i class="fa-solid fa-globe"></i>
+        <input
+            type="url"
+            id="editUrl"
+            placeholder="https://example.com">
+    </div>
+    <!-- EDIT BUTTON -->
+    <div class="btn-group">
+        <button
+            type="button"
+            class="btn-primary"
+            onclick="saveEdit()">
+            <i class="fa-solid fa-floppy-disk"></i>
+            Simpan Perubahan
+        </button>
+        <button
+            type="button"
+            class="btn-secondary"
+            onclick="closeEdit()">
+            <i class="fa-solid fa-xmark"></i>
+            Batal
+        </button>
+    </div>
+</div>
 </section>
-
-
-
 </main>
-</div> <!-- TAMBAHAN (nutup app-container) -->
-
+<!-- =========================
+     FOOTER
+========================= -->
 <div id="footer"></div>
-
-
-
-
-
-
+<!-- =========================
+     SUPABASE
+========================= -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
+<!-- =========================
+     CORE JS
+========================= -->
 <script src="js/database.js"></script>
-
 <script src="js/session.js"></script>
-
 <script src="js/theme.js"></script>
-
-<script src="js/navbar.js"></script>
-
-<script src="js/footer.js"></script>
-
+<script src="js/language.js"></script>
 <script src="js/create-link.js"></script>
-
-
-
-<script>
-fetch("components/navbar.html")
-.then(res=>{
-if(!res.ok)throw new Error("Navbar tidak ditemukan");
-return res.text();
-})
-.then(html=>{
-document.getElementById("navbar").innerHTML=html;
-if(typeof c2pInit==="function")c2pInit();
-})
-.catch(err=>console.error("NAVBAR ERROR:",err));
-
-fetch("components/footer.html")
-.then(res=>{
-if(!res.ok)throw new Error("Footer tidak ditemukan");
-return res.text();
-})
-.then(html=>{
-document.getElementById("footer").innerHTML=html;
-if(typeof c2pFooterInit==="function")c2pFooterInit();
-})
-.catch(err=>console.error("FOOTER ERROR:",err));
-</script>
 <script src="assets/js/debug.js"></script>
+<!-- =========================
+     DYNAMIC NAVBAR
+========================= -->
+<script>
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+        fetch("components/navbar.html")
+        .then(function(response){
+            if(!response.ok){
+                throw new Error(
+                    "Navbar tidak ditemukan: " +
+                    response.status
+                );
+            }
+            return response.text();
+        })
+        .then(function(html){
+            const navbar =
+                document.getElementById("navbar");
+            if(!navbar){
+                return;
+            }
+            navbar.innerHTML = html;
+            /*
+             * Navbar JS sudah dimuat
+             * secara normal di atas.
+             */
+            if(typeof c2pInit === "function"){
+                c2pInit();
+            }
+            /*
+             * Terapkan bahasa setelah
+             * navbar masuk ke DOM.
+             */
+            if(
+                window.c2pLanguage &&
+                typeof c2pLanguage.refreshLanguage ===
+                "function"
+            ){
+                c2pLanguage.refreshLanguage();
+            }
+        })
+        .catch(function(error){
+            console.error(
+                "NAVBAR ERROR:",
+                error
+            );
+        });
+        /* =========================
+           FOOTER
+        ========================= */
+        fetch("components/footer.html")
+        .then(function(response){
+            if(!response.ok){
+                throw new Error(
+                    "Footer tidak ditemukan: " +
+                    response.status
+                );
+            }
+            return response.text();
+        })
+        .then(function(html){
+            const footer =
+                document.getElementById("footer");
+            if(!footer){
+                return;
+            }
+            footer.innerHTML = html;
+            if(
+                typeof c2pFooterInit ===
+                "function"
+            ){
+                c2pFooterInit();
+            }
+            /*
+             * Terapkan bahasa ke footer
+             * jika footer menggunakan
+             * data-i18n.
+             */
+            if(
+                window.c2pLanguage &&
+                typeof c2pLanguage.refreshLanguage ===
+                "function"
+            ){
+                c2pLanguage.refreshLanguage();
+            }
+        })
+        .catch(function(error){
+            console.error(
+                "FOOTER ERROR:",
+                error
+            );
+        });
+    }
+);
+</script>
 </body>
 </html>
