@@ -27,7 +27,9 @@ async function loadUser() {
             return null;
         }
 
-        if (currentUser) return currentUser;
+        if (currentUser) {
+            return currentUser;
+        }
 
         const user = await database.getUser();
 
@@ -40,17 +42,37 @@ async function loadUser() {
 
         currentProfile = await database.getProfile(user.id);
 
-        sellActive = Boolean(
-            currentProfile &&
-            (
-                currentProfile.sell_link_enabled === true ||
-                Number(currentProfile.withdraw_count || 0) >= 1
-            )
-        );
+        const sellUnlocked =
+            user.sell_unlocked === true;
+
+        const withdrawCount =
+            Number(user.withdraw_count || 0);
+
+        const withdrawUnlocked =
+            withdrawCount >= 3;
+
+        const premiumActive =
+            user.is_premium === true &&
+            user.premium_expires_at &&
+            new Date(user.premium_expires_at).getTime() > Date.now();
+
+        sellActive =
+            sellUnlocked ||
+            withdrawUnlocked ||
+            premiumActive;
 
         console.log("CURRENT USER:", currentUser);
         console.log("CURRENT PROFILE:", currentProfile);
-        console.log("SELL ACCESS:", sellActive);
+
+        console.log("SELL ACCESS:", {
+            sell_unlocked: sellUnlocked,
+            withdraw_count: withdrawCount,
+            withdraw_requirement: withdrawUnlocked,
+            is_premium: user.is_premium,
+            premium_expires_at: user.premium_expires_at,
+            premium_active: premiumActive,
+            sellActive: sellActive
+        });
 
         checkAccess();
 
@@ -64,8 +86,9 @@ async function loadUser() {
         currentProfile = null;
         sellActive = false;
 
-        return null;
+        checkAccess();
 
+        return null;
     }
 
 }
