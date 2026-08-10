@@ -321,26 +321,21 @@ async function updateProfile(payload) {
 // =====================================================
 // SELL LINK ACCESS
 // =====================================================
-
 async function getSellAccess(userId) {
-
-    if (!userId) return null;
-
-    const { data, error } =
-        await supabaseClient
-            .from("users")
-            .select(`
-                id,
-                username,
-                is_premium,
-                premium_expires_at,
-                sell_link_enabled,
-                sell_unlocked,
-                withdraw_count
-            `)
-            .eq("id", userId)
-            .maybeSingle();
-
+    if (!userId) {
+        return null;
+    }
+    const { data, error } = await supabaseClient
+        .from("users")
+        .select(`
+            id,
+            username,
+            is_premium,
+            premium_expires_at,
+            withdraw_count
+        `)
+        .eq("id", userId)
+        .maybeSingle();
     if (error) {
         console.error(
             "GET SELL ACCESS:",
@@ -348,52 +343,36 @@ async function getSellAccess(userId) {
         );
         return null;
     }
-
     return data || null;
 }
-
-
 // =====================================================
 // CHECK SELL LINK ACCESS
 // =====================================================
-
 async function canUseSellLink(userId) {
-
-    const user =
-        await getSellAccess(userId);
-
+    const user = await getSellAccess(userId);
     if (!user) {
         return false;
     }
-
-    // =========================================
-    // ADMIN MANUAL UNLOCK
-    // =========================================
-
-    if (
-        user.sell_link_enabled === true ||
-        user.sell_unlocked === true
-    ) {
+    // =================================================
+    // 1. WITHDRAW 3X ATAU LEBIH
+    // =================================================
+    const withdrawCount =
+        Number(user.withdraw_count || 0);
+    if (withdrawCount >= 3) {
         return true;
     }
-
-    // =========================================
-    // PREMIUM
-    // =========================================
-
+    // =================================================
+    // 2. PREMIUM AKTIF
+    // =================================================
     if (user.is_premium === true) {
-
-        // Jika premium tidak memiliki
-        // tanggal expired
+        // Premium tanpa tanggal expired
+        // dianggap aktif selamanya
         if (!user.premium_expires_at) {
             return true;
         }
-
         const expiredAt =
-            new Date(
-                user.premium_expires_at
-            );
-
+            new Date(user.premium_expires_at);
+        // Premium masih aktif
         if (
             !isNaN(expiredAt.getTime()) &&
             expiredAt > new Date()
@@ -401,10 +380,11 @@ async function canUseSellLink(userId) {
             return true;
         }
     }
-
+    // =================================================
+    // 3. TIDAK MEMENUHI SYARAT
+    // =================================================
     return false;
 }
-
 
 // =====================================================
 // LINKS
