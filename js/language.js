@@ -967,8 +967,81 @@ id: {
             "Beranda",
         dashboard:
             "Dashboard"
-    }
-},
+    },
+
+    sellLinkPage: {
+        title: "Sell Link",
+        description: "Jual link dan dapatkan penghasilan tambahan.",
+
+        guide: {
+            title: "Cara & Kegunaan Sell Link",
+            use1: "Sell Link digunakan untuk menjual akses file, produk digital, atau halaman khusus.",
+            use2: "Buat link, tentukan harga, lalu bagikan kepada pembeli.",
+            use3: "Pembeli dapat memilih Link Buy untuk melakukan pembayaran.",
+            use4: "Link Ads digunakan untuk mendapatkan penghasilan tambahan dari pengunjung.",
+            use5: "Saldo hasil penjualan masuk otomatis ke akun kamu."
+        },
+
+        status: {
+            title: "Status Sell Link",
+            checking: "Memeriksa status akun...",
+            active: "Sell Link Aktif",
+            inactive: "Aktifkan Sell Link terlebih dahulu"
+        },
+
+        create: {
+            title: "Buat Sell Link Baru",
+            description: "Masukkan link yang ingin dijual kepada pembeli.",
+            linkTitle: "Judul Link",
+            linkPlaceholder: "Contoh: Premium File, Course, Template",
+            destination: "URL Tujuan",
+            destinationPlaceholder: "https://website.com/file",
+            price: "Harga Jual",
+            pricePlaceholder: "Minimal Rp10.000",
+            createButton: "Create Sell Link",
+            lockedButton: "Sell Link Terkunci",
+            checkingButton: "Memeriksa Status...",
+            note: "Pastikan URL tujuan benar dan harga yang ditentukan sudah sesuai sebelum membuat Sell Link."
+        },
+
+        stats: {
+            totalLink: "Total Sell Link",
+            totalPrice: "Total Harga Jual",
+            totalView: "Total View",
+            totalSold: "Total Terjual",
+            totalRevenue: "Total Pendapatan Terjual"
+        },
+
+        search: {
+            placeholder: "Cari judul atau URL...",
+            all: "Semua",
+            active: "Aktif",
+            inactive: "Nonaktif"
+        },
+
+        list: {
+            title: "Daftar Sell Link",
+            description: "Kelola seluruh Sell Link yang telah Anda buat.",
+            emptyTitle: "Belum Ada Sell Link",
+            emptyDescription: "Silakan buat Sell Link pertama Anda."
+        },
+
+        generated: {
+            title: "Link Generated",
+            description: "Link Buy dan Link Ads yang berhasil dibuat akan muncul di sini.",
+            emptyTitle: "Belum Ada Link",
+            emptyDescription: "Setelah membuat Sell Link, Link Buy akan muncul di bagian ini.",
+            buyLink: "Buy Link",
+            shortCode: "Short Code",
+            active: "Link Aktif"
+        },
+
+        edit: {
+            title: "Edit Sell Link",
+            save: "Simpan Perubahan",
+            cancel: "Batal"
+        }
+    },
 /* =================================================
    ENGLISH
 ================================================= */
@@ -1926,8 +1999,81 @@ en: {
             "Home",
         dashboard:
             "Dashboard"
+    },
+
+    sellLinkPage: {
+        title: "Sell Link",
+        description: "Sell your links and earn extra income.",
+
+        guide: {
+            title: "Sell Link Guide & Benefits",
+            use1: "Sell Links are used to sell access to files, digital products, or exclusive pages.",
+            use2: "Create a link, set a price, and share it with buyers.",
+            use3: "Buyers can use the Buy Link to complete their payment.",
+            use4: "Ads Links can generate additional income from visitors.",
+            use5: "Your sales earnings are automatically added to your account balance."
+        },
+
+        status: {
+            title: "Sell Link Status",
+            checking: "Checking account status...",
+            active: "Sell Link Active",
+            inactive: "Activate Sell Link first"
+        },
+
+        create: {
+            title: "Create New Sell Link",
+            description: "Enter the link you want to sell.",
+            linkTitle: "Link Title",
+            linkPlaceholder: "Example: Premium File, Course, Template",
+            destination: "Destination URL",
+            destinationPlaceholder: "https://website.com/file",
+            price: "Selling Price",
+            pricePlaceholder: "Minimum Rp10,000",
+            createButton: "Create Sell Link",
+            lockedButton: "Sell Link Locked",
+            checkingButton: "Checking Status...",
+            note: "Make sure the destination URL and selling price are correct before creating a Sell Link."
+        },
+
+        stats: {
+            totalLink: "Total Sell Links",
+            totalPrice: "Total Selling Price",
+            totalView: "Total Views",
+            totalSold: "Total Sold",
+            totalRevenue: "Total Sales Revenue"
+        },
+
+        search: {
+            placeholder: "Search title or URL...",
+            all: "All",
+            active: "Active",
+            inactive: "Inactive"
+        },
+
+        list: {
+            title: "Sell Link List",
+            description: "Manage all your Sell Links.",
+            emptyTitle: "No Sell Links Yet",
+            emptyDescription: "Create your first Sell Link to get started."
+        },
+
+        generated: {
+            title: "Generated Links",
+            description: "Your Buy Link and Ads Link will appear here after creation.",
+            emptyTitle: "No Links Yet",
+            emptyDescription: "Once you create a Sell Link, the Buy Link will appear here.",
+            buyLink: "Buy Link",
+            shortCode: "Short Code",
+            active: "Link Active"
+        },
+
+        edit: {
+            title: "Edit Sell Link",
+            save: "Save Changes",
+            cancel: "Cancel"
+        }
     }
-}
 
 };
 
