@@ -23,7 +23,7 @@ if (googleBtn) {
             const { error } = await database.supabase.auth.signInWithOAuth({
                 provider: "google",
                 options: {
-                    redirectTo: window.location.origin + "/dashboard.html"
+                    redirectTo: "https://click2pay.my.id/dashboard.html"
                 }
             });
 
