@@ -21,18 +21,15 @@ LOAD USER
 async function loadUser() {
 
     try {
+
         if (!window.database) {
             console.error("DATABASE BELUM READY");
             return null;
         }
 
-        if (currentUser) {
-            return currentUser;
-        }
+        if (currentUser) return currentUser;
 
         const user = await database.getUser();
-
-        console.log("CURRENT USER:", user);
 
         if (!user) {
             console.error("USER TIDAK DITEMUKAN");
@@ -43,18 +40,16 @@ async function loadUser() {
 
         currentProfile = await database.getProfile(user.id);
 
-        console.log("CURRENT PROFILE:", currentProfile);
-
-        if (currentProfile) {
-            sellActive = Boolean(
+        sellActive = Boolean(
+            currentProfile &&
+            (
                 currentProfile.sell_link_enabled === true ||
                 Number(currentProfile.withdraw_count || 0) >= 1
-            );
-        } else {
-            console.warn("PROFILE TIDAK DITEMUKAN");
-            sellActive = false;
-        }
+            )
+        );
 
+        console.log("CURRENT USER:", currentUser);
+        console.log("CURRENT PROFILE:", currentProfile);
         console.log("SELL ACCESS:", sellActive);
 
         checkAccess();
@@ -62,8 +57,15 @@ async function loadUser() {
         return currentUser;
 
     } catch (err) {
+
         console.error("LOAD USER ERROR:", err);
+
+        currentUser = null;
+        currentProfile = null;
+        sellActive = false;
+
         return null;
+
     }
 
 }
@@ -75,14 +77,8 @@ LOAD SELL ORDERS
 async function loadSellOrders() {
 
     try {
-        if (!currentUser) {
-            console.warn("USER BELUM TERSEDIA");
-            sellOrders = [];
-            return;
-        }
 
-        if (!database || !database.supabase) {
-            console.error("SUPABASE BELUM READY");
+        if (!currentUser) {
             sellOrders = [];
             return;
         }
@@ -96,20 +92,21 @@ async function loadSellOrders() {
                 seller_receive,
                 status,
                 paid_at
-            `);
+            `)
+            .eq("seller_id", currentUser.id);
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         sellOrders = Array.isArray(data) ? data : [];
 
         console.log("SELL ORDERS:", sellOrders);
-        console.log("TOTAL SELL ORDERS:", sellOrders.length);
 
     } catch (err) {
+
         console.error("LOAD SELL ORDER ERROR:", err);
+
         sellOrders = [];
+
     }
 
 }
@@ -121,44 +118,39 @@ LOAD SELL LINKS
 async function loadSellLinks() {
 
     try {
-        console.log("=== START LOAD SELL LINK ===");
 
         if (!currentUser) {
             console.error("USER BELUM LOGIN");
             return;
         }
 
-        console.log("USER ID:", currentUser.id);
-
         const data = await database.getLinks(currentUser.id);
 
-        console.log("ALL USER LINKS:", data);
-
         if (!Array.isArray(data)) {
-            console.error("DATA LINKS INVALID:", data);
 
             sellLinks = [];
             filteredLinks = [];
 
             renderSellStats();
             renderLinks();
+
             return;
+
         }
 
         sellLinks = data.filter(link =>
-            link.link_type === "sell" ||
-            link.type === "sell"
+            String(link.link_type || link.type).toLowerCase() === "sell"
         );
-
-        console.log("FILTER SELL LINK:", sellLinks);
-        console.log("TOTAL SELL:", sellLinks.length);
 
         filteredLinks = [...sellLinks];
 
         renderSellStats();
         applyFilter();
 
+        console.log("TOTAL SELL LINK:", sellLinks.length);
+
     } catch (err) {
+
         console.error("LOAD SELL LINK ERROR:", err);
 
         sellLinks = [];
@@ -169,14 +161,17 @@ async function loadSellLinks() {
         const box = document.getElementById("sellList");
 
         if (box) {
+
             box.innerHTML = `
                 <div class="empty">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     <h3>Gagal Memuat Sell Link</h3>
-                    <p>${err.message}</p>
+                    <p>${err.message || "Unknown Error"}</p>
                 </div>
             `;
+
         }
+
     }
 
 }
@@ -186,24 +181,33 @@ HELPER
 ========================= */
 
 function numberValue(value) {
-    const number = Number(value);
+
+    if (value === null || value === undefined) return 0;
+
+    const number = Number(
+        String(value).replace(/,/g, "")
+    );
+
     return Number.isFinite(number) ? number : 0;
+
 }
 
 function getLinkOrders(linkId) {
-    if (!linkId) {
-        return [];
-    }
+
+    if (!linkId || !Array.isArray(sellOrders)) return [];
 
     return sellOrders.filter(order =>
         String(order.link_id) === String(linkId)
     );
+
 }
 
 function getPaidOrders(linkId) {
+
     return getLinkOrders(linkId).filter(order =>
-        String(order.status || "").toLowerCase() === "paid"
+        String(order.status || "").trim().toLowerCase() === "paid"
     );
+
 }
 
 /* =========================
@@ -225,70 +229,50 @@ function renderSellStats() {
 
     for (const link of sellLinks) {
 
-        const price = numberValue(link.price);
-        totalSellPrice += price;
+        totalSellPrice += numberValue(link.price);
 
-        const views = numberValue(
-            link.total_views ??
-            link.views ??
-            0
+        totalViewsValue += numberValue(
+            link.total_views || link.views
         );
-        totalViewsValue += views;
 
         const paidOrders = getPaidOrders(link.id);
 
-        if (paidOrders.length > 0) {
-            totalSoldValue += paidOrders.length;
-        } else {
-            totalSoldValue += numberValue(
-                link.sales ??
-                link.sold ??
-                0
-            );
-        }
+        totalSoldValue += paidOrders.length || numberValue(
+            link.sales || link.sold
+        );
 
         for (const order of paidOrders) {
+
             totalRevenueValue += numberValue(
-                order.seller_receive
+                order.seller_receive ?? order.price
             );
+
         }
+
     }
 
-    if (totalLink) {
-        totalLink.textContent =
-            sellLinks.length.toLocaleString("id-ID");
-    }
+    if (totalLink)
+        totalLink.textContent = sellLinks.length.toLocaleString("id-ID");
 
-    if (totalPrice) {
-        totalPrice.textContent =
-            "Rp " +
-            totalSellPrice.toLocaleString("id-ID");
-    }
+    if (totalPrice)
+        totalPrice.textContent = "Rp " + totalSellPrice.toLocaleString("id-ID");
 
-    if (totalView) {
-        totalView.textContent =
-            totalViewsValue.toLocaleString("id-ID");
-    }
+    if (totalView)
+        totalView.textContent = totalViewsValue.toLocaleString("id-ID");
 
-    if (totalSold) {
-        totalSold.textContent =
-            totalSoldValue.toLocaleString("id-ID");
-    }
+    if (totalSold)
+        totalSold.textContent = totalSoldValue.toLocaleString("id-ID");
 
-    if (totalRevenue) {
-        totalRevenue.textContent =
-            "Rp " +
-            totalRevenueValue.toLocaleString("id-ID");
-    }
+    if (totalRevenue)
+        totalRevenue.textContent = "Rp " + totalRevenueValue.toLocaleString("id-ID");
 
-    console.log("================================");
-    console.log("SELL STATISTICS");
-    console.log("Total Sell Link:", sellLinks.length);
-    console.log("Total Harga Jual:", totalSellPrice);
-    console.log("Total View:", totalViewsValue);
-    console.log("Total Terjual:", totalSoldValue);
-    console.log("Total Pendapatan Terjual:", totalRevenueValue);
-    console.log("================================");
+    console.log({
+        totalLink: sellLinks.length,
+        totalSellPrice,
+        totalViewsValue,
+        totalSoldValue,
+        totalRevenueValue
+    });
 
 }
 
@@ -300,15 +284,18 @@ const searchInput = document.getElementById("searchInput");
 const filterButtons = document.querySelectorAll(".link-filter button");
 
 function applyFilter() {
+
     const keyword = (searchInput?.value || "")
         .trim()
         .toLowerCase();
 
     filteredLinks = sellLinks.filter((link) => {
+
         const title = String(link.title || "").toLowerCase();
+
         const destination = String(
-            link.destination ||
             link.destination_url ||
+            link.destination ||
             ""
         ).toLowerCase();
 
@@ -328,11 +315,11 @@ function applyFilter() {
 
         switch (currentFilter) {
             case "active":
-                matchFilter = link.status === "active";
+                matchFilter = String(link.status) === "active";
                 break;
 
             case "inactive":
-                matchFilter = link.status !== "active";
+                matchFilter = String(link.status) !== "active";
                 break;
 
             default:
@@ -340,18 +327,20 @@ function applyFilter() {
         }
 
         return matchSearch && matchFilter;
+
     });
 
     renderLinks();
+
 }
 
-if (searchInput) {
-    searchInput.addEventListener("input", applyFilter);
-}
+searchInput?.addEventListener("input", applyFilter);
 
-filterButtons.forEach((btn) => {
+filterButtons.forEach(btn => {
+
     btn.addEventListener("click", () => {
-        filterButtons.forEach((b) =>
+
+        filterButtons.forEach(b =>
             b.classList.remove("active")
         );
 
@@ -360,28 +349,45 @@ filterButtons.forEach((btn) => {
         currentFilter = btn.dataset.filter || "all";
 
         applyFilter();
+
     });
+
 });
+
 
 /* =========================
 GENERATE SHORT CODE
 ========================= */
 
 function generateCode(length = 8) {
+
     const chars =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    const bytes = new Uint8Array(length);
-    crypto.getRandomValues(bytes);
-
     let code = "";
 
-    bytes.forEach((b) => {
-        code += chars[b % chars.length];
-    });
+    if (window.crypto?.getRandomValues) {
+
+        const bytes = new Uint8Array(length);
+
+        crypto.getRandomValues(bytes);
+
+        bytes.forEach(b => {
+            code += chars[b % chars.length];
+        });
+
+    } else {
+
+        for (let i = 0; i < length; i++) {
+            code += chars[Math.floor(Math.random() * chars.length)];
+        }
+
+    }
 
     return code;
+
 }
+
 
 /* =========================
 CREATE SELL LINK
@@ -393,41 +399,49 @@ if (createBtn) {
 
     createBtn.onclick = async () => {
 
-        if (!sellActive) {
-            alert("Sell Link belum aktif.");
-            return;
-        }
+        if (!sellActive)
+            return alert("Sell Link belum aktif.");
 
-        if (!currentUser) {
-            alert("User belum login.");
-            return;
-        }
+        if (!currentUser)
+            return alert("User belum login.");
 
         const title =
-            document.getElementById("sellTitle").value.trim();
+            document.getElementById("sellTitle")?.value.trim();
 
         const destination =
-            document.getElementById("sellUrl").value.trim();
+            document.getElementById("sellUrl")?.value.trim();
 
-        const price = numberValue(
-            document.getElementById("sellPrice").value
+        const price = Math.floor(
+            numberValue(
+                document.getElementById("sellPrice")?.value
+            )
         );
 
         if (!title || !destination || price < 10000) {
-            alert(
-                "Lengkapi data dengan benar.\nHarga minimal Rp10.000."
-            );
+
+            alert("Lengkapi data.\nHarga minimal Rp10.000.");
+
             return;
+
         }
 
         try {
-            new URL(destination);
+
+            const url = new URL(destination);
+
+            if (!["http:", "https:"].includes(url.protocol))
+                throw new Error();
+
         } catch {
+
             alert("URL tidak valid.");
+
             return;
+
         }
 
         createBtn.disabled = true;
+
         createBtn.innerHTML =
             '<i class="fa-solid fa-spinner fa-spin"></i> Membuat Sell Link...';
 
@@ -436,25 +450,39 @@ if (createBtn) {
             let short_code;
 
             do {
+
                 short_code = generateCode();
-            } while (
-                await database.getLinkByCode(short_code)
-            );
+
+            } while (await database.getLinkByCode(short_code));
 
             const newLink = await database.createLink({
+
                 user_id: currentUser.id,
+
                 type: "sell",
+
                 link_type: "sell",
+
                 title,
+
                 destination,
+
                 destination_url: destination,
+
                 short_code,
+
                 price,
+
                 status: "active",
+
                 sold: 0,
+
                 sales: 0,
+
                 views: 0,
+
                 total_views: 0
+
             });
 
             document.getElementById("sellTitle").value = "";
@@ -464,41 +492,44 @@ if (createBtn) {
             await loadSellOrders();
             await loadSellLinks();
 
-            if (newLink?.id) {
+            if (newLink?.id)
                 generateLink(newLink.id);
-            }
 
             applyFilter();
 
-            const result =
-                document.getElementById("createResult");
+            document.getElementById("createResult")?.replaceChildren();
+
+            const result = document.getElementById("createResult");
 
             if (result) {
+
                 result.innerHTML = `
                     <div class="success-box">
                         <i class="fa-solid fa-circle-check"></i>
                         Sell Link berhasil dibuat.
                     </div>
                 `;
+
             }
 
         } catch (err) {
 
-            console.error("CREATE SELL ERROR:", err);
+            console.error(err);
 
-            alert(
-                err.message ||
-                "Gagal membuat Sell Link."
-            );
+            alert(err.message || "Gagal membuat Sell Link.");
 
         } finally {
 
             createBtn.disabled = false;
 
             checkAccess();
+
         }
+
     };
+
 }
+
 
 /* =========================
 RENDER SELL LINKS
@@ -507,9 +538,11 @@ RENDER SELL LINKS
 function renderLinks() {
 
     const box = document.getElementById("sellList");
+
     if (!box) return;
 
     if (!filteredLinks.length) {
+
         box.innerHTML = `
             <div class="empty">
                 <i class="fa-solid fa-box-open"></i>
@@ -517,10 +550,12 @@ function renderLinks() {
                 <p>Silakan buat Sell Link pertama Anda.</p>
             </div>
         `;
+
         return;
+
     }
 
-    box.innerHTML = filteredLinks.map((link) => {
+    box.innerHTML = filteredLinks.map(link => {
 
         const shortCode =
             link.short_code ||
@@ -539,8 +574,7 @@ function renderLinks() {
             : numberValue(link.sales ?? link.sold);
 
         const revenue = paidOrders.reduce(
-            (total, order) =>
-                total + numberValue(order.seller_receive),
+            (t, o) => t + numberValue(o.seller_receive),
             0
         );
 
@@ -559,99 +593,7 @@ function renderLinks() {
             ? new Date(link.created_at).toLocaleDateString("id-ID")
             : "-";
 
-        return `
-        <div class="link-card">
-
-            <div class="link-top">
-                <h3>${link.title || "Tanpa Judul"}</h3>
-            </div>
-
-            <div class="link-meta">
-                <span><i class="fa-regular fa-calendar"></i> ${date}</span>
-                <span><i class="fa-solid fa-money-bill"></i> Rp ${price.toLocaleString("id-ID")}</span>
-                <span><i class="fa-solid fa-eye"></i> ${views.toLocaleString("id-ID")} View</span>
-                <span><i class="fa-solid fa-cart-shopping"></i> ${sold.toLocaleString("id-ID")} Terjual</span>
-                <span><i class="fa-solid fa-money-bill-trend-up"></i> Rp ${revenue.toLocaleString("id-ID")}</span>
-            </div>
-
-            <div class="destination-link">
-                <i class="fa-solid fa-link"></i>
-                <a href="${destination}" target="_blank" rel="noopener noreferrer" class="destination-url">
-                    ${destination}
-                </a>
-            </div>
-
-            <div class="badge-group">
-
-                <span class="badge blue">
-                    <i class="fa-solid fa-tag"></i>
-                    Sell Link
-                </span>
-
-                <span class="badge ${status ? "green" : "red"}">
-                    <i class="fa-solid fa-circle"></i>
-                    ${status ? "Aktif" : "Nonaktif"}
-                </span>
-
-                <span class="badge orange">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    Terjual ${sold}x
-                </span>
-
-                <span class="badge green">
-                    <i class="fa-solid fa-money-bill-trend-up"></i>
-                    Rp ${revenue.toLocaleString("id-ID")}
-                </span>
-
-            </div>
-
-            <div class="copy-box">
-
-                <input
-                    readonly
-                    value="${sellUrl}"
-                >
-
-                <button
-                    class="btn-copy"
-                    onclick="copySell('${sellUrl}')"
-                    title="Copy Link"
-                >
-                    <i class="fa-regular fa-copy"></i>
-                </button>
-
-            </div>
-
-            <div class="link-actions">
-
-                <button
-                    class="btn-edit"
-                    onclick="editSell('${link.id}')"
-                >
-                    <i class="fa-solid fa-pen"></i>
-                    Edit
-                </button>
-
-                <button
-                    class="btn-warning"
-                    onclick="toggleSellStatus('${link.id}')"
-                >
-                    <i class="fa-solid fa-power-off"></i>
-                    ${status ? "Nonaktifkan" : "Aktifkan"}
-                </button>
-
-                <button
-                    class="btn-delete"
-                    onclick="deleteSell('${link.id}')"
-                >
-                    <i class="fa-solid fa-eye-slash"></i>
-                    Hide
-                </button>
-
-            </div>
-
-        </div>
-        `;
+        return `...`;
 
     }).join("");
 
@@ -908,11 +850,9 @@ window.deleteSell = async function (id) {
         return;
     }
 
-    const confirmDelete = confirm(
-        `Sembunyikan Sell Link "${link.title}" ?`
-    );
-
-    if (!confirmDelete) return;
+    if (!confirm(`Sembunyikan Sell Link "${link.title}"?`)) {
+        return;
+    }
 
     try {
 
@@ -925,16 +865,17 @@ window.deleteSell = async function (id) {
 
         if (error) throw error;
 
-        const index = sellLinks.findIndex(item =>
-            String(item.id) === String(id)
+        // Hapus dari data lokal agar langsung hilang dari dashboard
+        sellLinks = sellLinks.filter(item =>
+            String(item.id) !== String(id)
         );
 
-        if (index !== -1) {
-            sellLinks[index].status = "inactive";
-        }
+        filteredLinks = filteredLinks.filter(item =>
+            String(item.id) !== String(id)
+        );
 
         renderSellStats();
-        applyFilter();
+        renderLinks();
 
         alert("Sell Link berhasil disembunyikan.");
 
