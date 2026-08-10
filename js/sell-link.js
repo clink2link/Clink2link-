@@ -530,7 +530,7 @@ function renderLinks() {
 
         const sellUrl = `${location.origin}/b/${shortCode}`;
 
-        const status = link.status === "active";
+        const status = String(link.status) === "active";
 
         const paidOrders = getPaidOrders(link.id);
 
@@ -615,6 +615,7 @@ function renderLinks() {
                 <button
                     class="btn-copy"
                     onclick="copySell('${sellUrl}')"
+                    title="Copy Link"
                 >
                     <i class="fa-regular fa-copy"></i>
                 </button>
@@ -629,6 +630,14 @@ function renderLinks() {
                 >
                     <i class="fa-solid fa-pen"></i>
                     Edit
+                </button>
+
+                <button
+                    class="btn-warning"
+                    onclick="toggleSellStatus('${link.id}')"
+                >
+                    <i class="fa-solid fa-power-off"></i>
+                    ${status ? "Nonaktifkan" : "Aktifkan"}
                 </button>
 
                 <button
