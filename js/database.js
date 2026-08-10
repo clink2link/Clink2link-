@@ -26,48 +26,86 @@ const API_URL =
 // =====================================================
 
 async function getUser() {
+    try {
 
-try {
-    const id = localStorage.getItem("user_id");
-    if (!id) return null;
-    const { data, error } = await supabaseClient
-        .from("users")
-        .select("*")
-        .eq("id", id)
-        .maybeSingle();
-    if (error) {
-        console.error("GET USER:", error);
+        const {
+            data: { session }
+        } = await supabaseClient.auth.getSession();
+
+        if (!session?.user) {
+            return null;
+        }
+
+        const { data, error } = await supabaseClient
+            .from("users")
+            .select("*")
+            .eq("id", session.user.id)
+            .maybeSingle();
+
+        if (error) {
+            console.error("GET USER:", error);
+            return null;
+        }
+
+        if (data) {
+            localStorage.setItem("user_id", data.id);
+            localStorage.setItem("username", data.username || "");
+        }
+
+        return data;
+
+    } catch (error) {
+        console.error("GET USER EXCEPTION:", error);
         return null;
     }
-    return data;
-} catch (error) {
-    console.error("GET USER EXCEPTION:", error);
-    return null;
-}
-
 }
 
 async function getUsers() {
 
-const { data, error } = await supabaseClient
-    .from("users")
-    .select("*")
-    .order("created_at", {
-        ascending: false
-    });
-if (error) {
-    console.error("GET USERS:", error);
-    return [];
-}
-return data || [];
+    try {
+
+        const { data, error } = await supabaseClient
+            .from("users")
+            .select("*")
+            .order("created_at", {
+                ascending: false
+            });
+
+        if (error) {
+            console.error("GET USERS:", error);
+            return [];
+        }
+
+        return data || [];
+
+    } catch (error) {
+
+        console.error("GET USERS EXCEPTION:", error);
+        return [];
+
+    }
 
 }
 
 async function logout() {
 
-localStorage.removeItem("user_id");
-sessionStorage.clear();
-location.replace("index.html");
+    try {
+
+        // Logout Supabase
+        await supabaseClient.auth.signOut();
+
+    } catch (error) {
+
+        console.error("LOGOUT ERROR:", error);
+
+    }
+
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("username");
+    localStorage.clear();
+    sessionStorage.clear();
+
+    window.location.replace("index.html");
 
 }
 
@@ -146,133 +184,139 @@ async function getProfile(userId) {
 // =====================================================
 // GET CURRENT PROFILE
 // =====================================================
+
 async function getCurrentProfile() {
+
     try {
-        // =========================================
-        // GET SUPABASE SESSION
-        // =========================================
+
         const {
-            data: sessionData,
-            error: sessionError
+            data: { session },
+            error
         } = await supabaseClient.auth.getSession();
-        if (sessionError) {
-            console.error(
-                "GET SESSION ERROR:",
-                sessionError
-            );
+
+        if (error) {
+            console.error("GET SESSION ERROR:", error);
             return null;
         }
-        // =========================================
-        // GET SESSION
-        // =========================================
-        const session =
-            sessionData?.session || null;
-        const authUser =
-            session?.user || null;
-        // =========================================
-        // CHECK AUTH USER
-        // =========================================
-        if (!authUser) {
-            console.warn(
-                "SUPABASE SESSION TIDAK ADA"
-            );
+
+        if (!session?.user) {
+            console.warn("SUPABASE SESSION TIDAK ADA");
             return null;
         }
-        console.log(
-            "SUPABASE AUTH USER:",
-            authUser.id
-        );
-        // =========================================
-        // GET PROFILE FROM USERS
-        // =========================================
+
+        const userId = session.user.id;
+
         const {
             data: profile,
             error: profileError
         } = await supabaseClient
             .from("users")
             .select("*")
-            .eq("id", authUser.id)
+            .eq("id", userId)
             .maybeSingle();
-        // =========================================
-        // HANDLE DATABASE ERROR
-        // =========================================
+
         if (profileError) {
-            console.error(
-                "GET CURRENT PROFILE ERROR:",
-                profileError
-            );
+            console.error("GET CURRENT PROFILE ERROR:", profileError);
             return null;
         }
-        // =========================================
-        // PROFILE NOT FOUND
-        // =========================================
+
         if (!profile) {
-            console.warn(
-                "PROFILE USERS TIDAK DITEMUKAN:",
-                authUser.id
-            );
+            console.warn("PROFILE USERS TIDAK DITEMUKAN:", userId);
             return null;
         }
-        // =========================================
-        // SYNC LOCAL STORAGE
-        // =========================================
-        localStorage.setItem(
-            "user_id",
-            profile.id
-        );
-        localStorage.setItem(
-            "username",
-            profile.username || ""
-        );
-        // =========================================
-        // LOG SUCCESS
-        // =========================================
-        console.log(
-            "CURRENT PROFILE:",
-            profile
-        );
+
+        localStorage.setItem("user_id", profile.id);
+        localStorage.setItem("username", profile.username || "");
+
         return profile;
+
     } catch (error) {
-        console.error(
-            "GET CURRENT PROFILE EXCEPTION:",
-            error
-        );
+
+        console.error("GET CURRENT PROFILE EXCEPTION:", error);
         return null;
+
     }
+
 }
+
+// =====================================================
+// GET ALL PROFILES
+// =====================================================
 
 async function getProfiles() {
 
-const { data, error } = await supabaseClient
-    .from("users")
-    .select("*");
-if (error) {
-    console.error("GET PROFILES:", error);
-    return [];
-}
-return data || [];
+    try {
+
+        const { data, error } = await supabaseClient
+            .from("users")
+            .select("*");
+
+        if (error) {
+            console.error("GET PROFILES:", error);
+            return [];
+        }
+
+        return data || [];
+
+    } catch (error) {
+
+        console.error("GET PROFILES EXCEPTION:", error);
+        return [];
+
+    }
 
 }
+
+// =====================================================
+// UPDATE PROFILE
+// =====================================================
 
 async function updateProfile(payload) {
 
-const id = localStorage.getItem("user_id");
-if (!id) return null;
-const { data, error } = await supabaseClient
-    .from("users")
-    .update(payload)
-    .eq("id", id)
-    .select()
-    .single();
-if (error) {
-    console.error("UPDATE PROFILE:", error);
-    throw error;
-}
-return data;
+    try {
+
+        const {
+            data: { session },
+            error
+        } = await supabaseClient.auth.getSession();
+
+        if (error) {
+            throw error;
+        }
+
+        if (!session?.user) {
+            throw new Error("User belum login.");
+        }
+
+        const {
+            data,
+            error: updateError
+        } = await supabaseClient
+            .from("users")
+            .update(payload)
+            .eq("id", session.user.id)
+            .select()
+            .single();
+
+        if (updateError) {
+            throw updateError;
+        }
+
+        if (data) {
+            localStorage.setItem("user_id", data.id);
+            localStorage.setItem("username", data.username || "");
+        }
+
+        return data;
+
+    } catch (error) {
+
+        console.error("UPDATE PROFILE:", error);
+        throw error;
+
+    }
 
 }
-
-
 
 // =====================================================
 // SELL LINK ACCESS
