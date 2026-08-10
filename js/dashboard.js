@@ -1478,39 +1478,36 @@ setInterval(
 //======================================================
 // DOM LOAD
 //======================================================
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-        loadDashboard();
-        checkSellStatus();
-        const params =
-            new URLSearchParams(
-                location.search
-            );
-        if (
-            params.get("tab") ===
-            "statistics"
-        ) {
-            setTimeout(
-                () => {
-                    const section =
-                        document.getElementById(
-                            "statistics"
-                        );
-                    if (section) {
-                        section.scrollIntoView({
-                            behavior:
-                                "smooth",
-                            block:
-                                "start"
-                        });
-                    }
-                },
-                700
-            );
-        }
+document.addEventListener("DOMContentLoaded", async () => {
+
+    while (!window.database) {
+        await new Promise(resolve => setTimeout(resolve, 100));
     }
-);
+
+    await loadDashboard();
+    await checkSellStatus();
+
+    const params = new URLSearchParams(location.search);
+
+    if (params.get("tab") === "statistics") {
+
+        setTimeout(() => {
+
+            const section = document.getElementById("statistics");
+
+            if (section) {
+                section.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+
+        }, 700);
+
+    }
+
+});
+
 //======================================================
 // MARKET DETAIL
 //======================================================
