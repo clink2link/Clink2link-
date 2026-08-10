@@ -33,85 +33,89 @@ document.documentElement.classList.add("dark");
 
 <div class="app-container">
 
-
+<!-- PAGE TITLE -->
 <section class="page-title">
-<i class="fa-solid fa-tags"></i>
-<div>
-<h1>Sell Link</h1>
-<p>Jual link dan dapatkan penghasilan tambahan</p>
-</div>
+    <i class="fa-solid fa-tags"></i>
+    <div>
+        <h1 data-i18n="sellLinkPage.title">Sell Link</h1>
+        <p data-i18n="sellLinkPage.description">
+            Jual link dan dapatkan penghasilan tambahan.
+        </p>
+    </div>
 </section>
-
-
 
 <!-- CARA & KEGUNAAN -->
-
-<section class="info-box">
-
-<div class="info-header">
-<i class="fa-solid fa-book-open"></i>
-<h3>Cara & Kegunaan Sell Link</h3>
-</div>
-
-<ul>
-
-<li>
-<i class="fa-solid fa-check"></i>
-Sell Link digunakan untuk menjual akses file, produk digital, atau halaman khusus.
-</li>
-
-<li>
-<i class="fa-solid fa-check"></i>
-Buat link, tentukan harga, lalu bagikan kepada pembeli.
-</li>
-
-<li>
-<i class="fa-solid fa-check"></i>
-Pembeli dapat memilih Link Buy untuk melakukan pembayaran.
-</li>
-
-<li>
-<i class="fa-solid fa-check"></i>
-Link Ads digunakan untuk mendapatkan penghasilan tambahan dari pengunjung.
-</li>
-
-<li>
-<i class="fa-solid fa-check"></i>
-Saldo hasil penjualan masuk otomatis ke akun kamu.
-</li>
-
-</ul>
-
-</section>
-
-
-
-
-<!-- STATUS -->
-
 <section class="info-box">
 
     <div class="info-header">
+        <i class="fa-solid fa-book-open"></i>
+        <h3 data-i18n="sellLinkPage.guide.title">
+            Cara & Kegunaan Sell Link
+        </h3>
+    </div>
 
+    <ul>
+
+        <li>
+            <i class="fa-solid fa-check"></i>
+            <span data-i18n="sellLinkPage.guide.use1">
+                Sell Link digunakan untuk menjual akses file, produk digital, atau halaman khusus.
+            </span>
+        </li>
+
+        <li>
+            <i class="fa-solid fa-check"></i>
+            <span data-i18n="sellLinkPage.guide.use2">
+                Buat link, tentukan harga, lalu bagikan kepada pembeli.
+            </span>
+        </li>
+
+        <li>
+            <i class="fa-solid fa-check"></i>
+            <span data-i18n="sellLinkPage.guide.use3">
+                Pembeli dapat memilih Link Buy untuk melakukan pembayaran.
+            </span>
+        </li>
+
+        <li>
+            <i class="fa-solid fa-check"></i>
+            <span data-i18n="sellLinkPage.guide.use4">
+                Link Ads digunakan untuk mendapatkan penghasilan tambahan dari pengunjung.
+            </span>
+        </li>
+
+        <li>
+            <i class="fa-solid fa-check"></i>
+            <span data-i18n="sellLinkPage.guide.use5">
+                Saldo hasil penjualan masuk otomatis ke akun kamu.
+            </span>
+        </li>
+
+    </ul>
+
+</section>
+
+<!-- STATUS -->
+<section class="info-box">
+
+    <div class="info-header">
         <i class="fa-solid fa-shield-halved"></i>
 
-        <h3>Status Sell Link</h3>
-
+        <h3 data-i18n="sellLinkPage.status.title">
+            Status Sell Link
+        </h3>
     </div>
 
     <p id="sellStatus">
-
         <i class="fa-solid fa-spinner fa-spin"></i>
-
-        Memeriksa status akun...
-
+        <span data-i18n="sellLinkPage.status.checking">
+            Memeriksa status akun...
+        </span>
     </p>
 
 </section>
 
-
 <!-- CREATE -->
-
 <section class="create-form card-section">
 
     <div class="create-header">
@@ -121,46 +125,48 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
         </div>
 
         <div>
-            <h2>Buat Sell Link Baru</h2>
-            <p>Masukkan link yang ingin dijual kepada pembeli.</p>
+            <h2 data-i18n="sellLinkPage.create.title">
+                Buat Sell Link Baru
+            </h2>
+
+            <p data-i18n="sellLinkPage.create.description">
+                Masukkan link yang ingin dijual kepada pembeli.
+            </p>
         </div>
 
     </div>
 
-
     <div class="form-group">
 
-        <label>
+        <label data-i18n="sellLinkPage.create.linkTitle">
             Judul Link
         </label>
 
         <input
             id="sellTitle"
             type="text"
+            data-i18n-placeholder="sellLinkPage.create.linkPlaceholder"
             placeholder="Contoh: Premium File, Course, Template">
 
     </div>
 
-
-
     <div class="form-group">
 
-        <label>
+        <label data-i18n="sellLinkPage.create.destination">
             URL Tujuan
         </label>
 
         <input
             id="sellUrl"
             type="url"
+            data-i18n-placeholder="sellLinkPage.create.destinationPlaceholder"
             placeholder="https://website.com/file">
 
     </div>
 
-
-
     <div class="form-group">
 
-        <label>
+        <label data-i18n="sellLinkPage.create.price">
             Harga Jual
         </label>
 
@@ -169,11 +175,10 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
             type="number"
             min="10000"
             step="1000"
+            data-i18n-placeholder="sellLinkPage.create.pricePlaceholder"
             placeholder="Minimal Rp10.000">
 
     </div>
-
-
 
     <div class="btn-group">
 
@@ -185,72 +190,78 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
             <i class="fa-solid fa-spinner fa-spin"></i>
 
-            Memeriksa Status...
+            <span data-i18n="sellLinkPage.create.checkingButton">
+                Memeriksa Status...
+            </span>
 
         </button>
 
     </div>
 
-
-
     <div id="createResult" class="create-result"></div>
-
-
 
     <div class="create-note">
 
         <i class="fa-solid fa-shield-halved"></i>
 
-        Pastikan URL tujuan benar dan harga yang ditentukan sudah sesuai sebelum membuat Sell Link.
+        <span data-i18n="sellLinkPage.create.note">
+            Pastikan URL tujuan benar dan harga yang ditentukan sudah sesuai sebelum membuat Sell Link.
+        </span>
 
     </div>
-
 
 </section>
 
 
 
 <!-- SELL LINK STATS -->
+<!-- SELL LINK STATS -->
 <section class="quick-stats">
-<div class="stat-card">
-    <i class="fa-solid fa-link"></i>
-    <h4>Total Sell Link</h4>
-    <h2 id="sellTotalLink">0</h2>
-</div>
-<div class="stat-card">
-    <i class="fa-solid fa-tags"></i>
-    <h4>Total Harga Jual</h4>
-    <h2 id="sellTotalPrice">
-        Rp0
-    </h2>
-</div>
-<div class="stat-card">
-    <i class="fa-solid fa-eye"></i>
-    <h4>Total View</h4>
-    <h2 id="sellTotalView">
-        0
-    </h2>
-</div>
-<div class="stat-card">
-    <i class="fa-solid fa-cart-shopping"></i>
-    <h4>Total Terjual</h4>
-    <h2 id="sellTotalSold">
-        0
-    </h2>
-</div>
-<!-- TOTAL PENDAPATAN TERJUAL -->
-<div class="stat-card">
-    <i class="fa-solid fa-money-bill-trend-up"></i>
-    <h4>Total Pendapatan Terjual</h4>
-    <h2 id="sellTotalRevenue">
-        Rp0
-    </h2>
-</div>
+
+    <div class="stat-card">
+        <i class="fa-solid fa-link"></i>
+        <h4 data-i18n="sellLinkPage.stats.totalLink">
+            Total Sell Link
+        </h4>
+        <h2 id="sellTotalLink">0</h2>
+    </div>
+
+    <div class="stat-card">
+        <i class="fa-solid fa-tags"></i>
+        <h4 data-i18n="sellLinkPage.stats.totalPrice">
+            Total Harga Jual
+        </h4>
+        <h2 id="sellTotalPrice">Rp0</h2>
+    </div>
+
+    <div class="stat-card">
+        <i class="fa-solid fa-eye"></i>
+        <h4 data-i18n="sellLinkPage.stats.totalView">
+            Total View
+        </h4>
+        <h2 id="sellTotalView">0</h2>
+    </div>
+
+    <div class="stat-card">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <h4 data-i18n="sellLinkPage.stats.totalSold">
+            Total Terjual
+        </h4>
+        <h2 id="sellTotalSold">0</h2>
+    </div>
+
+    <div class="stat-card">
+        <i class="fa-solid fa-money-bill-trend-up"></i>
+        <h4 data-i18n="sellLinkPage.stats.totalRevenue">
+            Total Pendapatan Terjual
+        </h4>
+        <h2 id="sellTotalRevenue">Rp0</h2>
+    </div>
+
 </section>
 
 
 <!-- SEARCH -->
-
 <section class="search-area">
 
     <div class="search-box">
@@ -260,6 +271,7 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
         <input
             id="searchInput"
             type="text"
+            data-i18n-placeholder="sellLinkPage.search.placeholder"
             placeholder="Cari judul atau URL...">
 
     </div>
@@ -272,25 +284,29 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
             <i class="fa-solid fa-layer-group"></i>
 
-            Semua
+            <span data-i18n="sellLinkPage.search.all">
+                Semua
+            </span>
 
         </button>
 
-        <button
-            data-filter="active">
+        <button data-filter="active">
 
             <i class="fa-solid fa-circle-check"></i>
 
-            Aktif
+            <span data-i18n="sellLinkPage.search.active">
+                Aktif
+            </span>
 
         </button>
 
-        <button
-            data-filter="inactive">
+        <button data-filter="inactive">
 
             <i class="fa-solid fa-circle-xmark"></i>
 
-            Nonaktif
+            <span data-i18n="sellLinkPage.search.inactive">
+                Nonaktif
+            </span>
 
         </button>
 
@@ -300,7 +316,6 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
 
 <!-- LIST -->
-
 <section class="link-section card-section">
 
     <div class="section-title">
@@ -311,9 +326,13 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
             <div>
 
-                <h2>Daftar Sell Link</h2>
+                <h2 data-i18n="sellLinkPage.list.title">
+                    Daftar Sell Link
+                </h2>
 
-                <p>Kelola seluruh Sell Link yang telah Anda buat.</p>
+                <p data-i18n="sellLinkPage.list.description">
+                    Kelola seluruh Sell Link yang telah Anda buat.
+                </p>
 
             </div>
 
@@ -327,7 +346,6 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
 
 <!-- GENERATED -->
-
 <section class="link-section card-section">
 
     <div class="section-title">
@@ -338,9 +356,13 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
             <div>
 
-                <h2>Link Generated</h2>
+                <h2 data-i18n="sellLinkPage.generated.title">
+                    Link Generated
+                </h2>
 
-                <p>Link Buy dan Link Ads yang berhasil dibuat akan muncul di sini.</p>
+                <p data-i18n="sellLinkPage.generated.description">
+                    Link Buy dan Link Ads yang berhasil dibuat akan muncul di sini.
+                </p>
 
             </div>
 
@@ -354,9 +376,11 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 
             <i class="fa-solid fa-link"></i>
 
-            <h3>Belum Ada Link</h3>
+            <h3 data-i18n="sellLinkPage.generated.emptyTitle">
+                Belum Ada Link
+            </h3>
 
-            <p>
+            <p data-i18n="sellLinkPage.generated.emptyDescription">
                 Setelah membuat Sell Link, Link Buy akan muncul di bagian ini.
             </p>
 
@@ -380,6 +404,7 @@ Saldo hasil penjualan masuk otomatis ke akun kamu.
 <script src="js/database.js"></script>
 <script src="js/navbar.js"></script>
 <script src="js/footer.js"></script>
+<script src="js/language.js"></script>
 <script src="js/sell-link.js"></script>
 
 <script>
