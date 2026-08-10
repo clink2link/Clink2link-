@@ -813,6 +813,192 @@ function checkAccess() {
 }
 
 /* =========================
+EDIT SELL LINK
+========================= */
+
+window.editSell = async function (id) {
+
+    const link = sellLinks.find(item => String(item.id) === String(id));
+
+    if (!link) {
+        alert("Sell Link tidak ditemukan.");
+        return;
+    }
+
+    const title = prompt("Judul", link.title || "");
+    if (title === null) return;
+
+    const destination = prompt(
+        "Destination URL",
+        link.destination_url || link.destination || ""
+    );
+
+    if (destination === null) return;
+
+    try {
+        new URL(destination);
+    } catch {
+        alert("URL tidak valid.");
+        return;
+    }
+
+    const priceText = prompt(
+        "Harga",
+        link.price || 10000
+    );
+
+    if (priceText === null) return;
+
+    const price = Number(priceText);
+
+    if (price < 10000) {
+        alert("Minimal Rp10.000");
+        return;
+    }
+
+    try {
+
+        const { error } = await database.supabase
+            .from("links")
+            .update({
+                title,
+                destination: destination,
+                destination_url: destination,
+                price
+            })
+            .eq("id", id);
+
+        if (error) throw error;
+
+        await loadSellLinks();
+
+        alert("Sell Link berhasil diperbarui.");
+
+    } catch (err) {
+
+        console.error(err);
+        alert(err.message);
+
+    }
+
+};
+
+
+/* =========================
+DELETE / HIDE SELL LINK
+========================= */
+
+window.deleteSell = async function (id) {
+
+    const link = sellLinks.find(item =>
+        String(item.id) === String(id)
+    );
+
+    if (!link) {
+        alert("Sell Link tidak ditemukan.");
+        return;
+    }
+
+    const confirmDelete = confirm(
+        `Sembunyikan Sell Link "${link.title}" ?`
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+
+        const { error } = await database.supabase
+            .from("links")
+            .update({
+                status: "inactive"
+            })
+            .eq("id", id);
+
+        if (error) throw error;
+
+        const index = sellLinks.findIndex(item =>
+            String(item.id) === String(id)
+        );
+
+        if (index !== -1) {
+            sellLinks[index].status = "inactive";
+        }
+
+        renderSellStats();
+        applyFilter();
+
+        alert("Sell Link berhasil disembunyikan.");
+
+    } catch (err) {
+
+        console.error("DELETE SELL ERROR:", err);
+
+        alert(
+            err.message ||
+            "Gagal menyembunyikan Sell Link."
+        );
+
+    }
+
+};
+
+
+/* =========================
+TOGGLE SELL STATUS
+========================= */
+
+window.toggleSellStatus = async function (id) {
+
+    const link = sellLinks.find(item =>
+        String(item.id) === String(id)
+    );
+
+    if (!link) {
+        alert("Sell Link tidak ditemukan.");
+        return;
+    }
+
+    const newStatus =
+        link.status === "active"
+            ? "inactive"
+            : "active";
+
+    try {
+
+        const { error } = await database.supabase
+            .from("links")
+            .update({
+                status: newStatus
+            })
+            .eq("id", id);
+
+        if (error) throw error;
+
+        link.status = newStatus;
+
+        renderSellStats();
+        applyFilter();
+
+        alert(
+            newStatus === "active"
+                ? "Sell Link berhasil diaktifkan."
+                : "Sell Link berhasil dinonaktifkan."
+        );
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert(
+            err.message ||
+            "Gagal mengubah status Sell Link."
+        );
+
+    }
+
+};
+
+/* =========================
 INIT
 ========================= */
 
