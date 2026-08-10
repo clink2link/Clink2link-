@@ -278,6 +278,68 @@ font-size:24px;
 
 }
 
+/* Divider */
+.login-divider{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:22px 0 18px;
+    color:#8b8b8b;
+    font-size:14px;
+}
+
+.login-divider::before,
+.login-divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:#dcdcdc;
+}
+
+.dark .login-divider::before,
+.dark .login-divider::after{
+    background:#3b3b3b;
+}
+
+/* Google Button */
+.google-login-btn{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:#fff;
+    color:#222;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
+
+.google-login-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(0,0,0,.12);
+}
+
+.google-login-btn img{
+    width:22px;
+    height:22px;
+}
+
+html.dark .google-login-btn{
+    background:#1f2937;
+    color:#fff;
+    box-shadow:none;
+    border:1px solid #374151;
+}
+
+html.dark .google-login-btn:hover{
+    background:#293548;
+}
+
 
 /* =========================
    LOGIN TOAST
