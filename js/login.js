@@ -3,74 +3,106 @@ document.addEventListener("DOMContentLoaded", () => {
 const form = document.getElementById("loginForm");
 if(!form) return;
 
-
 const btn = document.getElementById("loginBtn");
 
+const googleBtn = document.getElementById("googleLoginBtn");
 
+if (googleBtn) {
+
+    googleBtn.addEventListener("click", async () => {
+
+        if (!window.database) {
+            showToast("Login Gagal", "Database belum dimuat.", "error");
+            return;
+        }
+
+        googleBtn.disabled = true;
+
+        try {
+
+            const { error } = await database.supabase.auth.signInWithOAuth({
+                provider: "google",
+                options: {
+                    redirectTo: window.location.origin + "/dashboard.html"
+                }
+            });
+
+            if (error) {
+                throw error;
+            }
+
+        } catch (err) {
+
+            showToast("Login Gagal", err.message, "error");
+
+            googleBtn.disabled = false;
+
+        }
+
+    });
+
+}
+    
 // =========================
 // ALERT FORM
 // =========================
 
-function showAlert(message,type="error"){
+function showAlert(message, type = "error") {
 
-const box=document.getElementById("loginAlert");
+    const title =
+        type === "success"
+            ? "Berhasil"
+            : type === "warning"
+            ? "Peringatan"
+            : "Login Gagal";
 
-if(!box){
-    alert(message);
-    return;
-}
-
-box.innerHTML=`
-<div class="alert-box alert-${type}">
-${message}
-</div>
-`;
+    showToast(title, message, type);
 
 }
-
 
 // =========================
 // FLOAT TOAST
 // =========================
 
-function showToast(title,message,type="success"){
+function showToast(title, message, type = "success") {
 
-const toast=document.createElement("div");
+    document.querySelectorAll(".login-toast").forEach(t => t.remove());
 
-toast.className=`login-toast ${type}`;
+    const toast = document.createElement("div");
 
-toast.innerHTML=`
+    toast.className = `login-toast ${type}`;
 
-<i class="fa-solid ${
-type==="success"
-?"fa-circle-check"
-:"fa-circle-xmark"
-}"></i>
+    toast.innerHTML = `
+        <i class="fa-solid ${
+            type === "success"
+                ? "fa-circle-check"
+                : type === "warning"
+                ? "fa-triangle-exclamation"
+                : "fa-circle-xmark"
+        }"></i>
 
-<div>
-<h4>${title}</h4>
-<p>${message}</p>
-</div>
+        <div>
+            <h4>${title}</h4>
+            <p>${message}</p>
+        </div>
+    `;
 
-`;
+    document.body.appendChild(toast);
 
-document.body.appendChild(toast);
+    requestAnimationFrame(() => {
+        toast.classList.add("show");
+    });
 
+    setTimeout(() => {
 
-setTimeout(()=>{
+        toast.classList.remove("show");
+        toast.classList.add("hide");
 
-toast.classList.add("hide");
+        setTimeout(() => toast.remove(), 300);
 
-setTimeout(()=>{
-toast.remove();
-},300);
-
-
-},1500);
+    }, 2000);
 
 }
-
-
 
 // =========================
 // LOGIN
@@ -78,21 +110,16 @@ toast.remove();
 
 form.addEventListener("submit",async(e)=>{
 
-
 e.preventDefault();
-
 
 const login=document
 .getElementById("login")
 .value
 .trim();
 
-
 const password=document
 .getElementById("password")
 .value;
-
-
 
 if(!login || !password){
 
@@ -104,8 +131,6 @@ return;
 
 }
 
-
-
 if(!window.database){
 
 showAlert(
@@ -116,13 +141,9 @@ return;
 
 }
 
-
-
 const token=document
 .querySelector("[name='cf-turnstile-response']")
 ?.value;
-
-
 
 if(!token){
 
@@ -134,8 +155,6 @@ return;
 
 }
 
-
-
 btn.disabled=true;
 
 btn.innerHTML=`
@@ -143,14 +162,9 @@ btn.innerHTML=`
 Memproses...
 `;
 
-
-
 try{
 
-
 let email=login.toLowerCase();
-
-
 
 // =========================
 // USERNAME LOGIN
@@ -158,17 +172,13 @@ let email=login.toLowerCase();
 
 if(!login.includes("@")){
 
-
 const {data:user,error}=await database.supabase
 .from("users")
 .select("id,username,email")
 .ilike("username",login)
 .maybeSingle();
 
-
-
 if(error) throw error;
-
 
 if(!user){
 
@@ -180,13 +190,9 @@ return;
 
 }
 
-
 email=user.email.toLowerCase();
 
-
 }
-
-
 
 // =========================
 // EMAIL LOGIN
@@ -194,17 +200,13 @@ email=user.email.toLowerCase();
 
 else{
 
-
 const {data:user,error}=await database.supabase
 .from("users")
 .select("id,email")
 .eq("email",email)
 .maybeSingle();
 
-
-
 if(error) throw error;
-
 
 if(!user){
 
@@ -216,10 +218,7 @@ return;
 
 }
 
-
 }
-
-
 
 // =========================
 // AUTH
@@ -237,13 +236,9 @@ password
 
 });
 
-
-
 if(authError){
 
-
 const msg=authError.message.toLowerCase();
-
 
 if(msg.includes("invalid login")){
 
@@ -255,7 +250,6 @@ return;
 
 }
 
-
 if(msg.includes("email not confirmed")){
 
 showAlert(
@@ -266,13 +260,9 @@ return;
 
 }
 
-
 throw authError;
 
 }
-
-
-
 
 if(!authData.user){
 
@@ -284,11 +274,10 @@ return;
 
 }
 
-
-
 // =========================
 // PROFILE
 // =========================
+
 const {
     data: profile,
     error: profileError
@@ -297,36 +286,20 @@ const {
     .select("*")
     .eq("id", authData.user.id)
     .maybeSingle();
+
 if (profileError) {
     throw profileError;
 }
+
 if (!profile) {
+
     await database.supabase.auth.signOut();
-    showAlert(
-        "❌ Data akun tidak ditemukan."
-    );
+
+    showAlert("❌ Data akun tidak ditemukan.");
+
     return;
-}
-
-
-
-if(profileError) throw profileError;
-
-
-
-if(!profile){
-
-showAlert(
-"❌ Profile belum tersedia."
-);
-
-await database.supabase.auth.signOut();
-
-return;
 
 }
-
-
 
 // =========================
 // STATUS AKUN
@@ -357,9 +330,6 @@ await database.supabase
     })
     .eq("id", profile.id);
 
-
-
-
 // =========================
 // TRACK
 // =========================
@@ -370,9 +340,6 @@ await trackLoginActivity(profile.id);
 
 }
 
-
-
-
 // =========================
 // STORAGE
 // =========================
@@ -382,14 +349,10 @@ localStorage.setItem(
 profile.id
 );
 
-
 localStorage.setItem(
 "username",
 profile.username
 );
-
-
-
 
 // =========================
 // SUCCESS TOAST
@@ -400,15 +363,11 @@ showToast(
 `Selamat datang kembali, ${profile.username}`
 );
 
-
-
 setTimeout(()=>{
 
 window.location.href="dashboard.html";
 
 },1500);
-
-
 
 }
 
@@ -419,36 +378,29 @@ console.error(
 err
 );
 
-
 showToast(
 "Login Gagal",
 err.message,
 "error"
 );
 
-
 }
 
-finally{
+finally {
 
+    btn.disabled = false;
 
-if(btn){
+    btn.innerHTML = `
+        <i class="fa-solid fa-right-to-bracket"></i>
+        <span>Masuk</span>
+    `;
 
-btn.disabled=false;
-
-btn.innerHTML=
-`
-<i class="fa-solid fa-right-to-bracket"></i>
-<span>Masuk</span>
-`;
-
-}
-
+    if (googleBtn) {
+        googleBtn.disabled = false;
+    }
 
 }
-
 
 });
-
 
 });
