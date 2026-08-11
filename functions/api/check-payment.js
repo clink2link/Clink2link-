@@ -1,123 +1,178 @@
-// ===============================
-// CHECK PAYMENT SELL LINK
-// ===============================
+// ============================================
+// CHECK PAYMENT SELL LINK - DOMPETX
+// ============================================
 export async function onRequestGet(context) {
-    const {
-        env,
-        request
-    } = context;
+    const { env, request } = context;
     try {
         const url = new URL(request.url);
-        const invoice_id =
+        const invoiceId =
             (url.searchParams.get("invoice_id") || "").trim();
-        console.log(
-            "CHECK PAYMENT INVOICE:",
-            invoice_id
-        );
-        // =====================
-        // VALIDATE INVOICE
-        // =====================
-        if (!invoice_id) {
-            return json(
-                {
-                    success: false,
-                    error: "invoice_id wajib diisi"
-                },
-                400
+        const paymentId =
+            (url.searchParams.get("payment_id") || "").trim();
+        console.log("========== CHECK DOMPETX ==========");
+        console.log("INVOICE :", invoiceId);
+        console.log("PAYMENT :", paymentId);
+        console.log("===================================");
+        if (!invoiceId && !paymentId) {
+            return json({
+                success: false,
+                error: "invoice_id atau payment_id wajib diisi"
+            }, 400);
+        }
+        // ========================================
+        // ENV CHECK
+        // ========================================
+        if (!env.DOMPAY_API_KEY) {
+            throw new Error("DOMPAY_API_KEY belum diset");
+        }
+        if (!env.DOMPAY_BASE_URL) {
+            throw new Error("DOMPAY_BASE_URL belum diset");
+        }
+        if (!env.SUPABASE_URL) {
+            throw new Error("SUPABASE_URL belum diset");
+        }
+        if (!env.SUPABASE_SERVICE_KEY) {
+            throw new Error(
+                "SUPABASE_SERVICE_KEY belum diset"
             );
         }
-        // =====================
-        // GET SELL ORDER
-        // =====================
-        const orders =
-            await supabaseRequest(
+        // ========================================
+        // GET ORDER
+        // ========================================
+        let orders = [];
+        if (paymentId) {
+            orders = await supabaseRequest(
                 env,
                 "sell_orders",
                 "GET",
                 null,
-                `?select=*&invoice_id=eq.${invoice_id}`
+                `?payment_id=eq.${encodeURIComponent(paymentId)}&select=*`
             );
-        if (!orders.length) {
-            return json(
-                {
-                    success: false,
-                    error: "Order tidak ditemukan"
-                },
-                404
+        } else {
+            orders = await supabaseRequest(
+                env,
+                "sell_orders",
+                "GET",
+                null,
+                `?invoice_id=eq.${encodeURIComponent(invoiceId)}&select=*`
             );
         }
+        if (!orders.length) {
+            return json({
+                success: false,
+                error: "Order tidak ditemukan"
+            }, 404);
+        }
         let order = orders[0];
-        // =====================
-        // CHECK BAYARGG
-        // =====================
+        console.log("ORDER:", order);
+        // ========================================
+        // SUDAH PAID
+        // ========================================
+        if (order.status === "paid") {
+            const destination =
+                await getDestinationUrl(
+                    env,
+                    order.link_id
+                );
+            return json({
+                success: true,
+                data: {
+                    order_id:
+                        order.id,
+                    invoice_id:
+                        order.invoice_id || invoiceId,
+                    payment_id:
+                        order.payment_id || paymentId,
+                    status:
+                        "paid",
+                    price:
+                        Number(order.price || 0),
+                    expires_at:
+                        order.expires_at || null,
+                    paid_at:
+                        order.paid_at || null,
+                    destination_url:
+                        destination
+                }
+            });
+        }
+        // ========================================
+        // PAYMENT ID WAJIB
+        // ========================================
+        const dompetPaymentId =
+            order.payment_id || paymentId;
+        if (!dompetPaymentId) {
+            throw new Error(
+                "Payment ID DompetX tidak ditemukan"
+            );
+        }
+        // ========================================
+        // CHECK DOMPETX
+        // ========================================
         const payment =
-            await bayarGGCheckPayment(
+            await dompetXCheckPayment(
                 env,
-                invoice_id
+                dompetPaymentId
             );
         console.log(
-            "BAYARGG RESULT:",
+            "DOMPETX PAYMENT RESULT:",
             payment
         );
-        let status =
-            order.status || "pending";
-        let paid_at =
-            order.paid_at || null;
-        // =====================
-        // PARSE PAYMENT STATUS
-        // =====================
+        // ========================================
+        // PARSE STATUS
+        // ========================================
         const paymentStatus =
             String(
-                payment.status ??
-                payment.payment_status ??
-                payment.paymentStatus ??
-                payment.state ??
-                payment.paymentState ??
-                payment.result ??
-                payment.data?.status ??
+                payment.status ||
+                payment.payment_status ||
+                payment.paymentStatus ||
+                payment.state ||
+                payment.data?.status ||
                 ""
             )
             .trim()
             .toLowerCase();
         console.log(
-            "PAYMENT STATUS PARSED:",
+            "DOMPETX STATUS:",
             paymentStatus
         );
-        // =====================
-        // UPDATE PAID
-        // =====================
+        let status =
+            order.status || "pending";
+        let paidAt =
+            order.paid_at || null;
+        // ========================================
+        // PAID
+        // ========================================
+        const isPaid =
+            [
+                "paid",
+                "success",
+                "successful",
+                "completed",
+                "settlement",
+                "settled",
+                "berhasil"
+            ].includes(paymentStatus);
         if (
-            (
-                paymentStatus === "paid" ||
-                paymentStatus === "success" ||
-                paymentStatus === "completed" ||
-                paymentStatus === "settlement" ||
-                paymentStatus === "berhasil"
-            )
-            &&
+            isPaid &&
             order.status !== "paid"
         ) {
             console.log(
                 "PAYMENT VALID - PROCESS SELL PAYMENT"
             );
-            // =====================
-            // PROCESS SELL PAYMENT
-            // =====================
             const process =
                 await supabaseRpc(
                     env,
                     "process_sell_payment",
                     {
-                        p_order_id: order.id
+                        p_order_id:
+                            order.id
                     }
                 );
             console.log(
                 "PROCESS SELL PAYMENT:",
                 process
             );
-            // =====================
-            // VALIDATE RPC
-            // =====================
             if (
                 !process ||
                 process.success === false
@@ -127,140 +182,169 @@ export async function onRequestGet(context) {
                     "Gagal proses pembayaran"
                 );
             }
-            // =====================
+            // ====================================
             // GET UPDATED ORDER
-            // =====================
+            // ====================================
             const updated =
                 await supabaseRequest(
                     env,
                     "sell_orders",
                     "GET",
                     null,
-                    `?id=eq.${order.id}&select=*`
+                    `?id=eq.${encodeURIComponent(order.id)}&select=*`
                 );
             if (updated.length) {
                 order = updated[0];
             }
-            // =====================
-            // UPDATE STATUS
-            // =====================
             status =
                 order.status || "paid";
-            paid_at =
-                order.paid_at || new Date().toISOString();
+            paidAt =
+                order.paid_at ||
+                new Date().toISOString();
+        } else {
+            // ====================================
+            // PENDING / EXPIRED
+            // ====================================
+            if (
+                [
+                    "expired",
+                    "cancelled",
+                    "canceled"
+                ].includes(paymentStatus)
+            ) {
+                status =
+                    paymentStatus === "expired"
+                        ? "expired"
+                        : "cancelled";
+            } else {
+                status = "pending";
+            }
         }
-        // =====================
-        // GET DESTINATION
-        // =====================
-        let destination_url = null;
+        // ========================================
+        // DESTINATION
+        // ========================================
+        let destinationUrl = null;
         if (status === "paid") {
-            const links =
-                await supabaseRequest(
+            destinationUrl =
+                await getDestinationUrl(
                     env,
-                    "links",
-                    "GET",
-                    null,
-                    `?id=eq.${order.link_id}&select=*`
+                    order.link_id
                 );
-            if (links.length) {
-                const link = links[0];
-                destination_url =
-                    link.destination_url ||
-                    link.destination ||
-                    link.url ||
-                    null;
-            }
         }
-        // =====================
+        // ========================================
+        // QR IMAGE URL
+        // ========================================
+        const qrImageUrl =
+            dompetPaymentId
+                ? `${normalizeBaseUrl(env.DOMPAY_BASE_URL)}/v1/qr/${encodeURIComponent(dompetPaymentId)}`
+                : null;
+        // ========================================
         // RESPONSE
-        // =====================
-        return json(
-            {
-                success: true,
-                data: {
-                    order_id:
-                        order.id,
-                    invoice_id:
-                        order.invoice_id ||
-                        invoice_id,
-                    status,
-                    price:
-                        Number(order.price || 0),
-                    qris_string:
-                        order.qris_string ||
-                        null,
-                    expires_at:
-                        order.expires_at ||
-                        null,
-                    paid_at:
-                        order.paid_at ||
-                        paid_at,
-                    link_id:
-                        order.link_id,
-                    seller_id:
-                        order.seller_id,
-                    destination_url
-                }
+        // ========================================
+        return json({
+            success: true,
+            data: {
+                order_id:
+                    order.id,
+                invoice_id:
+                    order.invoice_id ||
+                    invoiceId ||
+                    null,
+                payment_id:
+                    dompetPaymentId,
+                status,
+                price:
+                    Number(order.price || 0),
+                expires_at:
+                    order.expires_at ||
+                    payment.expiresAt ||
+                    payment.expires_at ||
+                    null,
+                paid_at:
+                    order.paid_at ||
+                    paidAt,
+                link_id:
+                    order.link_id,
+                seller_id:
+                    order.seller_id,
+                qr_image_url:
+                    qrImageUrl,
+                destination_url:
+                    destinationUrl
             }
-        );
+        });
     } catch (error) {
         console.error(
-            "CHECK PAYMENT ERROR:",
+            "CHECK DOMPETX PAYMENT ERROR:",
             error
         );
-        return json(
-            {
-                success: false,
-                error:
-                    error?.message ||
-                    "Terjadi kesalahan"
-            },
-            500
-        );
+        return json({
+            success: false,
+            error:
+                error?.message ||
+                "Terjadi kesalahan"
+        }, 500);
     }
 }
-// ===============================
-// BAYARGG CHECK PAYMENT
-// ===============================
-async function bayarGGCheckPayment(
+// ============================================
+// DOMPETX CHECK PAYMENT
+// ============================================
+async function dompetXCheckPayment(
     env,
-    invoice_id
+    paymentId
 ) {
-    if (!env.BAYARGG_API_KEY) {
+    if (!paymentId) {
         throw new Error(
-            "BAYARGG_API_KEY kosong"
+            "Payment ID kosong"
         );
     }
-    if (!invoice_id) {
-        throw new Error(
-            "invoice_id kosong"
+    const timestamp =
+        Math.floor(
+            Date.now() / 1000
+        ).toString();
+    // GET request menggunakan
+    // body kosong untuk signature.
+    const bodyString = "{}";
+    const signature =
+        await hmacSHA256(
+            env.DOMPAY_API_KEY,
+            `${timestamp}.${bodyString}`
         );
-    }
-    const url =
-        `https://www.bayar.gg/api/check-payment.php?invoice=${encodeURIComponent(invoice_id)}`;
+    const baseUrl =
+        normalizeBaseUrl(
+            env.DOMPAY_BASE_URL
+        );
+    const endpoint =
+        `${baseUrl}/v1/payments/detail/${encodeURIComponent(paymentId)}`;
     console.log(
-        "BAYARGG CHECK URL:",
-        url
+        "DOMPETX CHECK URL:",
+        endpoint
     );
     const response =
         await fetch(
-            url,
+            endpoint,
             {
                 method: "GET",
                 headers: {
-                    "X-API-Key":
-                        env.BAYARGG_API_KEY
+                    "X-DOMPAY-API-Key":
+                        env.DOMPAY_API_KEY,
+                    "X-DOMPAY-Timestamp":
+                        timestamp,
+                    "X-DOMPAY-Signature":
+                        signature,
+                    "Content-Type":
+                        "application/json"
                 }
             }
         );
     const text =
         await response.text();
     console.log(
-        "BAYARGG CHECK STATUS:",
+        "DOMPETX CHECK STATUS:",
         response.status
     );
     console.log(
-        "BAYARGG CHECK RAW:",
+        "DOMPETX CHECK RAW:",
         text
     );
     let data;
@@ -269,27 +353,91 @@ async function bayarGGCheckPayment(
             JSON.parse(text);
     } catch {
         throw new Error(
-            "BayarGG response bukan JSON: " +
+            "Response DompetX bukan JSON:\n" +
             text
         );
     }
     if (!response.ok) {
         throw new Error(
-            `BayarGG HTTP ${response.status}: ${text}`
-        );
-    }
-    if (data.success === false) {
-        throw new Error(
-            data.error ||
-            data.message ||
-            "Check payment gagal"
+            `DompetX HTTP ${response.status}: ` +
+            JSON.stringify(
+                data,
+                null,
+                2
+            )
         );
     }
     return data;
 }
-// ===============================
+// ============================================
+// GET DESTINATION URL
+// ============================================
+async function getDestinationUrl(
+    env,
+    linkId
+) {
+    if (!linkId) {
+        return null;
+    }
+    const links =
+        await supabaseRequest(
+            env,
+            "links",
+            "GET",
+            null,
+            `?id=eq.${encodeURIComponent(linkId)}&select=destination_url,destination,url`
+        );
+    if (!links.length) {
+        return null;
+    }
+    const link =
+        links[0];
+    return (
+        link.destination_url ||
+        link.destination ||
+        link.url ||
+        null
+    );
+}
+// ============================================
+// HMAC SHA256
+// ============================================
+async function hmacSHA256(
+    secret,
+    message
+) {
+    const encoder =
+        new TextEncoder();
+    const key =
+        await crypto.subtle.importKey(
+            "raw",
+            encoder.encode(secret),
+            {
+                name: "HMAC",
+                hash: "SHA-256"
+            },
+            false,
+            ["sign"]
+        );
+    const signature =
+        await crypto.subtle.sign(
+            "HMAC",
+            key,
+            encoder.encode(message)
+        );
+    return [
+        ...new Uint8Array(signature)
+    ]
+        .map(
+            b =>
+                b.toString(16)
+                    .padStart(2, "0")
+        )
+        .join("");
+}
+// ============================================
 // SUPABASE RPC
-// ===============================
+// ============================================
 async function supabaseRpc(
     env,
     functionName,
@@ -317,10 +465,12 @@ async function supabaseRpc(
     let data;
     try {
         data =
-            JSON.parse(text);
+            text
+                ? JSON.parse(text)
+                : null;
     } catch {
         throw new Error(
-            "RPC response bukan JSON: " +
+            "RPC response bukan JSON:\n" +
             text
         );
     }
@@ -335,9 +485,9 @@ async function supabaseRpc(
     }
     return data;
 }
-// ===============================
+// ============================================
 // SUPABASE REQUEST
-// ===============================
+// ============================================
 async function supabaseRequest(
     env,
     table,
@@ -375,13 +525,14 @@ async function supabaseRequest(
                 JSON.parse(text);
         } catch {
             throw new Error(
-                "Supabase response bukan JSON: " +
+                "Supabase response bukan JSON:\n" +
                 text
             );
         }
     }
     if (!response.ok) {
         throw new Error(
+            `Supabase HTTP ${response.status}: ` +
             JSON.stringify(
                 data,
                 null,
@@ -391,9 +542,18 @@ async function supabaseRequest(
     }
     return data;
 }
-// ===============================
+// ============================================
+// NORMALIZE BASE URL
+// ============================================
+function normalizeBaseUrl(
+    url
+) {
+    return String(url || "")
+        .replace(/\/+$/, "");
+}
+// ============================================
 // JSON RESPONSE
-// ===============================
+// ============================================
 function json(
     data,
     status = 200
@@ -404,7 +564,9 @@ function json(
             status,
             headers: {
                 "Content-Type":
-                    "application/json"
+                    "application/json",
+                "Cache-Control":
+                    "no-store"
             }
         }
     );
