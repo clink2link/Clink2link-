@@ -1,8 +1,12 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const buyBox = document.getElementById("buyBox");
     if (!buyBox) return;
+    // =========================================================
+    // CONFIG
+    // =========================================================
     const DEBUG = false;
     let debugBox = null;
+    let countdownTimer = null;
     // =========================================================
     // DEBUG
     // =========================================================
@@ -33,14 +37,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         let text = title;
         if (data !== null) {
             try {
-                text += "\n" +
+                text +=
+                    "\n" +
                     JSON.stringify(
                         data,
                         null,
                         2
                     );
             } catch {
-                text += "\n" +
+                text +=
+                    "\n" +
                     String(data);
             }
         }
@@ -49,6 +55,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         debugBox.scrollTop =
             debugBox.scrollHeight;
     }
+    // =========================================================
+    // GLOBAL ERROR HANDLER
+    // =========================================================
     window.onerror = function (
         msg,
         url,
@@ -72,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
         };
     // =========================================================
-    // GET CODE
+    // GET SELL CODE
     // =========================================================
     const code =
         window.BUY_CODE ||
@@ -112,6 +121,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             `;
             return;
         }
+        // =====================================================
+        // CHECK SELL LINK
+        // =====================================================
         if (
             link.link_type !== "sell" &&
             link.type !== "sell"
@@ -123,6 +135,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             `;
             return;
         }
+        // =====================================================
+        // PRODUCT DATA
+        // =====================================================
         const title =
             escapeHtml(
                 link.title ||
@@ -174,6 +189,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <button
                     class="buy-btn"
                     id="payBtn"
+                    type="button"
                 >
                     <i class="fa-solid fa-bolt"></i>
                     Bayar Sekarang
@@ -184,10 +200,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.getElementById(
                 "payBtn"
             );
+        if (!payBtn) {
+            throw new Error(
+                "Tombol pembayaran tidak ditemukan"
+            );
+        }
         // =====================================================
-        // PAYMENT
+        // CREATE PAYMENT
         // =====================================================
-        payBtn.onclick = async () => {
+        payBtn.onclick =
+            async () => {
             payBtn.disabled = true;
             payBtn.innerHTML = `
                 <i class="fa-solid fa-spinner fa-spin"></i>
@@ -201,7 +223,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     "CREATE SELL ORDER",
                     {
                         link_id: link.id,
-                        seller_id: sellerId
+                        seller_id: sellerId,
+                        amount: price
                     }
                 );
                 const orderResponse =
@@ -214,9 +237,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                                     "application/json"
                             },
                             body: JSON.stringify({
-                                link_id: link.id,
-                                seller_id: sellerId,
-                                buyer_id: null
+                                link_id:
+                                    link.id,
+                                seller_id:
+                                    sellerId,
+                                buyer_id:
+                                    null
                             })
                         }
                     );
@@ -231,7 +257,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 } catch {
                     throw new Error(
                         "Response create order bukan JSON: " +
-                        orderText
+                        orderText.substring(
+                            0,
+                            500
+                        )
                     );
                 }
                 log(
@@ -259,17 +288,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                     );
                 }
                 // =================================================
-                // CREATE DOMPETX PAYMENT
+                // CREATE DOMPETX QRIS
                 // =================================================
                 log(
                     "CREATE DOMPETX PAYMENT",
                     {
-                        order_id: orderId
+                        order_id:
+                            orderId,
+                        amount:
+                            price
                     }
                 );
                 const paymentResponse =
                     await fetch(
-                        "/api/create-payment",
+                        "/api/payment/create",
                         {
                             method: "POST",
                             headers: {
@@ -277,7 +309,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                                     "application/json"
                             },
                             body: JSON.stringify({
-                                order_id: orderId
+                                amount:
+                                    price,
+                                order_id:
+                                    orderId
                             })
                         }
                     );
@@ -291,12 +326,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                         );
                 } catch {
                     throw new Error(
-                        "Response payment bukan JSON: " +
-                        paymentText
+                        "Response DompetX bukan JSON: " +
+                        paymentText.substring(
+                            0,
+                            500
+                        )
                     );
                 }
                 log(
-                    "CREATE PAYMENT RESPONSE",
+                    "DOMPETX RESPONSE",
                     payment
                 );
                 if (
@@ -305,52 +343,95 @@ document.addEventListener("DOMContentLoaded", async () => {
                 ) {
                     throw new Error(
                         payment.error ||
-                        "Gagal membuat pembayaran"
+                        "Gagal membuat pembayaran DompetX"
                     );
                 }
+                // =================================================
+                // NORMALIZE DOMPETX DATA
+                // =================================================
                 const paymentData =
                     payment.data ||
                     payment;
+                log(
+                    "NORMALIZED PAYMENT DATA",
+                    paymentData
+                );
                 // =================================================
-                // DOMPETX DATA
+                // PAYMENT ID
                 // =================================================
                 const paymentId =
+                    paymentData.paymentId ||
                     paymentData.payment_id ||
                     paymentData.id ||
                     null;
+                // =================================================
+                // REFERENCE
+                // =================================================
                 const invoiceId =
-                    paymentData.invoice_id ||
                     paymentData.reference ||
-                    null;
-                const paymentUrl =
-                    paymentData.payment_url ||
-                    null;
-                let qrImageUrl =
-                    paymentData.qris_image_url ||
-                    paymentData.qr_image_url ||
-                    paymentData.qris_url ||
-                    null;
-                const expires =
-                    paymentData.expires_at ||
-                    paymentData.expiresAt ||
+                    paymentData.merchantReference ||
+                    paymentData.merchant_reference ||
+                    payment.reference ||
                     null;
                 // =================================================
-                // FALLBACK QR
+                // PAYMENT URL
+                // =================================================
+                const paymentUrl =
+                    paymentData.paymentUrl ||
+                    paymentData.payment_url ||
+                    paymentData.checkoutUrl ||
+                    paymentData.checkout_url ||
+                    null;
+                // =================================================
+                // QR IMAGE
+                //
+                // DompetX docs:
+                //
+                // qrData.qrImage
+                // =================================================
+                let qrImageUrl =
+                    paymentData?.qrData?.qrImage ||
+                    paymentData?.qr_data?.qrImage ||
+                    paymentData?.qr_data?.qr_image ||
+                    paymentData?.qrImage ||
+                    paymentData?.qr_image ||
+                    paymentData?.qris_image_url ||
+                    paymentData?.qrisImage ||
+                    null;
+                // =================================================
+                // FALLBACK QR IMAGE
                 // =================================================
                 if (
                     !qrImageUrl &&
                     paymentId
                 ) {
-                    const baseUrl =
-                        paymentData.base_url ||
-                        null;
-                    if (baseUrl) {
-                        qrImageUrl =
-                            `${baseUrl.replace(/\/+$/, "")}/v1/qr/${encodeURIComponent(paymentId)}`;
-                    }
+                    qrImageUrl =
+                        `https://api.dompetx.com/v1/qr/${encodeURIComponent(
+                            paymentId
+                        )}`;
+                }
+                // =================================================
+                // EXPIRED
+                // =================================================
+                let expires =
+                    paymentData.expiresAt ||
+                    paymentData.expires_at ||
+                    paymentData.expiredAt ||
+                    paymentData.expired_at ||
+                    null;
+                /*
+                 * Kalau DompetX tidak mengirim expires,
+                 * gunakan 15 menit sebagai fallback.
+                 */
+                if (!expires) {
+                    expires =
+                        new Date(
+                            Date.now() +
+                            15 * 60 * 1000
+                        ).toISOString();
                 }
                 log(
-                    "DOMPETX PAYMENT DATA",
+                    "PAYMENT NORMALIZED",
                     {
                         paymentId,
                         invoiceId,
@@ -359,9 +440,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                         expires
                     }
                 );
+                // =================================================
+                // REQUIRED DATA
+                // =================================================
                 if (!paymentId) {
                     throw new Error(
-                        "Payment ID tidak ditemukan"
+                        "Payment ID DompetX tidak ditemukan"
                     );
                 }
                 if (!invoiceId) {
@@ -371,12 +455,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
                 if (!qrImageUrl) {
                     throw new Error(
-                        "QRIS URL tidak ditemukan"
-                    );
-                }
-                if (!expires) {
-                    throw new Error(
-                        "Waktu expired pembayaran tidak ditemukan"
+                        "QRIS image tidak ditemukan"
                     );
                 }
                 // =================================================
@@ -386,7 +465,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <div class="buy-product-card">
                         <div class="buy-product-title">
                             <i class="fa-solid fa-qrcode"></i>
-                            Pembayaran
+                            Pembayaran QRIS
                         </div>
                         <div class="buy-price">
                             Rp ${price.toLocaleString("id-ID")}
@@ -431,7 +510,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         </div>
                         ${
                             paymentUrl
-                                ? `
+                            ? `
                                 <a
                                     href="${escapeHtml(paymentUrl)}"
                                     target="_blank"
@@ -445,14 +524,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                                     "
                                 >
                                     <i class="fa-solid fa-up-right-from-square"></i>
-                                    Buka Halaman Pembayaran
+                                    Buka Pembayaran
                                 </a>
-                                `
-                                : ""
+                            `
+                            : ""
                         }
                         <button
                             class="buy-btn"
                             id="checkPayment"
+                            type="button"
                             style="
                                 background:#10b981;
                                 margin-top:15px;
@@ -464,6 +544,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <button
                             class="buy-btn"
                             id="cancelPayment"
+                            type="button"
                             style="
                                 background:#ef4444;
                                 margin-top:15px;
@@ -475,42 +556,47 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </div>
                 `;
                 // =================================================
-                // QR ERROR
+                // QR IMAGE ERROR
                 // =================================================
                 const qrisImage =
                     document.getElementById(
                         "qrisImage"
                     );
-                qrisImage.onerror = () => {
-                    log(
-                        "QR IMAGE ERROR",
-                        qrImageUrl
-                    );
-                    qrisImage.outerHTML = `
-                        <div
-                            style="
-                                text-align:center;
-                                padding:30px;
-                            "
-                        >
-                            <i
-                                class="fa-solid fa-triangle-exclamation"
-                                style="font-size:35px;"
-                            ></i>
-                            <p>
-                                QRIS gagal dimuat.
-                            </p>
-                            <a
-                                href="${escapeHtml(qrImageUrl)}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="buy-btn"
+                if (qrisImage) {
+                    qrisImage.onerror =
+                        () => {
+                        log(
+                            "QR IMAGE ERROR",
+                            qrImageUrl
+                        );
+                        qrisImage.outerHTML = `
+                            <div
+                                style="
+                                    text-align:center;
+                                    padding:30px;
+                                "
                             >
-                                Buka QRIS
-                            </a>
-                        </div>
-                    `;
-                };
+                                <i
+                                    class="fa-solid fa-triangle-exclamation"
+                                    style="
+                                        font-size:35px;
+                                    "
+                                ></i>
+                                <p>
+                                    QRIS gagal dimuat.
+                                </p>
+                                <a
+                                    href="${escapeHtml(qrImageUrl)}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="buy-btn"
+                                >
+                                    Buka QRIS
+                                </a>
+                            </div>
+                        `;
+                    };
+                }
                 // =================================================
                 // COUNTDOWN
                 // =================================================
@@ -532,16 +618,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                     )
                 ) {
                     throw new Error(
-                        "Format expired tidak valid"
+                        "Format expired pembayaran tidak valid"
                     );
                 }
-                let timer;
-                const updateCountdown = () => {
+                const updateCountdown =
+                    () => {
                     const diff =
                         expireTime -
                         Date.now();
                     if (diff <= 0) {
-                        clearInterval(timer);
+                        clearInterval(
+                            countdownTimer
+                        );
                         countdown.innerHTML = `
                             <i class="fa-solid fa-hourglass-end"></i>
                             00:00
@@ -552,6 +640,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <i class="fa-solid fa-circle-xmark"></i>
                             Pembayaran Expired
                         `;
+                        const checkBtn =
+                            document.getElementById(
+                                "checkPayment"
+                            );
+                        if (checkBtn) {
+                            checkBtn.style.display =
+                                "none";
+                        }
                         return;
                     }
                     const minutes =
@@ -565,11 +661,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                         );
                     countdown.innerHTML = `
                         <i class="fa-solid fa-stopwatch"></i>
-                        ${minutes}:${String(seconds).padStart(2, "0")}
+                        ${minutes}:${String(
+                            seconds
+                        ).padStart(2, "0")}
                     `;
                 };
                 updateCountdown();
-                timer =
+                countdownTimer =
                     setInterval(
                         updateCountdown,
                         1000
@@ -591,7 +689,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     `;
                     try {
                         log(
-                            "CHECK DOMPETX PAYMENT",
+                            "CHECK PAYMENT",
                             {
                                 payment_id:
                                     paymentId,
@@ -601,13 +699,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                                     orderId
                             }
                         );
-                        /*
-                         * KIRIM PAYMENT ID + INVOICE
-                         *
-                         * Backend harus menggunakan
-                         * payment_id untuk mencari
-                         * pembayaran DompetX.
-                         */
                         const query =
                             new URLSearchParams({
                                 payment_id:
@@ -638,7 +729,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                             } catch {
                             throw new Error(
                                 "Response check payment bukan JSON: " +
-                                text
+                                text.substring(
+                                    0,
+                                    500
+                                )
                             );
                         }
                         log(
@@ -660,22 +754,30 @@ document.addEventListener("DOMContentLoaded", async () => {
                         const status =
                             String(
                                 result.status ||
+                                result.payment_status ||
                                 ""
                             )
                                 .trim()
                                 .toLowerCase();
+                        log(
+                            "PAYMENT STATUS",
+                            status
+                        );
                         // =================================================
-                        // PAID
+                        // SUCCESS
                         // =================================================
                         if (
-                            status === "paid" ||
-                            status === "success" ||
-                            status === "completed" ||
-                            status === "settlement" ||
-                            status === "berhasil"
+                            [
+                                "paid",
+                                "success",
+                                "successful",
+                                "completed",
+                                "settlement",
+                                "berhasil"
+                            ].includes(status)
                         ) {
                             clearInterval(
-                                timer
+                                countdownTimer
                             );
                             paymentStatus.className =
                                 "buy-status buy-success";
@@ -697,41 +799,59 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 "PAYMENT SUCCESS",
                                 result
                             );
-                            // =================================================
-                            // REDIRECT
-                            // =================================================
+                            // =============================================
+                            // DESTINATION
+                            // =============================================
                             const destination =
                                 result.destination_url ||
                                 result.destination ||
+                                orderData.destination_url ||
+                                orderData.destination ||
                                 null;
-                            setTimeout(() => {
-                                if (destination) {
-                                    location.href =
-                                        destination;
-                                } else {
-                                    alert(
-                                        "Pembayaran berhasil, tetapi link tujuan tidak ditemukan."
-                                    );
-                                }
-                            }, 800);
+                            setTimeout(
+                                () => {
+                                    if (
+                                        destination
+                                    ) {
+                                        location.href =
+                                            destination;
+                                    } else {
+                                        buyBox.innerHTML = `
+                                            <div class="buy-product-card">
+                                                <h3>
+                                                    <i class="fa-solid fa-circle-check"></i>
+                                                    Pembayaran Berhasil
+                                                </h3>
+                                                <p>
+                                                    Pembayaran kamu sudah berhasil diproses.
+                                                </p>
+                                            </div>
+                                        `;
+                                    }
+                                },
+                                800
+                            );
                             return;
                         }
                         // =================================================
-                        // EXPIRED
+                        // EXPIRED / CANCELLED
                         // =================================================
                         if (
-                            status === "expired" ||
-                            status === "cancelled" ||
-                            status === "canceled"
+                            [
+                                "expired",
+                                "cancelled",
+                                "canceled",
+                                "failed"
+                            ].includes(status)
                         ) {
                             clearInterval(
-                                timer
+                                countdownTimer
                             );
                             paymentStatus.className =
                                 "buy-status buy-failed";
                             paymentStatus.innerHTML = `
                                 <i class="fa-solid fa-circle-xmark"></i>
-                                Pembayaran Expired
+                                Pembayaran ${status}
                             `;
                             checkBtn.style.display =
                                 "none";
@@ -774,16 +894,30 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
                 };
                 // =================================================
-                // CANCEL
+                // CANCEL PAYMENT
                 // =================================================
                 const cancelBtn =
                     document.getElementById(
                         "cancelPayment"
                     );
-                cancelBtn.onclick = () => {
+                cancelBtn.onclick =
+                    async () => {
                     clearInterval(
-                        timer
+                        countdownTimer
                     );
+                    cancelBtn.disabled =
+                        true;
+                    cancelBtn.innerHTML = `
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        Membatalkan...
+                    `;
+                    /*
+                     * Untuk sementara UI dibatalkan.
+                     *
+                     * Endpoint cancel DompetX bisa
+                     * kita sambungkan setelah endpoint
+                     * backend cancel dibuat.
+                     */
                     buyBox.innerHTML = `
                         <div class="buy-product-card">
                             <h3>
@@ -795,6 +929,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             </p>
                             <button
                                 class="buy-btn"
+                                type="button"
                                 onclick="location.reload()"
                             >
                                 Buat Pembayaran Baru
@@ -825,6 +960,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         </p>
                         <button
                             class="buy-btn"
+                            type="button"
                             onclick="location.reload()"
                         >
                             Coba Lagi
