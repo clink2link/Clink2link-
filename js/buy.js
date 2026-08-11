@@ -1,79 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const buyBox = document.getElementById("buyBox");
     if (!buyBox) return;
-    // =========================================================
-    // CONFIG
-    // =========================================================
-    const DEBUG = true;
-    let debugBox = null;
     let countdownTimer = null;
-    // =========================================================
-    // DEBUG BOX
-    // =========================================================
-    if (DEBUG) {
-        debugBox = document.createElement("div");
-        debugBox.id = "buyDebug";
-        debugBox.style = `
-            position: fixed;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            max-height: 45vh;
-            overflow: auto;
-            background: #000;
-            color: #00ff00;
-            font-size: 12px;
-            font-family: monospace;
-            padding: 10px;
-            z-index: 999999;
-            border-radius: 10px;
-            white-space: pre-wrap;
-        `;
-        document.body.appendChild(debugBox);
-    }
-    // =========================================================
-    // DEBUG LOGGER
-    // =========================================================
-    function log(title, data = null) {
-        console.log(title, data);
-        if (!debugBox) return;
-        let text = title;
-        if (data !== null) {
-            try {
-                text +=
-                    "\n" +
-                    JSON.stringify(data, null, 2);
-            } catch {
-                text += "\n" + String(data);
-            }
-        }
-        debugBox.innerHTML += text + "\n\n";
-        debugBox.scrollTop = debugBox.scrollHeight;
-    }
-    // =========================================================
-    // GLOBAL ERROR HANDLER
-    // =========================================================
-    window.onerror = function (
-        msg,
-        url,
-        line,
-        col,
-        error
-    ) {
-        log("JS ERROR", {
-            msg,
-            url,
-            line,
-            col,
-            stack: error?.stack
-        });
-    };
-    window.onunhandledrejection = function (event) {
-        log(
-            "PROMISE ERROR",
-            event.reason
-        );
-    };
     // =========================================================
     // GET SELL CODE
     // =========================================================
@@ -83,7 +11,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             .split("/")
             .filter(Boolean)
             .pop();
-    log("BUY CODE", code);
     if (
         !code ||
         code === "b" ||
@@ -103,7 +30,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         // =====================================================
         // GET LINK
         // =====================================================
-        log("GET LINK");
         if (
             !window.database ||
             typeof database.getLinkByCode !== "function"
@@ -114,7 +40,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         const link =
             await database.getLinkByCode(code);
-        log("LINK RESULT", link);
         if (!link) {
             buyBox.innerHTML = `
                 <div class="buy-product-card">
@@ -140,12 +65,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         // =====================================================
         // PRODUCT DATA
         // =====================================================
-        const title = escapeHtml(
-            link.title || "Sell Link"
-        );
-        const price = Number(
-            link.price || 0
-        );
+        const title =
+            escapeHtml(
+                link.title || "Sell Link"
+            );
+        const price =
+            Number(
+                link.price || 0
+            );
         const sellerId =
             link.user_id ||
             link.seller_id ||
@@ -196,7 +123,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
         `;
         const payBtn =
-            document.getElementById("payBtn");
+            document.getElementById(
+                "payBtn"
+            );
         if (!payBtn) {
             throw new Error(
                 "Tombol pembayaran tidak ditemukan"
@@ -215,14 +144,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // =================================================
                 // CREATE SELL ORDER
                 // =================================================
-                log(
-                    "CREATE SELL ORDER",
-                    {
-                        link_id: link.id,
-                        seller_id: sellerId,
-                        amount: price
-                    }
-                );
                 const orderResponse =
                     await fetch(
                         "/api/create-sell-order",
@@ -235,9 +156,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                                     "application/json"
                             },
                             body: JSON.stringify({
-                                link_id: link.id,
-                                seller_id: sellerId,
-                                buyer_id: null
+                                link_id:
+                                    link.id,
+                                seller_id:
+                                    sellerId,
+                                buyer_id:
+                                    null
                             })
                         }
                     );
@@ -246,17 +170,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                 let order;
                 try {
                     order =
-                        JSON.parse(orderText);
+                        JSON.parse(
+                            orderText
+                        );
                 } catch {
                     throw new Error(
                         "Response create order bukan JSON: " +
-                        orderText.substring(0, 500)
+                        orderText.substring(
+                            0,
+                            500
+                        )
                     );
                 }
-                log(
-                    "CREATE ORDER RESPONSE",
-                    order
-                );
                 if (
                     !orderResponse.ok ||
                     !order?.success
@@ -278,20 +203,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                         "Order ID tidak ditemukan"
                     );
                 }
-                log(
-                    "ORDER ID",
-                    orderId
-                );
                 // =================================================
                 // CREATE DOMPETX PAYMENT
                 // =================================================
-                log(
-                    "CREATE DOMPETX PAYMENT",
-                    {
-                        order_id: orderId,
-                        amount: price
-                    }
-                );
                 const paymentResponse =
                     await fetch(
                         "/api/payment/create",
@@ -304,7 +218,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                                     "application/json"
                             },
                             body: JSON.stringify({
-                                order_id: orderId
+                                order_id:
+                                    orderId
                             })
                         }
                     );
@@ -313,17 +228,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                 let payment;
                 try {
                     payment =
-                        JSON.parse(paymentText);
+                        JSON.parse(
+                            paymentText
+                        );
                 } catch {
                     throw new Error(
                         "Response DompetX bukan JSON: " +
-                        paymentText.substring(0, 500)
+                        paymentText.substring(
+                            0,
+                            500
+                        )
                     );
                 }
-                log(
-                    "DOMPETX RESPONSE",
-                    payment
-                );
                 if (
                     !paymentResponse.ok ||
                     !payment?.success
@@ -389,15 +305,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                             15 * 60 * 1000
                         ).toISOString();
                 }
-                log(
-                    "NORMALIZED PAYMENT",
-                    {
-                        paymentId,
-                        reference,
-                        qrImageUrl,
-                        expires
-                    }
-                );
                 if (!paymentId) {
                     throw new Error(
                         "Payment ID DompetX tidak ditemukan"
@@ -493,10 +400,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     );
                 if (qrisImage) {
                     qrisImage.onerror = () => {
-                        log(
-                            "QR IMAGE ERROR",
-                            qrImageUrl
-                        );
                         qrisImage.outerHTML = `
                             <div
                                 style="
@@ -537,9 +440,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                         "paymentStatus"
                     );
                 const expireTime =
-                    new Date(expires).getTime();
+                    new Date(
+                        expires
+                    ).getTime();
                 if (
-                    !Number.isFinite(expireTime)
+                    !Number.isFinite(
+                        expireTime
+                    )
                 ) {
                     throw new Error(
                         "Format expired pembayaran tidak valid"
@@ -579,13 +486,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                         );
                     const seconds =
                         Math.floor(
-                            (diff % 60000) / 1000
+                            (diff % 60000) /
+                            1000
                         );
                     countdown.innerHTML = `
                         <i class="fa-solid fa-stopwatch"></i>
                         ${minutes}:${String(
                             seconds
-                        ).padStart(2, "0")}
+                        ).padStart(
+                            2,
+                            "0"
+                        )}
                     `;
                 };
                 updateCountdown();
@@ -602,46 +513,26 @@ document.addEventListener("DOMContentLoaded", async () => {
                         "checkPayment"
                     );
                 checkBtn.onclick = async () => {
-                    checkBtn.disabled = true;
+                    checkBtn.disabled =
+                        true;
                     checkBtn.innerHTML = `
                         <i class="fa-solid fa-spinner fa-spin"></i>
                         Mengecek Pembayaran...
                     `;
                     try {
-                        log(
-                            "CHECK PAYMENT REQUEST",
-                            {
-                                order_id: orderId
-                            }
-                        );
-                        /*
-                         * =================================================
-                         * PENTING
-                         * =================================================
-                         *
-                         * Check pembayaran sekarang diarahkan ke:
-                         *
-                         * functions/api/payment/status.js
-                         *
-                         * URL frontend:
-                         *
-                         * /api/payment/status
-                         *
-                         * order_id menjadi identifier utama.
-                         *
-                         * Backend yang mengambil payment_id
-                         * dari database berdasarkan order_id.
-                         */
                         const query =
                             new URLSearchParams({
                                 order_id:
-                                    String(orderId)
+                                    String(
+                                        orderId
+                                    )
                             });
                         const response =
                             await fetch(
                                 `/api/payment/status?${query.toString()}`,
                                 {
-                                    method: "GET",
+                                    method:
+                                        "GET",
                                     cache:
                                         "no-store",
                                     headers: {
@@ -652,24 +543,21 @@ document.addEventListener("DOMContentLoaded", async () => {
                             );
                         const text =
                             await response.text();
-                        log(
-                            "PAYMENT STATUS RAW RESPONSE",
-                            text
-                        );
                         let data;
                         try {
                             data =
-                                JSON.parse(text);
+                                JSON.parse(
+                                    text
+                                );
                         } catch {
                             throw new Error(
                                 "Response /api/payment/status bukan JSON: " +
-                                text.substring(0, 1000)
+                                text.substring(
+                                    0,
+                                    1000
+                                )
                             );
                         }
-                        log(
-                            "PAYMENT STATUS RESPONSE",
-                            data
-                        );
                         if (!response.ok) {
                             throw new Error(
                                 data?.error ||
@@ -694,10 +582,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                             data?.payment ||
                             data?.result ||
                             data;
-                        log(
-                            "CHECK RESULT",
-                            result
-                        );
                         // =================================================
                         // NORMALIZE STATUS
                         // =================================================
@@ -712,13 +596,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                             data?.payment_status ||
                             "";
                         status =
-                            String(status)
+                            String(
+                                status
+                            )
                                 .trim()
                                 .toLowerCase();
-                        log(
-                            "NORMALIZED STATUS",
-                            status
-                        );
                         // =================================================
                         // SUCCESS
                         // =================================================
@@ -756,25 +638,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 cancelBtn.style.display =
                                     "none";
                             }
-                            log(
-                                "PAYMENT SUCCESS",
-                                {
-                                    order_id:
-                                        orderId,
-                                    status:
-                                        status,
-                                    result:
-                                        result
-                                }
-                            );
-                            /*
-                             * Destination harus berasal
-                             * dari backend setelah order
-                             * benar-benar diproses.
-                             */
+                            // =================================================
+                            // DESTINATION
+                            // =================================================
                             const destination =
+                                result?.redirect_url ||
                                 result?.destination_url ||
                                 result?.destination ||
+                                data?.redirect_url ||
                                 data?.destination_url ||
                                 data?.destination ||
                                 null;
@@ -822,7 +693,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 "buy-status buy-failed";
                             paymentStatus.innerHTML = `
                                 <i class="fa-solid fa-circle-xmark"></i>
-                                Pembayaran ${escapeHtml(status)}
+                                Pembayaran ${escapeHtml(
+                                    status
+                                )}
                             `;
                             checkBtn.style.display =
                                 "none";
@@ -832,10 +705,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                         // UNKNOWN STATUS
                         // =================================================
                         if (!status) {
-                            log(
-                                "STATUS KOSONG",
-                                data
-                            );
                             throw new Error(
                                 "Status pembayaran tidak ditemukan dari /api/payment/status"
                             );
@@ -849,26 +718,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <i class="fa-solid fa-clock"></i>
                             Belum Dibayar
                         `;
-                        checkBtn.disabled = false;
+                        checkBtn.disabled =
+                            false;
                         checkBtn.innerHTML = `
                             <i class="fa-solid fa-rotate"></i>
                             Cek Pembayaran
                         `;
                     } catch (error) {
-                        log(
-                            "CHECK PAYMENT ERROR",
-                            {
-                                message:
-                                    error?.message,
-                                stack:
-                                    error?.stack
-                            }
-                        );
                         alert(
                             error?.message ||
                             "Gagal mengecek pembayaran"
                         );
-                        checkBtn.disabled = false;
+                        checkBtn.disabled =
+                            false;
                         checkBtn.innerHTML = `
                             <i class="fa-solid fa-rotate"></i>
                             Cek Pembayaran
@@ -912,15 +774,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     `;
                 };
             } catch (error) {
-                log(
-                    "PAYMENT FLOW ERROR",
-                    {
-                        message:
-                            error?.message,
-                        stack:
-                            error?.stack
-                    }
-                );
                 buyBox.innerHTML = `
                     <div class="buy-product-card">
                         <h3>
@@ -945,15 +798,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         };
     } catch (error) {
-        log(
-            "BUY PAGE ERROR",
-            {
-                message:
-                    error?.message,
-                stack:
-                    error?.stack
-            }
-        );
         buyBox.innerHTML = `
             <div class="buy-product-card">
                 <h3>
@@ -974,9 +818,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 // =========================================================
 function escapeHtml(value) {
     return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 }
