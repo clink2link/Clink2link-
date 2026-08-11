@@ -1,6 +1,6 @@
 // ============================================
 // CREATE DOMPETX CHECKOUT PAYMENT
-// Click2Pay / Sell Link
+// CLICK2PAY / SELL LINK
 // ============================================
 export async function onRequestPost(context) {
     const { request, env } = context;
@@ -8,8 +8,7 @@ export async function onRequestPost(context) {
         // ========================================
         // READ REQUEST
         // ========================================
-        const body =
-            await request.json();
+        const body = await request.json();
         console.log("================================");
         console.log("CREATE DOMPETX CHECKOUT");
         console.log(
@@ -42,16 +41,10 @@ export async function onRequestPost(context) {
                     "DOMPETX_API_KEY belum dikonfigurasi"
             }, 500);
         }
-        if (!env.DOMPETX_API_SECRET) {
-            console.warn(
-                "DOMPETX_API_SECRET tidak ditemukan. " +
-                "Pastikan signature menggunakan secret " +
-                "yang sesuai dokumentasi DompetX."
-            );
-        }
-        // ========================================
-        // SUPABASE ENV
-        // ========================================
+        const signatureSecret =
+            env.DOMPETX_API_SECRET ||
+            env.DOMPAY_API_SECRET ||
+            apiKey;
         if (!env.SUPABASE_URL) {
             throw new Error(
                 "SUPABASE_URL belum dikonfigurasi"
@@ -85,7 +78,9 @@ export async function onRequestPost(context) {
         const order =
             orders[0];
         console.log(
-            "SELL ORDER FOUND:",
+            "SELL ORDER FOUND:"
+        );
+        console.log(
             JSON.stringify(
                 order,
                 null,
@@ -93,10 +88,11 @@ export async function onRequestPost(context) {
             )
         );
         // ========================================
-        // VALIDATE STATUS
+        // ORDER SUDAH PAID
         // ========================================
         if (
-            order.status === "paid"
+            String(order.status || "")
+                .toLowerCase() === "paid"
         ) {
             return json({
                 success: false,
@@ -122,41 +118,91 @@ export async function onRequestPost(context) {
             }, 400);
         }
         // ========================================
-        // REFERENCE
+        // CEK PAYMENT LINK YANG SUDAH ADA
         //
-        // PENTING:
+        // Kalau user klik BAYAR berkali-kali,
+        // jangan membuat transaksi DompetX baru.
         //
-        // Jangan menggunakan reference lama
-        // yang pernah dikirim ke DompetX.
+        // Ini juga mencegah:
         //
-        // Jika invoice_id sudah berisi reference
-        // lama, jangan langsung dipakai ulang.
+        // duplicate transaction reference
         // ========================================
-        let reference =
-            order.invoice_id ||
+        const existingPaymentLink =
+            order.payment_link ||
+            order.paymentLink ||
             null;
-        // Kalau order belum mempunyai reference,
-        // buat reference baru.
-        if (!reference) {
-            reference =
-                `SELL-${String(order.id)
-                    .replace(/-/g, "")
-                    .slice(0, 20)}-${Date.now()}`;
+        const existingPaymentId =
+            order.payment_id ||
+            order.paymentId ||
+            null;
+        const existingReference =
+            order.invoice_id ||
+            order.reference ||
+            null;
+        if (
+            existingPaymentLink
+        ) {
+            console.log(
+                "PAYMENT LINK EXISTING:"
+            );
+            console.log(
+                existingPaymentLink
+            );
+            return json({
+                success: true,
+                data: {
+                    order_id:
+                        order.id,
+                    payment_id:
+                        existingPaymentId,
+                    invoice_id:
+                        existingReference,
+                    reference:
+                        existingReference,
+                    amount:
+                        amount,
+                    currency:
+                        "IDR",
+                    status:
+                        "pending",
+                    payment_link:
+                        existingPaymentLink,
+                    expires_at:
+                        order.payment_expires_at ||
+                        null
+                }
+            });
         }
+        // ========================================
+        // BUAT REFERENCE BARU
+        //
+        // JANGAN menggunakan invoice_id lama
+        // kalau checkout sebelumnya tidak mempunyai
+        // payment_link.
+        //
+        // Karena DompetX bisa menganggap reference
+        // tersebut sudah pernah digunakan.
+        // ========================================
+        const reference =
+            createUniqueReference(
+                order.id
+            );
         console.log(
-            "DOMPETX REFERENCE:",
+            "NEW DOMPETX REFERENCE:",
             reference
         );
         // ========================================
-        // REDIRECT URL
-        //
-        // Ini hanya dipakai setelah pembayaran.
-        // User tidak harus meninggalkan Click2Pay
-        // jika frontend menggunakan payment_link.
+        // FRONTEND URL
         // ========================================
         const frontendUrl =
             env.FRONTEND_URL ||
             "https://click2pay.my.id";
+        // ========================================
+        // REDIRECT URL
+        //
+        // Redirect hanya dilakukan setelah
+        // pembayaran selesai.
+        // ========================================
         const redirectUrl =
             `${frontendUrl}/b/${encodeURIComponent(
                 order.link_id
@@ -166,8 +212,15 @@ export async function onRequestPost(context) {
         // ========================================
         // CHECKOUT BODY
         //
-        // SESUAI DOKUMENTASI DOMPETX
+        // SESUAI DOKUMENTASI:
+        //
         // POST /v1/payments/checkout
+        //
+        // Tidak menggunakan:
+        // method: "QRIS"
+        //
+        // karena dokumentasi checkout yang kamu
+        // kirim tidak meminta field method.
         // ========================================
         const checkoutBody = {
             amount:
@@ -201,6 +254,16 @@ export async function onRequestPost(context) {
             JSON.stringify(
                 checkoutBody
             );
+        console.log(
+            "DOMPETX REQUEST BODY:"
+        );
+        console.log(
+            JSON.stringify(
+                checkoutBody,
+                null,
+                2
+            )
+        );
         // ========================================
         // TIMESTAMP
         // ========================================
@@ -210,25 +273,14 @@ export async function onRequestPost(context) {
             ).toString();
         // ========================================
         // SIGNATURE
-        //
-        // Sesuaikan secret dengan dokumentasi
-        // DompetX akun kamu.
         // ========================================
-        const signatureSecret =
-            env.DOMPETX_API_SECRET ||
-            env.DOMPAY_API_SECRET ||
-            apiKey;
         const signature =
             await generateSignature(
                 `${timestamp}.${rawBody}`,
                 signatureSecret
             );
         // ========================================
-        // CREATE PAYMENT
-        //
-        // ENDPOINT YANG BENAR:
-        //
-        // POST /v1/payments/checkout
+        // DOMPETX CHECKOUT
         // ========================================
         const response =
             await fetch(
@@ -262,16 +314,23 @@ export async function onRequestPost(context) {
                     )
                     : {};
         } catch {
+            console.error(
+                "DOMPETX RAW RESPONSE:",
+                responseText
+            );
             throw new Error(
                 "Response DompetX bukan JSON: " +
                 responseText
             );
         }
+        // ========================================
+        // LOG RESPONSE
+        // ========================================
         console.log(
             "================================"
         );
         console.log(
-            "DOMPETX CHECKOUT RESPONSE:"
+            "DOMPETX CHECKOUT RESPONSE"
         );
         console.log(
             JSON.stringify(
@@ -284,13 +343,12 @@ export async function onRequestPost(context) {
             "================================"
         );
         // ========================================
-        // ERROR
+        // DOMPETX ERROR
         // ========================================
         if (!response.ok) {
             console.error(
                 "DOMPETX HTTP ERROR:",
-                response.status,
-                dompetx
+                response.status
             );
             return json({
                 success:
@@ -298,6 +356,7 @@ export async function onRequestPost(context) {
                 error:
                     dompetx?.message ||
                     dompetx?.error ||
+                    dompetx?.detail ||
                     `DompetX HTTP ${response.status}`,
                 details:
                     dompetx
@@ -305,35 +364,75 @@ export async function onRequestPost(context) {
         }
         // ========================================
         // PAYMENT ID
+        //
+        // Support beberapa kemungkinan struktur.
         // ========================================
         const paymentId =
-            dompetx.id ||
-            dompetx.paymentId ||
+            dompetx?.id ||
+            dompetx?.paymentId ||
+            dompetx?.data?.id ||
+            dompetx?.data?.paymentId ||
             null;
         // ========================================
         // PAYMENT LINK
         //
-        // RESPONSE DOKUMENTASI:
+        // Dokumentasi DompetX:
         //
-        // {
-        //   "payment_link":
-        //   "https://checkout.dompetx.com/..."
-        // }
+        // payment_link
+        //
+        // Kita juga support beberapa kemungkinan
+        // struktur response.
         // ========================================
         const paymentLink =
-            dompetx.payment_link ||
-            dompetx.paymentLink ||
+            dompetx?.payment_link ||
+            dompetx?.paymentLink ||
+            dompetx?.checkout_url ||
+            dompetx?.checkoutUrl ||
+            dompetx?.url ||
+            dompetx?.data?.payment_link ||
+            dompetx?.data?.paymentLink ||
+            dompetx?.data?.checkout_url ||
+            dompetx?.data?.checkoutUrl ||
+            dompetx?.data?.url ||
+            dompetx?.checkout?.payment_link ||
+            dompetx?.checkout?.paymentLink ||
+            dompetx?.checkout?.url ||
+            dompetx?.result?.payment_link ||
+            dompetx?.result?.paymentLink ||
+            dompetx?.result?.url ||
             null;
+        // ========================================
+        // PAYMENT LINK WAJIB
+        // ========================================
         if (!paymentLink) {
             console.error(
-                "PAYMENT LINK TIDAK ADA:",
-                dompetx
+                "================================"
+            );
+            console.error(
+                "PAYMENT LINK DOMPETX TIDAK DITEMUKAN"
+            );
+            console.error(
+                "RAW RESPONSE:"
+            );
+            console.error(
+                JSON.stringify(
+                    dompetx,
+                    null,
+                    2
+                )
+            );
+            console.error(
+                "================================"
             );
             return json({
                 success:
                     false,
                 error:
                     "Payment link DompetX tidak ditemukan",
+                payment_id:
+                    paymentId,
+                reference:
+                    reference,
                 details:
                     dompetx
             }, 502);
@@ -342,34 +441,73 @@ export async function onRequestPost(context) {
         // EXPIRES
         // ========================================
         const expiresAt =
-            dompetx.expiresAt ||
-            dompetx.expires_at ||
+            dompetx?.expiresAt ||
+            dompetx?.expires_at ||
+            dompetx?.data?.expiresAt ||
+            dompetx?.data?.expires_at ||
             null;
         // ========================================
         // SAVE PAYMENT DATA
         // ========================================
-        await supabaseRequest(
-            env,
-            "sell_orders",
-            "PATCH",
-            {
-                invoice_id:
-                    reference,
-                payment_id:
-                    paymentId,
-                payment_link:
-                    paymentLink
-            },
-            `?id=eq.${encodeURIComponent(
-                order.id
-            )}`
+        try {
+            await supabaseRequest(
+                env,
+                "sell_orders",
+                "PATCH",
+                {
+                    invoice_id:
+                        reference,
+                    payment_id:
+                        paymentId,
+                    payment_link:
+                        paymentLink,
+                    payment_expires_at:
+                        expiresAt
+                },
+                `?id=eq.${encodeURIComponent(
+                    order.id
+                )}`
+            );
+            console.log(
+                "PAYMENT DATA BERHASIL DISIMPAN"
+            );
+        } catch (saveError) {
+            console.error(
+                "GAGAL MENYIMPAN PAYMENT DATA:"
+            );
+            console.error(
+                saveError
+            );
+            // Jangan menghilangkan payment link
+            // dari response hanya karena database
+            // gagal menyimpan metadata.
+        }
+        // ========================================
+        // SUCCESS
+        // ========================================
+        console.log(
+            "================================"
         );
         console.log(
-            "PAYMENT DATA DISIMPAN"
+            "DOMPETX CHECKOUT BERHASIL"
         );
-        // ========================================
-        // SUCCESS RESPONSE
-        // ========================================
+        console.log({
+            order_id:
+                order.id,
+            payment_id:
+                paymentId,
+            reference:
+                reference,
+            amount:
+                amount,
+            payment_link:
+                paymentLink,
+            expires_at:
+                expiresAt
+        });
+        console.log(
+            "================================"
+        );
         return json({
             success:
                 true,
@@ -387,7 +525,8 @@ export async function onRequestPost(context) {
                 currency:
                     "IDR",
                 status:
-                    dompetx.status ||
+                    dompetx?.status ||
+                    dompetx?.data?.status ||
                     "pending",
                 payment_link:
                     paymentLink,
@@ -402,7 +541,7 @@ export async function onRequestPost(context) {
             "================================"
         );
         console.error(
-            "CREATE DOMPETX CHECKOUT ERROR:"
+            "CREATE DOMPETX CHECKOUT ERROR"
         );
         console.error(
             error
@@ -418,6 +557,44 @@ export async function onRequestPost(context) {
                 "Gagal membuat checkout DompetX"
         }, 500);
     }
+}
+// ============================================
+// CREATE UNIQUE REFERENCE
+// ============================================
+function createUniqueReference(
+    orderId
+) {
+    const cleanOrderId =
+        String(orderId)
+            .replace(
+                /[^a-zA-Z0-9]/g,
+                ""
+            )
+            .slice(
+                0,
+                24
+            );
+    const timestamp =
+        Date.now()
+            .toString(
+                36
+            )
+            .toUpperCase();
+    const random =
+        crypto
+            .randomUUID()
+            .replace(
+                /-/g,
+                ""
+            )
+            .slice(
+                0,
+                8
+            )
+            .toUpperCase();
+    return (
+        `SELL-${cleanOrderId}-${timestamp}-${random}`
+    );
 }
 // ============================================
 // HMAC SHA256
@@ -465,7 +642,9 @@ async function generateSignature(
         .map(
             byte =>
                 byte
-                    .toString(16)
+                    .toString(
+                        16
+                    )
                     .padStart(
                         2,
                         "0"
