@@ -1,17 +1,25 @@
 /* =====================================================
    CLICK2PAY SELL LINK
-   PREMIUM UI CLEAN v3
+   PREMIUM UI CLEAN v4
 ===================================================== */
 
 
 /* =====================================================
-   1. CONTAINER
+   1. BASE / CONTAINER
 ===================================================== */
 
 .app-container{
+    width:100%;
     max-width:1200px;
-    margin:auto;
-    padding:4px 18px 30px;
+    margin:0 auto;
+    padding:8px 18px 40px;
+    box-sizing:border-box;
+}
+
+.app-container *,
+.app-container *::before,
+.app-container *::after{
+    box-sizing:border-box;
 }
 
 
@@ -23,12 +31,13 @@
     display:flex;
     align-items:center;
     gap:12px;
-    margin-bottom:14px;
+    margin:0 0 16px;
 }
 
 .page-title > i{
     width:48px;
     height:48px;
+    min-width:48px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -37,48 +46,54 @@
     color:#fff;
     font-size:20px;
     box-shadow:0 8px 18px rgba(37,99,235,.22);
-    flex-shrink:0;
 }
 
 .page-title h1{
     margin:0;
     font-size:24px;
+    line-height:1.2;
     font-weight:800;
     color:#0f172a;
 }
 
 .page-title p{
-    margin:3px 0 0;
+    margin:4px 0 0;
     font-size:12px;
+    line-height:1.5;
     color:#64748b;
 }
 
 
 /* =====================================================
-   3. CARD
+   3. COMMON CARD
 ===================================================== */
 
 .card-section,
 .info-box,
 .stat-card{
+    width:100%;
     background:#fff;
     border:1px solid #e2e8f0;
     border-radius:16px;
     padding:16px;
-    margin-bottom:14px;
+    margin:0 0 14px;
     box-shadow:0 6px 18px rgba(15,23,42,.06);
-    transition:.2s;
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
 }
 
 .card-section:hover,
 .info-box:hover,
 .stat-card:hover{
-    transform:translateY(-2px);
+    transform:translateY(-1px);
+    box-shadow:0 9px 24px rgba(15,23,42,.08);
 }
 
 
 /* =====================================================
-   SECTION HEADER
+   4. SECTION HEADER
 ===================================================== */
 
 .section-title{
@@ -92,6 +107,7 @@
 }
 
 .title-left{
+    min-width:0;
     display:flex;
     align-items:center;
     gap:10px;
@@ -100,18 +116,24 @@
 .title-left > i{
     width:40px;
     height:40px;
+    min-width:40px;
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
     border-radius:12px;
     background:#eff6ff;
     color:#2563eb;
     font-size:16px;
 }
 
+.title-left > div{
+    min-width:0;
+}
+
 .title-left h2{
     margin:0;
     font-size:19px;
+    line-height:1.25;
     font-weight:700;
     color:#0f172a;
 }
@@ -119,57 +141,80 @@
 .title-left p{
     margin:3px 0 0;
     font-size:11px;
+    line-height:1.5;
     color:#64748b;
 }
 
 
 /* =====================================================
-   INFO BOX
+   5. INFO BOX
 ===================================================== */
+
+.info-box{
+    padding:15px 16px;
+}
 
 .info-header{
     display:flex;
     align-items:center;
     gap:8px;
-    margin-bottom:8px;
+    margin-bottom:9px;
+}
+
+.info-header > i{
+    color:#2563eb;
+    font-size:14px;
 }
 
 .info-header h3{
     margin:0;
     font-size:14px;
+    line-height:1.3;
     font-weight:700;
+    color:#0f172a;
 }
 
 .info-box ul{
+    list-style:none;
     padding:0;
     margin:0;
-    list-style:none;
 }
 
 .info-box li{
     display:flex;
+    align-items:flex-start;
     gap:8px;
-    margin:6px 0;
+    margin:7px 0;
     font-size:12px;
-    line-height:1.5;
+    line-height:1.55;
     color:#64748b;
 }
 
+.info-box li:last-child{
+    margin-bottom:0;
+}
+
 .info-box li i{
-    color:#22c55e;
+    width:14px;
+    min-width:14px;
     margin-top:3px;
+    color:#22c55e;
+    font-size:11px;
 }
 
 
 /* =====================================================
-   STATUS
+   6. SELL STATUS
 ===================================================== */
 
 #sellStatus{
     display:flex;
     align-items:center;
     gap:7px;
+    min-height:20px;
+    margin:0;
     font-size:12px;
+    line-height:1.4;
     font-weight:600;
 }
 
@@ -183,7 +228,7 @@
 
 
 /* =====================================================
-   CREATE FORM
+   7. CREATE FORM
 ===================================================== */
 
 .create-form{
@@ -192,28 +237,79 @@
     gap:12px;
 }
 
+.create-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:3px;
+}
+
+.create-icon{
+    width:42px;
+    height:42px;
+    min-width:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:12px;
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    color:#fff;
+    box-shadow:0 6px 14px rgba(37,99,235,.18);
+}
+
+.create-header h2{
+    margin:0;
+    font-size:18px;
+    line-height:1.25;
+    font-weight:800;
+    color:#0f172a;
+}
+
+.create-header p{
+    margin:3px 0 0;
+    font-size:11px;
+    line-height:1.5;
+    color:#64748b;
+}
+
+
+/* =====================================================
+   8. FORM
+===================================================== */
+
 .form-group{
+    width:100%;
     margin:0;
 }
 
 .form-group label{
     display:block;
-    margin-bottom:6px;
+    margin:0 0 6px;
     font-size:12px;
+    line-height:1.3;
     font-weight:600;
     color:#334155;
 }
 
-
 .form-group input{
+    display:block;
     width:100%;
     height:46px;
     padding:0 14px;
-    border-radius:12px;
     border:1px solid #e2e8f0;
-    background:#fff;
+    border-radius:12px;
     outline:none;
+    background:#fff;
+    color:#0f172a;
+    font-family:inherit;
     font-size:13px;
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.form-group input::placeholder{
+    color:#94a3b8;
 }
 
 .form-group input:focus{
@@ -221,117 +317,166 @@
     box-shadow:0 0 0 3px rgba(37,99,235,.12);
 }
 
-.create-header{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:10px;
+.form-group input:disabled{
+    opacity:.65;
+    cursor:not-allowed;
 }
 
-
-.create-icon{
-    width:42px;
-    height:42px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:12px;
-    background:#2563eb;
-    color:#fff;
-}
 
 /* =====================================================
-   CREATE BUTTON
+   9. CREATE BUTTON
 ===================================================== */
+
+.btn-group{
+    width:100%;
+}
 
 .btn-sell{
     width:100%;
     height:46px;
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
     gap:8px;
-    border:none;
+    padding:0 16px;
+    border:0;
     border-radius:12px;
     background:linear-gradient(135deg,#2563eb,#3b82f6);
-    color:white;
+    color:#fff;
+    font-family:inherit;
     font-size:13px;
     font-weight:700;
     cursor:pointer;
+    box-shadow:0 7px 16px rgba(37,99,235,.18);
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        opacity .2s ease;
+}
+
+.btn-sell:hover:not(:disabled){
+    transform:translateY(-1px);
+    box-shadow:0 10px 20px rgba(37,99,235,.24);
+}
+
+.btn-sell:active:not(:disabled){
+    transform:translateY(0);
 }
 
 .btn-sell:disabled{
     background:#94a3b8;
+    box-shadow:none;
     cursor:not-allowed;
+    opacity:.85;
 }
 
+.create-result{
+    width:100%;
+}
+
+.create-result:empty{
+    display:none;
+}
+
+.success-box{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:11px 13px;
+    border-radius:11px;
+    background:#ecfdf5;
+    border:1px solid #bbf7d0;
+    color:#15803d;
+    font-size:12px;
+    font-weight:600;
+}
+
+.create-note{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    padding:10px 12px;
+    border-radius:11px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    color:#64748b;
+    font-size:11px;
+    line-height:1.55;
+}
+
+.create-note > i{
+    color:#2563eb;
+    margin-top:2px;
+}
+
+
 /* =====================================================
-   QUICK STATS
+   10. QUICK STATS
 ===================================================== */
 
 .quick-stats{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(5,minmax(0,1fr));
     gap:12px;
-    margin-bottom:14px;
+    width:100%;
+    margin:0 0 14px;
 }
 
-
 .stat-card{
-    padding:14px;
+    min-width:0;
+    min-height:132px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:14px 10px;
+    margin:0;
 }
 
 .stat-card i{
     width:38px;
     height:38px;
+    min-width:38px;
     display:flex;
     align-items:center;
     justify-content:center;
+    margin:0 0 9px;
     border-radius:10px;
     background:#eff6ff;
     color:#2563eb;
     font-size:16px;
-    margin-bottom:10px;
 }
 
-
 .stat-card h4{
+    width:100%;
     margin:0 0 4px;
     font-size:11px;
-    font-weight:500;
+    line-height:1.4;
+    font-weight:600;
     color:#64748b;
 }
 
-
 .stat-card h2{
+    width:100%;
     margin:0;
-    font-size:21px;
+    font-size:20px;
+    line-height:1.2;
     font-weight:800;
     color:#0f172a;
-}
-
-.stat-card{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-}
-
-.stat-card i{
-    flex-shrink:0;
-    margin:0 auto 10px;
+    word-break:break-word;
 }
 
 
 /* =====================================================
-   MINI STATS
+   11. MINI STATS
 ===================================================== */
 
 .section-stats{
     display:flex;
+    flex-wrap:wrap;
     gap:8px;
 }
-
 
 .mini-stat{
     min-width:85px;
@@ -342,52 +487,68 @@
     border:1px solid #bfdbfe;
 }
 
-
 .mini-stat span{
     display:block;
     font-size:18px;
+    line-height:1.2;
     font-weight:800;
     color:#2563eb;
 }
 
-
 .mini-stat small{
+    display:block;
+    margin-top:2px;
     font-size:10px;
     color:#64748b;
 }
 
 
 /* =====================================================
-   SEARCH
+   12. SEARCH AREA
 ===================================================== */
+
+.search-area{
+    width:100%;
+    margin-bottom:14px;
+}
 
 .search-box{
     position:relative;
-    margin-bottom:12px;
+    width:100%;
+    margin-bottom:10px;
 }
-
 
 .search-box i{
     position:absolute;
     left:14px;
     top:50%;
+    z-index:2;
     transform:translateY(-50%);
     color:#94a3b8;
     font-size:13px;
+    pointer-events:none;
 }
 
-
 .search-box input{
+    display:block;
     width:100%;
     height:46px;
     padding:0 14px 0 40px;
-    border-radius:12px;
     border:1px solid #e2e8f0;
+    border-radius:12px;
     outline:none;
     background:#fff;
+    color:#0f172a;
+    font-family:inherit;
     font-size:13px;
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
 }
 
+.search-box input::placeholder{
+    color:#94a3b8;
+}
 
 .search-box input:focus{
     border-color:#2563eb;
@@ -396,41 +557,52 @@
 
 
 /* =====================================================
-   FILTER BUTTON
+   13. FILTER
 ===================================================== */
 
 .link-filter{
     display:flex;
     flex-wrap:wrap;
     gap:8px;
-    margin-bottom:14px;
+    width:100%;
 }
 
-
 .link-filter button{
-    height:36px;
+    min-height:36px;
     padding:0 14px;
-    border-radius:10px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
     border:1px solid #dbeafe;
+    border-radius:10px;
     background:#eff6ff;
     color:#2563eb;
+    font-family:inherit;
     font-size:12px;
     font-weight:600;
     cursor:pointer;
+    transition:.2s ease;
 }
 
+.link-filter button:hover{
+    border-color:#93c5fd;
+    background:#dbeafe;
+}
 
 .link-filter button.active{
+    border-color:#2563eb;
     background:#2563eb;
     color:#fff;
 }
 
 
 /* =====================================================
-   LINK LIST
+   14. LINK LIST
 ===================================================== */
 
 #sellList{
+    width:100%;
     display:flex;
     flex-direction:column;
     gap:12px;
@@ -438,10 +610,12 @@
 
 
 /* =====================================================
-   LINK CARD
+   15. LINK CARD
 ===================================================== */
 
 .link-card{
+    width:100%;
+    min-width:0;
     background:#fff;
     border:1px solid #e2e8f0;
     border-radius:14px;
@@ -449,23 +623,39 @@
     box-shadow:0 5px 16px rgba(15,23,42,.05);
 }
 
-
 .link-top{
     display:flex;
+    align-items:flex-start;
     justify-content:space-between;
     gap:10px;
     margin-bottom:10px;
 }
 
+.link-top > div{
+    min-width:0;
+}
 
 .link-top h3{
     margin:0;
     font-size:15px;
+    line-height:1.35;
     font-weight:700;
     color:#0f172a;
     word-break:break-word;
 }
 
+.link-top small{
+    display:block;
+    margin-top:4px;
+    font-size:10px;
+    line-height:1.4;
+    color:#94a3b8;
+}
+
+
+/* =====================================================
+   16. LINK META
+===================================================== */
 
 .link-meta{
     display:flex;
@@ -474,34 +664,51 @@
     margin-bottom:10px;
 }
 
-
 .link-meta span{
     display:flex;
     align-items:center;
     gap:5px;
+    min-width:0;
     font-size:12px;
     color:#64748b;
 }
-
 
 .link-meta i{
     color:#2563eb;
     font-size:11px;
 }
 
-.destination-link{
+
+/* =====================================================
+   17. DESTINATION
+===================================================== */
+
+.destination-link,
+.link-info{
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     gap:8px;
+    width:100%;
     margin:10px 0;
-    font-size:13px;
-    word-break:break-all;
+    font-size:12px;
+    line-height:1.5;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+}
+
+.destination-link i,
+.link-info i{
+    flex-shrink:0;
+    margin-top:2px;
+    color:#2563eb;
 }
 
 .destination-url{
+    min-width:0;
     color:#3b82f6;
     text-decoration:none;
-    transition:.2s;
+    overflow-wrap:anywhere;
+    word-break:break-all;
 }
 
 .destination-url:hover{
@@ -511,42 +718,44 @@
 
 
 /* =====================================================
-   BADGE
+   18. BADGE
 ===================================================== */
 
 .badge-group{
     display:flex;
     flex-wrap:wrap;
+    align-items:center;
     gap:6px;
     margin-bottom:10px;
 }
 
-
 .badge{
-    padding:4px 10px;
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    max-width:100%;
+    padding:5px 10px;
     border-radius:999px;
     font-size:10px;
+    line-height:1.2;
     font-weight:700;
+    white-space:normal;
 }
-
 
 .badge.green{
     background:#dcfce7;
     color:#166534;
 }
 
-
 .badge.red{
     background:#fee2e2;
     color:#b91c1c;
 }
 
-
 .badge.blue{
     background:#dbeafe;
     color:#1d4ed8;
 }
-
 
 .badge.orange{
     background:#fef3c7;
@@ -555,112 +764,195 @@
 
 
 /* =====================================================
-   LINK ACTION
+   19. COPY BOX
 ===================================================== */
 
-.link-actions{
+.copy-box{
+    width:100%;
+    min-width:0;
     display:flex;
+    overflow:hidden;
+    margin:12px 0;
+    border:1px solid #e2e8f0;
+    border-radius:12px;
+    background:#f8fafc;
+}
+
+.copy-box input{
+    flex:1 1 auto;
+    min-width:0;
+    width:100%;
+    height:44px;
+    padding:0 12px;
+    border:0;
+    outline:none;
+    background:#f8fafc;
+    color:#334155;
+    font-family:inherit;
+    font-size:12px;
+}
+
+.copy-box button,
+.copy-box .btn-copy{
+    flex:0 0 44px;
+    width:44px;
+    height:44px;
+    border:0;
+    background:#2563eb;
+    color:#fff;
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.copy-box button:hover{
+    background:#1d4ed8;
+}
+
+
+/* =====================================================
+   20. LINK STATS
+===================================================== */
+
+.link-stats{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
     gap:8px;
     margin-top:12px;
 }
 
+.link-stats > div{
+    min-width:0;
+    padding:10px 7px;
+    text-align:center;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    background:#f8fafc;
+}
+
+.link-stats i{
+    display:block;
+    margin-bottom:5px;
+    color:#2563eb;
+    font-size:13px;
+}
+
+.link-stats span{
+    display:block;
+    color:#0f172a;
+    font-size:13px;
+    line-height:1.3;
+    font-weight:800;
+    word-break:break-word;
+}
+
+.link-stats small{
+    display:block;
+    margin-top:3px;
+    color:#94a3b8;
+    font-size:9px;
+}
+
+
+/* =====================================================
+   21. LINK ACTION
+===================================================== */
+
+.link-actions{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:8px;
+    width:100%;
+    margin-top:12px;
+}
 
 .link-actions button{
-    flex:1;
-    height:40px;
-    border:none;
+    min-width:0;
+    min-height:40px;
+    padding:0 8px;
+    border:0;
     border-radius:10px;
     display:flex;
     align-items:center;
     justify-content:center;
     gap:6px;
-    font-size:12px;
+    font-family:inherit;
+    font-size:11px;
     font-weight:600;
     cursor:pointer;
+    transition:
+        transform .15s ease,
+        opacity .15s ease;
+}
+
+.link-actions button:hover{
+    transform:translateY(-1px);
+    opacity:.92;
+}
+
+.link-actions button:active{
+    transform:translateY(0);
 }
 
 
-.btn-edit{
+/* Default action colors */
+
+.link-actions button:nth-child(1){
+    background:#eff6ff;
+    color:#2563eb;
+}
+
+.link-actions button:nth-child(2){
     background:#2563eb;
     color:#fff;
 }
 
-
-.btn-delete{
-    background:#ef4444;
-    color:#fff;
+.link-actions button:nth-child(3){
+    background:#fef3c7;
+    color:#92400e;
 }
 
-
-.btn-copy{
-    width:44px;
-    background:#2563eb;
-    color:#fff;
+.link-actions button:nth-child(4){
+    background:#fee2e2;
+    color:#b91c1c;
 }
 
 
 /* =====================================================
-   COPY BOX
-===================================================== */
-
-.copy-box{
-    display:flex;
-    overflow:hidden;
-    border:1px solid #e2e8f0;
-    border-radius:12px;
-    margin:12px 0;
-}
-
-
-.copy-box input{
-    flex:1;
-    height:44px;
-    border:none;
-    outline:none;
-    padding:0 12px;
-    background:#f8fafc;
-    font-size:12px;
-}
-
-
-.copy-box button{
-    width:44px;
-    border:none;
-    background:#2563eb;
-    color:white;
-}
-
-
-/* =====================================================
-   EMPTY STATE
+   22. EMPTY
 ===================================================== */
 
 .empty{
+    width:100%;
     text-align:center;
-    padding:35px 15px;
+    padding:38px 15px;
 }
 
-
 .empty i{
+    display:block;
+    margin-bottom:8px;
     font-size:38px;
     color:#cbd5e1;
 }
 
-
 .empty h3{
-    margin:10px 0 5px;
+    margin:0 0 5px;
     font-size:16px;
+    line-height:1.3;
+    font-weight:700;
+    color:#0f172a;
 }
 
-
 .empty p{
+    max-width:420px;
     margin:0 auto;
     font-size:12px;
+    line-height:1.5;
     color:#64748b;
 }
 
+
 /* =====================================================
-   TIPS BOX
+   23. TIPS
 ===================================================== */
 
 .tips-box{
@@ -673,40 +965,53 @@
     line-height:1.5;
 }
 
-
 .tips-box strong{
     display:flex;
     align-items:center;
     gap:6px;
-    font-size:12px;
     margin-bottom:3px;
+    font-size:12px;
 }
 
 
 /* =====================================================
-   DARK MODE
+   24. GENERATED LINK
+===================================================== */
+
+#generatedBox{
+    width:100%;
+}
+
+#generatedBox .link-card{
+    margin:0;
+}
+
+
+/* =====================================================
+   25. DARK MODE
 ===================================================== */
 
 html.dark .page-title h1,
 html.dark .title-left h2,
+html.dark .create-header h2,
 html.dark .link-top h3,
 html.dark .empty h3,
-html.dark .info-header h3{
+html.dark .info-header h3,
+html.dark .stat-card h2{
     color:#f8fafc;
 }
 
-
 html.dark .page-title p,
 html.dark .title-left p,
+html.dark .create-header p,
 html.dark .info-box li,
-html.dark #sellStatus,
 html.dark .link-meta span,
 html.dark .stat-card h4,
 html.dark .mini-stat small,
-html.dark .empty p{
+html.dark .empty p,
+html.dark .link-top small{
     color:#94a3b8;
 }
-
 
 html.dark .card-section,
 html.dark .info-box,
@@ -716,11 +1021,9 @@ html.dark .link-card{
     border-color:#1f2937;
 }
 
-
 html.dark .section-title{
     border-color:#1f2937;
 }
-
 
 html.dark .title-left > i,
 html.dark .stat-card i{
@@ -728,37 +1031,31 @@ html.dark .stat-card i{
     color:#bfdbfe;
 }
 
-
-html.dark .mini-stat{
-    background:#1e293b;
-    border-color:#334155;
-}
-
-
-html.dark .mini-stat span,
-html.dark .stat-card h2{
-    color:#60a5fa;
-}
-
-
 html.dark .form-group label{
     color:#cbd5e1;
 }
 
-
 html.dark .form-group input,
-html.dark .search-box input,
-html.dark .copy-box input{
+html.dark .search-box input{
     background:#020617;
     border-color:#334155;
-    color:#fff;
+    color:#f8fafc;
 }
 
+html.dark .form-group input::placeholder,
+html.dark .search-box input::placeholder{
+    color:#64748b;
+}
 
 html.dark .copy-box{
     border-color:#334155;
+    background:#020617;
 }
 
+html.dark .copy-box input{
+    background:#020617;
+    color:#f8fafc;
+}
 
 html.dark .link-filter button{
     background:#1e293b;
@@ -766,68 +1063,155 @@ html.dark .link-filter button{
     color:#cbd5e1;
 }
 
+html.dark .link-filter button:hover{
+    background:#263449;
+}
 
 html.dark .link-filter button.active{
     background:#2563eb;
+    border-color:#2563eb;
     color:#fff;
+}
+
+html.dark .link-stats > div{
+    background:#020617;
+    border-color:#334155;
+}
+
+html.dark .link-stats span{
+    color:#f8fafc;
+}
+
+html.dark .create-note{
+    background:#020617;
+    border-color:#334155;
+    color:#94a3b8;
+}
+
+html.dark .success-box{
+    background:#052e16;
+    border-color:#166534;
+    color:#86efac;
+}
+
+html.dark .mini-stat{
+    background:#1e293b;
+    border-color:#334155;
+}
+
+html.dark .mini-stat span{
+    color:#60a5fa;
+}
+
+html.dark .tips-box{
+    background:#431407;
+    border-color:#7c2d12;
+    color:#fdba74;
+}
+
+html.dark .badge.green{
+    background:#14532d;
+    color:#bbf7d0;
+}
+
+html.dark .badge.red{
+    background:#450a0a;
+    color:#fecaca;
+}
+
+html.dark .badge.blue{
+    background:#172554;
+    color:#bfdbfe;
+}
+
+html.dark .badge.orange{
+    background:#451a03;
+    color:#fde68a;
+}
+
+html.dark .link-actions button:nth-child(1){
+    background:#172554;
+    color:#93c5fd;
+}
+
+html.dark .link-actions button:nth-child(3){
+    background:#451a03;
+    color:#fcd34d;
+}
+
+html.dark .link-actions button:nth-child(4){
+    background:#450a0a;
+    color:#fca5a5;
+}
+
+html.dark .empty i{
+    color:#475569;
 }
 
 
 /* =====================================================
-   RESPONSIVE TABLET
+   26. TABLET
+===================================================== */
+
+@media(max-width:1050px){
+
+    .quick-stats{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+
+}
+
+
+/* =====================================================
+   27. TABLET SMALL
 ===================================================== */
 
 @media(max-width:900px){
 
-    .quick-stats{
-        grid-template-columns:repeat(2,1fr);
+    .app-container{
+        padding:6px 15px 35px;
     }
 
+    .quick-stats{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
 
     .section-title{
-        flex-direction:column;
         align-items:flex-start;
-    }
-
-
-    .section-stats{
-        width:100%;
-    }
-
-
-    .mini-stat{
-        flex:1;
     }
 
 }
 
 
 /* =====================================================
-   RESPONSIVE MOBILE
+   28. MOBILE
 ===================================================== */
 
 @media(max-width:600px){
 
     .app-container{
-        padding:2px 12px 25px;
+        padding:4px 12px 30px;
     }
-
 
     .page-title{
         gap:10px;
-        margin-bottom:12px;
+        margin-bottom:13px;
     }
-
 
     .page-title > i{
         width:44px;
         height:44px;
+        min-width:44px;
+        border-radius:13px;
         font-size:18px;
     }
 
-
     .page-title h1{
         font-size:21px;
+    }
+
+    .page-title p{
+        font-size:11px;
     }
 
 
@@ -839,32 +1223,74 @@ html.dark .link-filter button.active{
     }
 
 
+    .title-left{
+        gap:9px;
+    }
+
+    .title-left > i{
+        width:38px;
+        height:38px;
+        min-width:38px;
+        border-radius:11px;
+        font-size:14px;
+    }
+
     .title-left h2{
         font-size:17px;
     }
 
 
-    .title-left > i{
-        width:38px;
-        height:38px;
-        font-size:14px;
+    .create-header{
+        gap:10px;
+    }
+
+    .create-icon{
+        width:40px;
+        height:40px;
+        min-width:40px;
+    }
+
+    .create-header h2{
+        font-size:17px;
     }
 
 
     .quick-stats{
+        grid-template-columns:repeat(2,minmax(0,1fr));
         gap:10px;
     }
 
-
-    .stat-card h2{
-        font-size:18px;
+    .stat-card{
+        min-height:118px;
+        padding:13px 9px;
     }
-
 
     .stat-card i{
         width:34px;
         height:34px;
+        min-width:34px;
         font-size:14px;
+        margin-bottom:8px;
+    }
+
+    .stat-card h4{
+        font-size:10px;
+    }
+
+    .stat-card h2{
+        font-size:17px;
+    }
+
+
+    .link-filter{
+        display:grid;
+        grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+
+    .link-filter button{
+        width:100%;
+        padding:0 7px;
+        font-size:11px;
     }
 
 
@@ -879,37 +1305,65 @@ html.dark .link-filter button.active{
     }
 
 
-    .link-actions button{
-        height:38px;
+    .link-stats{
+        gap:6px;
+    }
+
+    .link-stats > div{
+        padding:9px 5px;
+    }
+
+    .link-stats span{
         font-size:11px;
+    }
+
+    .link-stats small{
+        font-size:8px;
+    }
+
+
+    .link-actions{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:7px;
+    }
+
+    .link-actions button{
+        min-height:38px;
+        font-size:10px;
     }
 
 
     .copy-box input{
         height:42px;
+        font-size:11px;
     }
-
 
     .copy-box button{
         width:42px;
+        height:42px;
+        flex-basis:42px;
     }
 
 }
 
 
 /* =====================================================
-   SMALL DEVICE 360px
+   29. SMALL DEVICE
 ===================================================== */
 
 @media(max-width:380px){
+
+    .app-container{
+        padding-left:10px;
+        padding-right:10px;
+    }
 
     .page-title h1{
         font-size:19px;
     }
 
-
     .page-title p{
-        font-size:11px;
+        font-size:10px;
     }
 
 
@@ -917,31 +1371,64 @@ html.dark .link-filter button.active{
         gap:8px;
     }
 
-
     .stat-card{
-        padding:12px;
+        min-height:108px;
+        padding:11px 7px;
+    }
+
+    .stat-card h4{
+        font-size:9px;
+    }
+
+    .stat-card h2{
+        font-size:15px;
     }
 
 
-    .stat-card h4{
+    .link-filter{
+        gap:6px;
+    }
+
+    .link-filter button{
+        min-height:34px;
         font-size:10px;
     }
 
 
-    .stat-card h2{
-        font-size:16px;
+    .badge{
+        padding:4px 8px;
+        font-size:9px;
     }
 
+
+    .link-actions button{
+        min-height:37px;
+        font-size:9px;
+    }
+
+}
+
+
+/* =====================================================
+   30. EXTRA SMALL 320px
+===================================================== */
+
+@media(max-width:340px){
+
+    .quick-stats{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .stat-card h4{
+        font-size:8px;
+    }
+
+    .stat-card h2{
+        font-size:14px;
+    }
 
     .link-filter button{
-        flex:1;
-        padding:0 8px;
-        font-size:11px;
-    }
-
-
-    .badge{
-        font-size:9px;
+        padding:0 4px;
     }
 
 }
