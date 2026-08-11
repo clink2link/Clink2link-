@@ -1,16 +1,43 @@
-import crypto from "node:crypto";
+// =====================================
+// TEST DOMPETX (Cloudflare Compatible)
+// =====================================
+
+async function hmacSHA256(secret, message) {
+
+    const encoder = new TextEncoder();
+
+    const key = await crypto.subtle.importKey(
+        "raw",
+        encoder.encode(secret),
+        {
+            name: "HMAC",
+            hash: "SHA-256"
+        },
+        false,
+        ["sign"]
+    );
+
+    const signature = await crypto.subtle.sign(
+        "HMAC",
+        key,
+        encoder.encode(message)
+    );
+
+    return [...new Uint8Array(signature)]
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
+
+}
 
 export async function onRequestGet({ env }) {
 
     try {
 
-        if (!env.DOMPAY_API_KEY) {
+        if (!env.DOMPAY_API_KEY)
             throw new Error("DOMPAY_API_KEY belum diset");
-        }
 
-        if (!env.DOMPAY_BASE_URL) {
+        if (!env.DOMPAY_BASE_URL)
             throw new Error("DOMPAY_BASE_URL belum diset");
-        }
 
         const timestamp =
             Math.floor(Date.now() / 1000).toString();
@@ -32,43 +59,27 @@ export async function onRequestGet({ env }) {
             JSON.stringify(body);
 
         const signature =
-            crypto
-                .createHmac(
-                    "sha256",
-                    env.DOMPAY_API_KEY
-                )
-                .update(
-                    `${timestamp}.${bodyString}`
-                )
-                .digest("hex");
-
-        const response =
-            await fetch(
-                `${env.DOMPAY_BASE_URL}/v1/payments/checkout`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type":
-                            "application/json",
-
-                        "X-DOMPAY-API-Key":
-                            env.DOMPAY_API_KEY,
-
-                        "X-DOMPAY-Timestamp":
-                            timestamp,
-
-                        "X-DOMPAY-Signature":
-                            signature,
-
-                        "Idempotency-Key":
-                            crypto.randomUUID()
-                    },
-                    body: bodyString
-                }
+            await hmacSHA256(
+                env.DOMPAY_API_KEY,
+                `${timestamp}.${bodyString}`
             );
 
-        const text =
-            await response.text();
+        const response = await fetch(
+            `${env.DOMPAY_BASE_URL}/v1/payments/checkout`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-DOMPAY-API-Key": env.DOMPAY_API_KEY,
+                    "X-DOMPAY-Timestamp": timestamp,
+                    "X-DOMPAY-Signature": signature,
+                    "Idempotency-Key": crypto.randomUUID()
+                },
+                body: bodyString
+            }
+        );
+
+        const text = await response.text();
 
         let json;
 
@@ -79,21 +90,17 @@ export async function onRequestGet({ env }) {
         }
 
         return new Response(
-            JSON.stringify(
-                {
-                    status: response.status,
-                    headers: Object.fromEntries(
-                        response.headers.entries()
-                    ),
-                    response: json
-                },
-                null,
-                2
-            ),
+            JSON.stringify({
+                success: response.ok,
+                status: response.status,
+                signature,
+                timestamp,
+                body,
+                response: json
+            }, null, 2),
             {
                 headers: {
-                    "Content-Type":
-                        "application/json"
+                    "Content-Type": "application/json"
                 }
             }
         );
@@ -101,20 +108,15 @@ export async function onRequestGet({ env }) {
     } catch (err) {
 
         return new Response(
-            JSON.stringify(
-                {
-                    success: false,
-                    error: err.message,
-                    stack: err.stack
-                },
-                null,
-                2
-            ),
+            JSON.stringify({
+                success: false,
+                error: err.message,
+                stack: err.stack
+            }, null, 2),
             {
                 status: 500,
                 headers: {
-                    "Content-Type":
-                        "application/json"
+                    "Content-Type": "application/json"
                 }
             }
         );
