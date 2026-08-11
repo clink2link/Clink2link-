@@ -30,9 +30,6 @@ export async function onRequestPost(context) {
             env.DOMPETX_API_KEY ||
             env.DOMPAY_API_KEY;
         if (!apiKey) {
-            console.error(
-                "DOMPETX API KEY BELUM DISET"
-            );
             return json({
                 success: false,
                 error:
@@ -63,7 +60,8 @@ export async function onRequestPost(context) {
         if (!orders.length) {
             return json({
                 success: false,
-                error: "Sell order tidak ditemukan"
+                error:
+                    "Sell order tidak ditemukan"
             }, 404);
         }
         const order = orders[0];
@@ -72,12 +70,13 @@ export async function onRequestPost(context) {
             JSON.stringify(order, null, 2)
         );
         // ========================================
-        // VALIDATE ORDER
+        // ORDER SUDAH PAID
         // ========================================
         if (order.status === "paid") {
             return json({
                 success: false,
-                error: "Order sudah dibayar"
+                error:
+                    "Order sudah dibayar"
             }, 400);
         }
         // ========================================
@@ -96,27 +95,13 @@ export async function onRequestPost(context) {
             }, 400);
         }
         // ========================================
-        // REFERENCE
-        //
-        // HARUS SAMA DENGAN invoice_id
-        // AGAR WEBHOOK BISA MENEMUKAN ORDER
-        // ========================================
-        const reference =
-            order.invoice_id ||
-            `SELL-${order.id}-${Date.now()}`;
-        // ========================================
-        // FRONTEND URL
+        // FRONTEND
         // ========================================
         const frontendUrl =
             env.FRONTEND_URL ||
             "https://click2pay.my.id";
         // ========================================
-        // REDIRECT SETELAH PAYMENT
-        //
-        // Ini BUKAN halaman checkout.
-        //
-        // DompetX akan mengembalikan user ke
-        // URL ini setelah proses pembayaran.
+        // REDIRECT URL
         // ========================================
         const redirectUrl =
             `${frontendUrl}/b/${encodeURIComponent(
@@ -125,9 +110,29 @@ export async function onRequestPost(context) {
                 order.id
             )}`;
         // ========================================
-        // DOMPETX CHECKOUT BODY
+        // REFERENCE BARU
         //
-        // SESUAI DOKUMENTASI DOMPETX
+        // JANGAN memakai invoice_id lama.
+        //
+        // Setiap checkout baru harus mempunyai
+        // transaction reference yang unik.
+        // ========================================
+        const reference =
+            `SELL-${order.id}-${Date.now()}-${crypto.randomUUID()}`;
+        // ========================================
+        // IDEMPOTENCY KEY
+        //
+        // Berbeda dengan reference.
+        // Key ini untuk mencegah request HTTP
+        // yang sama diproses dua kali.
+        // ========================================
+        const idempotencyKey =
+            `click2pay-${order.id}-${Date.now()}`;
+        // ========================================
+        // DOMPETX BODY
+        //
+        // SESUAI DOKUMENTASI:
+        //
         // POST /v1/payments/checkout
         // ========================================
         const dompetxBody = {
@@ -155,35 +160,23 @@ export async function onRequestPost(context) {
             ).toString();
         // ========================================
         // SIGNATURE
-        //
-        // timestamp + "." + rawBody
         // ========================================
         const signature =
             await generateSignature(
                 `${timestamp}.${rawBody}`,
                 apiKey
             );
-        // ========================================
-        // IDEMPOTENCY
-        // ========================================
-        const idempotencyKey =
-            `click2pay_${order.id}_${Date.now()}`;
         console.log(
-            "DOMPETX CHECKOUT REQUEST:",
+            "DOMPETX CHECKOUT:",
             {
                 amount,
-                currency: "IDR",
                 reference,
-                redirectUrl,
                 timestamp,
                 idempotencyKey
             }
         );
         // ========================================
-        // CREATE DOMPETX CHECKOUT
-        //
-        // DOKUMENTASI:
-        // POST /v1/payments/checkout
+        // CREATE CHECKOUT
         // ========================================
         const response =
             await fetch(
@@ -228,7 +221,7 @@ export async function onRequestPost(context) {
             )
         );
         // ========================================
-        // HANDLE DOMPETX ERROR
+        // DOMPETX ERROR
         // ========================================
         if (!response.ok) {
             console.error(
@@ -260,11 +253,6 @@ export async function onRequestPost(context) {
         }
         // ========================================
         // PAYMENT LINK
-        //
-        // Contoh response DompetX:
-        //
-        // payment_link:
-        // https://checkout.dompetx.com/checkoutV2?refId=...
         // ========================================
         const paymentLink =
             dompetx.payment_link ||
@@ -283,38 +271,33 @@ export async function onRequestPost(context) {
             dompetx.expires_at ||
             null;
         // ========================================
-        // SAVE PAYMENT TO ORDER
+        // SAVE TO SELL ORDER
+        //
+        // Reference terbaru disimpan sebagai
+        // invoice_id.
         // ========================================
-        try {
-            await supabaseRequest(
-                env,
-                "sell_orders",
-                "PATCH",
-                {
-                    invoice_id:
-                        reference,
-                    payment_id:
-                        paymentId
-                },
-                `?id=eq.${encodeURIComponent(
-                    order.id
-                )}`
-            );
-            console.log(
-                "PAYMENT DATA BERHASIL DISIMPAN"
-            );
-        } catch (saveError) {
-            console.error(
-                "GAGAL MENYIMPAN PAYMENT DATA:",
-                saveError
-            );
-            /*
-             * Jangan membatalkan checkout hanya
-             * karena metadata gagal disimpan.
-             */
-        }
+        await supabaseRequest(
+            env,
+            "sell_orders",
+            "PATCH",
+            {
+                invoice_id:
+                    reference,
+                payment_id:
+                    paymentId,
+                payment_status:
+                    dompetx.status ||
+                    "pending"
+            },
+            `?id=eq.${encodeURIComponent(
+                order.id
+            )}`
+        );
+        console.log(
+            "PAYMENT DATA BERHASIL DISIMPAN"
+        );
         // ========================================
-        // RESPONSE KE FRONTEND
+        // RESPONSE FRONTEND
         // ========================================
         return json({
             success: true,
@@ -328,7 +311,10 @@ export async function onRequestPost(context) {
                 reference:
                     reference,
                 amount:
-                    Number(dompetx.amount || amount),
+                    Number(
+                        dompetx.amount ||
+                        amount
+                    ),
                 currency:
                     dompetx.currency ||
                     "IDR",
