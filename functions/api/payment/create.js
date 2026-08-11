@@ -9,10 +9,8 @@
 //     "order_id": "UUID_ORDER"
 // }
 //
-// Environment:
+// Cloudflare Environment:
 // DOMPETX_API_KEY
-//
-// Supabase:
 // SUPABASE_URL
 // SUPABASE_SERVICE_KEY
 // ============================================================
@@ -20,14 +18,14 @@ export async function onRequestPost(context) {
     try {
         const { request, env } = context;
         // =====================================================
-        // ENV CHECK
+        // ENV
         // =====================================================
         const apiKey =
-            env.DOMPETX_API_KEY;
+            String(env.DOMPETX_API_KEY || "").trim();
         const supabaseUrl =
-            env.SUPABASE_URL;
+            String(env.SUPABASE_URL || "").trim();
         const supabaseKey =
-            env.SUPABASE_SERVICE_KEY;
+            String(env.SUPABASE_SERVICE_KEY || "").trim();
         if (!apiKey) {
             return jsonResponse({
                 success: false,
@@ -65,7 +63,7 @@ export async function onRequestPost(context) {
         }
         const orderId =
             String(
-                body.order_id || ""
+                body?.order_id || ""
             ).trim();
         if (!orderId) {
             return jsonResponse({
@@ -77,13 +75,16 @@ export async function onRequestPost(context) {
         // =====================================================
         // GET SELL ORDER
         //
-        // IMPORTANT:
-        // Harga diambil dari database.
+        // Harga selalu dari database.
         // Jangan percaya amount dari frontend.
         // =====================================================
+        const orderUrl =
+            `${supabaseUrl}/rest/v1/sell_orders` +
+            `?id=eq.${encodeURIComponent(orderId)}` +
+            `&select=*`;
         const orderResponse =
             await fetch(
-                `${supabaseUrl}/rest/v1/sell_orders?id=eq.${encodeURIComponent(orderId)}&select=*`,
+                orderUrl,
                 {
                     method: "GET",
                     headers: {
@@ -106,7 +107,7 @@ export async function onRequestPost(context) {
                 );
         } catch {
             console.error(
-                "SUPABASE ORDER RESPONSE:",
+                "SUPABASE ORDER NON JSON:",
                 orderText
             );
             return jsonResponse({
@@ -130,7 +131,7 @@ export async function onRequestPost(context) {
         }
         if (
             !Array.isArray(orders) ||
-            !orders.length
+            orders.length === 0
         ) {
             return jsonResponse({
                 success: false,
@@ -149,13 +150,12 @@ export async function onRequestPost(context) {
             )
                 .trim()
                 .toLowerCase();
-        // Jangan membuat pembayaran
-        // untuk order yang sudah selesai.
         if (
             [
                 "paid",
                 "completed",
-                "success"
+                "success",
+                "settlement"
             ].includes(
                 orderStatus
             )
@@ -163,7 +163,9 @@ export async function onRequestPost(context) {
             return jsonResponse({
                 success: false,
                 error:
-                    "Order sudah dibayar"
+                    "Order sudah dibayar",
+                order_status:
+                    order.status
             }, 409);
         }
         // =====================================================
@@ -174,13 +176,21 @@ export async function onRequestPost(context) {
                 order.price
             );
         if (
-            !Number.isInteger(amount) ||
+            !Number.isInteger(amount)
+        ) {
+            return jsonResponse({
+                success: false,
+                error:
+                    "Harga order harus berupa angka bulat"
+            }, 400);
+        }
+        if (
             amount < 1000
         ) {
             return jsonResponse({
                 success: false,
                 error:
-                    "Harga order tidak valid"
+                    "Harga minimum QRIS adalah Rp1.000"
             }, 400);
         }
         if (
@@ -193,46 +203,76 @@ export async function onRequestPost(context) {
             }, 400);
         }
         // =====================================================
-        // CHECK EXISTING DOMPETX PAYMENT
+        // REFERENCE
         //
-        // Jika order sudah memiliki invoice/payment,
-        // jangan membuat transaksi baru.
+        // Satu reference untuk satu sell order.
         // =====================================================
-        const existingReference =
-            order.invoice_id ||
+        const reference =
+            order.invoice_id
+                ? String(order.invoice_id)
+                : `CLP-${orderId}`;
+        // =====================================================
+        // EXISTING PAYMENT
+        //
+        // Kalau sebelumnya sudah ada payment_id,
+        // jangan membuat transaksi DompetX baru.
+        // =====================================================
+        const existingPaymentId =
+            order.payment_id ||
+            order.dompetx_payment_id ||
             null;
-        if (existingReference) {
+        if (
+            existingPaymentId &&
+            order.invoice_id
+        ) {
+            const existingQr =
+                `https://api.dompetx.com/v1/qr/${encodeURIComponent(
+                    existingPaymentId
+                )}`;
             return jsonResponse({
                 success: true,
                 existing: true,
                 data: {
                     order_id:
                         orderId,
+                    payment_id:
+                        existingPaymentId,
                     reference:
-                        existingReference,
+                        reference,
                     amount:
-                        amount
+                        amount,
+                    currency:
+                        "IDR",
+                    qrImage:
+                        existingQr,
+                    qr_image_url:
+                        existingQr,
+                    expiresAt:
+                        order.expires_at ||
+                        null,
+                    expires_at:
+                        order.expires_at ||
+                        null
                 }
-            });
+            }, 200);
         }
         // =====================================================
-        // GENERATE DOMPETX REFERENCE
-        // =====================================================
-        const reference =
-            `CLP-${orderId}`;
-        // =====================================================
-        // DOMPETX BODY
+        // DOMPETX REQUEST BODY
         //
-        // JSON STRING INI HARUS SAMA PERSIS
-        // DENGAN BODY YANG DI-SEND.
+        // BODY STRING INI HARUS SAMA PERSIS
+        // DENGAN BODY YANG DIKIRIM.
         // =====================================================
         const dompetBody = {
-            method: "QRIS",
+            method:
+                "QRIS",
             amount:
                 amount,
-            currency: "IDR",
+            currency:
+                "IDR",
             reference:
-                reference
+                reference,
+            settlementSpeed:
+                "standard"
         };
         const dompetBodyString =
             JSON.stringify(
@@ -251,40 +291,47 @@ export async function onRequestPost(context) {
         // timestamp + "." + body
         //
         // HMAC-SHA256
-        // key = API KEY
+        // key = DOMPETX_API_KEY
         // =====================================================
         const signatureData =
-            timestamp +
-            "." +
-            dompetBodyString;
+            `${timestamp}.${dompetBodyString}`;
         const signature =
             await generateHmacSha256(
                 signatureData,
                 apiKey
             );
         // =====================================================
-        // IDEMPOTENCY
-        //
-        // Gunakan reference sebagai dasar.
+        // IDEMPOTENCY KEY
         // =====================================================
         const idempotencyKey =
             `clp-${orderId}`;
         // =====================================================
-        // CALL DOMPETX
+        // LOG
+        //
+        // JANGAN LOG API KEY / SIGNATURE.
         // =====================================================
         console.log(
-            "DOMPETX CREATE:",
+            "DOMPETX CREATE PAYMENT:",
             {
-                reference,
-                amount,
-                orderId
+                order_id:
+                    orderId,
+                reference:
+                    reference,
+                amount:
+                    amount,
+                method:
+                    "QRIS"
             }
         );
+        // =====================================================
+        // CALL DOMPETX
+        // =====================================================
         const dompetResponse =
             await fetch(
                 "https://api.dompetx.com/v1/payments",
                 {
-                    method: "POST",
+                    method:
+                        "POST",
                     headers: {
                         "Content-Type":
                             "application/json",
@@ -303,6 +350,9 @@ export async function onRequestPost(context) {
             );
         const dompetText =
             await dompetResponse.text();
+        // =====================================================
+        // PARSE DOMPETX RESPONSE
+        // =====================================================
         let dompetData;
         try {
             dompetData =
@@ -312,7 +362,10 @@ export async function onRequestPost(context) {
         } catch {
             console.error(
                 "DOMPETX NON JSON:",
-                dompetText
+                dompetText.substring(
+                    0,
+                    2000
+                )
             );
             return jsonResponse({
                 success: false,
@@ -323,7 +376,7 @@ export async function onRequestPost(context) {
                 detail:
                     dompetText.substring(
                         0,
-                        1000
+                        2000
                     )
             }, 502);
         }
@@ -333,14 +386,35 @@ export async function onRequestPost(context) {
         );
         // =====================================================
         // DOMPETX ERROR
+        //
+        // Kembalikan pesan asli.
         // =====================================================
         if (
             !dompetResponse.ok
         ) {
+            const realError =
+                dompetData?.message ||
+                dompetData?.error ||
+                dompetData?.errors?.[0]?.message ||
+                dompetData?.data?.message ||
+                dompetData?.data?.error ||
+                "DompetX menolak pembayaran";
+            console.error(
+                "DOMPETX ERROR:",
+                {
+                    status:
+                        dompetResponse.status,
+                    error:
+                        realError,
+                    response:
+                        dompetData
+                }
+            );
             return jsonResponse({
-                success: false,
+                success:
+                    false,
                 error:
-                    "DompetX menolak pembayaran",
+                    realError,
                 status:
                     dompetResponse.status,
                 detail:
@@ -348,17 +422,22 @@ export async function onRequestPost(context) {
             }, dompetResponse.status);
         }
         // =====================================================
-        // EXTRACT PAYMENT ID
-        //
-        // Menangani beberapa kemungkinan struktur response.
+        // NORMALIZE RESPONSE
+        // =====================================================
+        const paymentData =
+            dompetData?.data &&
+            typeof dompetData.data === "object"
+                ? dompetData.data
+                : dompetData;
+        // =====================================================
+        // PAYMENT ID
         // =====================================================
         const paymentId =
-            dompetData.paymentId ||
-            dompetData.payment_id ||
-            dompetData.id ||
-            dompetData.data?.paymentId ||
-            dompetData.data?.payment_id ||
-            dompetData.data?.id ||
+            paymentData?.paymentId ||
+            paymentData?.payment_id ||
+            paymentData?.id ||
+            paymentData?.transactionId ||
+            paymentData?.transaction_id ||
             null;
         if (!paymentId) {
             console.error(
@@ -366,7 +445,8 @@ export async function onRequestPost(context) {
                 dompetData
             );
             return jsonResponse({
-                success: false,
+                success:
+                    false,
                 error:
                     "Payment ID tidak ditemukan dari DompetX",
                 detail:
@@ -377,24 +457,26 @@ export async function onRequestPost(context) {
         // QR IMAGE
         // =====================================================
         let qrImage =
-            dompetData.qrData?.qrImage ||
-            dompetData.qr_data?.qrImage ||
-            dompetData.qrData?.qr_image ||
-            dompetData.qr_data?.qr_image ||
-            dompetData.data?.qrData?.qrImage ||
-            dompetData.data?.qr_data?.qrImage ||
-            dompetData.qrImage ||
-            dompetData.qr_image ||
-            dompetData.data?.qrImage ||
-            dompetData.data?.qr_image ||
+            paymentData?.qrData?.qrImage ||
+            paymentData?.qr_data?.qrImage ||
+            paymentData?.qrData?.qr_image ||
+            paymentData?.qr_data?.qr_image ||
+            paymentData?.qrImage ||
+            paymentData?.qr_image ||
+            paymentData?.qrUrl ||
+            paymentData?.qr_url ||
+            paymentData?.qrisImage ||
+            paymentData?.qris_image ||
             null;
         // =====================================================
-        // FALLBACK QR ENDPOINT
+        // QR FALLBACK
         //
-        // Dokumentasi DompetX:
+        // Public endpoint:
         // GET /v1/qr/{paymentId}
         // =====================================================
-        if (!qrImage) {
+        if (
+            !qrImage
+        ) {
             qrImage =
                 `https://api.dompetx.com/v1/qr/${encodeURIComponent(
                     paymentId
@@ -404,16 +486,18 @@ export async function onRequestPost(context) {
         // EXPIRES
         // =====================================================
         const expiresAt =
-            dompetData.expiresAt ||
-            dompetData.expires_at ||
-            dompetData.data?.expiresAt ||
-            dompetData.data?.expires_at ||
+            paymentData?.expiresAt ||
+            paymentData?.expires_at ||
+            paymentData?.expiredAt ||
+            paymentData?.expired_at ||
             null;
         // =====================================================
-        // SAVE DOMPETX DATA INTO SELL ORDER
+        // SAVE PAYMENT DATA
         //
-        // Kita simpan reference ke invoice_id
-        // agar order tidak membuat payment baru.
+        // Kita coba menyimpan payment_id.
+        //
+        // Jika kolom payment_id belum ada,
+        // update tidak boleh membuat pembayaran gagal.
         // =====================================================
         const updateOrder = {
             invoice_id:
@@ -421,11 +505,17 @@ export async function onRequestPost(context) {
             updated_at:
                 new Date().toISOString()
         };
+        // Hanya masukkan payment_id kalau
+        // database memang sudah punya kolom tersebut.
+        //
+        // Jika belum ada, Supabase akan menolak PATCH.
+        // Karena itu kita simpan reference terlebih dahulu.
         const updateResponse =
             await fetch(
                 `${supabaseUrl}/rest/v1/sell_orders?id=eq.${encodeURIComponent(orderId)}`,
                 {
-                    method: "PATCH",
+                    method:
+                        "PATCH",
                     headers: {
                         "apikey":
                             supabaseKey,
@@ -451,19 +541,15 @@ export async function onRequestPost(context) {
                 "SUPABASE UPDATE ORDER ERROR:",
                 updateText
             );
-            /*
-             * Jangan membatalkan pembayaran DompetX
-             * hanya karena penyimpanan lokal gagal.
-             *
-             * Tetapi log wajib dicatat.
-             */
         }
         // =====================================================
-        // SUCCESS RESPONSE
+        // SUCCESS
         // =====================================================
         return jsonResponse({
             success:
                 true,
+            existing:
+                false,
             data: {
                 order_id:
                     orderId,
@@ -564,7 +650,8 @@ function jsonResponse(
             data
         ),
         {
-            status,
+            status:
+                status,
             headers: {
                 "Content-Type":
                     "application/json; charset=UTF-8",
