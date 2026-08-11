@@ -1,355 +1,321 @@
 // ===============================
-// BAYAR.GG CREATE PAYMENT
+// DOMPETX CREATE PAYMENT
 // ===============================
-
-async function bayarGGCreatePayment(env, payload) {
-
-    if (!env.BAYARGG_API_KEY) {
-        throw new Error("BAYARGG_API_KEY belum diset");
+async function hmacSHA256(secret, message) {
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+        "raw",
+        encoder.encode(secret),
+        { name: "HMAC", hash: "SHA-256" },
+        false,
+        ["sign"]
+    );
+    const signature = await crypto.subtle.sign(
+        "HMAC",
+        key,
+        encoder.encode(message)
+    );
+    return [...new Uint8Array(signature)]
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
+}
+async function dompetXCreatePayment(env, payload) {
+    if (!env.DOMPAY_API_KEY) {
+        throw new Error("DOMPAY_API_KEY belum diset");
     }
-
+    if (!env.DOMPAY_BASE_URL) {
+        throw new Error("DOMPAY_BASE_URL belum diset");
+    }
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    const body = {
+        amount: Number(payload.amount),
+        currency: "IDR",
+        reference: payload.reference,
+        redirectUrl: payload.redirect_url,
+        metadata: {
+            order_name: payload.description || "Pembayaran",
+            product_name: payload.product_name || "Sell Link",
+            customer_name: payload.customer_name || "",
+            customer_email: payload.customer_email || ""
+        }
+    };
+    const bodyString = JSON.stringify(body);
+    const signature = await hmacSHA256(
+        env.DOMPAY_API_KEY,
+        `${timestamp}.${bodyString}`
+    );
     const response = await fetch(
-        "https://www.bayar.gg/api/create-payment.php",
+        `${env.DOMPAY_BASE_URL}/v1/payments/checkout`,
         {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-API-Key": env.BAYARGG_API_KEY
+                "X-DOMPAY-API-Key": env.DOMPAY_API_KEY,
+                "X-DOMPAY-Timestamp": timestamp,
+                "X-DOMPAY-Signature": signature,
+                "Idempotency-Key": crypto.randomUUID()
             },
-            body: JSON.stringify({
-                amount: Number(payload.amount),
-                description: payload.description || "Pembayaran",
-                customer_name: payload.customer_name || "",
-                customer_email: payload.customer_email || "",
-                customer_phone: payload.customer_phone || "",
-                callback_url: payload.callback_url || "",
-                redirect_url: payload.redirect_url || "",
-                payment_url: "https://www.bayar.gg/pay",
-                payment_method: "qris"
-            })
+            body: bodyString
         }
     );
-
     const text = await response.text();
-
-    console.log("========== BAYAR.GG ==========");
+    console.log("========== DOMPETX ==========");
     console.log("STATUS :", response.status);
     console.log("RAW    :", text);
-    console.log("==============================");
-
-    let json;
-
+    console.log("=============================");
+    let data;
     try {
-        json = JSON.parse(text);
+        data = JSON.parse(text);
     } catch {
         throw new Error(
-            "Response BayarGG bukan JSON:\n\n" + text
+            "Response DompetX bukan JSON:\n\n" + text
         );
     }
-
     if (!response.ok) {
         throw new Error(
-            `HTTP ${response.status}\n${JSON.stringify(json, null, 2)}`
+            `DompetX HTTP ${response.status}\n` +
+            JSON.stringify(data, null, 2)
         );
     }
-
-    if (!json.success) {
+    if (!data.id) {
         throw new Error(
-            json.message ||
-            json.error ||
-            "Create payment gagal"
+            "DompetX tidak mengembalikan payment ID"
         );
     }
-
-    const data = json.data;
-
+    if (!data.payment_url) {
+        throw new Error(
+            "DompetX tidak mengembalikan payment URL"
+        );
+    }
     return {
-        payment_id: data.payment_id || null,
-        invoice_id: data.invoice_id,
+        payment_id: data.id,
+        invoice_id: data.reference || body.reference,
         payment_url: data.payment_url,
-        qris_string: data.qris_string,
-        expires_at: data.expires_at,
-        status: data.status,
-        amount: data.amount,
-        final_amount: data.final_amount
+        expires_at: data.expiresAt || null,
+        status: data.status || "pending",
+        amount: Number(data.amount || payload.amount),
+        final_amount: Number(data.amount || payload.amount)
     };
-
 }
-
-
 // ===============================
 // CREATE PAYMENT
 // ===============================
-
-export async function onRequestPost(context){
-
+export async function onRequestPost(context) {
     const { request, env } = context;
-
-    try{
-
+    try {
         const body = await request.json();
-
         const { order_id } = body;
-
-        if(!order_id){
+        if (!order_id) {
             throw new Error("order_id wajib diisi");
         }
-
         // =====================
         // GET ORDER
         // =====================
-
         const orders = await supabaseRequest(
             env,
             "sell_orders",
             "GET",
             null,
-            `?id=eq.${order_id}&select=*`
+            `?id=eq.${encodeURIComponent(order_id)}&select=*`
         );
-
-        if(!orders.length){
+        if (!orders.length) {
             throw new Error("Order tidak ditemukan");
         }
-
-        const order = orders[0];
-
-        if(order.status !== "pending"){
+        let order = orders[0];
+        if (order.status !== "pending") {
             throw new Error("Order sudah diproses");
         }
-
         const amount = Number(order.price || 0);
-
-        if(amount < 1000){
+        if (!Number.isFinite(amount) || amount < 1000) {
             throw new Error("Nominal tidak valid");
         }
-
         // =====================
-        // PAYMENT SUDAH ADA
+        // PAYMENT MASIH AKTIF
         // =====================
-
-        if(
-            order.invoice_id &&
+        if (
+            order.payment_id &&
             order.payment_url &&
-            order.qris_string &&
             order.expires_at &&
             new Date(order.expires_at) > new Date()
-        ){
-
+        ) {
             return json({
-                success:true,
-                data:{
-                    payment_id:order.payment_id,
-                    invoice_id:order.invoice_id,
-                    payment_url:order.payment_url,
-                    qris_string:order.qris_string,
-                    expires_at:order.expires_at
+                success: true,
+                data: {
+                    order_id: order.id,
+                    payment_id: order.payment_id,
+                    invoice_id: order.invoice_id || null,
+                    payment_url: order.payment_url,
+                    expires_at: order.expires_at,
+                    status: "pending",
+                    amount
                 }
             });
-
         }
-
-// =====================
-// GET SHORT CODE LINK
-// =====================
-
-const links = await supabaseRequest(
-    env,
-    "links",
-    "GET",
-    null,
-    `?id=eq.${order.link_id}&select=short_code`
-);
-
-
-if(!links.length){
-    throw new Error("Short code link tidak ditemukan");
-}
-
-
-const shortCode = links[0].short_code;
-
-
-// =====================
-// CREATE PAYMENT BAYARGG
-// =====================
-
-const payment = await bayarGGCreatePayment(
-    env,
-    {
-        amount,
-
-        description:
-            `Pembelian Sell Link ${shortCode}`,
-
-        callback_url:
-            `${env.FRONTEND_URL}api/payment-callback`,
-
-        redirect_url:
-            `${env.FRONTEND_URL}b/${shortCode}`
-    }
-);
-
+        // =====================
+        // GET SHORT CODE LINK
+        // =====================
+        const links = await supabaseRequest(
+            env,
+            "links",
+            "GET",
+            null,
+            `?id=eq.${encodeURIComponent(order.link_id)}&select=short_code`
+        );
+        if (!links.length) {
+            throw new Error("Short code link tidak ditemukan");
+        }
+        const shortCode = links[0].short_code;
+        if (!shortCode) {
+            throw new Error("Short code link kosong");
+        }
+        // =====================
+        // REFERENCE DOMPETX
+        // =====================
+        const reference =
+            `SELL-${order.id}-${Date.now()}`;
+        // =====================
+        // CREATE PAYMENT DOMPETX
+        // =====================
+        const payment = await dompetXCreatePayment(
+            env,
+            {
+                amount,
+                reference,
+                description:
+                    `Pembelian Sell Link ${shortCode}`,
+                product_name:
+                    `Sell Link ${shortCode}`,
+                redirect_url:
+                    `${env.FRONTEND_URL}b/${shortCode}`
+            }
+        );
+        // =====================
+        // EXPIRES AT
+        // =====================
         const expiresAt = payment.expires_at
             ? new Date(payment.expires_at).toISOString()
-            : new Date(Date.now()+7*60*1000).toISOString();
-
-        console.log("PAYMENT CREATED",payment);
-
-          // =====================
+            : new Date(
+                Date.now() + 24 * 60 * 60 * 1000
+            ).toISOString();
+        console.log("DOMPETX PAYMENT CREATED", payment);
+        // =====================
         // UPDATE ORDER
         // =====================
-
         const updated = await supabaseRequest(
             env,
             "sell_orders",
             "PATCH",
             {
-                payment_id:
-                    payment.payment_id || null,
+                payment_id: payment.payment_id,
                 invoice_id: payment.invoice_id,
                 payment_url: payment.payment_url,
-                qris_string: payment.qris_string,
                 expires_at: expiresAt
             },
-            `?id=eq.${order_id}`
+            `?id=eq.${encodeURIComponent(order_id)}`
         );
-
         console.log("ORDER UPDATED", updated);
-
+        // =====================
+        // RESPONSE
+        // =====================
         return json({
             success: true,
             data: {
                 order_id,
                 payment_id: payment.payment_id,
                 invoice_id: payment.invoice_id,
+                reference,
                 payment_url: payment.payment_url,
-                qris_string: payment.qris_string,
                 expires_at: expiresAt,
                 status: payment.status,
                 amount: payment.amount,
                 final_amount: payment.final_amount
             }
         });
-
-    }catch(error){
-
+    } catch (error) {
         console.error(
             "CREATE PAYMENT ERROR:",
             error
         );
-
         return json(
             {
-                success:false,
-                error:error.message
+                success: false,
+                error:
+                    error?.message ||
+                    "Terjadi kesalahan"
             },
             500
         );
-
     }
-
 }
-
 // ===============================
 // SUPABASE REQUEST
 // ===============================
-
 async function supabaseRequest(
     env,
     table,
-    method="GET",
-    body=null,
-    query=""
-){
-
+    method = "GET",
+    body = null,
+    query = ""
+) {
+    if (!env.SUPABASE_URL) {
+        throw new Error("SUPABASE_URL belum diset");
+    }
+    if (!env.SUPABASE_SERVICE_KEY) {
+        throw new Error(
+            "SUPABASE_SERVICE_KEY belum diset"
+        );
+    }
     const response = await fetch(
         `${env.SUPABASE_URL}/rest/v1/${table}${query}`,
         {
             method,
-
-            headers:{
+            headers: {
                 apikey:
                     env.SUPABASE_SERVICE_KEY,
-
                 Authorization:
                     `Bearer ${env.SUPABASE_SERVICE_KEY}`,
-
                 "Content-Type":
                     "application/json",
-
                 Prefer:
                     "return=representation"
             },
-
             body: body
                 ? JSON.stringify(body)
                 : undefined
         }
     );
-
-
-    const text =
-        await response.text();
-
-
-    let data=[];
-
-
-    if(text){
-
-        try{
-
-            data=JSON.parse(text);
-
-        }catch{
-
+    const text = await response.text();
+    let data = [];
+    if (text) {
+        try {
+            data = JSON.parse(text);
+        } catch {
             throw new Error(
-                "Supabase response bukan JSON:\n"+text
+                "Supabase response bukan JSON:\n" +
+                text
             );
-
         }
-
     }
-
-
-    if(!response.ok){
-
+    if (!response.ok) {
         throw new Error(
-            JSON.stringify(
-                data,
-                null,
-                2
-            )
+            `Supabase HTTP ${response.status}\n` +
+            JSON.stringify(data, null, 2)
         );
-
     }
-
-
     return data;
-
 }
-
-
-
 // ===============================
 // JSON RESPONSE
 // ===============================
-
-function json(
-    data,
-    status=200
-){
-
+function json(data, status = 200) {
     return new Response(
         JSON.stringify(data),
         {
             status,
-
-            headers:{
+            headers: {
                 "Content-Type":
                     "application/json"
             }
         }
     );
-
 }
