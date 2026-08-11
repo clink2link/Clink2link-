@@ -557,15 +557,10 @@ if (createBtn) {
 /* =========================
 RENDER SELL LINKS
 ========================= */
-
 function renderLinks() {
-
     const box = document.getElementById("sellList");
-
     if (!box) return;
-
     if (!filteredLinks.length) {
-
         box.innerHTML = `
             <div class="empty">
                 <i class="fa-solid fa-box-open"></i>
@@ -573,53 +568,208 @@ function renderLinks() {
                 <p>Silakan buat Sell Link pertama Anda.</p>
             </div>
         `;
-
         return;
-
     }
-
     box.innerHTML = filteredLinks.map(link => {
-
         const shortCode =
             link.short_code ||
             link.shortcode ||
             link.code ||
             "";
-
-        const sellUrl = `${location.origin}/b/${shortCode}`;
-
-        const status = String(link.status) === "active";
-
-        const paidOrders = getPaidOrders(link.id);
-
-        const sold = paidOrders.length
-            ? paidOrders.length
-            : numberValue(link.sales ?? link.sold);
-
-        const revenue = paidOrders.reduce(
-            (t, o) => t + numberValue(o.seller_receive),
-            0
-        );
-
-        const views = numberValue(
-            link.total_views ?? link.views
-        );
-
-        const price = numberValue(link.price);
-
+        const sellUrl =
+            `${location.origin}/b/${shortCode}`;
+        const status =
+            String(link.status || "").toLowerCase() === "active";
+        const paidOrders =
+            getPaidOrders(link.id);
+        const sold =
+            paidOrders.length > 0
+                ? paidOrders.length
+                : numberValue(
+                    link.sales ??
+                    link.sold
+                );
+        const revenue =
+            paidOrders.reduce(
+                (total, order) =>
+                    total +
+                    numberValue(
+                        order.seller_receive ??
+                        order.price
+                    ),
+                0
+            );
+        const views =
+            numberValue(
+                link.total_views ??
+                link.views
+            );
+        const price =
+            numberValue(link.price);
         const destination =
             link.destination_url ||
             link.destination ||
             "-";
-
-        const date = link.created_at
-            ? new Date(link.created_at).toLocaleDateString("id-ID")
-            : "-";
-
-        return `...`;
-
+        const date =
+            link.created_at
+                ? new Date(
+                    link.created_at
+                  ).toLocaleDateString("id-ID")
+                : "-";
+        return `
+            <div class="link-card">
+                <!-- HEADER -->
+                <div class="link-top">
+                    <div>
+                        <h3>
+                            ${escapeHtml(
+                                link.title ||
+                                "Sell Link"
+                            )}
+                        </h3>
+                        <small>
+                            Dibuat:
+                            ${date}
+                        </small>
+                    </div>
+                    <span class="badge ${
+                        status
+                            ? "green"
+                            : "red"
+                    }">
+                        <i class="fa-solid ${
+                            status
+                                ? "fa-circle-check"
+                                : "fa-circle-xmark"
+                        }"></i>
+                        ${
+                            status
+                                ? "Aktif"
+                                : "Nonaktif"
+                        }
+                    </span>
+                </div>
+                <!-- PRICE -->
+                <div class="badge-group">
+                    <span class="badge blue">
+                        <i class="fa-solid fa-money-bill"></i>
+                        Rp ${price.toLocaleString("id-ID")}
+                    </span>
+                    <span class="badge">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        ${sold} Terjual
+                    </span>
+                </div>
+                <!-- DESTINATION -->
+                <div class="link-info">
+                    <small>
+                        <i class="fa-solid fa-link"></i>
+                        ${escapeHtml(
+                            destination
+                        )}
+                    </small>
+                </div>
+                <!-- SELL LINK -->
+                <label>
+                    Link Buy
+                </label>
+                <div class="copy-box">
+                    <input
+                        type="text"
+                        readonly
+                        value="${sellUrl}"
+                    >
+                    <button
+                        class="btn-copy"
+                        type="button"
+                        onclick="copySell('${sellUrl}')"
+                    >
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                </div>
+                <!-- STATS -->
+                <div class="link-stats">
+                    <div>
+                        <i class="fa-solid fa-eye"></i>
+                        <span>
+                            ${views.toLocaleString("id-ID")}
+                        </span>
+                        <small>
+                            Views
+                        </small>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span>
+                            ${sold.toLocaleString("id-ID")}
+                        </span>
+                        <small>
+                            Terjual
+                        </small>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-money-bill-trend-up"></i>
+                        <span>
+                            Rp ${revenue.toLocaleString("id-ID")}
+                        </span>
+                        <small>
+                            Pendapatan
+                        </small>
+                    </div>
+                </div>
+                <!-- ACTION -->
+                <div class="link-actions">
+                    <button
+                        type="button"
+                        onclick="generateLink('${link.id}')"
+                    >
+                        <i class="fa-solid fa-link"></i>
+                        Link
+                    </button>
+                    <button
+                        type="button"
+                        onclick="editSell('${link.id}')"
+                    >
+                        <i class="fa-solid fa-pen"></i>
+                        Edit
+                    </button>
+                    <button
+                        type="button"
+                        onclick="toggleSellStatus('${link.id}')"
+                    >
+                        <i class="fa-solid ${
+                            status
+                                ? "fa-toggle-off"
+                                : "fa-toggle-on"
+                        }"></i>
+                        ${
+                            status
+                                ? "Nonaktifkan"
+                                : "Aktifkan"
+                        }
+                    </button>
+                    <button
+                        type="button"
+                        onclick="deleteSell('${link.id}')"
+                    >
+                        <i class="fa-solid fa-trash"></i>
+                        Hapus
+                    </button>
+                </div>
+            </div>
+        `;
     }).join("");
-
+}
+/* =========================
+ESCAPE HTML
+========================= */
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 /* =========================
