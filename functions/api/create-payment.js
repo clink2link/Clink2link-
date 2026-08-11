@@ -1,65 +1,54 @@
 // ============================================
-// CREATE DOMPETX QRIS PAYMENT
+// CREATE DOMPETX CHECKOUT PAYMENT
 // Click2Pay / Sell Link
 // ============================================
-
 export async function onRequestPost(context) {
     const { request, env } = context;
-
     try {
         // ========================================
         // READ REQUEST
         // ========================================
         const body = await request.json();
-
         console.log("================================");
-        console.log("CREATE DOMPETX PAYMENT");
+        console.log("CREATE DOMPETX CHECKOUT");
         console.log(JSON.stringify(body, null, 2));
         console.log("================================");
-
         const orderId =
             body?.order_id ||
             body?.orderId ||
             null;
-
         if (!orderId) {
             return json({
                 success: false,
                 error: "Order ID wajib diisi"
             }, 400);
         }
-
         // ========================================
-        // ENV CHECK
+        // ENV
         // ========================================
         const apiKey =
             env.DOMPETX_API_KEY ||
             env.DOMPAY_API_KEY;
-
         if (!apiKey) {
             console.error(
                 "DOMPETX API KEY BELUM DISET"
             );
-
             return json({
                 success: false,
                 error:
                     "DOMPETX_API_KEY belum dikonfigurasi"
             }, 500);
         }
-
         if (!env.SUPABASE_URL) {
             throw new Error(
                 "SUPABASE_URL belum dikonfigurasi"
             );
         }
-
         if (!env.SUPABASE_SERVICE_KEY) {
             throw new Error(
                 "SUPABASE_SERVICE_KEY belum dikonfigurasi"
             );
         }
-
         // ========================================
         // GET SELL ORDER
         // ========================================
@@ -71,23 +60,19 @@ export async function onRequestPost(context) {
                 null,
                 `?id=eq.${encodeURIComponent(orderId)}&select=*`
             );
-
         if (!orders.length) {
             return json({
                 success: false,
                 error: "Sell order tidak ditemukan"
             }, 404);
         }
-
         const order = orders[0];
-
         console.log(
             "SELL ORDER FOUND:",
             JSON.stringify(order, null, 2)
         );
-
         // ========================================
-        // VALIDATE ORDER STATUS
+        // VALIDATE ORDER
         // ========================================
         if (order.status === "paid") {
             return json({
@@ -95,13 +80,11 @@ export async function onRequestPost(context) {
                 error: "Order sudah dibayar"
             }, 400);
         }
-
         // ========================================
         // PRICE
         // ========================================
         const amount =
             Number(order.price || 0);
-
         if (
             !Number.isFinite(amount) ||
             amount < 1000
@@ -112,7 +95,6 @@ export async function onRequestPost(context) {
                     "Nominal pembayaran tidak valid"
             }, 400);
         }
-
         // ========================================
         // REFERENCE
         //
@@ -122,117 +104,110 @@ export async function onRequestPost(context) {
         const reference =
             order.invoice_id ||
             `SELL-${order.id}-${Date.now()}`;
-
         // ========================================
-        // REDIRECT URL
-        //
-        // Hanya fallback setelah pembayaran.
-        // User tetap melihat QR di halaman
-        // Click2Pay karena QR dibuat dari
-        // endpoint /payments.
+        // FRONTEND URL
         // ========================================
         const frontendUrl =
             env.FRONTEND_URL ||
             "https://click2pay.my.id";
-
+        // ========================================
+        // REDIRECT SETELAH PAYMENT
+        //
+        // Ini BUKAN halaman checkout.
+        //
+        // DompetX akan mengembalikan user ke
+        // URL ini setelah proses pembayaran.
+        // ========================================
         const redirectUrl =
             `${frontendUrl}/b/${encodeURIComponent(
                 order.link_id
             )}?payment=success&order_id=${encodeURIComponent(
                 order.id
             )}`;
-
         // ========================================
-        // DOMPETX REQUEST BODY
+        // DOMPETX CHECKOUT BODY
+        //
+        // SESUAI DOKUMENTASI DOMPETX
+        // POST /v1/payments/checkout
         // ========================================
         const dompetxBody = {
-            method: "QRIS",
             amount: amount,
             currency: "IDR",
             reference: reference,
-            settlementSpeed: "standard",
             redirectUrl: redirectUrl,
-
             metadata: {
                 order_name:
                     "Click2Pay Sell Link",
-
                 product_name:
-                    "Sell Link #" + order.link_id,
-
+                    `Sell Link #${order.link_id}`,
                 notes:
                     "Pembayaran Sell Link Click2Pay"
             }
         };
-
         const rawBody =
             JSON.stringify(dompetxBody);
-
         // ========================================
-        // DOMPETX SIGNATURE
-        //
-        // timestamp + "." + rawBody
-        // HMAC SHA256 menggunakan API KEY
+        // TIMESTAMP
         // ========================================
         const timestamp =
             Math.floor(
                 Date.now() / 1000
             ).toString();
-
+        // ========================================
+        // SIGNATURE
+        //
+        // timestamp + "." + rawBody
+        // ========================================
         const signature =
             await generateSignature(
                 `${timestamp}.${rawBody}`,
                 apiKey
             );
-
+        // ========================================
+        // IDEMPOTENCY
+        // ========================================
         const idempotencyKey =
             `click2pay_${order.id}_${Date.now()}`;
-
         console.log(
-            "DOMPETX REQUEST:",
+            "DOMPETX CHECKOUT REQUEST:",
             {
                 amount,
+                currency: "IDR",
                 reference,
+                redirectUrl,
                 timestamp,
                 idempotencyKey
             }
         );
-
         // ========================================
-        // CREATE DOMPETX PAYMENT
+        // CREATE DOMPETX CHECKOUT
+        //
+        // DOKUMENTASI:
+        // POST /v1/payments/checkout
         // ========================================
         const response =
             await fetch(
-                "https://api.dompetx.com/v1/payments",
+                "https://api.dompetx.com/v1/payments/checkout",
                 {
                     method: "POST",
-
                     headers: {
                         "Content-Type":
                             "application/json",
-
                         "X-DOMPAY-API-Key":
                             apiKey,
-
                         "X-DOMPAY-Signature":
                             signature,
-
                         "X-DOMPAY-Timestamp":
                             timestamp,
-
                         "Idempotency-Key":
                             idempotencyKey
                     },
-
                     body: rawBody
                 }
             );
-
         const responseText =
             await response.text();
-
-        let dompetx;
-
+        let dompetx = {};
         try {
             dompetx =
                 responseText
@@ -244,7 +219,6 @@ export async function onRequestPost(context) {
                 responseText
             );
         }
-
         console.log(
             "DOMPETX RESPONSE:",
             JSON.stringify(
@@ -253,9 +227,8 @@ export async function onRequestPost(context) {
                 2
             )
         );
-
         // ========================================
-        // DOMPETX ERROR
+        // HANDLE DOMPETX ERROR
         // ========================================
         if (!response.ok) {
             console.error(
@@ -263,17 +236,16 @@ export async function onRequestPost(context) {
                 response.status,
                 dompetx
             );
-
             return json({
                 success: false,
                 error:
                     dompetx?.message ||
                     dompetx?.error ||
                     `DompetX HTTP ${response.status}`,
-                details: dompetx
+                details:
+                    dompetx
             }, response.status);
         }
-
         // ========================================
         // PAYMENT ID
         // ========================================
@@ -281,50 +253,28 @@ export async function onRequestPost(context) {
             dompetx.id ||
             dompetx.paymentId ||
             null;
-
         if (!paymentId) {
             throw new Error(
                 "Payment ID DompetX tidak ditemukan"
             );
         }
-
         // ========================================
-        // QRIS DATA
+        // PAYMENT LINK
         //
-        // Berdasarkan dokumentasi:
+        // Contoh response DompetX:
         //
-        // qrData.qrImage
-        // qrData.qrString
+        // payment_link:
+        // https://checkout.dompetx.com/checkoutV2?refId=...
         // ========================================
-        const qrData =
-            dompetx.qrData ||
-            {};
-
-        let qrImageUrl =
-            qrData.qrImage ||
-            dompetx.qrImage ||
-            dompetx.qris_image_url ||
-            dompetx.qr_image_url ||
+        const paymentLink =
+            dompetx.payment_link ||
+            dompetx.paymentLink ||
             null;
-
-        const qrString =
-            qrData.qrString ||
-            dompetx.qrString ||
-            null;
-
-        // ========================================
-        // FALLBACK QR IMAGE
-        //
-        // DompetX juga menyediakan:
-        // GET /v1/qr/{paymentId}
-        // ========================================
-        if (!qrImageUrl) {
-            qrImageUrl =
-                `https://api.dompetx.com/v1/qr/${encodeURIComponent(
-                    paymentId
-                )}`;
+        if (!paymentLink) {
+            throw new Error(
+                "Payment link DompetX tidak ditemukan"
+            );
         }
-
         // ========================================
         // EXPIRES
         // ========================================
@@ -332,13 +282,8 @@ export async function onRequestPost(context) {
             dompetx.expiresAt ||
             dompetx.expires_at ||
             null;
-
         // ========================================
-        // SAVE PAYMENT DATA TO ORDER
-        //
-        // Sesuaikan dengan kolom yang tersedia.
-        // Jika kolom tidak ada, jangan gagal
-        // membuat pembayaran.
+        // SAVE PAYMENT TO ORDER
         // ========================================
         try {
             await supabaseRequest(
@@ -346,77 +291,69 @@ export async function onRequestPost(context) {
                 "sell_orders",
                 "PATCH",
                 {
-                    invoice_id: reference,
-                    payment_id: paymentId
+                    invoice_id:
+                        reference,
+                    payment_id:
+                        paymentId
                 },
-                `?id=eq.${encodeURIComponent(order.id)}`
+                `?id=eq.${encodeURIComponent(
+                    order.id
+                )}`
             );
-
             console.log(
                 "PAYMENT DATA BERHASIL DISIMPAN"
             );
-
         } catch (saveError) {
-
             console.error(
                 "GAGAL MENYIMPAN PAYMENT DATA:",
                 saveError
             );
-
-            // Jangan membatalkan pembayaran
-            // hanya karena penyimpanan metadata gagal.
+            /*
+             * Jangan membatalkan checkout hanya
+             * karena metadata gagal disimpan.
+             */
         }
-
         // ========================================
         // RESPONSE KE FRONTEND
         // ========================================
         return json({
             success: true,
-
             data: {
                 order_id:
                     order.id,
-
                 payment_id:
                     paymentId,
-
                 invoice_id:
                     reference,
-
                 reference:
                     reference,
-
                 amount:
-                    amount,
-
+                    Number(dompetx.amount || amount),
                 currency:
+                    dompetx.currency ||
                     "IDR",
-
                 status:
                     dompetx.status ||
                     "pending",
-
-                qr_image_url:
-                    qrImageUrl,
-
-                qr_string:
-                    qrString,
-
+                payment_link:
+                    paymentLink,
                 expires_at:
                     expiresAt,
-
                 redirect_url:
                     redirectUrl
             }
         });
-
     } catch (error) {
-
         console.error(
-            "CREATE DOMPETX PAYMENT ERROR:",
+            "================================"
+        );
+        console.error(
+            "CREATE DOMPETX CHECKOUT ERROR:",
             error
         );
-
+        console.error(
+            "================================"
+        );
         return json({
             success: false,
             error:
@@ -425,7 +362,6 @@ export async function onRequestPost(context) {
         }, 500);
     }
 }
-
 // ============================================
 // HMAC SHA256
 // ============================================
@@ -435,13 +371,10 @@ async function generateSignature(
 ) {
     const encoder =
         new TextEncoder();
-
     const keyData =
         encoder.encode(secret);
-
     const messageData =
         encoder.encode(message);
-
     const cryptoKey =
         await crypto.subtle.importKey(
             "raw",
@@ -453,14 +386,12 @@ async function generateSignature(
             false,
             ["sign"]
         );
-
     const signatureBuffer =
         await crypto.subtle.sign(
             "HMAC",
             cryptoKey,
             messageData
         );
-
     return Array.from(
         new Uint8Array(
             signatureBuffer
@@ -474,7 +405,6 @@ async function generateSignature(
         )
         .join("");
 }
-
 // ============================================
 // SUPABASE REQUEST
 // ============================================
@@ -490,33 +420,25 @@ async function supabaseRequest(
             `${env.SUPABASE_URL}/rest/v1/${table}${query}`,
             {
                 method,
-
                 headers: {
                     apikey:
                         env.SUPABASE_SERVICE_KEY,
-
                     Authorization:
                         `Bearer ${env.SUPABASE_SERVICE_KEY}`,
-
                     "Content-Type":
                         "application/json",
-
                     Prefer:
                         "return=representation"
                 },
-
                 body:
                     body !== null
                         ? JSON.stringify(body)
                         : undefined
             }
         );
-
     const text =
         await response.text();
-
     let data = [];
-
     if (text) {
         try {
             data =
@@ -528,7 +450,6 @@ async function supabaseRequest(
             );
         }
     }
-
     if (!response.ok) {
         throw new Error(
             `Supabase HTTP ${response.status}: ` +
@@ -539,10 +460,8 @@ async function supabaseRequest(
             )
         );
     }
-
     return data;
 }
-
 // ============================================
 // JSON RESPONSE
 // ============================================
