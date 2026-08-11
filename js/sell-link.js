@@ -440,7 +440,7 @@ if (createBtn) {
             )
         );
 
-        if (!title || !destination || price < 10000) {
+        if (!title || !destination || price < 1000) {
 
             alert("Lengkapi data.\nHarga minimal Rp10.000.");
 
