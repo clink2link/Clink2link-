@@ -1,19 +1,22 @@
 // ============================================================
 // CLICK2PAY
-// DOMPETX PAYMENT STATUS
+// DOMPETX PAYMENT STATUS CHECKER
 //
 // GET /api/payment/status?order_id=UUID_ORDER
 //
-// Fungsi:
-// - Ambil sell_orders dari Supabase
-// - Ambil invoice/reference DompetX
-// - Cek status payment ke DompetX
-// - Mengembalikan status pembayaran
+// Flow:
+// 1. Ambil sell_orders dari Supabase
+// 2. Ambil invoice_id/reference
+// 3. Cek status transaksi ke DompetX
+// 4. Jika pembayaran berhasil:
+//      -> process_sell_payment(order_id)
+//      -> saldo seller masuk
+//      -> order menjadi paid
 //
-// BELUM mengubah saldo seller.
-// BELUM menyelesaikan order.
-// Itu kita kerjakan di langkah berikutnya setelah status
-// checking ini terbukti bekerja.
+// Environment:
+// DOMPETX_API_KEY
+// SUPABASE_URL
+// SUPABASE_SERVICE_KEY
 // ============================================================
 export async function onRequestGet(context) {
     try {
@@ -21,58 +24,79 @@ export async function onRequestGet(context) {
         // =====================================================
         // ENV
         // =====================================================
-        const apiKey = env.DOMPETX_API_KEY;
-        const supabaseUrl = env.SUPABASE_URL;
-        const supabaseKey = env.SUPABASE_SERVICE_KEY;
+        const apiKey =
+            env.DOMPETX_API_KEY;
+        const supabaseUrl =
+            env.SUPABASE_URL;
+        const supabaseKey =
+            env.SUPABASE_SERVICE_KEY;
         if (!apiKey) {
             return jsonResponse({
                 success: false,
-                error: "DOMPETX_API_KEY belum dikonfigurasi"
+                error:
+                    "DOMPETX_API_KEY belum dikonfigurasi di Cloudflare"
             }, 500);
         }
         if (!supabaseUrl) {
             return jsonResponse({
                 success: false,
-                error: "SUPABASE_URL belum dikonfigurasi"
+                error:
+                    "SUPABASE_URL belum dikonfigurasi"
             }, 500);
         }
         if (!supabaseKey) {
             return jsonResponse({
                 success: false,
-                error: "SUPABASE_SERVICE_KEY belum dikonfigurasi"
+                error:
+                    "SUPABASE_SERVICE_KEY belum dikonfigurasi"
             }, 500);
         }
         // =====================================================
-        // READ ORDER ID
+        // GET ORDER ID
+        //
+        // /api/payment/status?order_id=UUID
         // =====================================================
-        const url = new URL(request.url);
-        const orderId = String(
-            url.searchParams.get("order_id") || ""
-        ).trim();
+        const url =
+            new URL(request.url);
+        const orderId =
+            String(
+                url.searchParams.get(
+                    "order_id"
+                ) || ""
+            ).trim();
         if (!orderId) {
             return jsonResponse({
                 success: false,
-                error: "order_id wajib diisi"
+                error:
+                    "order_id wajib diisi"
             }, 400);
         }
         // =====================================================
         // GET SELL ORDER
         // =====================================================
-        const orderResponse = await fetch(
-            `${supabaseUrl}/rest/v1/sell_orders?id=eq.${encodeURIComponent(orderId)}&select=*`,
-            {
-                method: "GET",
-                headers: {
-                    "apikey": supabaseKey,
-                    "Authorization": `Bearer ${supabaseKey}`,
-                    "Content-Type": "application/json"
+        const orderResponse =
+            await fetch(
+                `${supabaseUrl}/rest/v1/sell_orders?id=eq.${encodeURIComponent(orderId)}&select=*`,
+                {
+                    method: "GET",
+                    headers: {
+                        "apikey":
+                            supabaseKey,
+                        "Authorization":
+                            `Bearer ${supabaseKey}`,
+                        "Content-Type":
+                            "application/json"
+                    }
                 }
-            }
-        );
-        const orderText = await orderResponse.text();
+            );
+        const orderText =
+            await orderResponse.text();
         let orders;
         try {
-            orders = JSON.parse(orderText);
+            orders =
+                JSON.parse(
+                    orderText
+                );
         } catch {
             console.error(
                 "SUPABASE ORDER NON JSON:",
@@ -80,7 +104,8 @@ export async function onRequestGet(context) {
             );
             return jsonResponse({
                 success: false,
-                error: "Response Supabase bukan JSON"
+                error:
+                    "Response Supabase bukan JSON"
             }, 502);
         }
         if (!orderResponse.ok) {
@@ -90,8 +115,10 @@ export async function onRequestGet(context) {
             );
             return jsonResponse({
                 success: false,
-                error: "Gagal mengambil sell order",
-                detail: orders
+                error:
+                    "Gagal mengambil sell order",
+                detail:
+                    orders
             }, 500);
         }
         if (
@@ -100,130 +127,112 @@ export async function onRequestGet(context) {
         ) {
             return jsonResponse({
                 success: false,
-                error: "Sell order tidak ditemukan"
+                error:
+                    "Sell order tidak ditemukan"
             }, 404);
         }
-        const order = orders[0];
+        const order =
+            orders[0];
         // =====================================================
-        // ORDER STATUS LOKAL
+        // ORDER STATUS
+        //
+        // Kalau sudah paid, jangan proses saldo lagi.
+        // Function database juga idempotent, tetapi kita
+        // hentikan lebih awal.
         // =====================================================
-        const localStatus = String(
-            order.status || ""
-        )
-            .trim()
-            .toLowerCase();
-        // Kalau database sudah paid,
-        // tidak perlu request ulang ke DompetX.
+        const orderStatus =
+            String(
+                order.status || ""
+            )
+                .trim()
+                .toLowerCase();
         if (
             [
                 "paid",
                 "completed",
                 "success"
-            ].includes(localStatus)
+            ].includes(
+                orderStatus
+            )
         ) {
             return jsonResponse({
                 success: true,
                 paid: true,
-                status: "paid",
-                source: "database",
-                order: {
-                    id: order.id,
-                    status: order.status,
-                    price: order.price
+                processed: true,
+                message:
+                    "Order sudah dibayar",
+                data: {
+                    order_id:
+                        orderId,
+                    status:
+                        order.status,
+                    paid_at:
+                        order.paid_at || null
                 }
-            });
+            }, 200);
         }
         // =====================================================
-        // GET DOMPETX REFERENCE
+        // REFERENCE
+        //
+        // Saat create payment kita menyimpan:
+        //
+        // invoice_id = CLP-{orderId}
+        //
+        // Jadi invoice_id adalah reference DompetX.
         // =====================================================
-        const reference = String(
-            order.invoice_id || ""
-        ).trim();
+        const reference =
+            String(
+                order.invoice_id || ""
+            ).trim();
         if (!reference) {
             return jsonResponse({
-                success: true,
+                success: false,
                 paid: false,
-                status: "pending",
-                message:
+                error:
                     "Order belum memiliki reference DompetX",
-                order: {
-                    id: order.id,
-                    status: order.status,
-                    price: order.price
+                data: {
+                    order_id:
+                        orderId,
+                    status:
+                        order.status
                 }
-            });
-        }
-        // =====================================================
-        // PAYMENT ID
-        //
-        // Kalau nanti create payment menyimpan payment_id
-        // di kolom terpisah, kode ini otomatis bisa digunakan.
-        //
-        // Untuk sementara kita coba beberapa kemungkinan
-        // nama kolom.
-        // =====================================================
-        const paymentId =
-            order.payment_id ||
-            order.dompetx_payment_id ||
-            order.paymentId ||
-            null;
-        // =====================================================
-        // DOMPETX STATUS URL
-        //
-        // Prioritas:
-        // 1. payment ID
-        // 2. reference
-        //
-        // Dokumentasi status endpoint DompetX dapat berbeda
-        // berdasarkan versi API. Kita coba payment ID dahulu.
-        // =====================================================
-        let statusUrl;
-        if (paymentId) {
-            statusUrl =
-                `https://api.dompetx.com/v1/payments/${encodeURIComponent(
-                    paymentId
-                )}`;
-        } else {
-            statusUrl =
-                `https://api.dompetx.com/v1/payments/${encodeURIComponent(
-                    reference
-                )}`;
+            }, 409);
         }
         // =====================================================
         // TIMESTAMP
         // =====================================================
-        const timestamp = Math.floor(
-            Date.now() / 1000
-        ).toString();
+        const timestamp =
+            Math.floor(
+                Date.now() / 1000
+            ).toString();
         // =====================================================
-        // SIGNATURE
+        // GET STATUS BY REFERENCE
         //
-        // Untuk GET:
+        // Dokumentasi DompetX:
         //
-        // timestamp + "." + path
+        // GET
+        // /v1/payments/check-status?reference=...
         //
+        // Untuk GET request, signature dibuat dengan body "{}".
         // =====================================================
-        const requestPath =
-            new URL(statusUrl).pathname;
+        const dompetBodyString =
+            "{}";
         const signatureData =
             timestamp +
             "." +
-            requestPath;
+            dompetBodyString;
         const signature =
             await generateHmacSha256(
                 signatureData,
                 apiKey
             );
-        // =====================================================
-        // CALL DOMPETX
-        // =====================================================
+        const statusUrl =
+            `https://api.dompetx.com/v1/payments/check-status?reference=${encodeURIComponent(reference)}`;
         console.log(
             "DOMPETX STATUS CHECK:",
             {
                 orderId,
-                reference,
-                paymentId,
-                statusUrl
+                reference
             }
         );
         const dompetResponse =
@@ -232,14 +241,14 @@ export async function onRequestGet(context) {
                 {
                     method: "GET",
                     headers: {
+                        "Content-Type":
+                            "application/json",
                         "X-DOMPAY-API-Key":
                             apiKey,
                         "X-DOMPAY-Signature":
                             signature,
                         "X-DOMPAY-Timestamp":
-                            timestamp,
-                        "Accept":
-                            "application/json"
+                            timestamp
                     }
                 }
             );
@@ -274,13 +283,14 @@ export async function onRequestGet(context) {
             dompetData
         );
         // =====================================================
-        // DOMPETX ERROR
+        // DOMPETX HTTP ERROR
         // =====================================================
         if (!dompetResponse.ok) {
             return jsonResponse({
                 success: false,
+                paid: false,
                 error:
-                    "Gagal mengecek status DompetX",
+                    "Gagal mengecek status pembayaran DompetX",
                 status:
                     dompetResponse.status,
                 detail:
@@ -289,27 +299,45 @@ export async function onRequestGet(context) {
         }
         // =====================================================
         // EXTRACT STATUS
+        //
+        // Menangani beberapa kemungkinan struktur response.
         // =====================================================
-        const rawStatus =
-            dompetData.status ||
-            dompetData.payment_status ||
-            dompetData.paymentStatus ||
-            dompetData.data?.status ||
-            dompetData.data?.payment_status ||
-            dompetData.data?.paymentStatus ||
-            "";
+        const payment =
+            dompetData.data ||
+            dompetData.payment ||
+            dompetData;
         const paymentStatus =
             String(
-                rawStatus
+                payment.status ||
+                dompetData.status ||
+                ""
             )
                 .trim()
                 .toLowerCase();
+        const paymentId =
+            payment.id ||
+            payment.paymentId ||
+            payment.payment_id ||
+            dompetData.paymentId ||
+            dompetData.payment_id ||
+            null;
+        const paymentAmount =
+            Number(
+                payment.amount ||
+                dompetData.amount ||
+                0
+            );
+        const paymentReference =
+            payment.reference ||
+            dompetData.reference ||
+            reference;
         // =====================================================
-        // NORMALIZE STATUS
+        // STATUS MAPPING
+        //
+        // Paid hanya kalau status DompetX benar-benar
+        // menunjukkan pembayaran berhasil.
         // =====================================================
-        let normalizedStatus = "pending";
-        let paid = false;
-        if (
+        const isPaid =
             [
                 "paid",
                 "success",
@@ -318,67 +346,214 @@ export async function onRequestGet(context) {
                 "settled"
             ].includes(
                 paymentStatus
-            )
-        ) {
-            normalizedStatus = "paid";
-            paid = true;
-        } else if (
-            [
-                "expired",
-                "expire"
-            ].includes(
-                paymentStatus
-            )
-        ) {
-            normalizedStatus = "expired";
-        } else if (
-            [
-                "failed",
-                "failure",
-                "cancelled",
-                "canceled",
-                "rejected"
-            ].includes(
-                paymentStatus
-            )
-        ) {
-            normalizedStatus = "failed";
-        } else {
-            normalizedStatus = "pending";
+            );
+        // =====================================================
+        // JIKA BELUM BAYAR
+        // =====================================================
+        if (!isPaid) {
+            return jsonResponse({
+                success: true,
+                paid: false,
+                processed: false,
+                data: {
+                    order_id:
+                        orderId,
+                    order_status:
+                        order.status,
+                    payment_id:
+                        paymentId,
+                    reference:
+                        paymentReference,
+                    amount:
+                        paymentAmount,
+                    payment_status:
+                        paymentStatus
+                }
+            }, 200);
         }
         // =====================================================
-        // IMPORTANT
+        // VALIDASI AMOUNT
         //
-        // DI LANGKAH INI KITA BELUM UPDATE DATABASE.
+        // Jangan pernah memasukkan saldo jika nominal
+        // DompetX tidak sama dengan nominal order.
+        // =====================================================
+        const orderAmount =
+            Number(
+                order.price
+            );
+        if (
+            !Number.isInteger(
+                paymentAmount
+            ) ||
+            paymentAmount !==
+                orderAmount
+        ) {
+            console.error(
+                "DOMPETX AMOUNT MISMATCH:",
+                {
+                    orderId,
+                    orderAmount,
+                    paymentAmount,
+                    paymentStatus
+                }
+            );
+            return jsonResponse({
+                success: false,
+                paid: false,
+                processed: false,
+                error:
+                    "Nominal pembayaran DompetX tidak sesuai dengan order",
+                data: {
+                    order_id:
+                        orderId,
+                    order_amount:
+                        orderAmount,
+                    payment_amount:
+                        paymentAmount,
+                    payment_status:
+                        paymentStatus
+                }
+            }, 409);
+        }
+        // =====================================================
+        // PROCESS SELL PAYMENT
         //
-        // Tujuannya hanya memastikan API DompetX dapat
-        // memberikan status pembayaran dengan benar.
+        // Ini akan:
+        //
+        // - menambah balance seller
+        // - menambah sell_earning_total
+        // - menambah sell_earning_month
+        // - menambah sell_earning_today
+        // - links.sold + 1
+        // - sell_orders.status = paid
+        // - paid_at = NOW()
+        //
+        // Function sudah menggunakan FOR UPDATE sehingga
+        // aman dari double processing.
+        // =====================================================
+        const rpcResponse =
+            await fetch(
+                `${supabaseUrl}/rest/v1/rpc/process_sell_payment`,
+                {
+                    method: "POST",
+                    headers: {
+                        "apikey":
+                            supabaseKey,
+                        "Authorization":
+                            `Bearer ${supabaseKey}`,
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body:
+                        JSON.stringify({
+                            p_order_id:
+                                orderId
+                        })
+                }
+            );
+        const rpcText =
+            await rpcResponse.text();
+        let rpcData;
+        try {
+            rpcData =
+                JSON.parse(
+                    rpcText
+                );
+        } catch {
+            console.error(
+                "RPC NON JSON:",
+                rpcText
+            );
+            return jsonResponse({
+                success: false,
+                paid: true,
+                processed: false,
+                error:
+                    "Pembayaran sudah berhasil tetapi response RPC bukan JSON",
+                detail:
+                    rpcText
+            }, 502);
+        }
+        console.log(
+            "PROCESS SELL PAYMENT:",
+            rpcData
+        );
+        if (!rpcResponse.ok) {
+            console.error(
+                "RPC PROCESS SELL PAYMENT ERROR:",
+                rpcData
+            );
+            return jsonResponse({
+                success: false,
+                paid: true,
+                processed: false,
+                error:
+                    "Pembayaran berhasil tetapi gagal memproses saldo seller",
+                detail:
+                    rpcData
+            }, 500);
+        }
+        // =====================================================
+        // RPC BISA MENGEMBALIKAN:
+        //
+        // {"success":true,"seller_receive":800}
+        //
+        // atau jika sebelumnya sudah diproses:
+        //
+        // {"success":true,"message":"Sudah diproses"}
+        // =====================================================
+        const processed =
+            rpcData?.success === true;
+        if (!processed) {
+            return jsonResponse({
+                success: false,
+                paid: true,
+                processed: false,
+                error:
+                    rpcData?.error ||
+                    "process_sell_payment gagal",
+                data: {
+                    order_id:
+                        orderId,
+                    payment_id:
+                        paymentId,
+                    payment_status:
+                        paymentStatus,
+                    rpc:
+                        rpcData
+                }
+            }, 500);
+        }
+        // =====================================================
+        // SUCCESS
         // =====================================================
         return jsonResponse({
             success: true,
-            paid: paid,
-            status:
-                normalizedStatus,
-            dompetx_status:
-                paymentStatus || null,
-            order: {
-                id:
-                    order.id,
-                status:
-                    order.status,
-                price:
-                    order.price,
-                reference:
-                    reference,
+            paid: true,
+            processed: true,
+            message:
+                "Pembayaran berhasil dan saldo seller telah diproses",
+            data: {
+                order_id:
+                    orderId,
                 payment_id:
-                    paymentId
-            },
-            dompetx:
-                dompetData
+                    paymentId,
+                reference:
+                    paymentReference,
+                payment_status:
+                    paymentStatus,
+                amount:
+                    paymentAmount,
+                seller_receive:
+                    rpcData?.seller_receive ||
+                    null,
+                rpc:
+                    rpcData
+            }
         }, 200);
     } catch (error) {
         console.error(
-            "DOMPETX STATUS ERROR:",
+            "DOMPETX PAYMENT STATUS ERROR:",
             error
         );
         return jsonResponse({
@@ -403,19 +578,27 @@ async function generateHmacSha256(
     const key =
         await crypto.subtle.importKey(
             "raw",
-            encoder.encode(secret),
+            encoder.encode(
+                secret
+            ),
             {
-                name: "HMAC",
-                hash: "SHA-256"
+                name:
+                    "HMAC",
+                hash:
+                    "SHA-256"
             },
             false,
-            ["sign"]
+            [
+                "sign"
+            ]
         );
     const signature =
         await crypto.subtle.sign(
             "HMAC",
             key,
-            encoder.encode(message)
+            encoder.encode(
+                message
+            )
         );
     return Array
         .from(
@@ -427,7 +610,10 @@ async function generateHmacSha256(
             byte =>
                 byte
                     .toString(16)
-                    .padStart(2, "0")
+                    .padStart(
+                        2,
+                        "0"
+                    )
         )
         .join("");
 }
@@ -439,7 +625,9 @@ function jsonResponse(
     status = 200
 ) {
     return new Response(
-        JSON.stringify(data),
+        JSON.stringify(
+            data
+        ),
         {
             status,
             headers: {
