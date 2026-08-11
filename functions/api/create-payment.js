@@ -124,17 +124,20 @@ async function dompetXCreatePayment(env, payload) {
             "DompetX tidak mengembalikan payment ID"
         );
     }
-    /*
-     * INI YANG PENTING
-     *
-     * QRIS DompetX:
-     *
-     * GET /v1/qr/{paymentId}
-     *
-     * Tidak perlu disimpan ke database.
-     */
-    const qrImageUrl =
+    // =================================
+    // QRIS URL
+    // GET /v1/qr/{paymentId}
+    // =================================
+    const qrisImageUrl =
         `${baseUrl}/v1/qr/${encodeURIComponent(data.id)}`;
+    console.log(
+        "DOMPETX PAYMENT ID:",
+        data.id
+    );
+    console.log(
+        "DOMPETX QRIS URL:",
+        qrisImageUrl
+    );
     return {
         payment_id:
             data.id,
@@ -145,7 +148,7 @@ async function dompetXCreatePayment(env, payload) {
             data.payment_url ||
             null,
         qris_image_url:
-            qrImageUrl,
+            qrisImageUrl,
         expires_at:
             data.expiresAt ||
             null,
@@ -175,16 +178,15 @@ export async function onRequestPost(context) {
     try {
         const body =
             await request.json();
-        const {
-            order_id
-        } = body;
+        const order_id =
+            body.order_id;
         if (!order_id) {
             throw new Error(
                 "order_id wajib diisi"
             );
         }
         // =========================
-        // ENV
+        // ENV CHECK
         // =========================
         if (!env.DOMPAY_API_KEY) {
             throw new Error(
@@ -233,12 +235,12 @@ export async function onRequestPost(context) {
         // SUDAH PAID
         // =========================
         if (order.status === "paid") {
-            let qrImageUrl = null;
+            let qrisImageUrl = null;
             if (order.payment_id) {
                 const baseUrl =
                     env.DOMPAY_BASE_URL
                         .replace(/\/+$/, "");
-                qrImageUrl =
+                qrisImageUrl =
                     `${baseUrl}/v1/qr/${encodeURIComponent(order.payment_id)}`;
             }
             return json({
@@ -257,7 +259,7 @@ export async function onRequestPost(context) {
                         order.payment_url ||
                         null,
                     qris_image_url:
-                        qrImageUrl,
+                        qrisImageUrl,
                     expires_at:
                         order.expires_at ||
                         null,
@@ -267,7 +269,7 @@ export async function onRequestPost(context) {
             });
         }
         // =========================
-        // CEK STATUS
+        // CEK STATUS ORDER
         // =========================
         if (order.status !== "pending") {
             throw new Error(
@@ -302,7 +304,7 @@ export async function onRequestPost(context) {
             const baseUrl =
                 env.DOMPAY_BASE_URL
                     .replace(/\/+$/, "");
-            const qrImageUrl =
+            const qrisImageUrl =
                 `${baseUrl}/v1/qr/${encodeURIComponent(order.payment_id)}`;
             return json({
                 success: true,
@@ -318,7 +320,7 @@ export async function onRequestPost(context) {
                         order.payment_url ||
                         null,
                     qris_image_url:
-                        qrImageUrl,
+                        qrisImageUrl,
                     expires_at:
                         order.expires_at,
                     status:
@@ -352,7 +354,7 @@ export async function onRequestPost(context) {
         const reference =
             `SELL-${order.id}-${Date.now()}`;
         // =========================
-        // REDIRECT
+        // REDIRECT URL
         // =========================
         const frontendUrl =
             env.FRONTEND_URL.endsWith("/")
@@ -396,29 +398,25 @@ export async function onRequestPost(context) {
         // =========================
         // UPDATE ORDER
         //
-        // JANGAN MASUKKAN
-        // qris_image_url
+        // PENTING:
+        // JANGAN UPDATE qris_image_url
+        // KARENA KOLOM TIDAK ADA
         // =========================
-        const updated =
-            await supabaseRequest(
-                env,
-                "sell_orders",
-                "PATCH",
-                {
-                    payment_id:
-                        payment.payment_id,
-                    invoice_id:
-                        payment.invoice_id,
-                    payment_url:
-                        payment.payment_url,
-                    expires_at:
-                        expiresAt
-                },
-                `?id=eq.${encodeURIComponent(order_id)}`
-            );
-        console.log(
-            "ORDER UPDATED:",
-            updated
+        await supabaseRequest(
+            env,
+            "sell_orders",
+            "PATCH",
+            {
+                payment_id:
+                    payment.payment_id,
+                invoice_id:
+                    payment.invoice_id,
+                payment_url:
+                    payment.payment_url,
+                expires_at:
+                    expiresAt
+            },
+            `?id=eq.${encodeURIComponent(order_id)}`
         );
         // =========================
         // RESPONSE
@@ -434,10 +432,7 @@ export async function onRequestPost(context) {
                     payment.invoice_id,
                 payment_url:
                     payment.payment_url,
-                /*
-                 * URL QR DIBUAT DARI
-                 * PAYMENT ID
-                 */
+                // QRIS LANGSUNG
                 qris_image_url:
                     payment.qris_image_url,
                 expires_at:
