@@ -1,286 +1,480 @@
 // ============================================
-// DOMPETX WEBHOOK
+// CREATE DOMPETX QRIS PAYMENT
+// Click2Pay / Sell Link
 // ============================================
+
 export async function onRequestPost(context) {
     const { request, env } = context;
+
     try {
+        // ========================================
+        // READ REQUEST
+        // ========================================
         const body = await request.json();
+
         console.log("================================");
-        console.log("DOMPETX WEBHOOK");
+        console.log("CREATE DOMPETX PAYMENT");
         console.log(JSON.stringify(body, null, 2));
         console.log("================================");
-        // ========================================
-        // VALIDASI PAYLOAD DOMPETX
-        // ========================================
-        const data = body?.data;
-        if (!data) {
-            console.error("Webhook data tidak ada");
-            // Tetap 200 agar DompetX tidak retry
-            return json({
-                success: true,
-                message: "Webhook diterima, data kosong"
-            });
-        }
-        const paymentId =
-            body.paymentId ||
-            data.id ||
-            data.paymentId ||
+
+        const orderId =
+            body?.order_id ||
+            body?.orderId ||
             null;
-        const reference =
-            data.reference ||
-            null;
-        const amount =
-            Number(data.amount || 0);
-        const status =
-            String(data.status || "")
-                .trim()
-                .toLowerCase();
-        console.log("PAYMENT ID :", paymentId);
-        console.log("REFERENCE  :", reference);
-        console.log("AMOUNT     :", amount);
-        console.log("STATUS     :", status);
-        // ========================================
-        // HANYA PROSES EVENT DEPOSIT
-        // ========================================
-        if (
-            body.eventType &&
-            body.eventType !== "deposit"
-        ) {
+
+        if (!orderId) {
             return json({
-                success: true,
-                message: "Event diabaikan"
-            });
+                success: false,
+                error: "Order ID wajib diisi"
+            }, 400);
         }
+
         // ========================================
-        // REFERENCE WAJIB
+        // ENV CHECK
         // ========================================
-        if (!reference) {
+        const apiKey =
+            env.DOMPETX_API_KEY ||
+            env.DOMPAY_API_KEY;
+
+        if (!apiKey) {
             console.error(
-                "Reference pembayaran tidak ditemukan"
+                "DOMPETX API KEY BELUM DISET"
             );
+
             return json({
-                success: true,
-                message: "Reference tidak ditemukan"
-            });
+                success: false,
+                error:
+                    "DOMPETX_API_KEY belum dikonfigurasi"
+            }, 500);
         }
-        // ========================================
-        // CARI ORDER BERDASARKAN INVOICE
-        //
-        // Reference yang kita buat sebelumnya:
-        //
-        // SELL-{order_id}-{timestamp}
-        //
-        // ========================================
-        const orders = await supabaseRequest(
-            env,
-            "sell_orders",
-            "GET",
-            null,
-            `?invoice_id=eq.${encodeURIComponent(reference)}&select=*`
-        );
-        if (!orders.length) {
-            console.error(
-                "Order tidak ditemukan:",
-                reference
+
+        if (!env.SUPABASE_URL) {
+            throw new Error(
+                "SUPABASE_URL belum dikonfigurasi"
             );
-            // PENTING:
-            // Jangan 500 agar DompetX tidak retry
-            return json({
-                success: true,
-                message: "Order belum ditemukan",
-                reference
-            });
         }
-        const order = orders[0];
-        console.log(
-            "ORDER FOUND:",
-            order.id
-        );
-        // ========================================
-        // SUDAH DIPROSES
-        // ========================================
-        if (
-            order.status === "paid" &&
-            order.balance_processed === true
-        ) {
-            return json({
-                success: true,
-                message: "Pembayaran sudah diproses",
-                order_id: order.id
-            });
-        }
-        // ========================================
-        // STATUS BELUM PAID
-        // ========================================
-        if (status !== "paid") {
-            console.log(
-                "PAYMENT BELUM PAID:",
-                status
+
+        if (!env.SUPABASE_SERVICE_KEY) {
+            throw new Error(
+                "SUPABASE_SERVICE_KEY belum dikonfigurasi"
             );
-            return json({
-                success: true,
-                message: "Pembayaran belum paid",
-                order_id: order.id,
-                status
-            });
         }
+
         // ========================================
-        // VALIDASI NOMINAL
+        // GET SELL ORDER
         // ========================================
-        const orderAmount =
-            Number(order.price || 0);
-        if (
-            amount > 0 &&
-            amount !== orderAmount
-        ) {
-            console.error(
-                "NOMINAL TIDAK SESUAI",
-                {
-                    webhook_amount: amount,
-                    order_amount: orderAmount
-                }
-            );
-            return json({
-                success: true,
-                message: "Nominal pembayaran tidak sesuai"
-            });
-        }
-        // ========================================
-        // UPDATE ORDER PAID
-        // ========================================
-        await supabaseRequest(
-            env,
-            "sell_orders",
-            "PATCH",
-            {
-                status: "paid",
-                paid_at:
-                    new Date().toISOString()
-            },
-            `?id=eq.${encodeURIComponent(order.id)}`
-        );
-        // ========================================
-        // GET SELLER
-        // ========================================
-        const sellers =
+        const orders =
             await supabaseRequest(
                 env,
-                "profiles",
+                "sell_orders",
                 "GET",
                 null,
-                `?id=eq.${encodeURIComponent(order.seller_id)}&select=id,balance,sell_earning_total,sell_earning_month,sell_earning_today`
+                `?id=eq.${encodeURIComponent(orderId)}&select=*`
             );
-        if (!sellers.length) {
+
+        if (!orders.length) {
+            return json({
+                success: false,
+                error: "Sell order tidak ditemukan"
+            }, 404);
+        }
+
+        const order = orders[0];
+
+        console.log(
+            "SELL ORDER FOUND:",
+            JSON.stringify(order, null, 2)
+        );
+
+        // ========================================
+        // VALIDATE ORDER STATUS
+        // ========================================
+        if (order.status === "paid") {
+            return json({
+                success: false,
+                error: "Order sudah dibayar"
+            }, 400);
+        }
+
+        // ========================================
+        // PRICE
+        // ========================================
+        const amount =
+            Number(order.price || 0);
+
+        if (
+            !Number.isFinite(amount) ||
+            amount < 1000
+        ) {
+            return json({
+                success: false,
+                error:
+                    "Nominal pembayaran tidak valid"
+            }, 400);
+        }
+
+        // ========================================
+        // REFERENCE
+        //
+        // HARUS SAMA DENGAN invoice_id
+        // AGAR WEBHOOK BISA MENEMUKAN ORDER
+        // ========================================
+        const reference =
+            order.invoice_id ||
+            `SELL-${order.id}-${Date.now()}`;
+
+        // ========================================
+        // REDIRECT URL
+        //
+        // Hanya fallback setelah pembayaran.
+        // User tetap melihat QR di halaman
+        // Click2Pay karena QR dibuat dari
+        // endpoint /payments.
+        // ========================================
+        const frontendUrl =
+            env.FRONTEND_URL ||
+            "https://click2pay.my.id";
+
+        const redirectUrl =
+            `${frontendUrl}/b/${encodeURIComponent(
+                order.link_id
+            )}?payment=success&order_id=${encodeURIComponent(
+                order.id
+            )}`;
+
+        // ========================================
+        // DOMPETX REQUEST BODY
+        // ========================================
+        const dompetxBody = {
+            method: "QRIS",
+            amount: amount,
+            currency: "IDR",
+            reference: reference,
+            settlementSpeed: "standard",
+            redirectUrl: redirectUrl,
+
+            metadata: {
+                order_name:
+                    "Click2Pay Sell Link",
+
+                product_name:
+                    "Sell Link #" + order.link_id,
+
+                notes:
+                    "Pembayaran Sell Link Click2Pay"
+            }
+        };
+
+        const rawBody =
+            JSON.stringify(dompetxBody);
+
+        // ========================================
+        // DOMPETX SIGNATURE
+        //
+        // timestamp + "." + rawBody
+        // HMAC SHA256 menggunakan API KEY
+        // ========================================
+        const timestamp =
+            Math.floor(
+                Date.now() / 1000
+            ).toString();
+
+        const signature =
+            await generateSignature(
+                `${timestamp}.${rawBody}`,
+                apiKey
+            );
+
+        const idempotencyKey =
+            `click2pay_${order.id}_${Date.now()}`;
+
+        console.log(
+            "DOMPETX REQUEST:",
+            {
+                amount,
+                reference,
+                timestamp,
+                idempotencyKey
+            }
+        );
+
+        // ========================================
+        // CREATE DOMPETX PAYMENT
+        // ========================================
+        const response =
+            await fetch(
+                "https://api.dompetx.com/v1/payments",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        "X-DOMPAY-API-Key":
+                            apiKey,
+
+                        "X-DOMPAY-Signature":
+                            signature,
+
+                        "X-DOMPAY-Timestamp":
+                            timestamp,
+
+                        "Idempotency-Key":
+                            idempotencyKey
+                    },
+
+                    body: rawBody
+                }
+            );
+
+        const responseText =
+            await response.text();
+
+        let dompetx;
+
+        try {
+            dompetx =
+                responseText
+                    ? JSON.parse(responseText)
+                    : {};
+        } catch {
             throw new Error(
-                "Seller tidak ditemukan"
+                "Response DompetX bukan JSON: " +
+                responseText
             );
         }
-        const seller = sellers[0];
-        // ========================================
-        // HITUNG SALDO SELLER
-        // ========================================
-        const receive =
-            Number(order.seller_receive || 0);
-        const balance =
-            Number(seller.balance || 0);
-        const total =
-            Number(
-                seller.sell_earning_total || 0
-            );
-        const month =
-            Number(
-                seller.sell_earning_month || 0
-            );
-        const today =
-            Number(
-                seller.sell_earning_today || 0
-            );
-        const newBalance =
-            balance + receive;
-        const newTotal =
-            total + receive;
-        const newMonth =
-            month + receive;
-        const newToday =
-            today + receive;
-        // ========================================
-        // UPDATE SALDO SELLER
-        // ========================================
-        await supabaseRequest(
-            env,
-            "profiles",
-            "PATCH",
-            {
-                balance: newBalance,
-                sell_earning_total: newTotal,
-                sell_earning_month: newMonth,
-                sell_earning_today: newToday
-            },
-            `?id=eq.${encodeURIComponent(order.seller_id)}`
-        );
-        // ========================================
-        // LOCK ANTI DOUBLE
-        // ========================================
-        await supabaseRequest(
-            env,
-            "sell_orders",
-            "PATCH",
-            {
-                balance_processed: true
-            },
-            `?id=eq.${encodeURIComponent(order.id)}`
-        );
+
         console.log(
-            "================================"
+            "DOMPETX RESPONSE:",
+            JSON.stringify(
+                dompetx,
+                null,
+                2
+            )
         );
-        console.log(
-            "DOMPETX PAYMENT BERHASIL"
-        );
-        console.log({
-            order_id: order.id,
-            payment_id: paymentId,
-            reference,
-            amount,
-            seller_id: order.seller_id,
-            receive,
-            balance: newBalance
-        });
-        console.log(
-            "================================"
-        );
+
         // ========================================
-        // WAJIB 200
+        // DOMPETX ERROR
+        // ========================================
+        if (!response.ok) {
+            console.error(
+                "DOMPETX HTTP ERROR:",
+                response.status,
+                dompetx
+            );
+
+            return json({
+                success: false,
+                error:
+                    dompetx?.message ||
+                    dompetx?.error ||
+                    `DompetX HTTP ${response.status}`,
+                details: dompetx
+            }, response.status);
+        }
+
+        // ========================================
+        // PAYMENT ID
+        // ========================================
+        const paymentId =
+            dompetx.id ||
+            dompetx.paymentId ||
+            null;
+
+        if (!paymentId) {
+            throw new Error(
+                "Payment ID DompetX tidak ditemukan"
+            );
+        }
+
+        // ========================================
+        // QRIS DATA
+        //
+        // Berdasarkan dokumentasi:
+        //
+        // qrData.qrImage
+        // qrData.qrString
+        // ========================================
+        const qrData =
+            dompetx.qrData ||
+            {};
+
+        let qrImageUrl =
+            qrData.qrImage ||
+            dompetx.qrImage ||
+            dompetx.qris_image_url ||
+            dompetx.qr_image_url ||
+            null;
+
+        const qrString =
+            qrData.qrString ||
+            dompetx.qrString ||
+            null;
+
+        // ========================================
+        // FALLBACK QR IMAGE
+        //
+        // DompetX juga menyediakan:
+        // GET /v1/qr/{paymentId}
+        // ========================================
+        if (!qrImageUrl) {
+            qrImageUrl =
+                `https://api.dompetx.com/v1/qr/${encodeURIComponent(
+                    paymentId
+                )}`;
+        }
+
+        // ========================================
+        // EXPIRES
+        // ========================================
+        const expiresAt =
+            dompetx.expiresAt ||
+            dompetx.expires_at ||
+            null;
+
+        // ========================================
+        // SAVE PAYMENT DATA TO ORDER
+        //
+        // Sesuaikan dengan kolom yang tersedia.
+        // Jika kolom tidak ada, jangan gagal
+        // membuat pembayaran.
+        // ========================================
+        try {
+            await supabaseRequest(
+                env,
+                "sell_orders",
+                "PATCH",
+                {
+                    invoice_id: reference,
+                    payment_id: paymentId
+                },
+                `?id=eq.${encodeURIComponent(order.id)}`
+            );
+
+            console.log(
+                "PAYMENT DATA BERHASIL DISIMPAN"
+            );
+
+        } catch (saveError) {
+
+            console.error(
+                "GAGAL MENYIMPAN PAYMENT DATA:",
+                saveError
+            );
+
+            // Jangan membatalkan pembayaran
+            // hanya karena penyimpanan metadata gagal.
+        }
+
+        // ========================================
+        // RESPONSE KE FRONTEND
         // ========================================
         return json({
             success: true,
-            message: "Webhook berhasil diproses",
+
             data: {
-                order_id: order.id,
-                payment_id: paymentId,
-                reference,
-                status: "paid"
+                order_id:
+                    order.id,
+
+                payment_id:
+                    paymentId,
+
+                invoice_id:
+                    reference,
+
+                reference:
+                    reference,
+
+                amount:
+                    amount,
+
+                currency:
+                    "IDR",
+
+                status:
+                    dompetx.status ||
+                    "pending",
+
+                qr_image_url:
+                    qrImageUrl,
+
+                qr_string:
+                    qrString,
+
+                expires_at:
+                    expiresAt,
+
+                redirect_url:
+                    redirectUrl
             }
         });
+
     } catch (error) {
+
         console.error(
-            "DOMPETX WEBHOOK ERROR:",
+            "CREATE DOMPETX PAYMENT ERROR:",
             error
         );
-        /*
-         * Kalau error internal, 500 membuat DompetX
-         * melakukan retry sesuai dokumentasinya.
-         */
-        return json(
-            {
-                success: false,
-                error:
-                    error?.message ||
-                    "Webhook error"
-            },
-            500
-        );
+
+        return json({
+            success: false,
+            error:
+                error?.message ||
+                "Gagal membuat pembayaran DompetX"
+        }, 500);
     }
 }
+
+// ============================================
+// HMAC SHA256
+// ============================================
+async function generateSignature(
+    message,
+    secret
+) {
+    const encoder =
+        new TextEncoder();
+
+    const keyData =
+        encoder.encode(secret);
+
+    const messageData =
+        encoder.encode(message);
+
+    const cryptoKey =
+        await crypto.subtle.importKey(
+            "raw",
+            keyData,
+            {
+                name: "HMAC",
+                hash: "SHA-256"
+            },
+            false,
+            ["sign"]
+        );
+
+    const signatureBuffer =
+        await crypto.subtle.sign(
+            "HMAC",
+            cryptoKey,
+            messageData
+        );
+
+    return Array.from(
+        new Uint8Array(
+            signatureBuffer
+        )
+    )
+        .map(
+            byte =>
+                byte
+                    .toString(16)
+                    .padStart(2, "0")
+        )
+        .join("");
+}
+
 // ============================================
 // SUPABASE REQUEST
 // ============================================
@@ -291,32 +485,42 @@ async function supabaseRequest(
     body = null,
     query = ""
 ) {
-    const response = await fetch(
-        `${env.SUPABASE_URL}/rest/v1/${table}${query}`,
-        {
-            method,
-            headers: {
-                apikey:
-                    env.SUPABASE_SERVICE_KEY,
-                Authorization:
-                    `Bearer ${env.SUPABASE_SERVICE_KEY}`,
-                "Content-Type":
-                    "application/json",
-                Prefer:
-                    "return=representation"
-            },
-            body:
-                body !== null
-                    ? JSON.stringify(body)
-                    : undefined
-        }
-    );
+    const response =
+        await fetch(
+            `${env.SUPABASE_URL}/rest/v1/${table}${query}`,
+            {
+                method,
+
+                headers: {
+                    apikey:
+                        env.SUPABASE_SERVICE_KEY,
+
+                    Authorization:
+                        `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+
+                    "Content-Type":
+                        "application/json",
+
+                    Prefer:
+                        "return=representation"
+                },
+
+                body:
+                    body !== null
+                        ? JSON.stringify(body)
+                        : undefined
+            }
+        );
+
     const text =
         await response.text();
+
     let data = [];
+
     if (text) {
         try {
-            data = JSON.parse(text);
+            data =
+                JSON.parse(text);
         } catch {
             throw new Error(
                 "Response Supabase bukan JSON: " +
@@ -324,6 +528,7 @@ async function supabaseRequest(
             );
         }
     }
+
     if (!response.ok) {
         throw new Error(
             `Supabase HTTP ${response.status}: ` +
@@ -334,8 +539,10 @@ async function supabaseRequest(
             )
         );
     }
+
     return data;
 }
+
 // ============================================
 // JSON RESPONSE
 // ============================================
