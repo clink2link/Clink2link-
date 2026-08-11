@@ -1,85 +1,67 @@
 // ============================================
 // CREATE DOMPETX CHECKOUT PAYMENT
 // Click2Pay / Sell Link
-//
-// FLOW:
-// Click Bayar
-//     ↓
-// create_payment.js
-//     ↓
-// POST https://api.dompetx.com/v1/payments/checkout
-//     ↓
-// payment_link
-//     ↓
-// Frontend menampilkan checkout DompetX
-//
-// TIDAK REDIRECT KE HALAMAN LAIN
 // ============================================
+
 export async function onRequestPost(context) {
     const { request, env } = context;
+
     try {
-        console.log("========================================");
-        console.log("CLICK2PAY CREATE DOMPETX PAYMENT");
-        console.log("========================================");
         // ========================================
         // READ REQUEST
         // ========================================
-        let body;
-        try {
-            body = await request.json();
-        } catch {
-            return json({
-                success: false,
-                error: "Request body bukan JSON"
-            }, 400);
-        }
-        console.log(
-            "REQUEST:",
-            JSON.stringify(body, null, 2)
-        );
+        const body = await request.json();
+
+        console.log("================================");
+        console.log("CREATE DOMPETX CHECKOUT");
+        console.log(JSON.stringify(body, null, 2));
+        console.log("================================");
+
         const orderId =
             body?.order_id ||
             body?.orderId ||
             null;
+
         if (!orderId) {
             return json({
                 success: false,
                 error: "Order ID wajib diisi"
             }, 400);
         }
+
         // ========================================
         // ENV
         // ========================================
         const apiKey =
             env.DOMPETX_API_KEY ||
-            env.DOMPAY_API_KEY ||
-            null;
+            env.DOMPAY_API_KEY;
+
         if (!apiKey) {
             console.error(
-                "DOMPETX API KEY TIDAK ADA"
+                "DOMPETX_API_KEY BELUM DISET"
             );
+
             return json({
                 success: false,
                 error:
                     "DOMPETX_API_KEY belum dikonfigurasi"
             }, 500);
         }
+
         if (!env.SUPABASE_URL) {
-            return json({
-                success: false,
-                error:
-                    "SUPABASE_URL belum dikonfigurasi"
-            }, 500);
+            throw new Error(
+                "SUPABASE_URL belum dikonfigurasi"
+            );
         }
+
         if (!env.SUPABASE_SERVICE_KEY) {
-            return json({
-                success: false,
-                error:
-                    "SUPABASE_SERVICE_KEY belum dikonfigurasi"
-            }, 500);
+            throw new Error(
+                "SUPABASE_SERVICE_KEY belum dikonfigurasi"
+            );
         }
+
         // ========================================
-        // GET ORDER
+        // GET SELL ORDER
         // ========================================
         const orders =
             await supabaseRequest(
@@ -87,10 +69,9 @@ export async function onRequestPost(context) {
                 "sell_orders",
                 "GET",
                 null,
-                `?id=eq.${encodeURIComponent(
-                    orderId
-                )}&select=*`
+                `?id=eq.${encodeURIComponent(orderId)}&select=*`
             );
+
         if (!orders.length) {
             return json({
                 success: false,
@@ -98,64 +79,24 @@ export async function onRequestPost(context) {
                     "Sell order tidak ditemukan"
             }, 404);
         }
+
         const order = orders[0];
+
         console.log(
-            "ORDER:",
-            JSON.stringify(
-                order,
-                null,
-                2
-            )
+            "SELL ORDER FOUND:",
+            JSON.stringify(order, null, 2)
         );
+
         // ========================================
-        // JIKA SUDAH PAID
+        // VALIDATE STATUS
         // ========================================
         if (order.status === "paid") {
             return json({
                 success: false,
-                error:
-                    "Order sudah dibayar"
+                error: "Order sudah dibayar"
             }, 400);
         }
-        // ========================================
-        // JIKA SUDAH ADA PAYMENT LINK
-        //
-        // Jangan membuat checkout baru.
-        // Ini mencegah duplicate reference.
-        // ========================================
-        if (
-            order.payment_link &&
-            typeof order.payment_link === "string" &&
-            order.payment_link.startsWith("http")
-        ) {
-            console.log(
-                "PAYMENT LINK EXISTING:",
-                order.payment_link
-            );
-            return json({
-                success: true,
-                existing: true,
-                data: {
-                    order_id:
-                        order.id,
-                    payment_id:
-                        order.payment_id ||
-                        null,
-                    invoice_id:
-                        order.invoice_id ||
-                        null,
-                    amount:
-                        Number(order.price || 0),
-                    currency:
-                        "IDR",
-                    status:
-                        order.status ||
-                        "pending",
-                    payment_link:
-                        order.payment_link
-                }
-            });
-        }
+
         // ========================================
         // AMOUNT
         // ========================================
@@ -163,6 +104,7 @@ export async function onRequestPost(context) {
             Math.floor(
                 Number(order.price || 0)
             );
+
         if (
             !Number.isFinite(amount) ||
             amount < 1000
@@ -173,76 +115,86 @@ export async function onRequestPost(context) {
                     "Nominal pembayaran tidak valid"
             }, 400);
         }
+
         // ========================================
         // REFERENCE
         //
-        // HARUS UNIK.
+        // WAJIB UNIK
         //
-        // Jangan menggunakan reference lama
-        // yang mungkin pernah dikirim ke DompetX.
+        // Jangan menggunakan invoice_id lama
+        // karena DompetX menolak duplicate reference.
         // ========================================
         const reference =
             `SELL-${String(order.id)
                 .replace(/-/g, "")
                 .slice(0, 20)}-${Date.now()}`;
+
         console.log(
             "NEW DOMPETX REFERENCE:",
             reference
         );
+
         // ========================================
         // REDIRECT URL
-        //
-        // Hanya digunakan setelah pembayaran.
-        // BUKAN untuk membuka checkout.
         // ========================================
         const frontendUrl =
             env.FRONTEND_URL ||
             "https://click2pay.my.id";
+
         const redirectUrl =
             `${frontendUrl}/b/${encodeURIComponent(
                 order.link_id
             )}?payment=success&order_id=${encodeURIComponent(
                 order.id
             )}`;
+
         // ========================================
         // CHECKOUT BODY
         //
-        // SESUAI DOKUMENTASI DOMPETX:
-        //
+        // SESUAI DOKUMENTASI DOMPETX
         // POST /v1/payments/checkout
         // ========================================
         const checkoutBody = {
             amount:
                 amount,
+
             currency:
                 "IDR",
+
             reference:
                 reference,
+
             redirectUrl:
                 redirectUrl,
+
             metadata: {
                 order_name:
                     "Click2Pay Sell Link",
+
                 product_name:
                     `Sell Link #${order.link_id}`,
+
                 notes:
                     "Pembayaran Sell Link Click2Pay",
+
                 items: [
                     {
                         name:
                             `Sell Link #${order.link_id}`,
+
                         quantity:
                             1,
+
                         price:
                             amount
                     }
                 ]
             }
         };
+
         const rawBody =
-            JSON.stringify(
-                checkoutBody
-            );
+            JSON.stringify(checkoutBody);
+
         // ========================================
         // TIMESTAMP
         // ========================================
@@ -250,315 +202,349 @@ export async function onRequestPost(context) {
             Math.floor(
                 Date.now() / 1000
             ).toString();
+
         // ========================================
         // SIGNATURE
         //
-        // PRIORITAS:
-        // DOMPETX_API_SECRET
-        // DOMPAY_API_SECRET
+        // DOMPETX:
         //
-        // Jangan diam-diam memakai API KEY
-        // sebagai secret kecuali dokumentasi
-        // DompetX memang menyatakan demikian.
+        // HMAC-SHA256(
+        //     timestamp + "." + body,
+        //     API_KEY
+        // )
+        //
+        // BUKAN API SECRET
         // ========================================
-        const secret =
-            env.DOMPETX_API_SECRET ||
-            env.DOMPAY_API_SECRET ||
-            null;
-        if (!secret) {
-            console.error(
-                "DOMPETX API SECRET TIDAK ADA"
-            );
-            return json({
-                success: false,
-                error:
-                    "DOMPETX_API_SECRET belum dikonfigurasi"
-            }, 500);
-        }
         const signature =
             await generateSignature(
                 `${timestamp}.${rawBody}`,
-                secret
+                apiKey
             );
+
+        // ========================================
+        // IDEMPOTENCY KEY
+        // ========================================
+        const idempotencyKey =
+            `click2pay-${order.id}-${Date.now()}`;
+
         console.log(
-            "DOMPETX REQUEST INFO:",
+            "DOMPETX REQUEST:",
             {
-                endpoint:
-                    "https://api.dompetx.com/v1/payments/checkout",
                 amount,
                 reference,
-                timestamp
+                timestamp,
+                idempotencyKey
             }
         );
+
         // ========================================
-        // CALL DOMPETX
+        // CREATE CHECKOUT
         // ========================================
-        let response;
-        try {
-            response =
-                await fetch(
-                    "https://api.dompetx.com/v1/payments/checkout",
-                    {
-                        method:
-                            "POST",
-                        headers: {
-                            "Content-Type":
-                                "application/json",
-                            Accept:
-                                "application/json",
-                            "X-DOMPAY-API-Key":
-                                apiKey,
-                            "X-DOMPAY-Signature":
-                                signature,
-                            "X-DOMPAY-Timestamp":
-                                timestamp
-                        },
-                        body:
-                            rawBody
-                    }
-                );
-        } catch (fetchError) {
-            console.error(
-                "FETCH DOMPETX ERROR:",
-                fetchError
+        const response =
+            await fetch(
+                "https://api.dompetx.com/v1/payments/checkout",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        "X-DOMPAY-API-Key":
+                            apiKey,
+
+                        "X-DOMPAY-Signature":
+                            signature,
+
+                        "X-DOMPAY-Timestamp":
+                            timestamp,
+
+                        "Idempotency-Key":
+                            idempotencyKey
+                    },
+
+                    body:
+                        rawBody
+                }
             );
-            return json({
-                success: false,
-                error:
-                    "Tidak dapat terhubung ke server DompetX",
-                details:
-                    fetchError?.message ||
-                    String(fetchError)
-            }, 502);
-        }
-        // ========================================
-        // READ RESPONSE
-        //
-        // JANGAN LANGSUNG JSON.parse.
-        //
-        // Karena error sebelumnya berupa HTML 502.
-        // ========================================
+
         const responseText =
             await response.text();
-        const contentType =
-            response.headers.get(
-                "content-type"
-            ) || "";
+
         console.log(
             "DOMPETX HTTP STATUS:",
             response.status
         );
-        console.log(
-            "DOMPETX CONTENT TYPE:",
-            contentType
-        );
+
         console.log(
             "DOMPETX RAW RESPONSE:",
-            responseText.slice(
-                0,
-                5000
-            )
+            responseText
         );
+
         // ========================================
-        // RESPONSE BUKAN JSON
+        // PARSE RESPONSE
         // ========================================
+        let dompetx = {};
+
+        const contentType =
+            response.headers.get(
+                "content-type"
+            ) || "";
+
         if (
-            !contentType
+            contentType
                 .toLowerCase()
                 .includes("application/json")
         ) {
+            try {
+                dompetx =
+                    responseText
+                        ? JSON.parse(
+                            responseText
+                        )
+                        : {};
+            } catch {
+                return json({
+                    success: false,
+                    error:
+                        "Response DompetX JSON tidak valid",
+                    details:
+                        responseText.slice(
+                            0,
+                            2000
+                        )
+                }, 502);
+            }
+        } else {
+
+            // ====================================
+            // DOMPETX / CLOUDFLARE ERROR
+            // ====================================
             console.error(
-                "DOMPETX RETURN NON JSON"
+                "DOMPETX RETURN NON-JSON:",
+                responseText
             );
+
             return json({
                 success: false,
+
                 error:
-                    `Server pembayaran mengembalikan response non-JSON (HTTP ${response.status})`,
+                    response.status >= 500
+                        ? "Server DompetX sedang mengalami gangguan"
+                        : "Response DompetX bukan JSON",
+
                 http_status:
                     response.status,
+
                 content_type:
                     contentType,
-                provider:
-                    "DompetX",
-                response_preview:
+
+                details:
                     responseText.slice(
                         0,
-                        1000
+                        2000
                     )
             }, 502);
         }
+
         // ========================================
-        // PARSE JSON
-        // ========================================
-        let dompetx;
-        try {
-            dompetx =
-                responseText
-                    ? JSON.parse(
-                        responseText
-                    )
-                    : {};
-        } catch (parseError) {
-            console.error(
-                "DOMPETX JSON PARSE ERROR:",
-                parseError
-            );
-            return json({
-                success: false,
-                error:
-                    "Response DompetX gagal dibaca sebagai JSON",
-                http_status:
-                    response.status,
-                response_preview:
-                    responseText.slice(
-                        0,
-                        1000
-                    )
-            }, 502);
-        }
-        console.log(
-            "DOMPETX JSON RESPONSE:",
-            JSON.stringify(
-                dompetx,
-                null,
-                2
-            )
-        );
-        // ========================================
-        // PROVIDER ERROR
+        // ERROR DOMPETX
         // ========================================
         if (!response.ok) {
+
+            console.error(
+                "DOMPETX HTTP ERROR:",
+                response.status,
+                dompetx
+            );
+
             return json({
                 success: false,
+
                 error:
                     dompetx?.message ||
                     dompetx?.error ||
                     `DompetX HTTP ${response.status}`,
-                http_status:
-                    response.status,
+
                 details:
-                    dompetx
+                    dompetx,
+
+                http_status:
+                    response.status
             }, response.status);
         }
+
         // ========================================
         // PAYMENT ID
         // ========================================
         const paymentId =
-            dompetx?.id ||
-            dompetx?.paymentId ||
+            dompetx.id ||
+            dompetx.paymentId ||
             null;
+
         // ========================================
         // PAYMENT LINK
         // ========================================
         const paymentLink =
-            dompetx?.payment_link ||
-            dompetx?.paymentLink ||
-            dompetx?.checkout_url ||
-            dompetx?.checkoutUrl ||
+            dompetx.payment_link ||
+            dompetx.paymentLink ||
             null;
-        console.log(
-            "PAYMENT ID:",
-            paymentId
-        );
-        console.log(
-            "PAYMENT LINK:",
-            paymentLink
-        );
-        // ========================================
-        // PAYMENT LINK WAJIB
-        // ========================================
-        if (
-            !paymentLink ||
-            typeof paymentLink !== "string"
-        ) {
+
+        if (!paymentLink) {
+
             console.error(
-                "DOMPETX TIDAK MEMBERIKAN PAYMENT LINK",
-                dompetx
+                "PAYMENT LINK TIDAK DITEMUKAN:",
+                JSON.stringify(
+                    dompetx,
+                    null,
+                    2
+                )
             );
+
             return json({
                 success: false,
+
                 error:
                     "DompetX tidak mengembalikan payment_link",
+
                 details:
                     dompetx
             }, 502);
         }
+
         // ========================================
-        // SAVE PAYMENT
+        // EXPIRES
         // ========================================
-        const paymentData = {
-            invoice_id:
-                reference,
-            payment_id:
-                paymentId,
-            payment_link:
-                paymentLink
-        };
+        const expiresAt =
+            dompetx.expiresAt ||
+            dompetx.expires_at ||
+            null;
+
+        // ========================================
+        // SAVE PAYMENT DATA
+        //
+        // invoice_id = reference DompetX
+        // payment_id = ID checkout DompetX
+        // payment_link = hosted checkout
+        // ========================================
         await supabaseRequest(
             env,
             "sell_orders",
             "PATCH",
-            paymentData,
+            {
+                invoice_id:
+                    reference,
+
+                payment_id:
+                    paymentId,
+
+                payment_link:
+                    paymentLink
+            },
             `?id=eq.${encodeURIComponent(
                 order.id
             )}`
         );
+
         console.log(
-            "PAYMENT DATA SAVED"
+            "================================"
         );
+
+        console.log(
+            "DOMPETX CHECKOUT BERHASIL"
+        );
+
+        console.log({
+            order_id:
+                order.id,
+
+            payment_id:
+                paymentId,
+
+            reference:
+                reference,
+
+            payment_link:
+                paymentLink,
+
+            amount:
+                amount
+        });
+
+        console.log(
+            "================================"
+        );
+
         // ========================================
-        // SUCCESS
+        // RESPONSE KE FRONTEND
         // ========================================
         return json({
-            success: true,
-            existing: false,
+            success:
+                true,
+
             data: {
+
                 order_id:
                     order.id,
+
                 payment_id:
                     paymentId,
+
                 invoice_id:
                     reference,
+
                 reference:
                     reference,
+
                 amount:
                     amount,
+
                 currency:
                     "IDR",
+
                 status:
-                    dompetx?.status ||
+                    dompetx.status ||
                     "pending",
+
                 payment_link:
                     paymentLink,
+
                 expires_at:
-                    dompetx?.expiresAt ||
-                    dompetx?.expires_at ||
-                    null,
+                    expiresAt,
+
                 redirect_url:
                     redirectUrl
             }
         });
+
     } catch (error) {
+
         console.error(
-            "========================================"
+            "================================"
         );
+
         console.error(
-            "CREATE DOMPETX PAYMENT ERROR"
+            "CREATE DOMPETX CHECKOUT ERROR:"
         );
+
+        console.error(error);
+
         console.error(
-            error
+            "================================"
         );
-        console.error(
-            "========================================"
-        );
+
         return json({
-            success: false,
+            success:
+                false,
+
             error:
                 error?.message ||
-                "Gagal membuat pembayaran DompetX"
+                "Gagal membuat checkout DompetX"
         }, 500);
     }
 }
+
+
 // ============================================
 // HMAC SHA256
 // ============================================
@@ -568,30 +554,46 @@ async function generateSignature(
 ) {
     const encoder =
         new TextEncoder();
-    const key =
+
+    const keyData =
+        encoder.encode(secret);
+
+    const messageData =
+        encoder.encode(message);
+
+    const cryptoKey =
         await crypto.subtle.importKey(
             "raw",
-            encoder.encode(secret),
+
+            keyData,
+
             {
                 name:
                     "HMAC",
+
                 hash:
                     "SHA-256"
             },
+
             false,
+
             [
                 "sign"
             ]
         );
-    const signature =
+
+    const signatureBuffer =
         await crypto.subtle.sign(
             "HMAC",
-            key,
-            encoder.encode(message)
+
+            cryptoKey,
+
+            messageData
         );
+
     return Array.from(
         new Uint8Array(
-            signature
+            signatureBuffer
         )
     )
         .map(
@@ -605,6 +607,8 @@ async function generateSignature(
         )
         .join("");
 }
+
+
 // ============================================
 // SUPABASE REQUEST
 // ============================================
@@ -615,45 +619,52 @@ async function supabaseRequest(
     body = null,
     query = ""
 ) {
-    const url =
-        `${env.SUPABASE_URL}/rest/v1/${table}${query}`;
     const response =
         await fetch(
-            url,
+            `${env.SUPABASE_URL}/rest/v1/${table}${query}`,
             {
                 method,
+
                 headers: {
                     apikey:
                         env.SUPABASE_SERVICE_KEY,
+
                     Authorization:
                         `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+
                     "Content-Type":
                         "application/json",
+
                     Prefer:
                         "return=representation"
                 },
+
                 body:
                     body !== null
-                        ? JSON.stringify(body)
+                        ? JSON.stringify(
+                            body
+                        )
                         : undefined
             }
         );
+
     const text =
         await response.text();
+
     let data = [];
+
     if (text) {
         try {
             data =
-                JSON.parse(
-                    text
-                );
+                JSON.parse(text);
         } catch {
             throw new Error(
-                "Supabase response bukan JSON: " +
+                "Supabase response bukan JSON:\n" +
                 text
             );
         }
     }
+
     if (!response.ok) {
         throw new Error(
             `Supabase HTTP ${response.status}: ` +
@@ -664,8 +675,11 @@ async function supabaseRequest(
             )
         );
     }
+
     return data;
 }
+
+
 // ============================================
 // JSON RESPONSE
 // ============================================
@@ -674,16 +688,13 @@ function json(
     status = 200
 ) {
     return new Response(
-        JSON.stringify(
-            data
-        ),
+        JSON.stringify(data),
         {
             status,
+
             headers: {
                 "Content-Type":
-                    "application/json",
-                "Cache-Control":
-                    "no-store"
+                    "application/json"
             }
         }
     );
