@@ -4,16 +4,21 @@
 //
 // GET /api/payment/status?order_id=UUID_ORDER
 //
-// Flow:
-// 1. Ambil sell_orders dari Supabase
-// 2. Ambil invoice_id/reference
-// 3. Cek status transaksi ke DompetX
-// 4. Jika pembayaran berhasil:
+// FLOW:
+//
+// 1. Ambil sell_orders
+// 2. Ambil payment_id + invoice_id/reference
+// 3. Cek DompetX menggunakan payment_id
+// 4. Jika payment_id tidak ada -> fallback reference
+// 5. Jika paid:
+//      -> validasi amount
 //      -> process_sell_payment(order_id)
 //      -> saldo seller masuk
 //      -> order menjadi paid
+//      -> ambil destination URL
+// 6. Return redirect_url ke frontend
 //
-// Environment:
+// ENV:
 // DOMPETX_API_KEY
 // SUPABASE_URL
 // SUPABASE_SERVICE_KEY
@@ -25,11 +30,11 @@ export async function onRequestGet(context) {
         // ENV
         // =====================================================
         const apiKey =
-            env.DOMPETX_API_KEY;
+            String(env.DOMPETX_API_KEY || "").trim();
         const supabaseUrl =
-            env.SUPABASE_URL;
+            String(env.SUPABASE_URL || "").trim();
         const supabaseKey =
-            env.SUPABASE_SERVICE_KEY;
+            String(env.SUPABASE_SERVICE_KEY || "").trim();
         if (!apiKey) {
             return jsonResponse({
                 success: false,
@@ -53,16 +58,12 @@ export async function onRequestGet(context) {
         }
         // =====================================================
         // GET ORDER ID
-        //
-        // /api/payment/status?order_id=UUID
         // =====================================================
-        const url =
+        const requestUrl =
             new URL(request.url);
         const orderId =
             String(
-                url.searchParams.get(
-                    "order_id"
-                ) || ""
+                requestUrl.searchParams.get("order_id") || ""
             ).trim();
         if (!orderId) {
             return jsonResponse({
@@ -74,9 +75,13 @@ export async function onRequestGet(context) {
         // =====================================================
         // GET SELL ORDER
         // =====================================================
+        const orderUrl =
+            `${supabaseUrl}/rest/v1/sell_orders` +
+            `?id=eq.${encodeURIComponent(orderId)}` +
+            `&select=*`;
         const orderResponse =
             await fetch(
-                `${supabaseUrl}/rest/v1/sell_orders?id=eq.${encodeURIComponent(orderId)}&select=*`,
+                orderUrl,
                 {
                     method: "GET",
                     headers: {
@@ -94,9 +99,7 @@ export async function onRequestGet(context) {
         let orders;
         try {
             orders =
-                JSON.parse(
-                    orderText
-                );
+                JSON.parse(orderText);
         } catch {
             console.error(
                 "SUPABASE ORDER NON JSON:",
@@ -105,7 +108,9 @@ export async function onRequestGet(context) {
             return jsonResponse({
                 success: false,
                 error:
-                    "Response Supabase bukan JSON"
+                    "Response Supabase bukan JSON",
+                detail:
+                    orderText.substring(0, 2000)
             }, 502);
         }
         if (!orderResponse.ok) {
@@ -123,7 +128,7 @@ export async function onRequestGet(context) {
         }
         if (
             !Array.isArray(orders) ||
-            !orders.length
+            orders.length === 0
         ) {
             return jsonResponse({
                 success: false,
@@ -135,26 +140,32 @@ export async function onRequestGet(context) {
             orders[0];
         // =====================================================
         // ORDER STATUS
-        //
-        // Kalau sudah paid, jangan proses saldo lagi.
-        // Function database juga idempotent, tetapi kita
-        // hentikan lebih awal.
         // =====================================================
         const orderStatus =
             String(
                 order.status || ""
             )
-                .trim()
-                .toLowerCase();
+            .trim()
+            .toLowerCase();
         if (
             [
                 "paid",
                 "completed",
-                "success"
-            ].includes(
-                orderStatus
-            )
+                "success",
+                "settlement"
+            ].includes(orderStatus)
         ) {
+            // =================================================
+            // ORDER SUDAH PAID
+            //
+            // Tetap ambil destination untuk redirect.
+            // =================================================
+            const destination =
+                await getDestinationUrl(
+                    supabaseUrl,
+                    supabaseKey,
+                    order.link_id
+                );
             return jsonResponse({
                 success: true,
                 paid: true,
@@ -167,29 +178,37 @@ export async function onRequestGet(context) {
                     status:
                         order.status,
                     paid_at:
-                        order.paid_at || null
+                        order.paid_at || null,
+                    redirect_url:
+                        destination
                 }
             }, 200);
         }
         // =====================================================
-        // REFERENCE
+        // PAYMENT ID
         //
-        // Saat create payment kita menyimpan:
+        // Prioritas:
+        // payment_id
         //
-        // invoice_id = CLP-{orderId}
-        //
-        // Jadi invoice_id adalah reference DompetX.
+        // Fallback:
+        // invoice_id / reference
         // =====================================================
+        const paymentId =
+            String(
+                order.payment_id ||
+                order.dompetx_payment_id ||
+                ""
+            ).trim();
         const reference =
             String(
                 order.invoice_id || ""
             ).trim();
-        if (!reference) {
+        if (!paymentId && !reference) {
             return jsonResponse({
                 success: false,
                 paid: false,
                 error:
-                    "Order belum memiliki reference DompetX",
+                    "Order belum memiliki payment_id atau reference DompetX",
                 data: {
                     order_id:
                         orderId,
@@ -206,35 +225,53 @@ export async function onRequestGet(context) {
                 Date.now() / 1000
             ).toString();
         // =====================================================
-        // GET STATUS BY REFERENCE
+        // GET STATUS DOMPETX
         //
-        // Dokumentasi DompetX:
+        // PRIORITAS PAYMENT ID
         //
-        // GET
+        // GET:
+        // /v1/payments/check-status/{paymentId}
+        //
+        // Jika tidak ada payment_id:
+        //
+        // GET:
         // /v1/payments/check-status?reference=...
-        //
-        // Untuk GET request, signature dibuat dengan body "{}".
         // =====================================================
         const dompetBodyString =
             "{}";
         const signatureData =
-            timestamp +
-            "." +
-            dompetBodyString;
+            `${timestamp}.${dompetBodyString}`;
         const signature =
             await generateHmacSha256(
                 signatureData,
                 apiKey
             );
-        const statusUrl =
-            `https://api.dompetx.com/v1/payments/check-status?reference=${encodeURIComponent(reference)}`;
+        let statusUrl;
+        if (paymentId) {
+            statusUrl =
+                `https://api.dompetx.com/v1/payments/check-status/${encodeURIComponent(paymentId)}`;
+        } else {
+            statusUrl =
+                `https://api.dompetx.com/v1/payments/check-status?reference=${encodeURIComponent(reference)}`;
+        }
         console.log(
             "DOMPETX STATUS CHECK:",
             {
-                orderId,
-                reference
+                order_id:
+                    orderId,
+                payment_id:
+                    paymentId || null,
+                reference:
+                    reference || null,
+                endpoint:
+                    paymentId
+                        ? "payment_id"
+                        : "reference"
             }
         );
+        // =====================================================
+        // CALL DOMPETX
+        // =====================================================
         const dompetResponse =
             await fetch(
                 statusUrl,
@@ -254,27 +291,74 @@ export async function onRequestGet(context) {
             );
         const dompetText =
             await dompetResponse.text();
+        // =====================================================
+        // DEBUG RESPONSE
+        // =====================================================
+        console.log(
+            "DOMPETX STATUS DEBUG:",
+            {
+                status:
+                    dompetResponse.status,
+                content_type:
+                    dompetResponse.headers.get(
+                        "content-type"
+                    ),
+                final_url:
+                    dompetResponse.url,
+                preview:
+                    dompetText.substring(
+                        0,
+                        500
+                    )
+            }
+        );
+        // =====================================================
+        // PARSE JSON
+        // =====================================================
         let dompetData;
         try {
             dompetData =
-                JSON.parse(
-                    dompetText
-                );
+                JSON.parse(dompetText);
         } catch {
             console.error(
                 "DOMPETX STATUS NON JSON:",
-                dompetText
+                {
+                    status:
+                        dompetResponse.status,
+                    content_type:
+                        dompetResponse.headers.get(
+                            "content-type"
+                        ),
+                    requested_url:
+                        statusUrl,
+                    final_url:
+                        dompetResponse.url,
+                    response:
+                        dompetText.substring(
+                            0,
+                            3000
+                        )
+                }
             );
             return jsonResponse({
                 success: false,
+                paid: false,
                 error:
-                    "Response status DompetX bukan JSON",
+                    "Response cek payment bukan JSON",
                 status:
                     dompetResponse.status,
+                content_type:
+                    dompetResponse.headers.get(
+                        "content-type"
+                    ),
+                requested_url:
+                    statusUrl,
+                final_url:
+                    dompetResponse.url,
                 detail:
                     dompetText.substring(
                         0,
-                        1000
+                        3000
                     )
             }, 502);
         }
@@ -289,7 +373,10 @@ export async function onRequestGet(context) {
             return jsonResponse({
                 success: false,
                 paid: false,
+                processed: false,
                 error:
+                    dompetData?.message ||
+                    dompetData?.error ||
                     "Gagal mengecek status pembayaran DompetX",
                 status:
                     dompetResponse.status,
@@ -298,44 +385,61 @@ export async function onRequestGet(context) {
             }, dompetResponse.status);
         }
         // =====================================================
-        // EXTRACT STATUS
-        //
-        // Menangani beberapa kemungkinan struktur response.
+        // NORMALIZE PAYMENT DATA
         // =====================================================
         const payment =
-            dompetData.data ||
-            dompetData.payment ||
-            dompetData;
+            dompetData?.data &&
+            typeof dompetData.data === "object"
+                ? dompetData.data
+                : (
+                    dompetData?.payment &&
+                    typeof dompetData.payment === "object"
+                        ? dompetData.payment
+                        : dompetData
+                );
+        // =====================================================
+        // PAYMENT STATUS
+        // =====================================================
         const paymentStatus =
             String(
-                payment.status ||
-                dompetData.status ||
+                payment?.status ||
+                dompetData?.status ||
                 ""
             )
-                .trim()
-                .toLowerCase();
-        const paymentId =
-            payment.id ||
-            payment.paymentId ||
-            payment.payment_id ||
-            dompetData.paymentId ||
-            dompetData.payment_id ||
+            .trim()
+            .toLowerCase();
+        // =====================================================
+        // PAYMENT ID
+        // =====================================================
+        const returnedPaymentId =
+            payment?.paymentId ||
+            payment?.payment_id ||
+            payment?.id ||
+            payment?.transactionId ||
+            payment?.transaction_id ||
+            dompetData?.paymentId ||
+            dompetData?.payment_id ||
+            paymentId ||
             null;
+        // =====================================================
+        // AMOUNT
+        // =====================================================
         const paymentAmount =
             Number(
-                payment.amount ||
-                dompetData.amount ||
+                payment?.amount ??
+                dompetData?.amount ??
                 0
             );
-        const paymentReference =
-            payment.reference ||
-            dompetData.reference ||
-            reference;
         // =====================================================
-        // STATUS MAPPING
-        //
-        // Paid hanya kalau status DompetX benar-benar
-        // menunjukkan pembayaran berhasil.
+        // REFERENCE
+        // =====================================================
+        const paymentReference =
+            payment?.reference ||
+            dompetData?.reference ||
+            reference ||
+            null;
+        // =====================================================
+        // PAID STATUS
         // =====================================================
         const isPaid =
             [
@@ -343,12 +447,13 @@ export async function onRequestGet(context) {
                 "success",
                 "successful",
                 "completed",
-                "settled"
+                "settled",
+                "settlement"
             ].includes(
                 paymentStatus
             );
         // =====================================================
-        // JIKA BELUM BAYAR
+        // BELUM BAYAR
         // =====================================================
         if (!isPaid) {
             return jsonResponse({
@@ -361,7 +466,7 @@ export async function onRequestGet(context) {
                     order_status:
                         order.status,
                     payment_id:
-                        paymentId,
+                        returnedPaymentId,
                     reference:
                         paymentReference,
                     amount:
@@ -372,21 +477,13 @@ export async function onRequestGet(context) {
             }, 200);
         }
         // =====================================================
-        // VALIDASI AMOUNT
-        //
-        // Jangan pernah memasukkan saldo jika nominal
-        // DompetX tidak sama dengan nominal order.
+        // VALIDATE AMOUNT
         // =====================================================
         const orderAmount =
-            Number(
-                order.price
-            );
+            Number(order.price);
         if (
-            !Number.isInteger(
-                paymentAmount
-            ) ||
-            paymentAmount !==
-                orderAmount
+            !Number.isInteger(paymentAmount) ||
+            paymentAmount !== orderAmount
         ) {
             console.error(
                 "DOMPETX AMOUNT MISMATCH:",
@@ -418,18 +515,10 @@ export async function onRequestGet(context) {
         // =====================================================
         // PROCESS SELL PAYMENT
         //
-        // Ini akan:
+        // RPC harus idempotent.
         //
-        // - menambah balance seller
-        // - menambah sell_earning_total
-        // - menambah sell_earning_month
-        // - menambah sell_earning_today
-        // - links.sold + 1
-        // - sell_orders.status = paid
-        // - paid_at = NOW()
-        //
-        // Function sudah menggunakan FOR UPDATE sehingga
-        // aman dari double processing.
+        // Jika endpoint dipanggil berkali-kali,
+        // saldo tidak boleh bertambah dua kali.
         // =====================================================
         const rpcResponse =
             await fetch(
@@ -456,9 +545,7 @@ export async function onRequestGet(context) {
         let rpcData;
         try {
             rpcData =
-                JSON.parse(
-                    rpcText
-                );
+                JSON.parse(rpcText);
         } catch {
             console.error(
                 "RPC NON JSON:",
@@ -469,9 +556,12 @@ export async function onRequestGet(context) {
                 paid: true,
                 processed: false,
                 error:
-                    "Pembayaran sudah berhasil tetapi response RPC bukan JSON",
+                    "Pembayaran berhasil tetapi response RPC bukan JSON",
                 detail:
-                    rpcText
+                    rpcText.substring(
+                        0,
+                        3000
+                    )
             }, 502);
         }
         console.log(
@@ -493,15 +583,6 @@ export async function onRequestGet(context) {
                     rpcData
             }, 500);
         }
-        // =====================================================
-        // RPC BISA MENGEMBALIKAN:
-        //
-        // {"success":true,"seller_receive":800}
-        //
-        // atau jika sebelumnya sudah diproses:
-        //
-        // {"success":true,"message":"Sudah diproses"}
-        // =====================================================
         const processed =
             rpcData?.success === true;
         if (!processed) {
@@ -516,7 +597,7 @@ export async function onRequestGet(context) {
                     order_id:
                         orderId,
                     payment_id:
-                        paymentId,
+                        returnedPaymentId,
                     payment_status:
                         paymentStatus,
                     rpc:
@@ -524,6 +605,18 @@ export async function onRequestGet(context) {
                 }
             }, 500);
         }
+        // =====================================================
+        // DESTINATION URL
+        //
+        // Setelah payment berhasil,
+        // ambil link tujuan asli dari links.
+        // =====================================================
+        const destination =
+            await getDestinationUrl(
+                supabaseUrl,
+                supabaseKey,
+                order.link_id
+            );
         // =====================================================
         // SUCCESS
         // =====================================================
@@ -537,7 +630,7 @@ export async function onRequestGet(context) {
                 order_id:
                     orderId,
                 payment_id:
-                    paymentId,
+                    returnedPaymentId,
                 reference:
                     paymentReference,
                 payment_status:
@@ -545,8 +638,12 @@ export async function onRequestGet(context) {
                 amount:
                     paymentAmount,
                 seller_receive:
-                    rpcData?.seller_receive ||
+                    rpcData?.seller_receive ??
                     null,
+                redirect_url:
+                    destination,
+                destination_url:
+                    destination,
                 rpc:
                     rpcData
             }
@@ -564,6 +661,61 @@ export async function onRequestGet(context) {
                 error?.message ||
                 "Unknown error"
         }, 500);
+    }
+}
+// ============================================================
+// GET DESTINATION URL
+// ============================================================
+async function getDestinationUrl(
+    supabaseUrl,
+    supabaseKey,
+    linkId
+) {
+    if (!linkId) {
+        return null;
+    }
+    try {
+        const response =
+            await fetch(
+                `${supabaseUrl}/rest/v1/links?id=eq.${encodeURIComponent(linkId)}&select=destination_url,destination`,
+                {
+                    method: "GET",
+                    headers: {
+                        "apikey":
+                            supabaseKey,
+                        "Authorization":
+                            `Bearer ${supabaseKey}`,
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+        if (!response.ok) {
+            console.error(
+                "GET DESTINATION ERROR:",
+                await response.text()
+            );
+            return null;
+        }
+        const data =
+            await response.json();
+        if (
+            !Array.isArray(data) ||
+            !data.length
+        ) {
+            return null;
+        }
+        return (
+            data[0].destination_url ||
+            data[0].destination ||
+            null
+        );
+    } catch (error) {
+        console.error(
+            "DESTINATION ERROR:",
+            error
+        );
+        return null;
     }
 }
 // ============================================================
@@ -629,7 +781,8 @@ function jsonResponse(
             data
         ),
         {
-            status,
+            status:
+                status,
             headers: {
                 "Content-Type":
                     "application/json; charset=UTF-8",
