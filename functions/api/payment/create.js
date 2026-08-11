@@ -500,10 +500,9 @@ export async function onRequestPost(context) {
         // update tidak boleh membuat pembayaran gagal.
         // =====================================================
         const updateOrder = {
-            invoice_id:
-                reference,
-            updated_at:
-                new Date().toISOString()
+            invoice_id: reference,
+            payment_id: paymentId,
+            updated_at: new Date().toISOString()
         };
         // Hanya masukkan payment_id kalau
         // database memang sudah punya kolom tersebut.
