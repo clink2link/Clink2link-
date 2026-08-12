@@ -72,6 +72,14 @@ id: {
         pending: "Pending",
         never: "Tidak Pernah"
     },
+   /* ID */
+list: {
+    title: "Daftar Sell Link",
+    description: "Kelola seluruh Sell Link yang telah Anda buat.",
+    emptyTitle: "Belum Ada Sell Link",
+    emptyDescription: "Silakan buat Sell Link pertama Anda.",
+    loadingDescription: "Mohon tunggu sebentar."
+},
     /* =========================
        LOGIN ACTIVITY
     ========================= */
@@ -1104,6 +1112,14 @@ en: {
         pending: "Pending",
         never: "Never"
     },
+   /* EN */
+list: {
+    title: "Sell Link List",
+    description: "Manage all your Sell Links.",
+    emptyTitle: "No Sell Links Yet",
+    emptyDescription: "Create your first Sell Link to get started.",
+    loadingDescription: "Please wait a moment."
+},
     /* =========================
        LOGIN ACTIVITY
     ========================= */
