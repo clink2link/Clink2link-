@@ -3,18 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Sell Link • Click2Pay</title>
+
 <!-- =========================
      INITIAL THEME
 ========================= -->
 <script>
 (function () {
     const theme = localStorage.getItem("theme");
+
     if (theme === "dark") {
         document.documentElement.classList.add("dark");
     }
 })();
 </script>
+
 <!-- =========================
      CSS
 ========================= -->
@@ -23,363 +27,577 @@
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/app-ui.css">
 <link rel="stylesheet" href="css/sell-link.css">
+
 <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 >
 </head>
+
 <body class="app-body">
+
 <div class="app-bg"></div>
+
 <!-- =========================
      NAVBAR
 ========================= -->
 <div id="navbar"></div>
+
+
 <!-- =========================
      MAIN
 ========================= -->
 <main class="app-container">
-<!-- =========================
-     PAGE TITLE
-========================= -->
-<section class="page-title">
-    <i class="fa-solid fa-tags"></i>
-    <div>
-        <h1 data-i18n="sellLinkPage.title">
-            Sell Link
-        </h1>
-        <p data-i18n="sellLinkPage.description">
-            Jual link dan dapatkan penghasilan tambahan.
-        </p>
-    </div>
-</section>
-<!-- =========================
-     GUIDE
-========================= -->
-<section class="info-box">
-    <div class="info-header">
-        <i class="fa-solid fa-book-open"></i>
-        <h3 data-i18n="sellLinkPage.guide.title">
-            Cara & Kegunaan Sell Link
-        </h3>
-    </div>
-    <ul>
-        <li>
-            <i class="fa-solid fa-check"></i>
-            <span data-i18n="sellLinkPage.guide.use1">
-                Sell Link digunakan untuk menjual akses file,
-                produk digital, atau halaman khusus.
-            </span>
-        </li>
-        <li>
-            <i class="fa-solid fa-check"></i>
-            <span data-i18n="sellLinkPage.guide.use2">
-                Buat link, tentukan harga, lalu bagikan kepada pembeli.
-            </span>
-        </li>
-        <li>
-            <i class="fa-solid fa-check"></i>
-            <span data-i18n="sellLinkPage.guide.use3">
-                Pembeli dapat memilih Link Buy untuk melakukan pembayaran.
-            </span>
-        </li>
-        <li>
-            <i class="fa-solid fa-check"></i>
-            <span data-i18n="sellLinkPage.guide.use4">
-                Link Ads digunakan untuk mendapatkan penghasilan tambahan
-                dari pengunjung.
-            </span>
-        </li>
-        <li>
-            <i class="fa-solid fa-check"></i>
-            <span data-i18n="sellLinkPage.guide.use5">
-                Saldo hasil penjualan masuk otomatis ke akun kamu.
-            </span>
-        </li>
-    </ul>
-</section>
-<!-- =========================
-     SELL STATUS
-========================= -->
-<section class="info-box">
-    <div class="info-header">
-        <i class="fa-solid fa-shield-halved"></i>
-        <h3 data-i18n="sellLinkPage.status.title">
-            Status Sell Link
-        </h3>
-    </div>
-    <p id="sellStatus">
-        <i class="fa-solid fa-spinner fa-spin"></i>
-        <span data-i18n="sellLinkPage.status.checking">
-            Memeriksa status akun...
-        </span>
-    </p>
-</section>
-<!-- =========================
-     CREATE SELL LINK
-========================= -->
-<section class="create-form card-section">
-    <div class="create-header">
-        <div class="create-icon">
-            <i class="fa-solid fa-plus"></i>
-        </div>
-        <div>
-            <h2 data-i18n="sellLinkPage.create.title">
-                Buat Sell Link Baru
-            </h2>
-            <p data-i18n="sellLinkPage.create.description">
-                Masukkan link yang ingin dijual kepada pembeli.
-            </p>
-        </div>
-    </div>
-    <!-- TITLE -->
-    <div class="form-group">
-        <label for="sellTitle"
-               data-i18n="sellLinkPage.create.linkTitle">
-            Judul Link
-        </label>
-        <input
-            id="sellTitle"
-            type="text"
-            autocomplete="off"
-            data-i18n-placeholder="sellLinkPage.create.linkPlaceholder"
-            placeholder="Contoh: Premium File, Course, Template"
-        >
-    </div>
-    <!-- DESTINATION -->
-    <div class="form-group">
-        <label for="sellUrl"
-               data-i18n="sellLinkPage.create.destination">
-            URL Tujuan
-        </label>
-        <input
-            id="sellUrl"
-            type="url"
-            autocomplete="url"
-            data-i18n-placeholder="sellLinkPage.create.destinationPlaceholder"
-            placeholder="https://website.com/file"
-        >
-    </div>
-    <!-- PRICE -->
-    <div class="form-group">
-        <label for="sellPrice"
-               data-i18n="sellLinkPage.create.price">
-            Harga Jual
-        </label>
-        <input
-            id="sellPrice"
-            type="number"
-            min="10000"
-            step="1000"
-            inputmode="numeric"
-            data-i18n-placeholder="sellLinkPage.create.pricePlaceholder"
-            placeholder="Minimal Rp10.000"
-        >
-    </div>
-    <!-- BUTTON -->
-    <div class="btn-group">
-        <button
-            id="createSellBtn"
-            type="button"
-            class="btn-sell"
-            disabled
-        >
-            <i class="fa-solid fa-spinner fa-spin"></i>
-            <span data-i18n="sellLinkPage.create.checkingButton">
-                Memeriksa Status...
-            </span>
-        </button>
-    </div>
-    <!-- RESULT -->
-    <div
-        id="createResult"
-        class="create-result"
-        aria-live="polite"
-    ></div>
-    <!-- NOTE -->
-    <div class="create-note">
-        <i class="fa-solid fa-shield-halved"></i>
-        <span data-i18n="sellLinkPage.create.note">
-            Pastikan URL tujuan benar dan harga yang ditentukan
-            sudah sesuai sebelum membuat Sell Link.
-        </span>
-    </div>
-</section>
-<!-- =========================
-     SELL STATISTICS
-========================= -->
-<section class="quick-stats">
-    <!-- TOTAL LINK -->
-    <div class="stat-card">
-        <i class="fa-solid fa-link"></i>
-        <h4 data-i18n="sellLinkPage.stats.totalLink">
-            Total Sell Link
-        </h4>
-        <h2 id="sellTotalLink">
-            0
-        </h2>
-    </div>
-    <!-- TOTAL PRICE -->
-    <div class="stat-card">
+
+    <!-- =========================
+         PAGE TITLE
+    ========================= -->
+    <section class="page-title">
+
         <i class="fa-solid fa-tags"></i>
-        <h4 data-i18n="sellLinkPage.stats.totalPrice">
-            Total Harga Jual
-        </h4>
-        <h2 id="sellTotalPrice">
-            Rp0
-        </h2>
-    </div>
-    <!-- TOTAL VIEW -->
-    <div class="stat-card">
-        <i class="fa-solid fa-eye"></i>
-        <h4 data-i18n="sellLinkPage.stats.totalView">
-            Total View
-        </h4>
-        <h2 id="sellTotalView">
-            0
-        </h2>
-    </div>
-    <!-- TOTAL SOLD -->
-    <div class="stat-card">
-        <i class="fa-solid fa-cart-shopping"></i>
-        <h4 data-i18n="sellLinkPage.stats.totalSold">
-            Total Terjual
-        </h4>
-        <h2 id="sellTotalSold">
-            0
-        </h2>
-    </div>
-    <!-- TOTAL REVENUE -->
-    <div class="stat-card">
-        <i class="fa-solid fa-money-bill-trend-up"></i>
-        <h4 data-i18n="sellLinkPage.stats.totalRevenue">
-            Total Pendapatan Terjual
-        </h4>
-        <h2 id="sellTotalRevenue">
-            Rp0
-        </h2>
-    </div>
-</section>
-<!-- =========================
-     SEARCH & FILTER
-========================= -->
-<section class="search-area">
-    <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input
-            id="searchInput"
-            type="search"
-            autocomplete="off"
-            data-i18n-placeholder="sellLinkPage.search.placeholder"
-            placeholder="Cari judul atau URL..."
-        >
-    </div>
-    <div class="link-filter">
-        <button
-            type="button"
-            class="active"
-            data-filter="all"
-        >
-            <i class="fa-solid fa-layer-group"></i>
-            <span data-i18n="sellLinkPage.search.all">
-                Semua
-            </span>
-        </button>
-        <button
-            type="button"
-            data-filter="active"
-        >
-            <i class="fa-solid fa-circle-check"></i>
-            <span data-i18n="sellLinkPage.search.active">
-                Aktif
-            </span>
-        </button>
-        <button
-            type="button"
-            data-filter="inactive"
-        >
-            <i class="fa-solid fa-circle-xmark"></i>
-            <span data-i18n="sellLinkPage.search.inactive">
-                Nonaktif
-            </span>
-        </button>
-    </div>
-</section>
-<!-- =========================
-     SELL LINK LIST
-========================= -->
-<section class="link-section card-section">
-    <div class="section-title">
-        <div class="title-left">
-            <i class="fa-solid fa-list"></i>
-            <div>
-                <h2 data-i18n="sellLinkPage.list.title">
-                    Daftar Sell Link
-                </h2>
-                <p data-i18n="sellLinkPage.list.description">
-                    Kelola seluruh Sell Link yang telah Anda buat.
-                </p>
-            </div>
+
+        <div>
+            <h1 data-i18n="sellLinkPage.title">
+                Sell Link
+            </h1>
+
+            <p data-i18n="sellLinkPage.description">
+                Jual link dan dapatkan penghasilan tambahan.
+            </p>
         </div>
-    </div>
-    <div id="sellList">
-        <div class="empty">
+
+    </section>
+
+
+    <!-- =========================
+         GUIDE
+    ========================= -->
+    <section class="info-box">
+
+        <div class="info-header">
+
+            <i class="fa-solid fa-book-open"></i>
+
+            <h3 data-i18n="sellLinkPage.guide.title">
+                Cara & Kegunaan Sell Link
+            </h3>
+
+        </div>
+
+        <ul>
+
+            <li>
+                <i class="fa-solid fa-check"></i>
+
+                <span data-i18n="sellLinkPage.guide.use1">
+                    Sell Link digunakan untuk menjual akses file,
+                    produk digital, atau halaman khusus.
+                </span>
+            </li>
+
+            <li>
+                <i class="fa-solid fa-check"></i>
+
+                <span data-i18n="sellLinkPage.guide.use2">
+                    Buat link, tentukan harga, lalu bagikan kepada pembeli.
+                </span>
+            </li>
+
+            <li>
+                <i class="fa-solid fa-check"></i>
+
+                <span data-i18n="sellLinkPage.guide.use3">
+                    Pembeli dapat memilih Link Buy untuk melakukan pembayaran.
+                </span>
+            </li>
+
+            <li>
+                <i class="fa-solid fa-check"></i>
+
+                <span data-i18n="sellLinkPage.guide.use4">
+                    Link Ads digunakan untuk mendapatkan penghasilan tambahan
+                    dari pengunjung.
+                </span>
+            </li>
+
+            <li>
+                <i class="fa-solid fa-check"></i>
+
+                <span data-i18n="sellLinkPage.guide.use5">
+                    Saldo hasil penjualan masuk otomatis ke akun kamu.
+                </span>
+            </li>
+
+        </ul>
+
+    </section>
+
+
+    <!-- =========================
+         SELL STATUS
+    ========================= -->
+    <section class="info-box">
+
+        <div class="info-header">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            <h3 data-i18n="sellLinkPage.status.title">
+                Status Sell Link
+            </h3>
+
+        </div>
+
+        <p
+            id="sellStatus"
+            class="inactive"
+        >
             <i class="fa-solid fa-spinner fa-spin"></i>
-            <h3>
-                Memuat Sell Link...
-            </h3>
-            <p>
-                Mohon tunggu sebentar.
-            </p>
-        </div>
-    </div>
-</section>
-<!-- =========================
-     GENERATED LINK
-========================= -->
-<section class="link-section card-section">
-    <div class="section-title">
-        <div class="title-left">
-            <i class="fa-solid fa-circle-check"></i>
-            <div>
-                <h2 data-i18n="sellLinkPage.generated.title">
-                    Link Generated
-                </h2>
-                <p data-i18n="sellLinkPage.generated.description">
-                    Link Buy dan Link Ads yang berhasil dibuat
-                    akan muncul di sini.
-                </p>
+
+            <span data-i18n="sellLinkPage.status.checking">
+                Memeriksa status akun...
+            </span>
+        </p>
+
+    </section>
+
+
+    <!-- =========================
+         CREATE SELL LINK
+    ========================= -->
+    <section class="create-form card-section">
+
+        <div class="create-header">
+
+            <div class="create-icon">
+                <i class="fa-solid fa-plus"></i>
             </div>
+
+            <div>
+
+                <h2 data-i18n="sellLinkPage.create.title">
+                    Buat Sell Link Baru
+                </h2>
+
+                <p data-i18n="sellLinkPage.create.description">
+                    Masukkan link yang ingin dijual kepada pembeli.
+                </p>
+
+            </div>
+
         </div>
-    </div>
-    <div id="generatedBox">
-        <div class="empty">
+
+
+        <!-- TITLE -->
+        <div class="form-group">
+
+            <label
+                for="sellTitle"
+                data-i18n="sellLinkPage.create.linkTitle"
+            >
+                Judul Link
+            </label>
+
+            <input
+                id="sellTitle"
+                type="text"
+                autocomplete="off"
+                maxlength="150"
+                data-i18n-placeholder="sellLinkPage.create.linkPlaceholder"
+                placeholder="Contoh: Premium File, Course, Template"
+            >
+
+        </div>
+
+
+        <!-- DESTINATION -->
+        <div class="form-group">
+
+            <label
+                for="sellUrl"
+                data-i18n="sellLinkPage.create.destination"
+            >
+                URL Tujuan
+            </label>
+
+            <input
+                id="sellUrl"
+                type="url"
+                autocomplete="url"
+                maxlength="2000"
+                data-i18n-placeholder="sellLinkPage.create.destinationPlaceholder"
+                placeholder="https://website.com/file"
+            >
+
+        </div>
+
+
+        <!-- PRICE -->
+        <div class="form-group">
+
+            <label
+                for="sellPrice"
+                data-i18n="sellLinkPage.create.price"
+            >
+                Harga Jual
+            </label>
+
+            <input
+                id="sellPrice"
+                type="number"
+                min="10000"
+                step="1000"
+                inputmode="numeric"
+                data-i18n-placeholder="sellLinkPage.create.pricePlaceholder"
+                placeholder="Minimal Rp10.000"
+            >
+
+        </div>
+
+
+        <!-- BUTTON -->
+        <div class="btn-group">
+
+            <button
+                id="createSellBtn"
+                type="button"
+                class="btn-sell"
+                disabled
+            >
+
+                <i class="fa-solid fa-spinner fa-spin"></i>
+
+                <span data-i18n="sellLinkPage.create.checkingButton">
+                    Memeriksa Status...
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <!-- RESULT -->
+        <div
+            id="createResult"
+            class="create-result"
+            aria-live="polite"
+        ></div>
+
+
+        <!-- NOTE -->
+        <div class="create-note">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            <span data-i18n="sellLinkPage.create.note">
+                Pastikan URL tujuan benar dan harga yang ditentukan
+                sudah sesuai sebelum membuat Sell Link.
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         SELL STATISTICS
+    ========================= -->
+    <section class="quick-stats">
+
+        <!-- TOTAL LINK -->
+        <div class="stat-card">
+
             <i class="fa-solid fa-link"></i>
-            <h3 data-i18n="sellLinkPage.generated.emptyTitle">
-                Belum Ada Link
-            </h3>
-            <p data-i18n="sellLinkPage.generated.emptyDescription">
-                Setelah membuat Sell Link, Link Buy akan muncul
-                di bagian ini.
-            </p>
+
+            <h4 data-i18n="sellLinkPage.stats.totalLink">
+                Total Sell Link
+            </h4>
+
+            <h2 id="sellTotalLink">
+                0
+            </h2>
+
         </div>
-    </div>
-    <div id="sellNotice"></div>
-</section>
+
+
+        <!-- TOTAL PRICE -->
+        <div class="stat-card">
+
+            <i class="fa-solid fa-tags"></i>
+
+            <h4 data-i18n="sellLinkPage.stats.totalPrice">
+                Total Harga Jual
+            </h4>
+
+            <h2 id="sellTotalPrice">
+                Rp 0
+            </h2>
+
+        </div>
+
+
+        <!-- TOTAL VIEW -->
+        <div class="stat-card">
+
+            <i class="fa-solid fa-eye"></i>
+
+            <h4 data-i18n="sellLinkPage.stats.totalView">
+                Total View
+            </h4>
+
+            <h2 id="sellTotalView">
+                0
+            </h2>
+
+        </div>
+
+
+        <!-- TOTAL SOLD -->
+        <div class="stat-card">
+
+            <i class="fa-solid fa-cart-shopping"></i>
+
+            <h4 data-i18n="sellLinkPage.stats.totalSold">
+                Total Terjual
+            </h4>
+
+            <h2 id="sellTotalSold">
+                0
+            </h2>
+
+        </div>
+
+
+        <!-- TOTAL REVENUE -->
+        <div class="stat-card">
+
+            <i class="fa-solid fa-money-bill-trend-up"></i>
+
+            <h4 data-i18n="sellLinkPage.stats.totalRevenue">
+                Total Pendapatan Terjual
+            </h4>
+
+            <h2 id="sellTotalRevenue">
+                Rp 0
+            </h2>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         SEARCH & FILTER
+    ========================= -->
+    <section class="search-area">
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                id="searchInput"
+                type="search"
+                autocomplete="off"
+                data-i18n-placeholder="sellLinkPage.search.placeholder"
+                placeholder="Cari judul atau URL..."
+            >
+
+        </div>
+
+
+        <div class="link-filter">
+
+            <button
+                type="button"
+                class="active"
+                data-filter="all"
+            >
+
+                <i class="fa-solid fa-layer-group"></i>
+
+                <span data-i18n="sellLinkPage.search.all">
+                    Semua
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                data-filter="active"
+            >
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                <span data-i18n="sellLinkPage.search.active">
+                    Aktif
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                data-filter="inactive"
+            >
+
+                <i class="fa-solid fa-circle-xmark"></i>
+
+                <span data-i18n="sellLinkPage.search.inactive">
+                    Nonaktif
+                </span>
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         SELL LINK LIST
+    ========================= -->
+    <section class="link-section card-section">
+
+        <div class="section-title">
+
+            <div class="title-left">
+
+                <i class="fa-solid fa-list"></i>
+
+                <div>
+
+                    <h2 data-i18n="sellLinkPage.list.title">
+                        Daftar Sell Link
+                    </h2>
+
+                    <p data-i18n="sellLinkPage.list.description">
+                        Kelola seluruh Sell Link yang telah Anda buat.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div id="sellList">
+
+            <div class="empty">
+
+                <i class="fa-solid fa-spinner fa-spin"></i>
+
+                <h3>
+                    Memuat Sell Link...
+                </h3>
+
+                <p>
+                    Mohon tunggu sebentar.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         GENERATED LINK
+    ========================= -->
+    <section class="link-section card-section">
+
+        <div class="section-title">
+
+            <div class="title-left">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                <div>
+
+                    <h2 data-i18n="sellLinkPage.generated.title">
+                        Link Generated
+                    </h2>
+
+                    <p data-i18n="sellLinkPage.generated.description">
+                        Link Buy yang berhasil dibuat akan muncul
+                        di sini.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!--
+            JS akan mengisi bagian ini
+            setelah Sell Link berhasil dibuat
+        -->
+        <div id="generatedBox">
+
+            <div class="empty">
+
+                <i class="fa-solid fa-link"></i>
+
+                <h3 data-i18n="sellLinkPage.generated.emptyTitle">
+                    Belum Ada Link
+                </h3>
+
+                <p data-i18n="sellLinkPage.generated.emptyDescription">
+                    Setelah membuat Sell Link, Link Buy akan muncul
+                    di bagian ini.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- OPTIONAL NOTICE -->
+        <div
+            id="sellNotice"
+            aria-live="polite"
+        ></div>
+
+    </section>
+
 </main>
+
+
 <!-- =========================
      FOOTER
 ========================= -->
 <div id="footer"></div>
+
+
 <!-- =========================
      JAVASCRIPT
 ========================= -->
+
+<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<!-- DATABASE -->
 <script src="js/database.js"></script>
+
+<!-- COMPONENTS -->
 <script src="js/navbar.js"></script>
 <script src="js/footer.js"></script>
+
+<!-- LANGUAGE -->
 <script src="js/language.js"></script>
+
+<!-- SELL LINK -->
 <script src="js/sell-link.js"></script>
+
+<!-- DEBUG -->
 <script src="assets/js/debug.js"></script>
+
+
 <!-- =========================
      LOAD COMPONENTS
 ========================= -->
@@ -390,40 +608,51 @@ document.addEventListener("DOMContentLoaded", async () => {
        LOAD NAVBAR
     ========================= */
     try {
-        const navbarResponse =
+
+        const response =
             await fetch("components/navbar.html");
 
-        if (navbarResponse.ok) {
+        if (!response.ok) {
+            throw new Error(
+                "Navbar gagal dimuat."
+            );
+        }
 
-            const navbarHTML =
-                await navbarResponse.text();
+        const html =
+            await response.text();
 
-            const navbar =
-                document.getElementById("navbar");
+        const navbar =
+            document.getElementById("navbar");
 
-            if (navbar) {
-                navbar.innerHTML = navbarHTML;
+        if (navbar) {
 
-                /* INIT NAVBAR */
-                if (typeof c2pInit === "function") {
-                    c2pInit();
-                }
+            navbar.innerHTML = html;
 
-                /* INIT / REFRESH LANGUAGE */
-                if (
-                    window.c2pLanguage &&
-                    typeof window.c2pLanguage.refreshLanguage === "function"
-                ) {
-                    window.c2pLanguage.refreshLanguage();
-                }
+            if (
+                typeof window.c2pInit ===
+                "function"
+            ) {
+                window.c2pInit();
             }
+
+            if (
+                window.c2pLanguage &&
+                typeof window.c2pLanguage
+                    .refreshLanguage ===
+                    "function"
+            ) {
+                window.c2pLanguage.refreshLanguage();
+            }
+
         }
 
     } catch (error) {
+
         console.error(
             "NAVBAR LOAD ERROR:",
             error
         );
+
     }
 
 
@@ -432,36 +661,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     ========================= */
     try {
 
-        const footerResponse =
+        const response =
             await fetch("components/footer.html");
 
-        if (footerResponse.ok) {
+        if (!response.ok) {
+            throw new Error(
+                "Footer gagal dimuat."
+            );
+        }
 
-            const footerHTML =
-                await footerResponse.text();
+        const html =
+            await response.text();
 
-            const footer =
-                document.getElementById("footer");
+        const footer =
+            document.getElementById("footer");
 
-            if (footer) {
+        if (footer) {
 
-                footer.innerHTML =
-                    footerHTML;
+            footer.innerHTML = html;
 
-                if (
-                    typeof c2pFooterInit === "function"
-                ) {
-                    c2pFooterInit();
-                }
-
-                /* REFRESH LANGUAGE */
-                if (
-                    window.c2pLanguage &&
-                    typeof window.c2pLanguage.refreshLanguage === "function"
-                ) {
-                    window.c2pLanguage.refreshLanguage();
-                }
+            if (
+                typeof window.c2pFooterInit ===
+                "function"
+            ) {
+                window.c2pFooterInit();
             }
+
+            if (
+                window.c2pLanguage &&
+                typeof window.c2pLanguage
+                    .refreshLanguage ===
+                    "function"
+            ) {
+                window.c2pLanguage.refreshLanguage();
+            }
+
         }
 
     } catch (error) {
@@ -475,5 +709,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 });
 </script>
+
 </body>
 </html>
