@@ -1,29 +1,72 @@
 /* =================================
    CLICK2PAY SELL LINK SYSTEM
+   CLEAN / STABLE VERSION
 ================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+    "use strict";
+
+    /* =========================
+       CONFIG
+    ========================= */
+
+    const MIN_SELL_PRICE = 10000;
+    const SELL_LINK_PREFIX = "/b/";
+
+    const SUCCESS_STATUSES = new Set([
+        "paid",
+        "success",
+        "successful",
+        "completed",
+        "complete",
+        "settlement",
+        "settled",
+        "berhasil"
+    ]);
+
     /* =========================
        STATE
     ========================= */
+
     let sellActive = false;
+
     let sellLinks = [];
     let filteredLinks = [];
     let sellOrders = [];
+
     let currentUser = null;
     let currentProfile = null;
+
     let currentFilter = "all";
 
-    const MIN_SELL_PRICE = 10000;
+    /* =========================
+       DOM
+    ========================= */
+
+    const $ = (id) =>
+        document.getElementById(id);
+
+    const sellList =
+        $("sellList");
+
+    const generatedBox =
+        $("generatedBox");
+
+    const createBtn =
+        $("createSellBtn");
+
+    const searchInput =
+        $("searchInput");
+
+    const filterButtons =
+        document.querySelectorAll(
+            ".link-filter button"
+        );
 
     /* =========================
-       DOM HELPER
+       NUMBER
     ========================= */
-    const $ = (id) => document.getElementById(id);
 
-    /* =========================
-       NUMBER HELPER
-    ========================= */
     function numberValue(value) {
         if (
             value === null ||
@@ -34,18 +77,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (typeof value === "number") {
-            return Number.isFinite(value) ? value : 0;
+            return Number.isFinite(value)
+                ? value
+                : 0;
         }
 
-        let text = String(value).trim();
+        let text =
+            String(value)
+                .trim()
+                .replace(/Rp/gi, "")
+                .replace(/\s/g, "");
 
         if (!text) {
             return 0;
         }
-
-        text = text
-            .replace(/Rp/gi, "")
-            .replace(/\s/g, "");
 
         /*
          * 10.000
@@ -64,10 +109,13 @@ document.addEventListener("DOMContentLoaded", () => {
             text.includes(".") &&
             text.includes(",")
         ) {
-            const lastDot = text.lastIndexOf(".");
-            const lastComma = text.lastIndexOf(",");
+            const dot =
+                text.lastIndexOf(".");
 
-            if (lastComma > lastDot) {
+            const comma =
+                text.lastIndexOf(",");
+
+            if (comma > dot) {
                 text = text
                     .replace(/\./g, "")
                     .replace(",", ".");
@@ -83,36 +131,46 @@ document.addEventListener("DOMContentLoaded", () => {
             text = text.replace(/,/g, "");
         }
 
-        text = text.replace(/[^\d.-]/g, "");
+        text =
+            text.replace(
+                /[^\d.-]/g,
+                ""
+            );
 
-        const result = Number(text);
+        const result =
+            Number(text);
 
-        return Number.isFinite(result) ? result : 0;
+        return Number.isFinite(result)
+            ? result
+            : 0;
     }
 
     function formatRupiah(value) {
         return (
             "Rp " +
-            numberValue(value).toLocaleString("id-ID")
+            numberValue(value)
+                .toLocaleString("id-ID")
         );
     }
 
     /* =========================
-       BOOLEAN HELPER
+       BOOLEAN
     ========================= */
+
     function isTrue(value) {
         return (
             value === true ||
             value === 1 ||
             value === "1" ||
-            value === "true" ||
-            value === "TRUE"
+            String(value).toLowerCase() ===
+                "true"
         );
     }
 
     /* =========================
        HTML ESCAPE
     ========================= */
+
     function escapeHtml(value) {
         return String(value ?? "")
             .replace(/&/g, "&amp;")
@@ -123,12 +181,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function safeAttribute(value) {
-        return escapeHtml(String(value ?? ""));
+        return escapeHtml(
+            String(value ?? "")
+        );
     }
 
     /* =========================
        LINK HELPERS
     ========================= */
+
     function getLinkType(link) {
         return String(
             link?.link_type ??
@@ -158,22 +219,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function isLinkActive(link) {
         return (
-            String(link?.status ?? "")
+            String(
+                link?.status ?? ""
+            )
                 .trim()
-                .toLowerCase() === "active"
+                .toLowerCase() ===
+            "active"
+        );
+    }
+
+    function getBuyUrl(shortCode) {
+        return (
+            location.origin +
+            SELL_LINK_PREFIX +
+            shortCode
         );
     }
 
     /* =========================
        URL VALIDATION
     ========================= */
+
     function isValidHttpUrl(value) {
         try {
-            const url = new URL(value);
+            const url =
+                new URL(value);
 
             return (
-                url.protocol === "http:" ||
-                url.protocol === "https:"
+                url.protocol ===
+                    "http:" ||
+                url.protocol ===
+                    "https:"
             );
         } catch {
             return false;
@@ -181,22 +257,47 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* =========================
+       DATABASE CHECK
+    ========================= */
+
+    function ensureDatabase() {
+        if (!window.database) {
+            throw new Error(
+                "Database belum siap."
+            );
+        }
+
+        return window.database;
+    }
+
+    function ensureSupabase() {
+        const db =
+            ensureDatabase();
+
+        if (!db.supabase) {
+            throw new Error(
+                "Supabase database belum tersedia."
+            );
+        }
+
+        return db.supabase;
+    }
+
+    /* =========================
        LOAD USER
     ========================= */
+
     async function loadUser() {
         try {
-            if (!window.database) {
-                throw new Error(
-                    "Database belum siap."
-                );
-            }
+            const db =
+                ensureDatabase();
 
             if (currentUser) {
                 return currentUser;
             }
 
             const user =
-                await database.getUser();
+                await db.getUser();
 
             if (!user) {
                 currentUser = null;
@@ -211,25 +312,26 @@ document.addEventListener("DOMContentLoaded", () => {
             currentUser = user;
 
             /* =========================
-               LOAD PROFILE
+               PROFILE
             ========================= */
+
             currentProfile = null;
 
-            try {
-                if (
-                    typeof database.getProfile ===
-                    "function"
-                ) {
+            if (
+                typeof db.getProfile ===
+                "function"
+            ) {
+                try {
                     currentProfile =
-                        await database.getProfile(
+                        await db.getProfile(
                             user.id
                         );
+                } catch (error) {
+                    console.warn(
+                        "PROFILE LOAD WARNING:",
+                        error
+                    );
                 }
-            } catch (error) {
-                console.warn(
-                    "PROFILE LOAD WARNING:",
-                    error
-                );
             }
 
             /* =========================
@@ -237,7 +339,9 @@ document.addEventListener("DOMContentLoaded", () => {
             ========================= */
 
             const sellUnlocked =
-                isTrue(user.sell_unlocked);
+                isTrue(
+                    user.sell_unlocked
+                );
 
             const withdrawCount =
                 numberValue(
@@ -250,8 +354,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const premiumExpires =
                 user.premium_expires_at
                     ? new Date(
-                        user.premium_expires_at
-                    ).getTime()
+                          user.premium_expires_at
+                      ).getTime()
                     : 0;
 
             const premiumActive =
@@ -284,25 +388,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* =========================
-       LOAD SELL ORDERS
+       LOAD ORDERS
     ========================= */
-    async function loadSellOrders() {
-        try {
-            if (!currentUser) {
-                sellOrders = [];
-                return [];
-            }
 
-            if (!database?.supabase) {
-                throw new Error(
-                    "Supabase database belum tersedia."
-                );
-            }
+    async function loadSellOrders() {
+        if (!currentUser) {
+            sellOrders = [];
+            return [];
+        }
+
+        try {
+            const supabase =
+                ensureSupabase();
 
             const {
                 data,
                 error
-            } = await database.supabase
+            } = await supabase
                 .from("sell_orders")
                 .select(`
                     link_id,
@@ -341,22 +443,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* =========================
-       LOAD SELL LINKS
+       LOAD LINKS
     ========================= */
+
     async function loadSellLinks() {
+        if (!currentUser) {
+            sellLinks = [];
+            filteredLinks = [];
+
+            renderSellStats();
+            renderLinks();
+
+            return [];
+        }
+
         try {
-            if (!currentUser) {
-                sellLinks = [];
-                filteredLinks = [];
-
-                renderSellStats();
-                renderLinks();
-
-                return [];
-            }
+            const db =
+                ensureDatabase();
 
             if (
-                typeof database.getLinks !==
+                typeof db.getLinks !==
                 "function"
             ) {
                 throw new Error(
@@ -365,25 +471,19 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const data =
-                await database.getLinks(
+                await db.getLinks(
                     currentUser.id
                 );
 
-            if (!Array.isArray(data)) {
-                sellLinks = [];
-                filteredLinks = [];
-
-                renderSellStats();
-                renderLinks();
-
-                return [];
-            }
-
-            sellLinks = data.filter(
-                (link) =>
-                    getLinkType(link) ===
-                    "sell"
-            );
+            sellLinks =
+                Array.isArray(data)
+                    ? data.filter(
+                          (link) =>
+                              getLinkType(
+                                  link
+                              ) === "sell"
+                      )
+                    : [];
 
             filteredLinks = [
                 ...sellLinks
@@ -405,10 +505,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             renderSellStats();
 
-            const box = $("sellList");
-
-            if (box) {
-                box.innerHTML = `
+            if (sellList) {
+                sellList.innerHTML = `
                     <div class="empty">
                         <i class="fa-solid fa-triangle-exclamation"></i>
 
@@ -433,31 +531,20 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =========================
        ORDER HELPERS
     ========================= */
+
     function getLinkOrders(linkId) {
-        if (
-            !linkId ||
-            !Array.isArray(sellOrders)
-        ) {
+        if (!linkId) {
             return [];
         }
 
         return sellOrders.filter(
             (order) =>
-                String(order?.link_id) ===
+                String(
+                    order?.link_id
+                ) ===
                 String(linkId)
         );
     }
-
-    const SUCCESS_STATUSES = new Set([
-        "paid",
-        "success",
-        "successful",
-        "completed",
-        "complete",
-        "settlement",
-        "settled",
-        "berhasil"
-    ]);
 
     function isPaidOrder(order) {
         const status =
@@ -473,27 +560,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function getPaidOrders(linkId) {
-        return getLinkOrders(linkId)
-            .filter(isPaidOrder);
+        return getLinkOrders(
+            linkId
+        ).filter(isPaidOrder);
     }
 
     /* =========================
-       SOLD COUNT
+       SOLD
     ========================= */
+
     function getSoldCount(link) {
-        if (!link?.id) {
-            return numberValue(
-                link?.sales ??
-                link?.sold ??
-                0
-            );
+        if (!link) {
+            return 0;
         }
 
         const paidOrders =
-            getPaidOrders(link.id);
+            getPaidOrders(
+                link.id
+            );
 
         /*
-         * Jika ada data order paid,
+         * Jika order sudah ada,
          * gunakan order sebagai sumber utama.
          */
         if (paidOrders.length > 0) {
@@ -501,11 +588,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         /*
-         * Fallback database links.
+         * Fallback links.
          */
         return numberValue(
-            link?.sales ??
-            link?.sold ??
+            link.sales ??
+            link.sold ??
             0
         );
     }
@@ -513,11 +600,11 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =========================
        REVENUE
     ========================= */
-    function getLinkRevenue(linkId) {
-        const paidOrders =
-            getPaidOrders(linkId);
 
-        return paidOrders.reduce(
+    function getLinkRevenue(linkId) {
+        return getPaidOrders(
+            linkId
+        ).reduce(
             (total, order) => {
                 const receive =
                     numberValue(
@@ -543,8 +630,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* =========================
-       SELL STATISTICS
+       STATISTICS
     ========================= */
+
     function renderSellStats() {
         let totalPrice = 0;
         let totalViews = 0;
@@ -573,51 +661,50 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
         }
 
-        const totalLink =
-            $("sellTotalLink");
+        const elements = {
+            totalLink:
+                $("sellTotalLink"),
 
-        const totalPriceElement =
-            $("sellTotalPrice");
+            totalPrice:
+                $("sellTotalPrice"),
 
-        const totalView =
-            $("sellTotalView");
+            totalView:
+                $("sellTotalView"),
 
-        const totalSoldElement =
-            $("sellTotalSold");
+            totalSold:
+                $("sellTotalSold"),
 
-        const totalRevenueElement =
-            $("sellTotalRevenue");
+            totalRevenue:
+                $("sellTotalRevenue")
+        };
 
-        if (totalLink) {
-            totalLink.textContent =
-                sellLinks.length.toLocaleString(
-                    "id-ID"
-                );
+        if (elements.totalLink) {
+            elements.totalLink.textContent =
+                sellLinks.length
+                    .toLocaleString("id-ID");
         }
 
-        if (totalPriceElement) {
-            totalPriceElement.textContent =
+        if (elements.totalPrice) {
+            elements.totalPrice.textContent =
                 formatRupiah(
                     totalPrice
                 );
         }
 
-        if (totalView) {
-            totalView.textContent =
-                totalViews.toLocaleString(
-                    "id-ID"
-                );
+        if (elements.totalView) {
+            elements.totalView.textContent =
+                totalViews
+                    .toLocaleString("id-ID");
         }
 
-        if (totalSoldElement) {
-            totalSoldElement.textContent =
-                totalSold.toLocaleString(
-                    "id-ID"
-                );
+        if (elements.totalSold) {
+            elements.totalSold.textContent =
+                totalSold
+                    .toLocaleString("id-ID");
         }
 
-        if (totalRevenueElement) {
-            totalRevenueElement.textContent =
+        if (elements.totalRevenue) {
+            elements.totalRevenue.textContent =
                 formatRupiah(
                     totalRevenue
                 );
@@ -625,15 +712,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* =========================
-       SEARCH & FILTER
+       FILTER
     ========================= */
-    const searchInput =
-        $("searchInput");
-
-    const filterButtons =
-        document.querySelectorAll(
-            ".link-filter button"
-        );
 
     function applyFilter() {
         const keyword =
@@ -648,7 +728,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 (link) => {
                     const title =
                         String(
-                            link?.title ?? ""
+                            link?.title ??
+                            ""
                         ).toLowerCase();
 
                     const destination =
@@ -676,7 +757,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     const active =
                         isLinkActive(link);
 
-                    let matchFilter = true;
+                    let matchFilter =
+                        true;
 
                     if (
                         currentFilter ===
@@ -736,9 +818,12 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     /* =========================
-       GENERATE SHORT CODE
+       GENERATE CODE
     ========================= */
-    function generateCode(length = 8) {
+
+    function generateCode(
+        length = 8
+    ) {
         const chars =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -751,17 +836,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 "function"
         ) {
             const bytes =
-                new Uint8Array(length);
+                new Uint8Array(
+                    length
+                );
 
             window.crypto.getRandomValues(
                 bytes
             );
 
-            for (const byte of bytes) {
+            for (
+                let i = 0;
+                i < length;
+                i++
+            ) {
                 code +=
                     chars[
-                        byte %
-                        chars.length
+                        bytes[i] %
+                            chars.length
                     ];
             }
 
@@ -777,7 +868,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 chars[
                     Math.floor(
                         Math.random() *
-                        chars.length
+                            chars.length
                     )
                 ];
         }
@@ -786,9 +877,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* =========================
-       CHECK SHORT CODE
+       UNIQUE CODE
     ========================= */
+
     async function createUniqueShortCode() {
+        const db =
+            ensureDatabase();
+
         for (
             let attempt = 0;
             attempt < 20;
@@ -799,21 +894,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let existing = null;
 
-            try {
-                if (
-                    typeof database.getLinkByCode ===
-                    "function"
-                ) {
+            if (
+                typeof db.getLinkByCode ===
+                "function"
+            ) {
+                try {
                     existing =
-                        await database.getLinkByCode(
+                        await db.getLinkByCode(
                             candidate
                         );
+                } catch (error) {
+                    console.warn(
+                        "SHORT CODE CHECK WARNING:",
+                        error
+                    );
                 }
-            } catch (error) {
-                console.warn(
-                    "CHECK SHORT CODE WARNING:",
-                    error
-                );
             }
 
             if (!existing) {
@@ -822,15 +917,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         throw new Error(
-            "Gagal membuat short code. Silakan coba lagi."
+            "Gagal membuat short code unik. Silakan coba lagi."
         );
     }
 
     /* =========================
        CREATE SELL LINK
     ========================= */
-    const createBtn =
-        $("createSellBtn");
 
     createBtn?.addEventListener(
         "click",
@@ -863,12 +956,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 $("sellPrice");
 
             const title =
-                titleInput?.value?.trim() ||
-                "";
+                titleInput?.value
+                    ?.trim() || "";
 
             const destination =
-                urlInput?.value?.trim() ||
-                "";
+                urlInput?.value
+                    ?.trim() || "";
 
             const price =
                 Math.floor(
@@ -880,6 +973,7 @@ document.addEventListener("DOMContentLoaded", () => {
             /* =========================
                VALIDATION
             ========================= */
+
             if (!title) {
                 alert(
                     "Judul Sell Link wajib diisi."
@@ -930,6 +1024,7 @@ document.addEventListener("DOMContentLoaded", () => {
             /* =========================
                LOADING
             ========================= */
+
             createBtn.disabled = true;
 
             createBtn.innerHTML = `
@@ -939,16 +1034,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
             try {
                 /* =========================
-                   UNIQUE CODE
+                   SHORT CODE
                 ========================= */
+
                 const shortCode =
                     await createUniqueShortCode();
 
                 /* =========================
-                   DATABASE
+                   CREATE
                 ========================= */
+
+                const db =
+                    ensureDatabase();
+
                 if (
-                    typeof database.createLink !==
+                    typeof db.createLink !==
                     "function"
                 ) {
                     throw new Error(
@@ -957,7 +1057,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 const response =
-                    await database.createLink({
+                    await db.createLink({
                         user_id:
                             currentUser.id,
 
@@ -998,14 +1098,12 @@ document.addEventListener("DOMContentLoaded", () => {
                             0
                     });
 
-                /*
-                 * Support:
-                 *
-                 * { data: object }
-                 * { data: [object] }
-                 * object
-                 * [object]
-                 */
+                if (
+                    response?.error
+                ) {
+                    throw response.error;
+                }
+
                 let createdData =
                     response?.data ??
                     response;
@@ -1016,77 +1114,115 @@ document.addEventListener("DOMContentLoaded", () => {
                     )
                 ) {
                     createdData =
-                        createdData[0] ??
+                        createdData[0] ||
                         null;
                 }
 
                 /*
-                 * Jika database mengembalikan
-                 * error dalam object.
+                 * Buat object sementara
+                 * supaya generated link
+                 * langsung bisa ditampilkan.
                  */
-                if (
-                    response?.error
-                ) {
-                    throw response.error;
-                }
+                const createdLink = {
+                    ...createdData,
+
+                    id:
+                        createdData?.id ??
+                        null,
+
+                    user_id:
+                        currentUser.id,
+
+                    type:
+                        "sell",
+
+                    link_type:
+                        "sell",
+
+                    title:
+                        title,
+
+                    destination:
+                        destination,
+
+                    destination_url:
+                        destination,
+
+                    short_code:
+                        createdData?.short_code ??
+                        shortCode,
+
+                    price:
+                        createdData?.price ??
+                        price,
+
+                    status:
+                        createdData?.status ??
+                        "active",
+
+                    sales:
+                        createdData?.sales ??
+                        0,
+
+                    sold:
+                        createdData?.sold ??
+                        0,
+
+                    views:
+                        createdData?.views ??
+                        0,
+
+                    total_views:
+                        createdData?.total_views ??
+                        0
+                };
 
                 /*
-                 * Ambil ID.
+                 * Tambahkan sementara ke
+                 * state jika belum ada.
                  */
-                let createdId =
-                    createdData?.id ??
-                    null;
-
-                /*
-                 * Jika ID belum ada,
-                 * cari menggunakan short code.
-                 */
-                if (
-                    !createdId &&
-                    typeof database.getLinkByCode ===
-                        "function"
-                ) {
-                    try {
-                        const created =
-                            await database.getLinkByCode(
+                const alreadyExists =
+                    sellLinks.some(
+                        (link) =>
+                            String(
+                                link?.id
+                            ) ===
+                                String(
+                                    createdLink.id
+                                ) ||
+                            getShortCode(
+                                link
+                            ) ===
                                 shortCode
-                            );
+                    );
 
-                        if (created) {
-                            createdId =
-                                created.id;
-                        }
-                    } catch (error) {
-                        console.warn(
-                            "GET CREATED LINK WARNING:",
-                            error
-                        );
-                    }
+                if (!alreadyExists) {
+                    sellLinks.unshift(
+                        createdLink
+                    );
                 }
 
                 /*
-                 * Pastikan link benar-benar
-                 * sudah ditemukan.
+                 * Tampilkan langsung.
                  */
-                if (!createdId) {
-                    const created =
-                        sellLinks.find(
-                            (link) =>
-                                getShortCode(
-                                    link
-                                ) ===
-                                shortCode
-                        );
+                filteredLinks = [
+                    ...sellLinks
+                ];
 
-                    if (created) {
-                        createdId =
-                            created.id;
-                    }
-                }
+                renderSellStats();
+                applyFilter();
 
-                /* =========================
-                   RESET FORM
-                ========================= */
+                showGeneratedLinkDirect(
+                    title,
+                    shortCode,
+                    price,
+                    true
+                );
+
+                /*
+                 * Reset form setelah
+                 * berhasil.
+                 */
                 if (titleInput) {
                     titleInput.value = "";
                 }
@@ -1099,68 +1235,36 @@ document.addEventListener("DOMContentLoaded", () => {
                     priceInput.value = "";
                 }
 
-                /* =========================
-                   RELOAD
-                ========================= */
-                await loadSellOrders();
-
-                await loadSellLinks();
+                /*
+                 * Sinkronisasi database.
+                 */
+                await Promise.all([
+                    loadSellOrders(),
+                    loadSellLinks()
+                ]);
 
                 renderSellStats();
-
                 applyFilter();
 
-                /* =========================
-                   SHOW GENERATED LINK
-                ========================= */
-                let createdLink = null;
+                /*
+                 * Tampilkan kembali
+                 * hasil terbaru.
+                 */
+                showGeneratedLinkDirect(
+                    title,
+                    shortCode,
+                    price,
+                    true
+                );
 
-                if (createdId) {
-                    createdLink =
-                        sellLinks.find(
-                            (link) =>
-                                String(
-                                    link?.id
-                                ) ===
-                                String(
-                                    createdId
-                                )
-                        );
-                }
-
-                if (!createdLink) {
-                    createdLink =
-                        sellLinks.find(
-                            (link) =>
-                                getShortCode(
-                                    link
-                                ) ===
-                                shortCode
-                        );
-                }
-
-                if (createdLink?.id) {
-                    generateLink(
-                        createdLink.id
-                    );
-                } else {
-                    showGeneratedLinkDirect(
-                        title,
-                        shortCode,
-                        price,
-                        true
-                    );
-                }
-
-                /* =========================
-                   SUCCESS MESSAGE
-                ========================= */
                 const result =
                     $("createResult");
 
                 if (result) {
                     const buyLink =
-                        `${location.origin}/b/${shortCode}`;
+                        getBuyUrl(
+                            shortCode
+                        );
 
                     result.innerHTML = `
                         <div class="success-box">
@@ -1201,17 +1305,17 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     /* =========================
-       RENDER SELL LINKS
+       RENDER LINKS
     ========================= */
-    function renderLinks() {
-        const box =
-            $("sellList");
 
-        if (!box) {
+    function renderLinks() {
+        if (!sellList) {
             return;
         }
 
-        if (!filteredLinks.length) {
+        if (
+            !filteredLinks.length
+        ) {
             let message =
                 "Belum ada Sell Link.";
 
@@ -1231,7 +1335,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     "Tidak ada Sell Link nonaktif.";
             }
 
-            box.innerHTML = `
+            sellList.innerHTML = `
                 <div class="empty">
                     <i class="fa-solid fa-box-open"></i>
 
@@ -1250,310 +1354,317 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        box.innerHTML =
+        sellList.innerHTML =
             filteredLinks
-                .map((link) => {
-                    const shortCode =
-                        getShortCode(
+                .map(
+                    (link) =>
+                        renderLinkCard(
                             link
-                        );
-
-                    const sellUrl =
-                        `${location.origin}/b/${shortCode}`;
-
-                    const status =
-                        isLinkActive(
-                            link
-                        );
-
-                    const sold =
-                        getSoldCount(
-                            link
-                        );
-
-                    const revenue =
-                        getLinkRevenue(
-                            link?.id
-                        );
-
-                    const views =
-                        numberValue(
-                            link?.total_views ??
-                            link?.views ??
-                            0
-                        );
-
-                    const price =
-                        numberValue(
-                            link?.price
-                        );
-
-                    const destination =
-                        getDestination(
-                            link
-                        );
-
-                    const date =
-                        link?.created_at
-                            ? new Date(
-                                link.created_at
-                            ).toLocaleDateString(
-                                "id-ID"
-                            )
-                            : "-";
-
-                    const destinationHtml =
-                        destination
-                            ? `
-                                <a
-                                    href="${safeAttribute(destination)}"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    title="${safeAttribute(destination)}"
-                                    class="destination-link"
-                                >
-                                    ${escapeHtml(
-                                        destination
-                                    )}
-                                </a>
-                            `
-                            : `
-                                <span class="destination-empty">
-                                    -
-                                </span>
-                            `;
-
-                    return `
-                        <div
-                            class="link-card"
-                            data-link-id="${safeAttribute(
-                                link?.id
-                            )}"
-                        >
-
-                            <div class="link-top">
-
-                                <div class="link-title-wrap">
-
-                                    <h3>
-                                        ${escapeHtml(
-                                            link?.title ||
-                                            "Sell Link"
-                                        )}
-                                    </h3>
-
-                                    <small>
-                                        Dibuat:
-                                        ${escapeHtml(
-                                            date
-                                        )}
-                                    </small>
-
-                                </div>
-
-                                <span
-                                    class="badge ${
-                                        status
-                                            ? "green"
-                                            : "red"
-                                    }"
-                                >
-                                    <i
-                                        class="fa-solid ${
-                                            status
-                                                ? "fa-circle-check"
-                                                : "fa-circle-xmark"
-                                        }"
-                                    ></i>
-
-                                    ${
-                                        status
-                                            ? "Aktif"
-                                            : "Nonaktif"
-                                    }
-                                </span>
-
-                            </div>
-
-                            <div class="badge-group">
-
-                                <span class="badge blue">
-
-                                    <i class="fa-solid fa-money-bill"></i>
-
-                                    ${formatRupiah(
-                                        price
-                                    )}
-
-                                </span>
-
-                                <span class="badge">
-
-                                    <i class="fa-solid fa-cart-shopping"></i>
-
-                                    ${sold.toLocaleString(
-                                        "id-ID"
-                                    )}
-
-                                    Terjual
-
-                                </span>
-
-                            </div>
-
-                            <div class="link-info">
-
-                                <small class="destination-wrapper">
-
-                                    <i class="fa-solid fa-link"></i>
-
-                                    ${destinationHtml}
-
-                                </small>
-
-                            </div>
-
-                            <label>
-                                Link Buy
-                            </label>
-
-                            <div class="copy-box">
-
-                                <input
-                                    type="text"
-                                    readonly
-                                    value="${safeAttribute(
-                                        sellUrl
-                                    )}"
-                                >
-
-                                <button
-                                    class="btn-copy"
-                                    type="button"
-                                    data-action="copy"
-                                    data-value="${safeAttribute(
-                                        sellUrl
-                                    )}"
-                                    title="Salin Link"
-                                >
-                                    <i class="fa-regular fa-copy"></i>
-                                </button>
-
-                            </div>
-
-                            <div class="link-stats">
-
-                                <div>
-                                    <i class="fa-solid fa-eye"></i>
-
-                                    <span>
-                                        ${views.toLocaleString(
-                                            "id-ID"
-                                        )}
-                                    </span>
-
-                                    <small>
-                                        Views
-                                    </small>
-                                </div>
-
-                                <div>
-                                    <i class="fa-solid fa-cart-shopping"></i>
-
-                                    <span>
-                                        ${sold.toLocaleString(
-                                            "id-ID"
-                                        )}
-                                    </span>
-
-                                    <small>
-                                        Terjual
-                                    </small>
-                                </div>
-
-                                <div>
-                                    <i class="fa-solid fa-money-bill-trend-up"></i>
-
-                                    <span>
-                                        ${formatRupiah(
-                                            revenue
-                                        )}
-                                    </span>
-
-                                    <small>
-                                        Pendapatan
-                                    </small>
-                                </div>
-
-                            </div>
-
-                            <div class="link-actions">
-
-                                <button
-                                    type="button"
-                                    data-action="generate"
-                                    data-id="${safeAttribute(
-                                        link?.id
-                                    )}"
-                                >
-                                    <i class="fa-solid fa-link"></i>
-                                    Link
-                                </button>
-
-                                <button
-                                    type="button"
-                                    data-action="edit"
-                                    data-id="${safeAttribute(
-                                        link?.id
-                                    )}"
-                                >
-                                    <i class="fa-solid fa-pen"></i>
-                                    Edit
-                                </button>
-
-                                <button
-                                    type="button"
-                                    data-action="toggle"
-                                    data-id="${safeAttribute(
-                                        link?.id
-                                    )}"
-                                >
-                                    <i class="fa-solid ${
-                                        status
-                                            ? "fa-toggle-off"
-                                            : "fa-toggle-on"
-                                    }"></i>
-
-                                    ${
-                                        status
-                                            ? "Nonaktifkan"
-                                            : "Aktifkan"
-                                    }
-                                </button>
-
-                                <button
-                                    type="button"
-                                    data-action="delete"
-                                    data-id="${safeAttribute(
-                                        link?.id
-                                    )}"
-                                >
-                                    <i class="fa-solid fa-trash"></i>
-                                    Hapus
-                                </button>
-
-                            </div>
-
-                        </div>
-                    `;
-                })
+                        )
+                )
                 .join("");
     }
 
     /* =========================
-       SELL LIST EVENTS
+       LINK CARD
     ========================= */
-    $("sellList")?.addEventListener(
+
+    function renderLinkCard(link) {
+        const id =
+            link?.id ?? "";
+
+        const shortCode =
+            getShortCode(link);
+
+        const sellUrl =
+            getBuyUrl(shortCode);
+
+        const status =
+            isLinkActive(link);
+
+        const sold =
+            getSoldCount(link);
+
+        const revenue =
+            getLinkRevenue(id);
+
+        const views =
+            numberValue(
+                link?.total_views ??
+                link?.views ??
+                0
+            );
+
+        const price =
+            numberValue(
+                link?.price
+            );
+
+        const destination =
+            getDestination(link);
+
+        const date =
+            link?.created_at
+                ? new Date(
+                      link.created_at
+                  ).toLocaleDateString(
+                      "id-ID"
+                  )
+                : "-";
+
+        const destinationHtml =
+            destination
+                ? `
+                    <a
+                        href="${safeAttribute(
+                            destination
+                        )}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="${safeAttribute(
+                            destination
+                        )}"
+                        class="destination-link"
+                    >
+                        ${escapeHtml(
+                            destination
+                        )}
+                    </a>
+                `
+                : `
+                    <span class="destination-empty">
+                        -
+                    </span>
+                `;
+
+        return `
+            <div
+                class="link-card"
+                data-link-id="${safeAttribute(
+                    id
+                )}"
+            >
+
+                <div class="link-top">
+
+                    <div class="link-title-wrap">
+
+                        <h3>
+                            ${escapeHtml(
+                                link?.title ||
+                                "Sell Link"
+                            )}
+                        </h3>
+
+                        <small>
+                            Dibuat:
+                            ${escapeHtml(
+                                date
+                            )}
+                        </small>
+
+                    </div>
+
+                    <span
+                        class="badge ${
+                            status
+                                ? "green"
+                                : "red"
+                        }"
+                    >
+                        <i class="fa-solid ${
+                            status
+                                ? "fa-circle-check"
+                                : "fa-circle-xmark"
+                        }"></i>
+
+                        ${
+                            status
+                                ? "Aktif"
+                                : "Nonaktif"
+                        }
+                    </span>
+
+                </div>
+
+                <div class="badge-group">
+
+                    <span class="badge blue">
+
+                        <i class="fa-solid fa-money-bill"></i>
+
+                        ${formatRupiah(
+                            price
+                        )}
+
+                    </span>
+
+                    <span class="badge">
+
+                        <i class="fa-solid fa-cart-shopping"></i>
+
+                        ${sold.toLocaleString(
+                            "id-ID"
+                        )}
+
+                        Terjual
+
+                    </span>
+
+                </div>
+
+                <div class="link-info">
+
+                    <small class="destination-wrapper">
+
+                        <i class="fa-solid fa-link"></i>
+
+                        ${destinationHtml}
+
+                    </small>
+
+                </div>
+
+                <label>
+                    Link Buy
+                </label>
+
+                <div class="copy-box">
+
+                    <input
+                        type="text"
+                        readonly
+                        value="${safeAttribute(
+                            sellUrl
+                        )}"
+                    >
+
+                    <button
+                        class="btn-copy"
+                        type="button"
+                        data-action="copy"
+                        data-value="${safeAttribute(
+                            sellUrl
+                        )}"
+                        title="Salin Link"
+                    >
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+
+                </div>
+
+                <div class="link-stats">
+
+                    <div>
+                        <i class="fa-solid fa-eye"></i>
+
+                        <span>
+                            ${views.toLocaleString(
+                                "id-ID"
+                            )}
+                        </span>
+
+                        <small>
+                            Views
+                        </small>
+                    </div>
+
+                    <div>
+                        <i class="fa-solid fa-cart-shopping"></i>
+
+                        <span>
+                            ${sold.toLocaleString(
+                                "id-ID"
+                            )}
+                        </span>
+
+                        <small>
+                            Terjual
+                        </small>
+                    </div>
+
+                    <div>
+                        <i class="fa-solid fa-money-bill-trend-up"></i>
+
+                        <span>
+                            ${formatRupiah(
+                                revenue
+                            )}
+                        </span>
+
+                        <small>
+                            Pendapatan
+                        </small>
+                    </div>
+
+                </div>
+
+                <div class="link-actions">
+
+                    <button
+                        type="button"
+                        data-action="generate"
+                        data-id="${safeAttribute(
+                            id
+                        )}"
+                    >
+                        <i class="fa-solid fa-link"></i>
+                        Link
+                    </button>
+
+                    <button
+                        type="button"
+                        data-action="edit"
+                        data-id="${safeAttribute(
+                            id
+                        )}"
+                    >
+                        <i class="fa-solid fa-pen"></i>
+                        Edit
+                    </button>
+
+                    <button
+                        type="button"
+                        data-action="toggle"
+                        data-id="${safeAttribute(
+                            id
+                        )}"
+                    >
+                        <i class="fa-solid ${
+                            status
+                                ? "fa-toggle-off"
+                                : "fa-toggle-on"
+                        }"></i>
+
+                        ${
+                            status
+                                ? "Nonaktifkan"
+                                : "Aktifkan"
+                        }
+                    </button>
+
+                    <button
+                        type="button"
+                        data-action="delete"
+                        data-id="${safeAttribute(
+                            id
+                        )}"
+                    >
+                        <i class="fa-solid fa-trash"></i>
+                        Hapus
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+    }
+
+    /* =========================
+       LIST EVENTS
+    ========================= */
+
+    sellList?.addEventListener(
         "click",
         async (event) => {
             const button =
@@ -1571,75 +1682,59 @@ document.addEventListener("DOMContentLoaded", () => {
             const id =
                 button.dataset.id;
 
-            if (
-                action ===
-                "copy"
-            ) {
-                await copySell(
-                    button.dataset.value
+            try {
+                switch (action) {
+                    case "copy":
+                        await copySell(
+                            button.dataset.value
+                        );
+                        break;
+
+                    case "generate":
+                        generateLink(id);
+                        break;
+
+                    case "edit":
+                        await editSell(id);
+                        break;
+
+                    case "toggle":
+                        await toggleSellStatus(
+                            id
+                        );
+                        break;
+
+                    case "delete":
+                        await deleteSell(id);
+                        break;
+                }
+            } catch (error) {
+                console.error(
+                    "SELL ACTION ERROR:",
+                    error
                 );
-
-                return;
-            }
-
-            if (
-                action ===
-                "generate"
-            ) {
-                generateLink(id);
-
-                return;
-            }
-
-            if (
-                action ===
-                "edit"
-            ) {
-                await editSell(id);
-
-                return;
-            }
-
-            if (
-                action ===
-                "toggle"
-            ) {
-                await toggleSellStatus(
-                    id
-                );
-
-                return;
-            }
-
-            if (
-                action ===
-                "delete"
-            ) {
-                await deleteSell(id);
             }
         }
     );
 
     /* =========================
-       SHOW GENERATED LINK
+       GENERATED LINK
     ========================= */
+
     function showGeneratedLinkDirect(
         title,
         shortCode,
         price,
         status = true
     ) {
-        const box =
-            $("generatedBox");
-
-        if (!box) {
+        if (!generatedBox) {
             return;
         }
 
         const buyLink =
-            `${location.origin}/b/${shortCode}`;
+            getBuyUrl(shortCode);
 
-        box.innerHTML = `
+        generatedBox.innerHTML = `
             <div class="link-card">
 
                 <div class="link-top">
@@ -1663,13 +1758,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         }"
                     >
 
-                        <i
-                            class="fa-solid ${
-                                status
-                                    ? "fa-circle-check"
-                                    : "fa-circle-xmark"
-                            }"
-                        ></i>
+                        <i class="fa-solid ${
+                            status
+                                ? "fa-circle-check"
+                                : "fa-circle-xmark"
+                        }"></i>
 
                         ${
                             status
@@ -1721,7 +1814,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="link-info">
 
                     <small>
-
                         Short Code:
 
                         <b>
@@ -1729,7 +1821,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                 shortCode
                             )}
                         </b>
-
                     </small>
 
                 </div>
@@ -1737,25 +1828,20 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         `;
 
-        box.scrollIntoView({
+        generatedBox.scrollIntoView({
             behavior: "smooth",
             block: "start"
         });
     }
 
     /* =========================
-       GENERATE SELL LINK
+       GENERATE LINK
     ========================= */
+
     window.generateLink =
         function (id) {
             const link =
-                sellLinks.find(
-                    (item) =>
-                        String(
-                            item?.id
-                        ) ===
-                        String(id)
-                );
+                findUserSellLink(id);
 
             if (!link) {
                 alert(
@@ -1766,9 +1852,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const shortCode =
-                getShortCode(
-                    link
-                );
+                getShortCode(link);
 
             if (!shortCode) {
                 alert(
@@ -1793,9 +1877,10 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
     /* =========================
-       GENERATED BOX COPY
+       GENERATED COPY
     ========================= */
-    $("generatedBox")?.addEventListener(
+
+    generatedBox?.addEventListener(
         "click",
         async (event) => {
             const button =
@@ -1814,8 +1899,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     /* =========================
-       COPY SELL LINK
+       COPY
     ========================= */
+
     async function copySell(text) {
         if (!text) {
             alert(
@@ -1851,12 +1937,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     input
                 );
 
+                input.focus();
                 input.select();
-
-                input.setSelectionRange(
-                    0,
-                    input.value.length
-                );
 
                 const success =
                     document.execCommand(
@@ -1898,14 +1980,15 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =========================
        ACCESS
     ========================= */
+
     function checkAccess() {
-        const btn =
+        const button =
             $("createSellBtn");
 
         const status =
             $("sellStatus");
 
-        if (!btn || !status) {
+        if (!button || !status) {
             return;
         }
 
@@ -1919,9 +2002,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 "active"
             );
 
-            btn.disabled = false;
+            button.disabled = false;
 
-            btn.innerHTML = `
+            button.innerHTML = `
                 <i class="fa-solid fa-plus"></i>
                 Create Sell Link
             `;
@@ -1936,9 +2019,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 "inactive"
             );
 
-            btn.disabled = true;
+            button.disabled = true;
 
-            btn.innerHTML = `
+            button.innerHTML = `
                 <i class="fa-solid fa-lock"></i>
                 Sell Link Terkunci
             `;
@@ -1951,8 +2034,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* =========================
-       FIND USER LINK
+       FIND LINK
     ========================= */
+
     function findUserSellLink(id) {
         if (!currentUser || !id) {
             return null;
@@ -1960,16 +2044,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         return (
             sellLinks.find(
-                (item) =>
-                    String(item?.id) ===
+                (link) =>
+                    String(
+                        link?.id
+                    ) ===
                     String(id)
             ) || null
         );
     }
 
     /* =========================
-       EDIT SELL LINK
+       EDIT
     ========================= */
+
     window.editSell =
         async function (id) {
             if (!currentUser) {
@@ -2015,9 +2102,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const destination =
                 prompt(
                     "Destination URL",
-                    getDestination(
-                        link
-                    )
+                    getDestination(link)
                 );
 
             if (destination === null) {
@@ -2072,41 +2157,75 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             try {
+                const supabase =
+                    ensureSupabase();
+
                 const {
+                    data,
                     error
-                } =
-                    await database.supabase
-                        .from("links")
-                        .update({
-                            title:
-                                cleanTitle,
+                } = await supabase
+                    .from("links")
+                    .update({
+                        title:
+                            cleanTitle,
 
-                            destination:
-                                cleanDestination,
+                        destination:
+                            cleanDestination,
 
-                            destination_url:
-                                cleanDestination,
+                        destination_url:
+                            cleanDestination,
 
-                            price:
-                                price
-                        })
-                        .eq(
-                            "id",
-                            id
-                        )
-                        .eq(
-                            "user_id",
-                            currentUser.id
-                        );
+                        price:
+                            price
+                    })
+                    .eq(
+                        "id",
+                        id
+                    )
+                    .eq(
+                        "user_id",
+                        currentUser.id
+                    )
+                    .select()
+                    .maybeSingle();
 
                 if (error) {
                     throw error;
                 }
 
-                await loadSellLinks();
+                /*
+                 * Update local state.
+                 */
+                const index =
+                    sellLinks.findIndex(
+                        (item) =>
+                            String(
+                                item?.id
+                            ) ===
+                            String(id)
+                    );
+
+                if (index !== -1) {
+                    sellLinks[index] = {
+                        ...sellLinks[index],
+
+                        ...(data || {}),
+
+                        title:
+                            cleanTitle,
+
+                        destination:
+                            cleanDestination,
+
+                        destination_url:
+                            cleanDestination,
+
+                        price:
+                            price
+                    };
+                }
 
                 renderSellStats();
-
                 applyFilter();
 
                 alert(
@@ -2127,8 +2246,9 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
     /* =========================
-       DELETE / HIDE SELL LINK
+       HIDE / DELETE
     ========================= */
+
     window.deleteSell =
         async function (id) {
             if (!currentUser) {
@@ -2160,23 +2280,25 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             try {
+                const supabase =
+                    ensureSupabase();
+
                 const {
                     error
-                } =
-                    await database.supabase
-                        .from("links")
-                        .update({
-                            status:
-                                "inactive"
-                        })
-                        .eq(
-                            "id",
-                            id
-                        )
-                        .eq(
-                            "user_id",
-                            currentUser.id
-                        );
+                } = await supabase
+                    .from("links")
+                    .update({
+                        status:
+                            "inactive"
+                    })
+                    .eq(
+                        "id",
+                        id
+                    )
+                    .eq(
+                        "user_id",
+                        currentUser.id
+                    );
 
                 if (error) {
                     throw error;
@@ -2186,7 +2308,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     "inactive";
 
                 renderSellStats();
-
                 applyFilter();
 
                 alert(
@@ -2209,6 +2330,7 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =========================
        TOGGLE STATUS
     ========================= */
+
     window.toggleSellStatus =
         async function (id) {
             if (!currentUser) {
@@ -2239,23 +2361,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     : "active";
 
             try {
+                const supabase =
+                    ensureSupabase();
+
                 const {
                     error
-                } =
-                    await database.supabase
-                        .from("links")
-                        .update({
-                            status:
-                                newStatus
-                        })
-                        .eq(
-                            "id",
-                            id
-                        )
-                        .eq(
-                            "user_id",
-                            currentUser.id
-                        );
+                } = await supabase
+                    .from("links")
+                    .update({
+                        status:
+                            newStatus
+                    })
+                    .eq(
+                        "id",
+                        id
+                    )
+                    .eq(
+                        "user_id",
+                        currentUser.id
+                    );
 
                 if (error) {
                     throw error;
@@ -2265,7 +2389,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     newStatus;
 
                 renderSellStats();
-
                 applyFilter();
 
                 alert(
@@ -2291,6 +2414,7 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =========================
        INIT
     ========================= */
+
     async function initSellLink() {
         try {
             const user =
@@ -2301,8 +2425,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             /*
-             * Orders harus selesai
-             * sebelum statistik.
+             * Load secara paralel.
+             * Setelah keduanya selesai,
+             * statistik baru dirender.
              */
             await Promise.all([
                 loadSellOrders(),
@@ -2310,7 +2435,6 @@ document.addEventListener("DOMContentLoaded", () => {
             ]);
 
             renderSellStats();
-
             applyFilter();
 
         } catch (error) {
@@ -2320,6 +2444,10 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         }
     }
+
+    /* =========================
+       START
+    ========================= */
 
     initSellLink();
 });
