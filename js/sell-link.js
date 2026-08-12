@@ -963,266 +963,124 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     );
-    /* =========================
-       RENDER SELL LINKS
-    ========================= */
-    function renderLinks() {
-        const box =
-            $("sellList");
-        if (!box) {
-            return;
+ /* =========================
+   RENDER SELL LINKS
+========================= */
+function renderLinks() {
+    const box = $("sellList");
+    if (!box) return;
+
+    if (!filteredLinks.length) {
+        let message = "Belum ada Sell Link.";
+        if (currentFilter === "active") {
+            message = "Tidak ada Sell Link aktif.";
+        } else if (currentFilter === "inactive") {
+            message = "Tidak ada Sell Link nonaktif.";
         }
-        if (!filteredLinks.length) {
-            let message =
-                "Belum ada Sell Link.";
-            if (
-                currentFilter ===
-                "active"
-            ) {
-                message =
-                    "Tidak ada Sell Link aktif.";
-            } else if (
-                currentFilter ===
-                "inactive"
-            ) {
-                message =
-                    "Tidak ada Sell Link nonaktif.";
-            }
-            box.innerHTML = `
-                <div class="empty">
-                    <i class="fa-solid fa-box-open"></i>
-                    <h3>
-                        ${escapeHtml(
-                            message
-                        )}
-                    </h3>
-                    <p>
-                        Silakan buat Sell Link pertama Anda.
-                    </p>
-                </div>
-            `;
-            return;
-        }
-        box.innerHTML =
-            filteredLinks
-                .map(link => {
-                    const shortCode =
-                        getShortCode(
-                            link
-                        );
-                    const sellUrl =
-                        `${location.origin}/b/${shortCode}`;
-                    const status =
-                        String(
-                            link?.status ?? ""
-                        )
-                            .trim()
-                            .toLowerCase() ===
-                        "active";
-                    const sold =
-                        getSoldCount(
-                            link
-                        );
-                    const revenue =
-                        getLinkRevenue(
-                            link?.id
-                        );
-                    const views =
-                        numberValue(
-                            link?.total_views ??
-                            link?.views ??
-                            0
-                        );
-                    const price =
-                        numberValue(
-                            link?.price
-                        );
-                    const destination =
-                        getDestination(
-                            link
-                        ) || "-";
-                    const date =
-                        link?.created_at
-                            ? new Date(
-                                link.created_at
-                            ).toLocaleDateString(
-                                "id-ID"
-                            )
-                            : "-";
-                    return `
-                        <div
-                            class="link-card"
-                            data-link-id="${safeAttribute(
-                                link?.id
-                            )}"
-                        >
-                            <div class="link-top">
-                                <div>
-                                    <h3>
-                                        ${escapeHtml(
-                                            link?.title ||
-                                            "Sell Link"
-                                        )}
-                                    </h3>
-                                    <small>
-                                        Dibuat:
-                                        ${escapeHtml(
-                                            date
-                                        )}
-                                    </small>
-                                </div>
-                                <span class="badge ${
-                                    status
-                                        ? "green"
-                                        : "red"
-                                }">
-                                    <i class="fa-solid ${
-                                        status
-                                            ? "fa-circle-check"
-                                            : "fa-circle-xmark"
-                                    }"></i>
-                                    ${
-                                        status
-                                            ? "Aktif"
-                                            : "Nonaktif"
-                                    }
-                                </span>
-                            </div>
-                            <div class="badge-group">
-                                <span class="badge blue">
-                                    <i class="fa-solid fa-money-bill"></i>
-                                    ${formatRupiah(
-                                        price
-                                    )}
-                                </span>
-                                <span class="badge">
-                                    <i class="fa-solid fa-cart-shopping"></i>
-                                    ${sold.toLocaleString(
-                                        "id-ID"
-                                    )}
-                                    Terjual
-                                </span>
-                            </div>
-                            <div class="link-info">
-                                <small>
-                                    <i class="fa-solid fa-link"></i>
-                                    ${escapeHtml(
-                                        destination
-                                    )}
-                                </small>
-                            </div>
-                            <label>
-                                Link Buy
-                            </label>
-                            <div class="copy-box">
-                                <input
-                                    type="text"
-                                    readonly
-                                    value="${safeAttribute(
-                                        sellUrl
-                                    )}"
-                                >
-                                <button
-                                    class="btn-copy"
-                                    type="button"
-                                    data-action="copy"
-                                    data-value="${safeAttribute(
-                                        sellUrl
-                                    )}"
-                                >
-                                    <i class="fa-regular fa-copy"></i>
-                                </button>
-                            </div>
-                            <div class="link-stats">
-                                <div>
-                                    <i class="fa-solid fa-eye"></i>
-                                    <span>
-                                        ${views.toLocaleString(
-                                            "id-ID"
-                                        )}
-                                    </span>
-                                    <small>
-                                        Views
-                                    </small>
-                                </div>
-                                <div>
-                                    <i class="fa-solid fa-cart-shopping"></i>
-                                    <span>
-                                        ${sold.toLocaleString(
-                                            "id-ID"
-                                        )}
-                                    </span>
-                                    <small>
-                                        Terjual
-                                    </small>
-                                </div>
-                                <div>
-                                    <i class="fa-solid fa-money-bill-trend-up"></i>
-                                    <span>
-                                        ${formatRupiah(
-                                            revenue
-                                        )}
-                                    </span>
-                                    <small>
-                                        Pendapatan
-                                    </small>
-                                </div>
-                            </div>
-                            <div class="link-actions">
-                                <button
-                                    type="button"
-                                    data-action="generate"
-                                    data-id="${safeAttribute(
-                                        link?.id
-                                    )}"
-                                >
-                                    <i class="fa-solid fa-link"></i>
-                                    Link
-                                </button>
-                                <button
-                                    type="button"
-                                    data-action="edit"
-                                    data-id="${safeAttribute(
-                                        link?.id
-                                    )}"
-                                >
-                                    <i class="fa-solid fa-pen"></i>
-                                    Edit
-                                </button>
-                                <button
-                                    type="button"
-                                    data-action="toggle"
-                                    data-id="${safeAttribute(
-                                        link?.id
-                                    )}"
-                                >
-                                    <i class="fa-solid ${
-                                        status
-                                            ? "fa-toggle-off"
-                                            : "fa-toggle-on"
-                                    }"></i>
-                                    ${
-                                        status
-                                            ? "Nonaktifkan"
-                                            : "Aktifkan"
-                                    }
-                                </button>
-                                <button
-                                    type="button"
-                                    data-action="delete"
-                                    data-id="${safeAttribute(
-                                        link?.id
-                                    )}"
-                                >
-                                    <i class="fa-solid fa-trash"></i>
-                                    Hapus
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                })
-                .join("");
+
+        box.innerHTML = `
+            <div class="empty">
+                <i class="fa-solid fa-box-open"></i>
+                <h3>${escapeHtml(message)}</h3>
+                <p>Silakan buat Sell Link pertama Anda.</p>
+            </div>
+        `;
+        return;
     }
+
+    box.innerHTML = filteredLinks.map(link => {
+        const shortCode = getShortCode(link);
+        const sellUrl = `${location.origin}/b/${shortCode}`;
+        const status = String(link?.status ?? "").trim().toLowerCase() === "active";
+        const sold = getSoldCount(link);
+        const revenue = getLinkRevenue(link?.id);
+        const views = numberValue(link?.total_views ?? link?.views ?? 0);
+        const price = numberValue(link?.price);
+        const destination = getDestination(link);
+        const date = link?.created_at
+            ? new Date(link.created_at).toLocaleDateString("id-ID")
+            : "-";
+
+        const destinationHtml = destination
+            ? `<a href="${safeAttribute(destination)}" target="_blank" rel="noopener noreferrer" title="${safeAttribute(destination)}" class="destination-link">${escapeHtml(destination)}</a>`
+            : `<span class="destination-empty">-</span>`;
+
+        return `
+            <div class="link-card" data-link-id="${safeAttribute(link?.id)}">
+                <div class="link-top">
+                    <div class="link-title-wrap">
+                        <h3>${escapeHtml(link?.title || "Sell Link")}</h3>
+                        <small>Dibuat: ${escapeHtml(date)}</small>
+                    </div>
+                    <span class="badge ${status ? "green" : "red"}">
+                        <i class="fa-solid ${status ? "fa-circle-check" : "fa-circle-xmark"}"></i>
+                        ${status ? "Aktif" : "Nonaktif"}
+                    </span>
+                </div>
+
+                <div class="badge-group">
+                    <span class="badge blue">
+                        <i class="fa-solid fa-money-bill"></i>
+                        ${formatRupiah(price)}
+                    </span>
+                    <span class="badge">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        ${sold.toLocaleString("id-ID")} Terjual
+                    </span>
+                </div>
+
+                <div class="link-info">
+                    <small class="destination-wrapper">
+                        <i class="fa-solid fa-link"></i>
+                        ${destinationHtml}
+                    </small>
+                </div>
+
+                <label>Link Buy</label>
+                <div class="copy-box">
+                    <input type="text" readonly value="${safeAttribute(sellUrl)}">
+                    <button class="btn-copy" type="button" data-action="copy" data-value="${safeAttribute(sellUrl)}" title="Salin Link">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                </div>
+
+                <div class="link-stats">
+                    <div>
+                        <i class="fa-solid fa-eye"></i>
+                        <span>${views.toLocaleString("id-ID")}</span>
+                        <small>Views</small>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span>${sold.toLocaleString("id-ID")}</span>
+                        <small>Terjual</small>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-money-bill-trend-up"></i>
+                        <span>${formatRupiah(revenue)}</span>
+                        <small>Pendapatan</small>
+                    </div>
+                </div>
+
+                <div class="link-actions">
+                    <button type="button" data-action="generate" data-id="${safeAttribute(link?.id)}">
+                        <i class="fa-solid fa-link"></i> Link
+                    </button>
+                    <button type="button" data-action="edit" data-id="${safeAttribute(link?.id)}">
+                        <i class="fa-solid fa-pen"></i> Edit
+                    </button>
+                    <button type="button" data-action="toggle" data-id="${safeAttribute(link?.id)}">
+                        <i class="fa-solid ${status ? "fa-toggle-off" : "fa-toggle-on"}"></i>
+                        ${status ? "Nonaktifkan" : "Aktifkan"}
+                    </button>
+                    <button type="button" data-action="delete" data-id="${safeAttribute(link?.id)}">
+                        <i class="fa-solid fa-trash"></i> Hapus
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
     /* =========================
        SELL LIST EVENTS
        EVENT DELEGATION
