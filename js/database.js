@@ -1,43 +1,72 @@
 // js/database.js
 // =====================================================
 // CLICK2PAY DATABASE
-// FINAL VERSION
-// Supabase + API
+// HARDENED FRONTEND VERSION
+// Supabase + Backend API
 // =====================================================
+
 const SUPABASE_URL =
     "https://lwjtagxkqeprjpupmadf.supabase.co";
+
+// =====================================================
+// IMPORTANT
+// =====================================================
+// WAJIB gunakan ANON/PUBLISHABLE KEY di frontend.
+//
+// JANGAN masukkan:
+// service_role key
+//
+// Ambil key dari:
+// Supabase Dashboard
+// → Project Settings
+// → API
+// → Publishable / anon key
+// =====================================================
+
 const SUPABASE_ANON_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3anRhZ3hrcWVwcmpwdXBtYWRmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NDMwMTE3NiwiZXhwIjoyMDk5ODc3MTc2fQ.jaiA6dZ2IWMh2gJuS9qPEorNlXpMT5BgyXaRRSJCSvk";
+    "GANTI_DENGAN_ANON_PUBLISHABLE_KEY";
+
 const API_URL =
     "https://click2pay.my.id";
+
 // =====================================================
 // SUPABASE CLIENT
 // =====================================================
-const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY,
-    {
-        auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true
+
+const supabaseClient =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY,
+        {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true
+            }
         }
-    }
-);
+    );
+
 // =====================================================
-// HELPERS
+// LOCAL HELPERS
 // =====================================================
+
 function currentUserId() {
-    return localStorage.getItem("user_id") || null;
+    return (
+        localStorage.getItem("user_id") ||
+        null
+    );
 }
+
 function saveUserLocal(user) {
     if (!user) return;
+
     if (user.id) {
         localStorage.setItem(
             "user_id",
-            user.id
+            String(user.id)
         );
     }
+
     if (user.username !== undefined) {
         localStorage.setItem(
             "username",
@@ -45,42 +74,139 @@ function saveUserLocal(user) {
         );
     }
 }
+
 function clearLocalUser() {
     localStorage.removeItem("user_id");
     localStorage.removeItem("username");
 }
+
+// =====================================================
+// SESSION
+// =====================================================
+
 async function getSession() {
-    const {
-        data,
-        error
-    } = await supabaseClient.auth.getSession();
-    if (error) {
+    try {
+        const {
+            data,
+            error
+        } = await supabaseClient.auth.getSession();
+
+        if (error) {
+            console.error(
+                "GET SESSION:",
+                error
+            );
+            return null;
+        }
+
+        return data?.session || null;
+    } catch (error) {
         console.error(
-            "GET SESSION:",
+            "GET SESSION EXCEPTION:",
             error
         );
+
         return null;
     }
-    return data?.session || null;
 }
+
+async function requireSession() {
+    const session =
+        await getSession();
+
+    if (!session?.user) {
+        throw new Error(
+            "User belum login."
+        );
+    }
+
+    return session;
+}
+
+// =====================================================
+// GENERIC API
+// =====================================================
+
+async function apiRequest(
+    endpoint,
+    options = {}
+) {
+    const session =
+        await getSession();
+
+    const headers = {
+        "Content-Type":
+            "application/json",
+        ...(options.headers || {})
+    };
+
+    /*
+     * Supabase access token dikirim
+     * ke backend agar backend dapat
+     * memvalidasi user.
+     */
+    if (session?.access_token) {
+        headers.Authorization =
+            `Bearer ${session.access_token}`;
+    }
+
+    const response =
+        await fetch(
+            `${API_URL}${endpoint}`,
+            {
+                ...options,
+                headers
+            }
+        );
+
+    let result = null;
+
+    try {
+        result =
+            await response.json();
+    } catch {
+        result = null;
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            result?.error ||
+            result?.message ||
+            `Request gagal (${response.status})`
+        );
+    }
+
+    return (
+        result?.data ??
+        result
+    );
+}
+
 // =====================================================
 // AUTH / USER
 // =====================================================
+
 async function getUser() {
     try {
         const session =
             await getSession();
+
         if (!session?.user) {
             return null;
         }
+
         const {
             data,
             error
         } = await supabaseClient
             .from("users")
             .select("*")
-            .eq("id", session.user.id)
+            .eq(
+                "id",
+                session.user.id
+            )
             .maybeSingle();
+
         if (error) {
             console.error(
                 "GET USER:",
@@ -88,74 +214,32 @@ async function getUser() {
             );
             return null;
         }
+
         if (data) {
             saveUserLocal(data);
         }
-        return data;
+
+        return data || null;
+
     } catch (error) {
         console.error(
             "GET USER EXCEPTION:",
             error
         );
+
         return null;
     }
 }
-async function getUsers() {
-    try {
-        const {
-            data,
-            error
-        } = await supabaseClient
-            .from("users")
-            .select("*")
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
-        if (error) {
-            console.error(
-                "GET USERS:",
-                error
-            );
-            return [];
-        }
-        return data || [];
-    } catch (error) {
-        console.error(
-            "GET USERS EXCEPTION:",
-            error
-        );
-        return [];
-    }
+
+async function getCurrentProfile() {
+    return getUser();
 }
-async function logout() {
-    try {
-        await supabaseClient.auth.signOut();
-    } catch (error) {
-        console.error(
-            "LOGOUT ERROR:",
-            error
-        );
-    }
-    clearLocalUser();
-    localStorage.clear();
-    sessionStorage.clear();
-    window.location.replace(
-        "index.html"
-    );
-}
-// =====================================================
-// USER BY ID
-// =====================================================
+
 async function getProfile(userId) {
     if (!userId) {
-        console.warn(
-            "GET PROFILE: USER ID KOSONG"
-        );
         return null;
     }
+
     try {
         const {
             data,
@@ -163,8 +247,12 @@ async function getProfile(userId) {
         } = await supabaseClient
             .from("users")
             .select("*")
-            .eq("id", userId)
+            .eq(
+                "id",
+                userId
+            )
             .maybeSingle();
+
         if (error) {
             console.error(
                 "GET PROFILE:",
@@ -172,187 +260,59 @@ async function getProfile(userId) {
             );
             return null;
         }
-        if (data) {
-            saveUserLocal(data);
-        }
+
         return data || null;
+
     } catch (error) {
         console.error(
             "GET PROFILE EXCEPTION:",
             error
         );
+
         return null;
     }
 }
-// =====================================================
-// CURRENT USER
-// =====================================================
-async function getCurrentProfile() {
+
+async function getUsers() {
+    /*
+     * Jangan gunakan ini dari halaman user biasa.
+     *
+     * Untuk admin, sebaiknya gunakan:
+     * GET /api/admin/users
+     *
+     * agar service role tetap berada di backend.
+     */
     try {
-        const session =
-            await getSession();
-        if (!session?.user) {
-            return null;
-        }
-        const userId =
-            session.user.id;
-        const {
-            data,
-            error
-        } = await supabaseClient
-            .from("users")
-            .select("*")
-            .eq("id", userId)
-            .maybeSingle();
-        if (error) {
-            console.error(
-                "GET CURRENT PROFILE:",
-                error
-            );
-            return null;
-        }
-        if (data) {
-            saveUserLocal(data);
-        }
-        return data || null;
+        return await apiRequest(
+            "/api/admin/users"
+        );
     } catch (error) {
         console.error(
-            "GET CURRENT PROFILE EXCEPTION:",
+            "GET USERS:",
             error
         );
-        return null;
-    }
-}
-// =====================================================
-// ALL USERS
-// =====================================================
-async function getProfiles() {
-    try {
-        const {
-            data,
-            error
-        } = await supabaseClient
-            .from("users")
-            .select("*")
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
-        if (error) {
-            console.error(
-                "GET PROFILES:",
-                error
-            );
-            return [];
-        }
-        return data || [];
-    } catch (error) {
-        console.error(
-            "GET PROFILES EXCEPTION:",
-            error
-        );
+
         return [];
     }
 }
-// =====================================================
-// UPDATE USER
-// =====================================================
-async function updateProfile(payload = {}) {
-    try {
-        const session =
-            await getSession();
-        if (!session?.user) {
-            throw new Error(
-                "User belum login."
-            );
-        }
-        // Jangan mengizinkan frontend
-        // mengubah field sensitif secara sembarangan.
-        const allowedFields = [
-            "username",
-            "email"
-        ];
-        const update = {};
-        allowedFields.forEach(
-            field => {
-                if (
-                    payload[field] !==
-                    undefined
-                ) {
-                    update[field] =
-                        payload[field];
-                }
-            }
-        );
-        if (
-            Object.keys(update).length === 0
-        ) {
-            return await getUser();
-        }
-        const {
-            data,
-            error
-        } = await supabaseClient
-            .from("users")
-            .update(update)
-            .eq(
-                "id",
-                session.user.id
-            )
-            .select()
-            .single();
-        if (error) {
-            throw error;
-        }
-        saveUserLocal(data);
-        return data;
-    } catch (error) {
-        console.error(
-            "UPDATE PROFILE:",
-            error
-        );
-        throw error;
-    }
+
+async function getProfiles() {
+    return getUsers();
 }
-// =====================================================
-// PROFILES TABLE
-// =====================================================
-async function getUserProfile(userId) {
-    if (!userId) return null;
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .maybeSingle();
-    if (error) {
-        console.error(
-            "GET USER PROFILE:",
-            error
-        );
-        return null;
-    }
-    return data || null;
-}
-async function updateUserProfile(
-    userId,
+
+async function updateProfile(
     payload = {}
 ) {
-    if (!userId) {
-        throw new Error(
-            "userId wajib diisi"
-        );
-    }
+    const session =
+        await requireSession();
+
     const allowedFields = [
         "username",
-        "full_name",
-        "photo_url"
+        "email"
     ];
+
     const update = {};
+
     allowedFields.forEach(
         field => {
             if (
@@ -364,34 +324,192 @@ async function updateUserProfile(
             }
         }
     );
+
+    if (
+        Object.keys(update).length === 0
+    ) {
+        return getUser();
+    }
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("users")
+        .update(update)
+        .eq(
+            "id",
+            session.user.id
+        )
+        .select()
+        .single();
+
+    if (error) {
+        console.error(
+            "UPDATE PROFILE:",
+            error
+        );
+        throw error;
+    }
+
+    saveUserLocal(data);
+
+    return data;
+}
+
+async function logout() {
+    try {
+        await supabaseClient.auth.signOut();
+    } catch (error) {
+        console.error(
+            "LOGOUT ERROR:",
+            error
+        );
+    }
+
+    clearLocalUser();
+
+    localStorage.clear();
+    sessionStorage.clear();
+
+    window.location.replace(
+        "index.html"
+    );
+}
+
+// =====================================================
+// PROFILES TABLE
+// =====================================================
+
+async function getUserProfile(userId) {
+    if (!userId) return null;
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq(
+            "id",
+            userId
+        )
+        .maybeSingle();
+
+    if (error) {
+        console.error(
+            "GET USER PROFILE:",
+            error
+        );
+
+        return null;
+    }
+
+    return data || null;
+}
+
+async function updateUserProfile(
+    userId,
+    payload = {}
+) {
+    if (!userId) {
+        throw new Error(
+            "userId wajib diisi"
+        );
+    }
+
+    const session =
+        await requireSession();
+
+    /*
+     * User hanya boleh mengubah
+     * profile miliknya sendiri.
+     */
+    if (
+        String(userId) !==
+        String(session.user.id)
+    ) {
+        throw new Error(
+            "Tidak boleh mengubah profile user lain."
+        );
+    }
+
+    const allowedFields = [
+        "username",
+        "full_name",
+        "photo_url"
+    ];
+
+    const update = {};
+
+    allowedFields.forEach(
+        field => {
+            if (
+                payload[field] !==
+                undefined
+            ) {
+                update[field] =
+                    payload[field];
+            }
+        }
+    );
+
     if (
         Object.keys(update).length === 0
     ) {
         return getUserProfile(userId);
     }
+
     const {
         data,
         error
     } = await supabaseClient
         .from("profiles")
         .update(update)
-        .eq("id", userId)
+        .eq(
+            "id",
+            session.user.id
+        )
         .select()
         .single();
+
     if (error) {
         console.error(
             "UPDATE USER PROFILE:",
             error
         );
+
         throw error;
     }
+
     return data;
 }
+
 // =====================================================
 // SELL ACCESS
 // =====================================================
+
 async function getSellAccess(userId) {
     if (!userId) return null;
+
+    const session =
+        await getSession();
+
+    if (!session?.user) {
+        return null;
+    }
+
+    /*
+     * Jangan izinkan user membaca
+     * data sell access user lain.
+     */
+    if (
+        String(userId) !==
+        String(session.user.id)
+    ) {
+        return null;
+    }
+
     const {
         data,
         error
@@ -408,31 +526,40 @@ async function getSellAccess(userId) {
             is_banned,
             email_verified
         `)
-        .eq("id", userId)
+        .eq(
+            "id",
+            session.user.id
+        )
         .maybeSingle();
+
     if (error) {
         console.error(
             "GET SELL ACCESS:",
             error
         );
+
         return null;
     }
+
     return data || null;
 }
+
 async function canUseSellLink(userId) {
     const user =
         await getSellAccess(userId);
+
     if (!user) {
         return false;
     }
+
     if (user.is_banned === true) {
         return false;
     }
-    // Manual unlock
+
     if (user.sell_unlocked === true) {
         return true;
     }
-    // Withdraw >= 3
+
     if (
         Number(
             user.withdraw_count || 0
@@ -440,27 +567,34 @@ async function canUseSellLink(userId) {
     ) {
         return true;
     }
-    // Premium
+
     if (user.is_premium === true) {
         if (!user.premium_expires_at) {
             return true;
         }
+
         const expires =
             new Date(
                 user.premium_expires_at
             );
+
         if (
-            !isNaN(expires.getTime()) &&
+            !isNaN(
+                expires.getTime()
+            ) &&
             expires > new Date()
         ) {
             return true;
         }
     }
+
     return false;
 }
+
 // =====================================================
 // LINKS
 // =====================================================
+
 const LINK_COLUMNS = `
     id,
     user_id,
@@ -491,97 +625,94 @@ const LINK_COLUMNS = `
     sales,
     updated_at
 `;
+
 async function getLinks(userId) {
     if (!userId) return [];
-    try {
-        const {
-            data,
-            error
-        } = await supabaseClient
-            .from("links")
-            .select(LINK_COLUMNS)
-            .eq(
-                "user_id",
-                userId
-            )
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
-        if (error) {
-            console.error(
-                "GET LINKS:",
-                error
-            );
-            return [];
-        }
-        return data || [];
-    } catch (error) {
-        console.error(
-            "GET LINKS EXCEPTION:",
-            error
-        );
+
+    const session =
+        await getSession();
+
+    if (!session?.user) {
         return [];
     }
+
+    /*
+     * Jangan percaya userId dari
+     * localStorage.
+     */
+    if (
+        String(userId) !==
+        String(session.user.id)
+    ) {
+        return [];
+    }
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("links")
+        .select(LINK_COLUMNS)
+        .eq(
+            "user_id",
+            session.user.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending: false
+            }
+        );
+
+    if (error) {
+        console.error(
+            "GET LINKS:",
+            error
+        );
+
+        return [];
+    }
+
+    return data || [];
 }
+
 async function getSellLinks(userId) {
-    if (!userId) return [];
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("links")
-        .select(LINK_COLUMNS)
-        .eq("user_id", userId)
-        .or(
-            "type.eq.sell,link_type.eq.sell"
-        )
-        .order(
-            "created_at",
-            {
-                ascending: false
-            }
-        );
-    if (error) {
-        console.error(
-            "GET SELL LINKS:",
-            error
-        );
-        return [];
-    }
-    return data || [];
+    const links =
+        await getLinks(userId);
+
+    return links.filter(
+        link =>
+            String(
+                link.type
+            ).toLowerCase() ===
+                "sell" ||
+            String(
+                link.link_type
+            ).toLowerCase() ===
+                "sell"
+    );
 }
+
 async function getAdsLinks(userId) {
-    if (!userId) return [];
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("links")
-        .select(LINK_COLUMNS)
-        .eq("user_id", userId)
-        .or(
-            "type.eq.ads,link_type.eq.ads"
-        )
-        .order(
-            "created_at",
-            {
-                ascending: false
-            }
-        );
-    if (error) {
-        console.error(
-            "GET ADS LINKS:",
-            error
-        );
-        return [];
-    }
-    return data || [];
+    const links =
+        await getLinks(userId);
+
+    return links.filter(
+        link =>
+            String(
+                link.type
+            ).toLowerCase() ===
+                "ads" ||
+            String(
+                link.link_type
+            ).toLowerCase() ===
+                "ads"
+    );
 }
+
 async function getLinkByCode(code) {
     if (!code) return null;
+
     const {
         data,
         error
@@ -593,101 +724,133 @@ async function getLinkByCode(code) {
             String(code)
         )
         .maybeSingle();
+
     if (error) {
         console.error(
             "GET LINK BY CODE:",
             error
         );
+
         return null;
     }
+
     return data || null;
 }
+
 // =====================================================
 // CREATE LINK
 // =====================================================
+
 async function createLink(payload = {}) {
-    if (!payload.user_id) {
-        throw new Error(
-            "user_id wajib diisi"
-        );
-    }
+    const session =
+        await requireSession();
+
     if (!payload.short_code) {
         throw new Error(
             "short_code wajib diisi"
         );
     }
+
     if (!payload.title) {
         throw new Error(
             "title wajib diisi"
         );
     }
+
     const destination =
         payload.destination ||
         payload.destination_url;
+
     if (!destination) {
         throw new Error(
             "destination wajib diisi"
         );
     }
+
+    /*
+     * user_id SELALU diambil dari session.
+     * Jangan percaya payload.user_id.
+     */
     const insert = {
         user_id:
-            payload.user_id,
+            session.user.id,
+
         type:
             payload.type ||
             "ads",
+
         title:
             payload.title,
+
         alias:
             payload.alias ||
             null,
+
         destination,
+
         campaign:
             payload.campaign ||
             null,
+
         device:
             payload.device ||
             "all",
+
         expired_at:
             payload.expired_at ||
             null,
+
         price:
             Number(
                 payload.price || 0
             ),
+
         status:
             payload.status ||
             "active",
+
         views: 0,
         clicks: 0,
         earnings: 0,
+
         short_code:
             payload.short_code,
+
         destination_url:
             payload.destination_url ||
             destination,
+
         link_type:
             payload.link_type ||
             payload.type ||
             "ads",
+
         custom_alias:
             payload.custom_alias ||
             null,
+
         campaign_name:
             payload.campaign_name ||
             null,
+
         target_device:
             payload.target_device ||
             payload.device ||
             "all",
+
         total_views: 0,
         total_clicks: 0,
         total_earnings: 0,
+
         sold: 0,
+
         expired:
             payload.expired ||
             "never",
+
         sales: 0
     };
+
     const {
         data,
         error
@@ -696,18 +859,23 @@ async function createLink(payload = {}) {
         .insert(insert)
         .select()
         .single();
+
     if (error) {
         console.error(
             "CREATE LINK:",
             error
         );
+
         throw error;
     }
+
     return data;
 }
+
 // =====================================================
 // UPDATE LINK
 // =====================================================
+
 async function updateLink(
     id,
     payload = {}
@@ -717,6 +885,10 @@ async function updateLink(
             "Link ID wajib diisi"
         );
     }
+
+    const session =
+        await requireSession();
+
     const allowedFields = [
         "type",
         "title",
@@ -735,7 +907,9 @@ async function updateLink(
         "target_device",
         "expired"
     ];
+
     const update = {};
+
     allowedFields.forEach(
         field => {
             if (
@@ -747,51 +921,87 @@ async function updateLink(
             }
         }
     );
+
     const {
         data,
         error
     } = await supabaseClient
         .from("links")
         .update(update)
-        .eq("id", id)
+        .eq(
+            "id",
+            id
+        )
+        .eq(
+            "user_id",
+            session.user.id
+        )
         .select()
         .single();
+
     if (error) {
         console.error(
             "UPDATE LINK:",
             error
         );
+
         throw error;
     }
+
     return data;
 }
+
 // =====================================================
 // DELETE LINK
 // =====================================================
+
 async function deleteLink(id) {
     if (!id) {
         throw new Error(
             "Link ID wajib diisi"
         );
     }
+
+    const session =
+        await requireSession();
+
     const {
         error
     } = await supabaseClient
         .from("links")
         .delete()
-        .eq("id", id);
+        .eq(
+            "id",
+            id
+        )
+        .eq(
+            "user_id",
+            session.user.id
+        );
+
     if (error) {
         console.error(
             "DELETE LINK:",
             error
         );
+
         throw error;
     }
+
     return true;
 }
+
 // =====================================================
 // LINK VIEWS
 // =====================================================
+// IMPORTANT:
+// Jangan percaya "earning" dari browser.
+// Untuk earning production gunakan backend.
+//
+// Endpoint yang disarankan:
+// POST /api/link/view
+// =====================================================
+
 async function createLinkView(
     payload = {}
 ) {
@@ -800,50 +1010,42 @@ async function createLinkView(
             "link_id wajib diisi"
         );
     }
-    const insert = {
-        link_id:
-            payload.link_id,
-        visitor_ip:
-            payload.visitor_ip ||
-            null,
-        country:
-            payload.country ||
-            null,
-        device:
-            payload.device ||
-            null,
-        browser:
-            payload.browser ||
-            null,
-        referer:
-            payload.referer ||
-            null,
-        is_valid:
-            payload.is_valid !== false,
-        earning:
-            Number(
-                payload.earning || 0
-            )
-    };
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("link_views")
-        .insert(insert)
-        .select()
-        .single();
-    if (error) {
-        console.error(
-            "CREATE LINK VIEW:",
-            error
-        );
-        throw error;
-    }
-    return data;
+
+    return apiRequest(
+        "/api/link/view",
+        {
+            method: "POST",
+            body: JSON.stringify({
+                link_id:
+                    payload.link_id,
+
+                visitor_ip:
+                    payload.visitor_ip ||
+                    null,
+
+                country:
+                    payload.country ||
+                    null,
+
+                device:
+                    payload.device ||
+                    null,
+
+                browser:
+                    payload.browser ||
+                    null,
+
+                referer:
+                    payload.referer ||
+                    null
+            })
+        }
+    );
 }
+
 async function getLinkViews(linkId) {
     if (!linkId) return [];
+
     const {
         data,
         error
@@ -860,58 +1062,68 @@ async function getLinkViews(linkId) {
                 ascending: false
             }
         );
+
     if (error) {
         console.error(
             "GET LINK VIEWS:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
+
 // =====================================================
 // LINK ACCESS
 // =====================================================
+
 async function createLinkAccess(
     payload = {}
 ) {
+    /*
+     * Jangan membuat akses setelah
+     * pembayaran hanya dari frontend.
+     *
+     * Backend settlement yang harus
+     * membuat link_access.
+     */
     if (!payload.link_id) {
         throw new Error(
             "link_id wajib diisi"
         );
     }
-    const insert = {
-        link_id:
-            payload.link_id,
-        payment_id:
-            payload.payment_id ||
-            null,
-        buyer_id:
-            payload.buyer_id ||
-            null
-    };
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("link_access")
-        .insert(insert)
-        .select()
-        .single();
-    if (error) {
-        console.error(
-            "CREATE LINK ACCESS:",
-            error
-        );
-        throw error;
-    }
-    return data;
+
+    return apiRequest(
+        "/api/link/access",
+        {
+            method: "POST",
+            body: JSON.stringify({
+                link_id:
+                    payload.link_id,
+
+                payment_id:
+                    payload.payment_id ||
+                    null
+            })
+        }
+    );
 }
+
 async function getLinkAccess(
     linkId,
     buyerId = null
 ) {
     if (!linkId) return [];
+
+    const session =
+        await getSession();
+
+    if (!session?.user) {
+        return [];
+    }
+
     let query =
         supabaseClient
             .from("link_access")
@@ -920,134 +1132,130 @@ async function getLinkAccess(
                 "link_id",
                 linkId
             );
-    if (buyerId) {
-        query =
-            query.eq(
-                "buyer_id",
-                buyerId
-            );
-    }
+
+    /*
+     * Buyer ID tidak boleh sembarang.
+     */
+    query =
+        query.eq(
+            "buyer_id",
+            session.user.id
+        );
+
     const {
         data,
         error
     } = await query;
+
     if (error) {
         console.error(
             "GET LINK ACCESS:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
+
 // =====================================================
 // SELL FEE
 // =====================================================
+
 function calculateSellPayment(price) {
     const amount =
         Number(price || 0);
+
+    if (
+        !Number.isFinite(amount) ||
+        amount < 0
+    ) {
+        return {
+            fee: 0,
+            seller_receive: 0
+        };
+    }
+
     const fee =
         Math.floor(
             amount * 0.20
         );
-    const seller_receive =
-        amount - fee;
+
     return {
         fee,
-        seller_receive
+        seller_receive:
+            amount - fee
     };
 }
+
 // =====================================================
 // SELL ORDERS
 // =====================================================
+
 async function createSellOrder(
     payload = {}
 ) {
+    /*
+     * CREATE SELL ORDER harus melalui
+     * backend.
+     *
+     * Backend harus:
+     * - validasi seller
+     * - validasi link
+     * - validasi harga
+     * - hitung fee
+     * - hitung seller_receive
+     * - buat order
+     * - buat invoice
+     */
     if (!payload.link_id) {
         throw new Error(
             "link_id wajib diisi"
         );
     }
-    if (!payload.seller_id) {
-        throw new Error(
-            "seller_id wajib diisi"
-        );
-    }
-    const insert = {
-        link_id:
-            payload.link_id,
-        buyer_id:
-            payload.buyer_id ||
-            null,
-        seller_id:
-            payload.seller_id,
-        price:
-            Number(
-                payload.price || 0
-            ),
-        status:
-            payload.status ||
-            "pending",
-        payment_id:
-            payload.payment_id ||
-            null,
-        paid_at:
-            payload.paid_at ||
-            null,
-        fee:
-            Number(
-                payload.fee || 0
-            ),
-        seller_receive:
-            Number(
-                payload.seller_receive ||
-                0
-            ),
-        expires_at:
-            payload.expires_at ||
-            null,
-        invoice_id:
-            payload.invoice_id ||
-            null,
-        payment_url:
-            payload.payment_url ||
-            null,
-        qris_string:
-            payload.qris_string ||
-            null,
-        balance_processed:
-            payload.balance_processed ||
-            false,
-        quantity:
-            Number(
-                payload.quantity || 1
-            ),
-        views:
-            Number(
-                payload.views || 0
-            )
-    };
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("sell_orders")
-        .insert(insert)
-        .select()
-        .single();
-    if (error) {
-        console.error(
-            "CREATE SELL ORDER:",
-            error
-        );
-        throw error;
-    }
-    return data;
+
+    return apiRequest(
+        "/api/sell-order",
+        {
+            method: "POST",
+            body: JSON.stringify({
+                link_id:
+                    payload.link_id,
+
+                price:
+                    Number(
+                        payload.price || 0
+                    ),
+
+                quantity:
+                    Number(
+                        payload.quantity || 1
+                    )
+            })
+        }
+    );
 }
+
 async function getSellOrders(
     userId
 ) {
     if (!userId) return [];
+
+    const session =
+        await getSession();
+
+    if (!session?.user) {
+        return [];
+    }
+
+    if (
+        String(userId) !==
+        String(session.user.id)
+    ) {
+        return [];
+    }
+
     const {
         data,
         error
@@ -1075,7 +1283,7 @@ async function getSellOrders(
         `)
         .eq(
             "seller_id",
-            userId
+            session.user.id
         )
         .order(
             "created_at",
@@ -1083,78 +1291,57 @@ async function getSellOrders(
                 ascending: false
             }
         );
+
     if (error) {
         console.error(
             "GET SELL ORDERS:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
+
 // =====================================================
 // LINK PAYMENTS
 // =====================================================
+
 async function createLinkPayment(
     payload = {}
 ) {
+    /*
+     * Payment record dibuat backend.
+     */
     if (!payload.link_id) {
         throw new Error(
             "link_id wajib diisi"
         );
     }
-    if (
-        payload.amount ===
-        undefined
-    ) {
-        throw new Error(
-            "amount wajib diisi"
-        );
-    }
-    const insert = {
-        link_id:
-            payload.link_id,
-        invoice_id:
-            payload.invoice_id ||
-            null,
-        amount:
-            Number(
-                payload.amount
-            ),
-        qr_url:
-            payload.qr_url ||
-            null,
-        status:
-            payload.status ||
-            "WAITING",
-        expired_at:
-            payload.expired_at ||
-            null,
-        paid_at:
-            payload.paid_at ||
-            null
-    };
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("link_payments")
-        .insert(insert)
-        .select()
-        .single();
-    if (error) {
-        console.error(
-            "CREATE LINK PAYMENT:",
-            error
-        );
-        throw error;
-    }
-    return data;
+
+    return apiRequest(
+        "/api/link-payment",
+        {
+            method: "POST",
+            body: JSON.stringify({
+                link_id:
+                    payload.link_id,
+
+                amount:
+                    Number(
+                        payload.amount || 0
+                    )
+            })
+        }
+    );
 }
+
 async function getLinkPayment(
     invoiceId
 ) {
     if (!invoiceId) return null;
+
     const {
         data,
         error
@@ -1166,99 +1353,83 @@ async function getLinkPayment(
             invoiceId
         )
         .maybeSingle();
+
     if (error) {
         console.error(
             "GET LINK PAYMENT:",
             error
         );
+
         return null;
     }
+
     return data || null;
 }
+
 async function updateLinkPayment(
     invoiceId,
     payload = {}
 ) {
+    /*
+     * Payment status tidak boleh
+     * diubah bebas oleh frontend.
+     *
+     * Gunakan backend:
+     * POST /api/payment/webhook
+     * atau verify-payment.
+     */
     if (!invoiceId) {
         throw new Error(
             "invoiceId wajib diisi"
         );
     }
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("link_payments")
-        .update(payload)
-        .eq(
-            "invoice_id",
-            invoiceId
-        )
-        .select()
-        .single();
-    if (error) {
-        console.error(
-            "UPDATE LINK PAYMENT:",
-            error
-        );
-        throw error;
-    }
-    return data;
+
+    return apiRequest(
+        "/api/payment/verify",
+        {
+            method: "POST",
+            body: JSON.stringify({
+                invoice_id:
+                    invoiceId
+            })
+        }
+    );
 }
+
 // =====================================================
 // PAYMENT API
 // =====================================================
+
 async function createPayment(
     payload = {}
 ) {
-    const response =
-        await fetch(
-            `${API_URL}/api/create-payment`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-                body:
-                    JSON.stringify(
-                        payload
-                    )
-            }
-        );
-    const result =
-        await response.json();
-    if (!response.ok) {
-        throw new Error(
-            result.error ||
-            "Payment gagal"
-        );
-    }
-    return (
-        result.data ||
-        result
+    return apiRequest(
+        "/api/create-payment",
+        {
+            method: "POST",
+            body: JSON.stringify(
+                payload
+            )
+        }
     );
 }
+
 async function getPaymentStatus(
     orderId
 ) {
-    const response =
-        await fetch(
-            `${API_URL}/api/payment-status/${encodeURIComponent(orderId)}`
-        );
-    const result =
-        await response.json();
-    if (!response.ok) {
+    if (!orderId) {
         throw new Error(
-            result.error ||
-            "Status pembayaran gagal"
+            "orderId wajib diisi"
         );
     }
-    return (
-        result.data ||
-        result
+
+    return apiRequest(
+        `/api/payment-status/${encodeURIComponent(
+            orderId
+        )}`
     );
 }
+
 async function checkSellPayment(
     invoiceId
 ) {
@@ -1267,39 +1438,30 @@ async function checkSellPayment(
             "Invoice kosong"
         );
     }
-    const response =
-        await fetch(
-            `${API_URL}/api/check-payment?invoice_id=${encodeURIComponent(invoiceId)}`
-        );
-    const result =
-        await response.json();
-    if (!response.ok) {
-        throw new Error(
-            result.error ||
-            "Check pembayaran gagal"
-        );
-    }
-    return (
-        result.data ||
-        result
+
+    return apiRequest(
+        `/api/check-payment?invoice_id=${encodeURIComponent(
+            invoiceId
+        )}`
     );
 }
+
 // =====================================================
 // PAYMENT REQUESTS
 // =====================================================
+
 async function createPaymentRequest(
     payload = {}
 ) {
-    if (!payload.user_id) {
-        throw new Error(
-            "user_id wajib diisi"
-        );
-    }
+    const session =
+        await requireSession();
+
     if (!payload.payment_name) {
         throw new Error(
             "payment_name wajib diisi"
         );
     }
+
     const {
         data,
         error
@@ -1307,64 +1469,101 @@ async function createPaymentRequest(
         .from("payment_requests")
         .insert({
             user_id:
-                payload.user_id,
+                session.user.id,
+
             payment_name:
                 payload.payment_name,
+
             status:
-                payload.status ||
                 "pending"
         })
         .select()
         .single();
+
     if (error) {
         console.error(
             "CREATE PAYMENT REQUEST:",
             error
         );
+
         throw error;
     }
+
     return data;
 }
+
 async function getPaymentRequests(
     userId = null
 ) {
-    let query =
-        supabaseClient
-            .from("payment_requests")
-            .select("*")
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
-    if (userId) {
-        query =
-            query.eq(
-                "user_id",
-                userId
-            );
+    const session =
+        await getSession();
+
+    if (!session?.user) {
+        return [];
     }
+
+    const targetUser =
+        userId || session.user.id;
+
+    if (
+        String(targetUser) !==
+        String(session.user.id)
+    ) {
+        return [];
+    }
+
     const {
         data,
         error
-    } = await query;
+    } = await supabaseClient
+        .from("payment_requests")
+        .select("*")
+        .eq(
+            "user_id",
+            session.user.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending: false
+            }
+        );
+
     if (error) {
         console.error(
             "GET PAYMENT REQUESTS:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
+
 // =====================================================
 // WALLET
 // =====================================================
+
 async function getWalletTransactions(
     userId
 ) {
     if (!userId) return [];
+
+    const session =
+        await getSession();
+
+    if (!session?.user) {
+        return [];
+    }
+
+    if (
+        String(userId) !==
+        String(session.user.id)
+    ) {
+        return [];
+    }
+
     const {
         data,
         error
@@ -1382,7 +1581,7 @@ async function getWalletTransactions(
         `)
         .eq(
             "user_id",
-            userId
+            session.user.id
         )
         .order(
             "created_at",
@@ -1390,300 +1589,212 @@ async function getWalletTransactions(
                 ascending: false
             }
         );
+
     if (error) {
         console.error(
             "GET WALLET:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
+
+/*
+ * JANGAN izinkan frontend membuat
+ * wallet transaction secara langsung.
+ *
+ * Semua transaksi saldo berasal
+ * dari backend/RPC.
+ */
 async function createWalletTransaction(
     payload = {}
 ) {
-    if (!payload.user_id) {
-        throw new Error(
-            "user_id wajib diisi"
-        );
-    }
-    if (!payload.type) {
-        throw new Error(
-            "type wajib diisi"
-        );
-    }
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("wallet_transactions")
-        .insert({
-            user_id:
-                payload.user_id,
-            type:
-                payload.type,
-            amount:
-                Number(
-                    payload.amount || 0
-                ),
-            title:
-                payload.title ||
-                null,
-            description:
-                payload.description ||
-                null,
-            status:
-                payload.status ||
-                "success"
-        })
-        .select()
-        .single();
-    if (error) {
-        console.error(
-            "CREATE WALLET:",
-            error
-        );
-        throw error;
-    }
-    return data;
+    return apiRequest(
+        "/api/wallet/transaction",
+        {
+            method: "POST",
+            body: JSON.stringify({
+                type:
+                    payload.type,
+
+                title:
+                    payload.title ||
+                    null,
+
+                description:
+                    payload.description ||
+                    null
+            })
+        }
+    );
 }
+
 // =====================================================
 // TRANSACTIONS
 // =====================================================
+
 async function getTransactions(
     userId = null
 ) {
-    let query =
-        supabaseClient
-            .from("transactions")
-            .select(`
-                id,
-                user_id,
-                type,
-                amount,
-                description,
-                created_at,
-                title,
-                status
-            `)
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
-    if (userId) {
-        query =
-            query.eq(
-                "user_id",
-                userId
-            );
-    }
-    const {
-        data,
-        error
-    } = await query;
-    if (error) {
-        console.error(
-            "GET TRANSACTIONS:",
-            error
-        );
+    const session =
+        await getSession();
+
+    if (!session?.user) {
         return [];
     }
-    return data || [];
-}
-async function createTransaction(
-    payload = {}
-) {
-    if (!payload.user_id) {
-        throw new Error(
-            "user_id wajib diisi"
-        );
+
+    const targetUser =
+        userId || session.user.id;
+
+    if (
+        String(targetUser) !==
+        String(session.user.id)
+    ) {
+        return [];
     }
+
     const {
         data,
         error
     } = await supabaseClient
         .from("transactions")
-        .insert({
-            user_id:
-                payload.user_id,
-            type:
-                payload.type ||
-                "other",
-            amount:
-                Number(
-                    payload.amount || 0
-                ),
-            description:
-                payload.description ||
-                null,
-            title:
-                payload.title ||
-                "Transaction",
-            status:
-                payload.status ||
-                "success"
-        })
-        .select()
-        .single();
+        .select(`
+            id,
+            user_id,
+            type,
+            amount,
+            description,
+            created_at,
+            title,
+            status
+        `)
+        .eq(
+            "user_id",
+            session.user.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending: false
+            }
+        );
+
     if (error) {
         console.error(
-            "CREATE TRANSACTION:",
+            "GET TRANSACTIONS:",
             error
         );
-        throw error;
-    }
-    return data;
-}
-// =====================================================
-// WITHDRAWS
-// Legacy / Internal Withdraw Table
-// =====================================================
-async function getWithdraws(
-    userId = null
-) {
-    let query =
-        supabaseClient
-            .from("withdraws")
-            .select(`
-                id,
-                user_id,
-                method,
-                account_number,
-                amount,
-                status,
-                created_at,
-                type,
-                fee
-            `)
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
-    if (userId) {
-        query =
-            query.eq(
-                "user_id",
-                userId
-            );
-    }
-    const {
-        data,
-        error
-    } = await query;
-    if (error) {
-        console.error(
-            "GET WITHDRAWS:",
-            error
-        );
+
         return [];
     }
+
     return data || [];
 }
-async function createWithdraw(
+
+async function createTransaction(
     payload = {}
 ) {
-    if (!payload.user_id) {
-        throw new Error(
-            "user_id wajib diisi"
-        );
+    return apiRequest(
+        "/api/transaction",
+        {
+            method: "POST",
+            body: JSON.stringify({
+                type:
+                    payload.type ||
+                    "other",
+
+                title:
+                    payload.title ||
+                    "Transaction",
+
+                description:
+                    payload.description ||
+                    null
+            })
+        }
+    );
+}
+
+// =====================================================
+// WITHDRAWALS
+// =====================================================
+
+async function getWithdrawals(
+    userId = null
+) {
+    const session =
+        await getSession();
+
+    if (!session?.user) {
+        return [];
     }
+
+    const targetUser =
+        userId || session.user.id;
+
+    if (
+        String(targetUser) !==
+        String(session.user.id)
+    ) {
+        return [];
+    }
+
     const {
         data,
         error
     } = await supabaseClient
-        .from("withdraws")
-        .insert({
-            user_id:
-                payload.user_id,
-            method:
-                payload.method,
-            account_number:
-                payload.account_number,
-            amount:
-                Number(
-                    payload.amount || 0
-                ),
-            status:
-                payload.status ||
-                "pending",
-            type:
-                payload.type ||
-                "withdraw",
-            fee:
-                Number(
-                    payload.fee || 0
-                )
-        })
-        .select()
-        .single();
-    if (error) {
-        console.error(
-            "CREATE WITHDRAW:",
-            error
+        .from("withdrawals")
+        .select(`
+            id,
+            user_id,
+            amount,
+            method,
+            account_name,
+            account_number,
+            status,
+            created_at,
+            paid_at
+        `)
+        .eq(
+            "user_id",
+            session.user.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending: false
+            }
         );
-        throw error;
-    }
-    return data;
-}
-// =====================================================
-// WITHDRAWALS
-// Main Withdrawal Table
-// =====================================================
-async function getWithdrawals(
-    userId = null
-) {
-    let query =
-        supabaseClient
-            .from("withdrawals")
-            .select(`
-                id,
-                user_id,
-                amount,
-                method,
-                account_name,
-                account_number,
-                status,
-                created_at,
-                paid_at
-            `)
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
-    if (userId) {
-        query =
-            query.eq(
-                "user_id",
-                userId
-            );
-    }
-    const {
-        data,
-        error
-    } = await query;
+
     if (error) {
         console.error(
             "GET WITHDRAWALS:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
+
 async function createWithdrawal(
     payload = {}
 ) {
-    if (!payload.user_id) {
-        throw new Error(
-            "user_id wajib diisi"
-        );
-    }
+    /*
+     * Withdrawal WAJIB backend.
+     *
+     * Backend:
+     * 1. cek session
+     * 2. cek balance
+     * 3. lock balance
+     * 4. buat withdrawal
+     * 5. kurangi saldo
+     * 6. buat wallet transaction
+     */
     if (
         payload.amount ===
         undefined
@@ -1692,52 +1803,80 @@ async function createWithdrawal(
             "amount wajib diisi"
         );
     }
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("withdrawals")
-        .insert({
-            user_id:
-                payload.user_id,
-            amount:
-                Number(
-                    payload.amount
-                ),
-            method:
-                payload.method ||
-                null,
-            account_name:
-                payload.account_name ||
-                null,
-            account_number:
-                payload.account_number ||
-                null,
-            status:
-                payload.status ||
-                "pending",
-            paid_at:
-                payload.paid_at ||
-                null
-        })
-        .select()
-        .single();
-    if (error) {
-        console.error(
-            "CREATE WITHDRAWAL:",
-            error
-        );
-        throw error;
-    }
-    return data;
+
+    return apiRequest(
+        "/api/withdrawals",
+        {
+            method: "POST",
+            body: JSON.stringify({
+                amount:
+                    Number(
+                        payload.amount
+                    ),
+
+                method:
+                    payload.method ||
+                    null,
+
+                account_name:
+                    payload.account_name ||
+                    null,
+
+                account_number:
+                    payload.account_number ||
+                    null
+            })
+        }
+    );
 }
+
+// =====================================================
+// LEGACY WITHDRAWS
+// =====================================================
+
+async function getWithdraws(
+    userId = null
+) {
+    /*
+     * Legacy wrapper.
+     *
+     * Gunakan withdrawals untuk
+     * sistem baru.
+     */
+    return getWithdrawals(userId);
+}
+
+async function createWithdraw(
+    payload = {}
+) {
+    return createWithdrawal(
+        payload
+    );
+}
+
 // =====================================================
 // PAYMENT METHODS
 // =====================================================
+
 async function getPaymentMethods(
     userId
 ) {
     if (!userId) return [];
+
+    const session =
+        await getSession();
+
+    if (!session?.user) {
+        return [];
+    }
+
+    if (
+        String(userId) !==
+        String(session.user.id)
+    ) {
+        return [];
+    }
+
     const {
         data,
         error
@@ -1754,7 +1893,7 @@ async function getPaymentMethods(
         `)
         .eq(
             "user_id",
-            userId
+            session.user.id
         )
         .order(
             "created_at",
@@ -1762,23 +1901,25 @@ async function getPaymentMethods(
                 ascending: false
             }
         );
+
     if (error) {
         console.error(
             "GET PAYMENT METHODS:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
+
 async function createPaymentMethod(
     payload = {}
 ) {
-    if (!payload.user_id) {
-        throw new Error(
-            "user_id wajib diisi"
-        );
-    }
+    const session =
+        await requireSession();
+
     const {
         data,
         error
@@ -1786,31 +1927,39 @@ async function createPaymentMethod(
         .from("payment_methods")
         .insert({
             user_id:
-                payload.user_id,
+                session.user.id,
+
             bank_name:
                 payload.bank_name ||
                 null,
+
             account_name:
                 payload.account_name ||
                 null,
+
             account_number:
                 payload.account_number ||
                 null,
+
             method:
                 payload.method ||
                 null
         })
         .select()
         .single();
+
     if (error) {
         console.error(
             "CREATE PAYMENT METHOD:",
             error
         );
+
         throw error;
     }
+
     return data;
 }
+
 async function deletePaymentMethod(
     id
 ) {
@@ -1819,6 +1968,10 @@ async function deletePaymentMethod(
             "Payment method ID wajib diisi"
         );
     }
+
+    const session =
+        await requireSession();
+
     const {
         error
     } = await supabaseClient
@@ -1827,15 +1980,28 @@ async function deletePaymentMethod(
         .eq(
             "id",
             id
+        )
+        .eq(
+            "user_id",
+            session.user.id
         );
+
     if (error) {
+        console.error(
+            "DELETE PAYMENT METHOD:",
+            error
+        );
+
         throw error;
     }
+
     return true;
 }
+
 // =====================================================
 // DAILY REPORTS
 // =====================================================
+
 async function getDashboardReport() {
     const {
         data,
@@ -1849,19 +2015,35 @@ async function getDashboardReport() {
                 ascending: false
             }
         );
+
     if (error) {
         console.error(
             "GET DASHBOARD REPORT:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
+
 async function getReports(
     userId
 ) {
     if (!userId) return [];
+
+    const session =
+        await getSession();
+
+    if (
+        !session?.user ||
+        String(userId) !==
+        String(session.user.id)
+    ) {
+        return [];
+    }
+
     const {
         data,
         error
@@ -1881,7 +2063,7 @@ async function getReports(
         `)
         .eq(
             "user_id",
-            userId
+            session.user.id
         )
         .order(
             "report_date",
@@ -1890,87 +2072,35 @@ async function getReports(
             }
         )
         .limit(30);
+
     if (error) {
         console.error(
             "GET REPORTS:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
-async function upsertDailyReport(
-    userId,
-    reportDate,
-    payload = {}
-) {
-    if (!userId) {
-        throw new Error(
-            "userId wajib diisi"
-        );
-    }
-    if (!reportDate) {
-        throw new Error(
-            "reportDate wajib diisi"
-        );
-    }
-    const row = {
-        user_id:
-            userId,
-        report_date:
-            reportDate,
-        ads_views:
-            Number(
-                payload.ads_views || 0
-            ),
-        ads_clicks:
-            Number(
-                payload.ads_clicks || 0
-            ),
-        ads_earnings:
-            Number(
-                payload.ads_earnings || 0
-            ),
-        sell_views:
-            Number(
-                payload.sell_views || 0
-            ),
-        sell_clicks:
-            Number(
-                payload.sell_clicks || 0
-            ),
-        sell_earnings:
-            Number(
-                payload.sell_earnings || 0
-            )
-    };
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("daily_reports")
-        .upsert(
-            row,
-            {
-                onConflict:
-                    "user_id,report_date"
-            }
-        )
-        .select()
-        .single();
-    if (error) {
-        console.error(
-            "UPSERT DAILY REPORT:",
-            error
-        );
-        throw error;
-    }
-    return data;
-}
+
 async function getTodayReport(
     userId
 ) {
     if (!userId) return null;
+
+    const session =
+        await getSession();
+
+    if (
+        !session?.user ||
+        String(userId) !==
+        String(session.user.id)
+    ) {
+        return null;
+    }
+
     const date =
         new Intl.DateTimeFormat(
             "en-CA",
@@ -1987,6 +2117,7 @@ async function getTodayReport(
         ).format(
             new Date()
         );
+
     const {
         data,
         error
@@ -1995,25 +2126,71 @@ async function getTodayReport(
         .select("*")
         .eq(
             "user_id",
-            userId
+            session.user.id
         )
         .eq(
             "report_date",
             date
         )
         .maybeSingle();
+
     if (error) {
         console.error(
             "GET TODAY REPORT:",
             error
         );
+
         return null;
     }
+
     return data || null;
 }
+
+/*
+ * Daily report sebaiknya dibuat
+ * oleh backend/worker, bukan user.
+ */
+async function upsertDailyReport(
+    userId,
+    reportDate,
+    payload = {}
+) {
+    return apiRequest(
+        "/api/reports/daily",
+        {
+            method: "POST",
+            body: JSON.stringify({
+                report_date:
+                    reportDate,
+
+                ads_views:
+                    Number(
+                        payload.ads_views || 0
+                    ),
+
+                ads_clicks:
+                    Number(
+                        payload.ads_clicks || 0
+                    ),
+
+                sell_views:
+                    Number(
+                        payload.sell_views || 0
+                    ),
+
+                sell_clicks:
+                    Number(
+                        payload.sell_clicks || 0
+                    )
+            })
+        }
+    );
+}
+
 // =====================================================
 // STATISTICS
 // =====================================================
+
 async function getStatistics(
     userId
 ) {
@@ -2034,6 +2211,7 @@ async function getStatistics(
             totalSellEarn: 0
         };
     }
+
     const [
         links,
         orders
@@ -2041,6 +2219,7 @@ async function getStatistics(
         getLinks(userId),
         getSellOrders(userId)
     ]);
+
     const paidOrders =
         orders.filter(
             order =>
@@ -2055,30 +2234,44 @@ async function getStatistics(
                     ).toLowerCase()
                 )
         );
+
     const adsLinks =
         links.filter(
             link =>
                 String(
                     link.type
                 ).toLowerCase() ===
+                "ads" ||
+                String(
+                    link.link_type
+                ).toLowerCase() ===
                 "ads"
         );
+
     const sellLinks =
         links.filter(
             link =>
                 String(
                     link.type
                 ).toLowerCase() ===
+                "sell" ||
+                String(
+                    link.link_type
+                ).toLowerCase() ===
                 "sell"
         );
+
     return {
         links,
         orders,
         paidOrders,
+
         totalAdsLinks:
             adsLinks.length,
+
         totalSellLinks:
             sellLinks.length,
+
         totalAdsViews:
             adsLinks.reduce(
                 (
@@ -2092,6 +2285,7 @@ async function getStatistics(
                     ),
                 0
             ),
+
         totalAdsClicks:
             adsLinks.reduce(
                 (
@@ -2105,6 +2299,7 @@ async function getStatistics(
                     ),
                 0
             ),
+
         totalSellViews:
             sellLinks.reduce(
                 (
@@ -2118,6 +2313,7 @@ async function getStatistics(
                     ),
                 0
             ),
+
         totalSellClicks:
             sellLinks.reduce(
                 (
@@ -2131,6 +2327,7 @@ async function getStatistics(
                     ),
                 0
             ),
+
         totalSold:
             paidOrders.reduce(
                 (
@@ -2144,6 +2341,7 @@ async function getStatistics(
                     ),
                 0
             ),
+
         totalSellPrice:
             paidOrders.reduce(
                 (
@@ -2157,6 +2355,7 @@ async function getStatistics(
                     ),
                 0
             ),
+
         totalSellFee:
             paidOrders.reduce(
                 (
@@ -2170,6 +2369,7 @@ async function getStatistics(
                     ),
                 0
             ),
+
         totalSellEarn:
             paidOrders.reduce(
                 (
@@ -2185,9 +2385,11 @@ async function getStatistics(
             )
     };
 }
+
 // =====================================================
 // ANNOUNCEMENTS
 // =====================================================
+
 async function getAnnouncements() {
     const {
         data,
@@ -2207,22 +2409,39 @@ async function getAnnouncements() {
                 ascending: false
             }
         );
+
     if (error) {
         console.error(
             "GET ANNOUNCEMENTS:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
+
 // =====================================================
 // NOTIFICATIONS
 // =====================================================
+
 async function getNotifications(
     userId
 ) {
     if (!userId) return [];
+
+    const session =
+        await getSession();
+
+    if (
+        !session?.user ||
+        String(userId) !==
+        String(session.user.id)
+    ) {
+        return [];
+    }
+
     const {
         data,
         error
@@ -2231,7 +2450,7 @@ async function getNotifications(
         .select("*")
         .eq(
             "user_id",
-            userId
+            session.user.id
         )
         .order(
             "created_at",
@@ -2239,15 +2458,19 @@ async function getNotifications(
                 ascending: false
             }
         );
+
     if (error) {
         console.error(
             "GET NOTIFICATIONS:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
+
 async function markNotificationRead(
     id
 ) {
@@ -2256,6 +2479,10 @@ async function markNotificationRead(
             "Notification ID wajib diisi"
         );
     }
+
+    const session =
+        await requireSession();
+
     const {
         data,
         error
@@ -2268,16 +2495,24 @@ async function markNotificationRead(
             "id",
             id
         )
+        .eq(
+            "user_id",
+            session.user.id
+        )
         .select()
         .single();
+
     if (error) {
         throw error;
     }
+
     return data;
 }
+
 // =====================================================
-// CPM MARKET
+// CPM
 // =====================================================
+
 async function getCPMMarket() {
     const {
         data,
@@ -2300,18 +2535,19 @@ async function getCPMMarket() {
                 ascending: false
             }
         );
+
     if (error) {
         console.error(
             "GET CPM MARKET:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
-// =====================================================
-// CPM RATE
-// =====================================================
+
 async function getCPMRate(
     country = "Indonesia"
 ) {
@@ -2334,20 +2570,21 @@ async function getCPMRate(
             country
         )
         .maybeSingle();
+
     if (error) {
         console.error(
             "GET CPM RATE:",
             error
         );
+
         return 0;
     }
+
     return Number(
         data?.cpm || 0
     );
 }
-// =====================================================
-// CPM SETTINGS
-// =====================================================
+
 async function getCPMSettings(
     country = null
 ) {
@@ -2367,6 +2604,7 @@ async function getCPMSettings(
                     ascending: true
                 }
             );
+
     if (country) {
         query =
             query.eq(
@@ -2374,61 +2612,89 @@ async function getCPMSettings(
                 country
             );
     }
+
     const {
         data,
         error
     } = await query;
+
     if (error) {
         console.error(
             "GET CPM SETTINGS:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
+
 // =====================================================
 // REFERRALS
 // =====================================================
+
 async function getReferrals(
     userId = null
 ) {
-    let query =
-        supabaseClient
-            .from("referrals")
-            .select("*")
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
-    if (userId) {
-        query =
-            query.or(
-                `referrer_id.eq.${userId},referred_id.eq.${userId}`
-            );
+    const session =
+        await getSession();
+
+    if (!session?.user) {
+        return [];
     }
+
+    const targetUser =
+        userId || session.user.id;
+
+    if (
+        String(targetUser) !==
+        String(session.user.id)
+    ) {
+        return [];
+    }
+
     const {
         data,
         error
-    } = await query;
+    } = await supabaseClient
+        .from("referrals")
+        .select("*")
+        .or(
+            `referrer_id.eq.${session.user.id},referred_id.eq.${session.user.id}`
+        )
+        .order(
+            "created_at",
+            {
+                ascending: false
+            }
+        );
+
     if (error) {
         console.error(
             "GET REFERRALS:",
             error
         );
+
         return [];
     }
+
     return data || [];
 }
+
 // =====================================================
 // EXPORT
 // =====================================================
+
 window.database = {
+
     // Supabase
     supabase:
         supabaseClient,
+
+    // Session
+    getSession,
+
     // Auth / Users
     getUser,
     getUsers,
@@ -2437,12 +2703,15 @@ window.database = {
     getProfiles,
     updateProfile,
     logout,
+
     // Profiles
     getUserProfile,
     updateUserProfile,
+
     // Sell Access
     getSellAccess,
     canUseSellLink,
+
     // Links
     getLinks,
     getSellLinks,
@@ -2451,63 +2720,81 @@ window.database = {
     createLink,
     updateLink,
     deleteLink,
+
     // Link Views
     createLinkView,
     getLinkViews,
+
     // Link Access
     createLinkAccess,
     getLinkAccess,
+
     // Sell
     calculateSellPayment,
     createSellOrder,
     getSellOrders,
+
     // Link Payments
     createLinkPayment,
     getLinkPayment,
     updateLinkPayment,
+
     // Payment API
     createPayment,
     getPaymentStatus,
     checkSellPayment,
+
     // Payment Requests
     createPaymentRequest,
     getPaymentRequests,
+
     // Wallet
     getWalletTransactions,
     createWalletTransaction,
+
     // Transactions
     getTransactions,
     createTransaction,
-    // Withdraws
+
+    // Withdraws legacy
     getWithdraws,
     createWithdraw,
+
     // Withdrawals
     getWithdrawals,
     createWithdrawal,
+
     // Payment Methods
     getPaymentMethods,
     createPaymentMethod,
     deletePaymentMethod,
+
     // Reports
     getDashboardReport,
     getReports,
     getTodayReport,
     upsertDailyReport,
+
     // Statistics
     getStatistics,
+
     // Announcements
     getAnnouncements,
+
     // Notifications
     getNotifications,
     markNotificationRead,
+
     // CPM
     getCPMMarket,
     getCPMRate,
     getCPMSettings,
+
     // Referrals
     getReferrals
 };
+
 console.log(
-    "DATABASE JS READY",
+    "CLICK2PAY DATABASE READY",
     window.database
 );
