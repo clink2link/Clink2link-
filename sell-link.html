@@ -384,48 +384,94 @@
 ========================= -->
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
+
+    /* =========================
+       LOAD NAVBAR
+    ========================= */
     try {
         const navbarResponse =
             await fetch("components/navbar.html");
+
         if (navbarResponse.ok) {
+
             const navbarHTML =
                 await navbarResponse.text();
+
             const navbar =
                 document.getElementById("navbar");
+
             if (navbar) {
                 navbar.innerHTML = navbarHTML;
+
+                /* INIT NAVBAR */
                 if (typeof c2pInit === "function") {
                     c2pInit();
                 }
+
+                /* INIT / REFRESH LANGUAGE */
+                if (
+                    window.c2pLanguage &&
+                    typeof window.c2pLanguage.refreshLanguage === "function"
+                ) {
+                    window.c2pLanguage.refreshLanguage();
+                }
             }
         }
+
     } catch (error) {
         console.error(
             "NAVBAR LOAD ERROR:",
             error
         );
     }
+
+
+    /* =========================
+       LOAD FOOTER
+    ========================= */
     try {
+
         const footerResponse =
             await fetch("components/footer.html");
+
         if (footerResponse.ok) {
+
             const footerHTML =
                 await footerResponse.text();
+
             const footer =
                 document.getElementById("footer");
+
             if (footer) {
-                footer.innerHTML = footerHTML;
-                if (typeof c2pFooterInit === "function") {
+
+                footer.innerHTML =
+                    footerHTML;
+
+                if (
+                    typeof c2pFooterInit === "function"
+                ) {
                     c2pFooterInit();
+                }
+
+                /* REFRESH LANGUAGE */
+                if (
+                    window.c2pLanguage &&
+                    typeof window.c2pLanguage.refreshLanguage === "function"
+                ) {
+                    window.c2pLanguage.refreshLanguage();
                 }
             }
         }
+
     } catch (error) {
+
         console.error(
             "FOOTER LOAD ERROR:",
             error
         );
+
     }
+
 });
 </script>
 </body>
