@@ -97,20 +97,28 @@ function safeUrl(value) {
 
 // ======================================================
 // GENERATE SHORT CODE
+// RANDOM 2–5 KARAKTER
 // ======================================================
 
-function generateShortCode(length = 8) {
+function generateShortCode() {
+
     const chars =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    const array = new Uint32Array(length);
+    // Panjang random: 2, 3, 4, atau 5
+    const length =
+        Math.floor(Math.random() * 4) + 2;
+
+    const array =
+        new Uint32Array(length);
 
     crypto.getRandomValues(array);
 
     let result = "";
 
     for (let i = 0; i < length; i++) {
-        result += chars[array[i] % chars.length];
+        result +=
+            chars[array[i] % chars.length];
     }
 
     return result;
@@ -882,11 +890,11 @@ async function createAdsLink(event) {
 
         do {
             shortCode =
-                generateShortCode(8);
+                generateShortCode();
 
             attempts++;
 
-            if (attempts > 20) {
+            if (attempts > 50) {
                 throw new Error(
                     "Gagal membuat kode link unik."
                 );
