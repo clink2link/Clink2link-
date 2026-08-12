@@ -1,6 +1,6 @@
 // ======================================================
 // CLICK2PAY ADS LINKS
-// CLEAN / DATABASE VERSION
+// DATABASE-ALIGNED VERSION
 // ADS LINK = NO FEE
 // ======================================================
 
@@ -39,18 +39,33 @@ let filterButtons = [];
 // ======================================================
 
 function initElements() {
-    linkList = document.getElementById("linkList");
-    totalLink = document.getElementById("totalLink");
-    totalView = document.getElementById("totalView");
-    totalClick = document.getElementById("totalClick");
-    totalEarning = document.getElementById("totalEarning");
+    linkList =
+        document.getElementById("linkList");
 
-    searchInput = document.getElementById("searchInput");
-    createForm = document.getElementById("createForm");
+    totalLink =
+        document.getElementById("totalLink");
 
-    filterButtons = Array.from(
-        document.querySelectorAll(".link-filter button")
-    );
+    totalView =
+        document.getElementById("totalView");
+
+    totalClick =
+        document.getElementById("totalClick");
+
+    totalEarning =
+        document.getElementById("totalEarning");
+
+    searchInput =
+        document.getElementById("searchInput");
+
+    createForm =
+        document.getElementById("createForm");
+
+    filterButtons =
+        Array.from(
+            document.querySelectorAll(
+                ".link-filter button"
+            )
+        );
 }
 
 // ======================================================
@@ -58,7 +73,10 @@ function initElements() {
 // ======================================================
 
 function escapeHtml(value) {
-    if (value === null || value === undefined) {
+    if (
+        value === null ||
+        value === undefined
+    ) {
         return "";
     }
 
@@ -80,7 +98,10 @@ function safeUrl(value) {
     }
 
     try {
-        const url = new URL(String(value).trim());
+        const url =
+            new URL(
+                String(value).trim()
+            );
 
         if (
             url.protocol !== "http:" &&
@@ -90,38 +111,10 @@ function safeUrl(value) {
         }
 
         return url.href;
+
     } catch {
         return "";
     }
-}
-
-// ======================================================
-// GENERATE SHORT CODE
-// RANDOM 2–5 KARAKTER
-// ======================================================
-
-function generateShortCode() {
-
-    const chars =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    // Panjang random: 2, 3, 4, atau 5
-    const length =
-        Math.floor(Math.random() * 4) + 2;
-
-    const array =
-        new Uint32Array(length);
-
-    crypto.getRandomValues(array);
-
-    let result = "";
-
-    for (let i = 0; i < length; i++) {
-        result +=
-            chars[array[i] % chars.length];
-    }
-
-    return result;
 }
 
 // ======================================================
@@ -131,10 +124,13 @@ function generateShortCode() {
 async function getCurrentUser() {
     try {
         if (
-            typeof database === "undefined" ||
+            typeof database ===
+            "undefined" ||
             !database
         ) {
-            throw new Error("Database belum tersedia.");
+            throw new Error(
+                "Database belum tersedia."
+            );
         }
 
         if (
@@ -163,11 +159,15 @@ async function getCurrentUser() {
 
         currentUser = {
             id: profile.id,
-            username: profile.username || ""
+            username:
+                profile.username || ""
         };
 
-        window.currentUser = currentUser;
-        window.currentProfile = currentProfile;
+        window.currentUser =
+            currentUser;
+
+        window.currentProfile =
+            currentProfile;
 
         return currentUser;
 
@@ -221,10 +221,13 @@ function getShortCode(link) {
 
 function getShortUrl(link) {
     if (link?.short_url) {
-        return String(link.short_url);
+        return String(
+            link.short_url
+        );
     }
 
-    const code = getShortCode(link);
+    const code =
+        getShortCode(link);
 
     if (!code) {
         return "";
@@ -262,9 +265,12 @@ function getNumber(...values) {
             continue;
         }
 
-        const number = Number(value);
+        const number =
+            Number(value);
 
-        if (Number.isFinite(number)) {
+        if (
+            Number.isFinite(number)
+        ) {
             return number;
         }
     }
@@ -282,7 +288,9 @@ function getHostname(url) {
     }
 
     try {
-        return new URL(url).hostname;
+        return new URL(url)
+            .hostname;
+
     } catch {
         return "-";
     }
@@ -297,9 +305,14 @@ function formatDate(date) {
         return "-";
     }
 
-    const parsed = new Date(date);
+    const parsed =
+        new Date(date);
 
-    if (Number.isNaN(parsed.getTime())) {
+    if (
+        Number.isNaN(
+            parsed.getTime()
+        )
+    ) {
         return "-";
     }
 
@@ -314,11 +327,77 @@ function formatDate(date) {
 }
 
 // ======================================================
+// CHECK EXPIRED
+// ======================================================
+
+function isLinkExpired(link) {
+    if (!link) {
+        return false;
+    }
+
+    const status =
+        String(
+            link.status || ""
+        )
+            .toLowerCase()
+            .trim();
+
+    if (
+        status === "expired"
+    ) {
+        return true;
+    }
+
+    if (!link.expired_at) {
+        return false;
+    }
+
+    const expiredAt =
+        new Date(
+            link.expired_at
+        );
+
+    if (
+        Number.isNaN(
+            expiredAt.getTime()
+        )
+    ) {
+        return false;
+    }
+
+    return (
+        expiredAt.getTime() <=
+        Date.now()
+    );
+}
+
+// ======================================================
 // GET ADS EARNING
 // ======================================================
 
 function getAdsEarning() {
+    // Prioritas total earnings dari seluruh Ads Link.
+    const linkEarning =
+        allLinks.reduce(
+            (
+                total,
+                link
+            ) =>
+                total +
+                getNumber(
+                    link?.total_earnings,
+                    link?.earnings
+                ),
+            0
+        );
+
+    if (linkEarning > 0) {
+        return linkEarning;
+    }
+
+    // Fallback dari profile users.
     return getNumber(
+        currentProfile?.total_ads,
         currentProfile?.ads_earning_total,
         currentProfile?.total_ads_earning,
         currentProfile?.ads_earnings
@@ -330,7 +409,8 @@ function getAdsEarning() {
 // ======================================================
 
 function updateStats() {
-    const total = allLinks.length;
+    const total =
+        allLinks.length;
 
     let views = 0;
     let clicks = 0;
@@ -349,28 +429,32 @@ function updateStats() {
 
     if (totalLink) {
         totalLink.textContent =
-            total.toLocaleString("id-ID");
+            total.toLocaleString(
+                "id-ID"
+            );
     }
 
     if (totalView) {
         totalView.textContent =
-            views.toLocaleString("id-ID");
+            views.toLocaleString(
+                "id-ID"
+            );
     }
 
     if (totalClick) {
         totalClick.textContent =
-            clicks.toLocaleString("id-ID");
+            clicks.toLocaleString(
+                "id-ID"
+            );
     }
-
-    // ------------------------------------------
-    // ADS EARNING
-    // NO FEE / NO DEDUCTION
-    // ------------------------------------------
 
     if (totalEarning) {
         totalEarning.textContent =
             "Rp " +
-            getAdsEarning().toLocaleString("id-ID");
+            getAdsEarning()
+                .toLocaleString(
+                    "id-ID"
+                );
     }
 }
 
@@ -380,7 +464,8 @@ function updateStats() {
 
 async function loadLinks() {
     try {
-        const user = await getCurrentUser();
+        const user =
+            await getCurrentUser();
 
         if (!user) {
             allLinks = [];
@@ -406,26 +491,30 @@ async function loadLinks() {
         }
 
         if (
-            typeof database.getLinks !==
+            typeof database.getAdsLinks !==
             "function"
         ) {
             throw new Error(
-                "database.getLinks() tidak tersedia."
+                "database.getAdsLinks() tidak tersedia."
             );
         }
 
+        // =================================================
+        // LANGSUNG AMBIL ADS LINK DARI DATABASE.JS
+        // =================================================
+
         const data =
-            await database.getLinks(user.id);
+            await database.getAdsLinks(
+                user.id
+            );
 
         allLinks =
             Array.isArray(data)
-                ? data.filter(
-                    link =>
-                        getLinkType(link) === "ads"
-                )
+                ? data
                 : [];
 
-        window.allLinks = allLinks;
+        window.allLinks =
+            allLinks;
 
         updateStats();
         applyFilter();
@@ -469,7 +558,9 @@ function renderLinks() {
         return;
     }
 
-    if (!filteredLinks.length) {
+    if (
+        !filteredLinks.length
+    ) {
         linkList.innerHTML = `
             <div class="empty">
                 <i class="fa-solid fa-link-slash"></i>
@@ -496,38 +587,59 @@ function renderLinks() {
 // ======================================================
 
 function createLinkCard(link) {
-    const id = escapeHtml(link?.id);
+    const rawId =
+        link?.id;
 
-    const title = escapeHtml(
-        link?.title || "Tanpa Judul"
-    );
+    const id =
+        escapeHtml(rawId);
+
+    const title =
+        escapeHtml(
+            link?.title ||
+            "Tanpa Judul"
+        );
 
     const destination =
         getDestination(link);
 
     const safeDestination =
-        safeUrl(destination);
+        safeUrl(
+            destination
+        );
 
     const destinationDisplay =
-        escapeHtml(destination || "-");
+        escapeHtml(
+            destination || "-"
+        );
 
     const hostname =
         escapeHtml(
-            getHostname(destination)
+            getHostname(
+                destination
+            )
         );
 
     const shortUrl =
         getShortUrl(link);
 
     const shortDisplay =
-        escapeHtml(shortUrl || "-");
+        escapeHtml(
+            shortUrl || "-"
+        );
 
     const status =
         String(
             link?.status || ""
         )
             .toLowerCase()
-            .trim() === "active";
+            .trim();
+
+    const expired =
+        isLinkExpired(link);
+
+    const active =
+        status === "active" &&
+        !expired;
 
     const views =
         getNumber(
@@ -542,41 +654,66 @@ function createLinkCard(link) {
         );
 
     const createdDate =
-        formatDate(link?.created_at);
+        formatDate(
+            link?.created_at
+        );
 
-    const statusBadge = status
-        ? `
+    // =================================================
+    // STATUS
+    // =================================================
+
+    let statusBadge;
+
+    if (expired) {
+        statusBadge = `
+            <span class="badge pink">
+                Expired
+            </span>
+        `;
+    } else if (active) {
+        statusBadge = `
             <span class="badge green">
                 Aktif
             </span>
-        `
-        : `
+        `;
+    } else {
+        statusBadge = `
             <span class="badge pink">
                 Nonaktif
             </span>
         `;
+    }
 
-    const actionButton = status
-        ? `
-            <button
-                type="button"
-                class="btn-delete"
-                onclick="hideLink('${id}')"
-            >
-                <i class="fa-solid fa-eye-slash"></i>
-                Hide
-            </button>
-        `
-        : `
-            <button
-                type="button"
-                class="btn-edit"
-                onclick="activateLink('${id}')"
-            >
-                <i class="fa-solid fa-eye"></i>
-                Aktifkan
-            </button>
-        `;
+    // =================================================
+    // ACTION
+    // =================================================
+
+    const actionButton =
+        active
+            ? `
+                <button
+                    type="button"
+                    class="btn-delete"
+                    onclick="hideLink('${escapeHtml(rawId)}')"
+                >
+                    <i class="fa-solid fa-eye-slash"></i>
+                    Hide
+                </button>
+            `
+            : `
+                <button
+                    type="button"
+                    class="btn-edit"
+                    onclick="activateLink('${escapeHtml(rawId)}')"
+                >
+                    <i class="fa-solid fa-eye"></i>
+                    Aktifkan
+                </button>
+            `;
+
+    // =================================================
+    // DESTINATION
+    // =================================================
 
     const destinationHtml =
         safeDestination
@@ -597,6 +734,10 @@ function createLinkCard(link) {
                 </span>
             `;
 
+    // =================================================
+    // CARD
+    // =================================================
+
     return `
         <div
             class="link-card"
@@ -611,7 +752,7 @@ function createLinkCard(link) {
 
                 <button
                     type="button"
-                    onclick="openStatistics('${id}')"
+                    onclick="openStatistics('${escapeHtml(rawId)}')"
                     class="btn-blue"
                 >
                     <i class="fa-solid fa-chart-column"></i>
@@ -673,7 +814,7 @@ function createLinkCard(link) {
                 <button
                     type="button"
                     class="btn-copy"
-                    onclick="copyLinkById('${id}')"
+                    onclick="copyLinkById('${escapeHtml(rawId)}')"
                 >
                     <i class="fa-regular fa-copy"></i>
                 </button>
@@ -685,7 +826,7 @@ function createLinkCard(link) {
                 <button
                     type="button"
                     class="btn-edit"
-                    onclick="editLink('${id}')"
+                    onclick="editLink('${escapeHtml(rawId)}')"
                 >
                     <i class="fa-solid fa-pen"></i>
                     Edit
@@ -706,70 +847,107 @@ function createLinkCard(link) {
 function applyFilter() {
     const keyword =
         String(
-            searchInput?.value || ""
+            searchInput?.value ||
+            ""
         )
             .toLowerCase()
             .trim();
 
     filteredLinks =
-        allLinks.filter(link => {
-            const title =
-                String(
-                    link?.title || ""
-                ).toLowerCase();
+        allLinks.filter(
+            link => {
+                const title =
+                    String(
+                        link?.title ||
+                        ""
+                    ).toLowerCase();
 
-            const destination =
-                getDestination(link)
-                    .toLowerCase();
+                const destination =
+                    getDestination(
+                        link
+                    ).toLowerCase();
 
-            const shortCode =
-                getShortCode(link)
-                    .toLowerCase();
+                const shortCode =
+                    getShortCode(
+                        link
+                    ).toLowerCase();
 
-            const hostname =
-                getHostname(
-                    getDestination(link)
-                ).toLowerCase();
+                const hostname =
+                    getHostname(
+                        getDestination(
+                            link
+                        )
+                    ).toLowerCase();
 
-            const status =
-                String(
-                    link?.status || ""
-                ).toLowerCase();
+                const status =
+                    String(
+                        link?.status ||
+                        ""
+                    )
+                        .toLowerCase()
+                        .trim();
 
-            const matchesSearch =
-                !keyword ||
-                title.includes(keyword) ||
-                destination.includes(keyword) ||
-                shortCode.includes(keyword) ||
-                hostname.includes(keyword) ||
-                status.includes(keyword);
+                const expired =
+                    isLinkExpired(
+                        link
+                    );
 
-            let matchesFilter = true;
+                const matchesSearch =
+                    !keyword ||
+                    title.includes(
+                        keyword
+                    ) ||
+                    destination.includes(
+                        keyword
+                    ) ||
+                    shortCode.includes(
+                        keyword
+                    ) ||
+                    hostname.includes(
+                        keyword
+                    ) ||
+                    status.includes(
+                        keyword
+                    );
 
-            switch (currentFilter) {
-                case "active":
-                    matchesFilter =
-                        status === "active";
-                    break;
+                let matchesFilter =
+                    true;
 
-                case "expired":
-                case "inactive":
-                    matchesFilter =
-                        status === "expired" ||
-                        status === "inactive";
-                    break;
+                switch (
+                    currentFilter
+                ) {
+                    case "active":
+                        matchesFilter =
+                            status ===
+                                "active" &&
+                            !expired;
+                        break;
 
-                case "all":
-                default:
-                    matchesFilter = true;
-                    break;
+                    case "expired":
+                        matchesFilter =
+                            expired;
+                        break;
+
+                    case "inactive":
+                        matchesFilter =
+                            status ===
+                                "inactive" &&
+                            !expired;
+                        break;
+
+                    case "all":
+                    default:
+                        matchesFilter =
+                            true;
+                        break;
+                }
+
+                return (
+                    matchesSearch &&
+                    matchesFilter
+                );
             }
-
-            return (
-                matchesSearch &&
-                matchesFilter
-            );
-        });
+        );
 
     renderLinks();
 }
@@ -787,51 +965,72 @@ function handleSearch() {
 // ======================================================
 
 function bindFilterEvents() {
-    filterButtons.forEach(button => {
-        button.addEventListener(
-            "click",
-            () => {
-                filterButtons.forEach(btn => {
-                    btn.classList.remove("active");
-                });
+    filterButtons.forEach(
+        button => {
+            button.addEventListener(
+                "click",
+                () => {
+                    filterButtons.forEach(
+                        btn => {
+                            btn.classList.remove(
+                                "active"
+                            );
+                        }
+                    );
 
-                button.classList.add("active");
+                    button.classList.add(
+                        "active"
+                    );
 
-                currentFilter =
-                    String(
-                        button.dataset.filter ||
-                        "all"
-                    )
-                        .toLowerCase()
-                        .trim();
+                    currentFilter =
+                        String(
+                            button.dataset
+                                .filter ||
+                            "all"
+                        )
+                            .toLowerCase()
+                            .trim();
 
-                applyFilter();
-            }
-        );
-    });
+                    applyFilter();
+                }
+            );
+        }
+    );
 }
 
 // ======================================================
 // CREATE ADS LINK
 // ======================================================
 
-async function createAdsLink(event) {
+async function createAdsLink(
+    event
+) {
     event.preventDefault();
 
     const title =
         document
-            .getElementById("linkName")
+            .getElementById(
+                "linkName"
+            )
             ?.value
             .trim();
 
     const destination =
         document
-            .getElementById("linkUrl")
+            .getElementById(
+                "linkUrl"
+            )
             ?.value
             .trim();
 
+    // =================================================
+    // VALIDATION
+    // =================================================
+
     if (!title) {
-        alert("Judul link wajib diisi.");
+        alert(
+            "Judul link wajib diisi."
+        );
         return;
     }
 
@@ -843,7 +1042,9 @@ async function createAdsLink(event) {
     }
 
     const validUrl =
-        safeUrl(destination);
+        safeUrl(
+            destination
+        );
 
     if (!validUrl) {
         alert(
@@ -853,6 +1054,10 @@ async function createAdsLink(event) {
     }
 
     try {
+        // =================================================
+        // USER
+        // =================================================
+
         const user =
             await getCurrentUser();
 
@@ -863,14 +1068,9 @@ async function createAdsLink(event) {
             return;
         }
 
-        if (
-            typeof database.getLinkByCode !==
-            "function"
-        ) {
-            throw new Error(
-                "database.getLinkByCode() tidak tersedia."
-            );
-        }
+        // =================================================
+        // DATABASE CHECK
+        // =================================================
 
         if (
             typeof database.createLink !==
@@ -881,59 +1081,22 @@ async function createAdsLink(event) {
             );
         }
 
-        // ------------------------------------------
-        // GENERATE UNIQUE CODE
-        // ------------------------------------------
-
-        let shortCode = "";
-        let attempts = 0;
-
-        do {
-            shortCode =
-                generateShortCode();
-
-            attempts++;
-
-            if (attempts > 50) {
-                throw new Error(
-                    "Gagal membuat kode link unik."
-                );
-            }
-
-        } while (
-            await database.getLinkByCode(
-                shortCode
-            )
-        );
-
-        // ------------------------------------------
-        // CREATE ADS LINK
-        // NO FEE
-        // ------------------------------------------
+        // =================================================
+        // CREATE
+        //
+        // SHORT CODE DIURUS DATABASE.JS
+        // =================================================
 
         const newLink =
             await database.createLink({
-                user_id: user.id,
-
                 type: "ads",
 
                 link_type: "ads",
 
-                title: title,
+                title,
 
-                destination: validUrl,
-
-                destination_url: validUrl,
-
-                short_code: shortCode,
-
-                status: "active",
-
-                total_views: 0,
-
-                total_clicks: 0,
-
-                total_earnings: 0
+                destination:
+                    validUrl
             });
 
         if (!newLink) {
@@ -942,17 +1105,28 @@ async function createAdsLink(event) {
             );
         }
 
+        // =================================================
+        // FINAL CODE
+        // =================================================
+
         const finalCode =
-            newLink.short_code ||
-            shortCode;
+            newLink.short_code;
+
+        if (!finalCode) {
+            throw new Error(
+                "Short code tidak ditemukan setelah link dibuat."
+            );
+        }
 
         const generatedUrl =
             `${location.origin}/s/` +
-            encodeURIComponent(finalCode);
+            encodeURIComponent(
+                finalCode
+            );
 
-        // ------------------------------------------
+        // =================================================
         // SAVE LAST LINK
-        // ------------------------------------------
+        // =================================================
 
         localStorage.setItem(
             "last_short_code",
@@ -962,21 +1136,23 @@ async function createAdsLink(event) {
         if (newLink.id) {
             localStorage.setItem(
                 "last_link_id",
-                newLink.id
+                String(
+                    newLink.id
+                )
             );
         }
 
-        // ------------------------------------------
+        // =================================================
         // RESET FORM
-        // ------------------------------------------
+        // =================================================
 
         if (createForm) {
             createForm.reset();
         }
 
-        // ------------------------------------------
+        // =================================================
         // RESULT
-        // ------------------------------------------
+        // =================================================
 
         const resultBox =
             document.getElementById(
@@ -1001,6 +1177,10 @@ async function createAdsLink(event) {
                 </div>
             `;
         }
+
+        // =================================================
+        // RELOAD
+        // =================================================
 
         await loadLinks();
 
@@ -1048,15 +1228,23 @@ async function copyLink(url) {
                 );
 
             input.value = url;
-            input.style.position = "fixed";
-            input.style.opacity = "0";
 
-            document.body.appendChild(input);
+            input.style.position =
+                "fixed";
+
+            input.style.opacity =
+                "0";
+
+            document.body.appendChild(
+                input
+            );
 
             input.focus();
             input.select();
 
-            document.execCommand("copy");
+            document.execCommand(
+                "copy"
+            );
 
             input.remove();
         }
@@ -1085,7 +1273,9 @@ function copyLinkById(id) {
     const link =
         allLinks.find(
             item =>
-                String(item.id) ===
+                String(
+                    item.id
+                ) ===
                 String(id)
         );
 
@@ -1109,7 +1299,9 @@ async function hideLink(id) {
     const link =
         allLinks.find(
             item =>
-                String(item.id) ===
+                String(
+                    item.id
+                ) ===
                 String(id)
         );
 
@@ -1138,7 +1330,8 @@ async function hideLink(id) {
         await database.updateLink(
             id,
             {
-                status: "inactive"
+                status:
+                    "inactive"
             }
         );
 
@@ -1175,7 +1368,8 @@ async function activateLink(id) {
         await database.updateLink(
             id,
             {
-                status: "active"
+                status:
+                    "active"
             }
         );
 
@@ -1204,7 +1398,9 @@ function openStatistics(id) {
     }
 
     window.location.href =
-        `dashboard.html?tab=statistics&id=${encodeURIComponent(id)}`;
+        `dashboard.html?tab=statistics&id=${encodeURIComponent(
+            id
+        )}`;
 }
 
 // ======================================================
@@ -1215,7 +1411,9 @@ function editLink(id) {
     const link =
         allLinks.find(
             item =>
-                String(item.id) ===
+                String(
+                    item.id
+                ) ===
                 String(id)
         );
 
@@ -1227,16 +1425,24 @@ function editLink(id) {
     }
 
     const editId =
-        document.getElementById("editId");
+        document.getElementById(
+            "editId"
+        );
 
     const editTitle =
-        document.getElementById("editTitle");
+        document.getElementById(
+            "editTitle"
+        );
 
     const editUrl =
-        document.getElementById("editUrl");
+        document.getElementById(
+            "editUrl"
+        );
 
     const modal =
-        document.getElementById("editModal");
+        document.getElementById(
+            "editModal"
+        );
 
     if (
         !editId ||
@@ -1250,11 +1456,20 @@ function editLink(id) {
         return;
     }
 
-    editId.value = link.id;
-    editTitle.value = link.title || "";
-    editUrl.value = getDestination(link);
+    editId.value =
+        link.id;
 
-    modal.classList.add("show");
+    editTitle.value =
+        link.title || "";
+
+    editUrl.value =
+        getDestination(
+            link
+        );
+
+    modal.classList.add(
+        "show"
+    );
 }
 
 // ======================================================
@@ -1263,10 +1478,14 @@ function editLink(id) {
 
 function closeEdit() {
     const modal =
-        document.getElementById("editModal");
+        document.getElementById(
+            "editModal"
+        );
 
     if (modal) {
-        modal.classList.remove("show");
+        modal.classList.remove(
+            "show"
+        );
     }
 }
 
@@ -1277,18 +1496,24 @@ function closeEdit() {
 async function saveEdit() {
     const id =
         document
-            .getElementById("editId")
+            .getElementById(
+                "editId"
+            )
             ?.value;
 
     const title =
         document
-            .getElementById("editTitle")
+            .getElementById(
+                "editTitle"
+            )
             ?.value
             .trim();
 
     const destination =
         document
-            .getElementById("editUrl")
+            .getElementById(
+                "editUrl"
+            )
             ?.value
             .trim();
 
@@ -1314,7 +1539,9 @@ async function saveEdit() {
     }
 
     const validUrl =
-        safeUrl(destination);
+        safeUrl(
+            destination
+        );
 
     if (!validUrl) {
         alert(
@@ -1336,11 +1563,13 @@ async function saveEdit() {
         await database.updateLink(
             id,
             {
-                title: title,
+                title,
 
-                destination: validUrl,
+                destination:
+                    validUrl,
 
-                destination_url: validUrl
+                destination_url:
+                    validUrl
             }
         );
 
@@ -1380,7 +1609,8 @@ function bindModalEvents() {
 
             if (
                 modal &&
-                event.target === modal
+                event.target ===
+                    modal
             ) {
                 closeEdit();
             }
@@ -1391,7 +1621,8 @@ function bindModalEvents() {
         "keydown",
         event => {
             if (
-                event.key === "Escape"
+                event.key ===
+                "Escape"
             ) {
                 closeEdit();
             }
@@ -1441,6 +1672,7 @@ function startAutoRefresh() {
                 }
 
                 await loadLinks();
+
             },
             30000
         );
@@ -1452,7 +1684,10 @@ function startAutoRefresh() {
 
 function stopAutoRefresh() {
     if (refreshTimer) {
-        clearInterval(refreshTimer);
+        clearInterval(
+            refreshTimer
+        );
+
         refreshTimer = null;
     }
 }
@@ -1479,16 +1714,35 @@ function bindVisibilityEvents() {
 // GLOBAL FUNCTIONS
 // ======================================================
 
-window.openStatistics = openStatistics;
-window.copyLink = copyLink;
-window.copyLinkById = copyLinkById;
-window.hideLink = hideLink;
-window.activateLink = activateLink;
-window.editLink = editLink;
-window.closeEdit = closeEdit;
-window.saveEdit = saveEdit;
-window.loadAdsLinks = loadLinks;
-window.applyAdsFilter = applyFilter;
+window.openStatistics =
+    openStatistics;
+
+window.copyLink =
+    copyLink;
+
+window.copyLinkById =
+    copyLinkById;
+
+window.hideLink =
+    hideLink;
+
+window.activateLink =
+    activateLink;
+
+window.editLink =
+    editLink;
+
+window.closeEdit =
+    closeEdit;
+
+window.saveEdit =
+    saveEdit;
+
+window.loadAdsLinks =
+    loadLinks;
+
+window.applyAdsFilter =
+    applyFilter;
 
 // ======================================================
 // INIT
@@ -1498,7 +1752,9 @@ document.addEventListener(
     "DOMContentLoaded",
     async () => {
         initElements();
+
         bindEvents();
+
         bindVisibilityEvents();
 
         await loadLinks();
