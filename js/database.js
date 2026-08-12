@@ -1070,55 +1070,137 @@ async function getLinkByCode(
 }
 
 // =====================================================
+// SHORT CODE GENERATOR
+// =====================================================
+
+const SHORT_CODE_CHARS =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+function generateShortCode(length = 5) {
+    let code = "";
+
+    for (let i = 0; i < length; i++) {
+        const index =
+            Math.floor(
+                Math.random() *
+                SHORT_CODE_CHARS.length
+            );
+
+        code += SHORT_CODE_CHARS[index];
+    }
+
+    return code;
+}
+
+async function generateUniqueShortCode() {
+    // Mulai dari 2 karakter sampai 5 karakter
+    for (let length = 2; length <= 5; length++) {
+
+        for (let attempt = 0; attempt < 20; attempt++) {
+            const code =
+                generateShortCode(length);
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .from("links")
+                    .select("id")
+                    .eq(
+                        "short_code",
+                        code
+                    )
+                    .maybeSingle();
+
+            if (error) {
+                console.error(
+                    "CHECK SHORT CODE:",
+                    error
+                );
+
+                throw error;
+            }
+
+            if (!data) {
+                return code;
+            }
+        }
+    }
+
+    throw new Error(
+        "Gagal menghasilkan short code unik."
+    );
+}
+
+// =====================================================
 // CREATE LINK
 // =====================================================
 
-async function createLink(
-    payload = {}
-) {
-    const session =
-        await requireSession();
+async function createLink(payload = {}) {
+    const session = await requireSession();
 
-    const shortCode =
-        normalizeString(
-            payload.short_code
-        );
+    // =================================================
+    // SHORT CODE
+    // =================================================
 
-    const title =
-        normalizeString(
-            payload.title
-        );
+    let shortCode = normalizeString(
+        payload.short_code
+    );
 
-    const destination =
-        normalizeString(
-            payload.destination ||
-            payload.destination_url
-        );
-
+    // Generate otomatis jika kosong
     if (!shortCode) {
+        shortCode = await generateUniqueShortCode();
+    }
+
+    // Validasi panjang
+    if (
+        shortCode.length < 2 ||
+        shortCode.length > 5
+    ) {
         throw new Error(
-            "short_code wajib diisi"
+            "Short code harus terdiri dari 2–5 karakter."
         );
     }
+
+    // =================================================
+    // TITLE
+    // =================================================
+
+    const title = normalizeString(
+        payload.title
+    );
 
     if (!title) {
         throw new Error(
-            "title wajib diisi"
+            "Title wajib diisi."
         );
     }
+
+    // =================================================
+    // DESTINATION
+    // =================================================
+
+    const destination = normalizeString(
+        payload.destination ||
+        payload.destination_url
+    );
 
     if (!destination) {
         throw new Error(
-            "destination wajib diisi"
+            "Destination wajib diisi."
         );
     }
 
-    const type =
-        normalizeString(
-            payload.type ||
-            payload.link_type ||
-            LINK_TYPES.ADS
-        ).toLowerCase();
+    // =================================================
+    // TYPE
+    // =================================================
+
+    const type = normalizeString(
+        payload.type ||
+        payload.link_type ||
+        LINK_TYPES.ADS
+    ).toLowerCase();
 
     if (
         type !== LINK_TYPES.ADS &&
@@ -1128,6 +1210,48 @@ async function createLink(
             "Tipe link tidak valid."
         );
     }
+
+    // =================================================
+    // PRICE
+    // =================================================
+
+    const price = Number(
+        payload.price ?? 0
+    );
+
+    if (
+        !Number.isFinite(price) ||
+        price < 0
+    ) {
+        throw new Error(
+            "Harga link tidak valid."
+        );
+    }
+
+    // Sell link tidak boleh harga 0
+    if (
+        type === LINK_TYPES.SELL &&
+        price <= 0
+    ) {
+        throw new Error(
+            "Harga Sell Link harus lebih dari Rp0."
+        );
+    }
+
+    // =================================================
+    // DEVICE
+    // =================================================
+
+    const device =
+        normalizeString(
+            payload.device ||
+            payload.target_device ||
+            "all"
+        ).toLowerCase();
+
+    // =================================================
+    // INSERT
+    // =================================================
 
     const insert = {
         user_id:
@@ -1143,36 +1267,11 @@ async function createLink(
 
         destination,
 
-        campaign:
-            payload.campaign ??
-            null,
-
-        device:
-            payload.device ||
-            "all",
-
-        expired_at:
-            payload.expired_at ??
-            null,
-
-        price:
-            Number(
-                payload.price || 0
-            ),
-
-        status:
-            payload.status ||
-            "active",
-
-        views: 0,
-        clicks: 0,
-        earnings: 0,
+        destination_url:
+            destination,
 
         short_code:
             shortCode,
-
-        destination_url:
-            destination,
 
         link_type:
             type,
@@ -1181,37 +1280,74 @@ async function createLink(
             payload.custom_alias ??
             null,
 
+        campaign:
+            payload.campaign ??
+            null,
+
         campaign_name:
             payload.campaign_name ??
             null,
 
+        device,
+
         target_device:
-            payload.target_device ||
-            payload.device ||
-            "all",
+            device,
 
-        total_views: 0,
-        total_clicks: 0,
-        total_earnings: 0,
-
-        sold: 0,
+        expired_at:
+            payload.expired_at ??
+            null,
 
         expired:
             payload.expired ||
             "never",
 
+        price,
+
+        // Selalu mulai active
+        status:
+            "active",
+
+        // =================================================
+        // STATISTICS
+        // =================================================
+
+        views: 0,
+
+        clicks: 0,
+
+        earnings: 0,
+
+        total_views: 0,
+
+        total_clicks: 0,
+
+        total_earnings: 0,
+
+        // =================================================
+        // SELL
+        // =================================================
+
+        sold: 0,
+
         sales: 0
     };
+
+    // =================================================
+    // INSERT DATABASE
+    // =================================================
 
     const {
         data,
         error
-    } =
-        await supabaseClient
-            .from("links")
-            .insert(insert)
-            .select()
-            .single();
+    } = await supabaseClient
+        .from("links")
+        .insert(insert)
+        .select()
+        .single();
+
+    // =================================================
+    // ERROR HANDLING
+    // =================================================
 
     if (error) {
         console.error(
@@ -1219,12 +1355,35 @@ async function createLink(
             error
         );
 
-        throw error;
+        // Duplicate short_code
+        if (
+            error.code === "23505"
+        ) {
+            throw new Error(
+                "Short code sudah digunakan. Silakan gunakan kode lain."
+            );
+        }
+
+        // CHECK constraint
+        if (
+            error.code === "23514"
+        ) {
+            throw new Error(
+                "Data link tidak memenuhi aturan database."
+            );
+        }
+
+        throw new Error(
+            error.message ||
+            "Gagal membuat link."
+        );
     }
 
-    return normalizeLink(
-        data
-    );
+    // =================================================
+    // RETURN
+    // =================================================
+
+    return normalizeLink(data);
 }
 
 // =====================================================
