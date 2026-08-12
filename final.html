@@ -1,999 +1,377 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Click2Pay - Get Link</title>
-
 <link rel="stylesheet" href="css/style.css">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:"Inter",sans-serif;
-}
-
-
-body{
-
-    background:#f4f8ff;
-    color:#111827;
-    min-height:100vh;
-
-}
-
-
-.container{
-
-    width:min(900px,92%);
-    margin:auto;
-
-}
-
-
-/* HEADER */
-
-header{
-
-    padding:20px 0;
-    background:white;
-    border-bottom:1px solid #e5e7eb;
-
-}
-
-
-.logo{
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-
-    font-size:26px;
-    font-weight:800;
-    color:#2563eb;
-
-}
-
-
-
-/* MAIN */
-
-.main{
-
-    padding:50px 0;
-
-}
-
-
-.card{
-
-    background:white;
-    border-radius:24px;
-    padding:35px;
-
-    box-shadow:
-    0 20px 50px rgba(37,99,235,.12);
-
-    text-align:center;
-
-}
-
-
-
-.title{
-
-    font-size:32px;
-    font-weight:800;
-    color:#2563eb;
-    margin-bottom:15px;
-
-}
-
-
-.desc{
-
-    color:#64748b;
-    margin-bottom:30px;
-
-}
-
-
-
-/* BUTTON */
-
-
-.btn{
-
-    border:none;
-    cursor:pointer;
-
-    padding:15px 30px;
-
-    border-radius:14px;
-
-    font-size:16px;
-    font-weight:700;
-
-    transition:.25s;
-
-}
-
-
-.btn-primary{
-
-    background:#2563eb;
-    color:white;
-
-}
-
-
-.btn-primary:hover{
-
-    background:#1d4ed8;
-    transform:translateY(-2px);
-
-}
-
-
-
-.btn-success{
-
-    background:#22c55e;
-    color:white;
-
-}
-
-
-/* LOADING */
-
-
-.loading{
-
-    display:none;
-
-    margin-top:30px;
-
-}
-
-
-.spinner{
-
-    width:45px;
-    height:45px;
-
-    border-radius:50%;
-
-    border:5px solid #dbeafe;
-    border-top-color:#2563eb;
-
-    animation:spin 1s linear infinite;
-
-    margin:auto;
-
-}
-
-
-
-@keyframes spin{
-
-    from{
-        transform:rotate(0deg);
-    }
-
-    to{
-        transform:rotate(360deg);
-    }
-
-}
-
-
-
-/* LINK PANEL */
-
-
-.link-panel{
-
-    display:none;
-
-    margin-top:35px;
-
-    padding:25px;
-
-    border-radius:20px;
-
-    background:#f8fafc;
-
-    border:1px solid #dbeafe;
-
-}
-
-
-
-.ad-box{
-
-    min-height:120px;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    background:#fff;
-
-    border-radius:15px;
-
-    margin:15px 0;
-
-}
-
-
-
-/* GET LINK */
-
-
-.get-area{
-
-    margin:25px 0;
-
-}
-
-
-
-.progress{
-
-    display:none;
-
-    height:18px;
-
-    width:100%;
-
-    background:#dbeafe;
-
-    border-radius:20px;
-
-    overflow:hidden;
-
-}
-
-
-
-.progress-bar{
-
-    width:0%;
-
-    height:100%;
-
-    background:linear-gradient(
-    90deg,
-    #2563eb,
-    #60a5fa
-    );
-
-    transition:.2s;
-
-}
-
-
-
-.status{
-
-    margin-top:15px;
-
-    font-weight:700;
-
-    color:#2563eb;
-
-}
-
-
-
-/* OPEN LINK */
-
-
-.open-btn{
-
-    display:none;
-
-}
-
-
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Inter",sans-serif}
+body{background:#f4f8ff;color:#111827;min-height:100vh}
+.container{width:min(900px,92%);margin:auto}
+header{padding:20px 0;background:#fff;border-bottom:1px solid #e5e7eb}
+.logo{display:flex;align-items:center;justify-content:center;gap:10px;font-size:26px;font-weight:800;color:#2563eb}
+.main{padding:50px 0}
+.card{background:#fff;border-radius:24px;padding:35px;box-shadow:0 20px 50px rgba(37,99,235,.12);text-align:center}
+.title{font-size:32px;font-weight:800;color:#2563eb;margin-bottom:15px}
+.desc{color:#64748b;margin-bottom:30px}
+.btn{border:0;cursor:pointer;padding:15px 30px;border-radius:14px;font-size:16px;font-weight:700;transition:.25s}
+.btn-primary{background:#2563eb;color:#fff}
+.btn-primary:hover{background:#1d4ed8;transform:translateY(-2px)}
+.btn-success{background:#22c55e;color:#fff}
+.loading{display:none;margin-top:30px}
+.spinner{width:45px;height:45px;border-radius:50%;border:5px solid #dbeafe;border-top-color:#2563eb;animation:spin 1s linear infinite;margin:auto}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.link-panel{display:none;margin-top:35px;padding:25px;border-radius:20px;background:#f8fafc;border:1px solid #dbeafe}
+.ad-box{min-height:120px;display:flex;justify-content:center;align-items:center;background:#fff;border-radius:15px;margin:15px 0}
+.get-area{margin:25px 0}
+.progress{display:none;height:18px;width:100%;background:#dbeafe;border-radius:20px;overflow:hidden}
+.progress-bar{width:0;height:100%;background:linear-gradient(90deg,#2563eb,#60a5fa);transition:.2s}
+.status{margin-top:15px;font-weight:700;color:#2563eb}
+.open-btn{display:none}
+.telegram-running{display:flex;width:100%;overflow:hidden;background:#2563eb;color:#fff}
+.telegram-label{flex:none;display:flex;align-items:center;gap:7px;padding:9px 14px;background:#1d4ed8;font-size:12px;font-weight:800;z-index:2}
+.telegram-track{display:flex;align-items:center;gap:25px;white-space:nowrap;min-width:max-content;padding:9px 0;animation:telegramRun 25s linear infinite}
+.telegram-track a{color:#fff;text-decoration:none;font-size:12px;font-weight:600}
+.telegram-track span{opacity:.7}
+@keyframes telegramRun{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
+.floating-ad{position:fixed;right:20px;bottom:20px;width:min(360px,calc(100% - 30px));display:flex;align-items:center;gap:12px;padding:13px 15px;background:#fff;border:1px solid #dbeafe;border-radius:16px;box-shadow:0 15px 40px rgba(15,23,42,.18);z-index:99999;animation:floatingAdIn .45s ease}
+.floating-ad-icon{width:42px;height:42px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#2563eb;color:#fff}
+.floating-ad-content{min-width:0;flex:1;text-align:left}
+.floating-ad-content strong{display:block;font-size:13px;color:#2563eb}
+.floating-ad-content span{display:block;margin-top:3px;font-size:12px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#closeFloatingAd{width:28px;height:28px;border:0;background:transparent;color:#94a3b8;cursor:pointer}
+@keyframes floatingAdIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:600px){
-
-.card{
-
-    padding:25px;
-
+.card{padding:25px}
+.title{font-size:26px}
+.btn{width:100%}
+.floating-ad{right:15px;bottom:15px;width:calc(100% - 30px)}
 }
-
-
-.title{
-
-    font-size:26px;
-
-}
-
-
-.btn{
-
-    width:100%;
-
-}
-
-}
-
-
-
 </style>
-
 </head>
-
 
 <body>
 
-
 <header>
-
 <div class="logo">
-
 <i class="fa-solid fa-link"></i>
-
 <span>Click2Pay</span>
-
 </div>
-
 </header>
 
-
-
-<section class="main">
-
-
-<div class="container">
-
-
-<div class="card">
-
-
-<h1 class="title">
-
-Download Link
-
-</h1>
-
-
-<p class="desc">
-
-Selesaikan proses untuk mendapatkan link tujuan.
-
-</p>
-
-
-
-<button id="downloadBtn" class="btn btn-primary">
-
-<i class="fa-solid fa-download"></i>
-
-Download Link
-
-</button>
-
-
-
-<div id="loading" class="loading">
-
-
-<div class="spinner"></div>
-
-
-<p id="loadingText">
-
-Memproses...
-
-</p>
-
-
+<div class="telegram-running">
+<div class="telegram-label"><i class="fa-brands fa-telegram"></i>Telegram</div>
+<div class="telegram-track">
+<a href="https://t.me/+0sgsiLx3KONjODA0" target="_blank" rel="noopener noreferrer">Join Telegram Bokep Terbaru</a>
+<span>•</span>
+<a href="https://t.me/+0sgsiLx3KONjODA0" target="_blank" rel="noopener noreferrer">Update terbaru Bokep Viral 18+</a>
+<span>•</span>
+<a href="https://t.me/+0sgsiLx3KONjODA0" target="_blank" rel="noopener noreferrer">Bergabung sekarang</a>
+</div>
 </div>
 
+<section class="main">
+<div class="container">
+<div class="card">
+<h1 class="title">Download Link</h1>
+<p class="desc">Selesaikan proses untuk mendapatkan link tujuan.</p>
 
+<button id="downloadBtn" class="btn btn-primary">
+<i class="fa-solid fa-download"></i> Download Link
+</button>
+
+<div id="loading" class="loading">
+<div class="spinner"></div>
+<p id="loadingText">Memproses...</p>
+</div>
 
 <div id="linkPanel" class="link-panel">
 
-
 <div class="ad-box">
-
-<!-- ADSTERRA ATAS -->
-
+<!-- TEMPAT ADSTERRA ATAS -->
 </div>
-
-
 
 <div class="get-area">
-
-
 <button id="getBtn" class="btn btn-primary">
-
-<i class="fa-solid fa-link"></i>
-
-Get Link
-
+<i class="fa-solid fa-link"></i> Get Link
 </button>
-
 
 <div id="progress" class="progress">
-
-
 <div id="progressBar" class="progress-bar"></div>
-
-
 </div>
-
 
 <p id="status" class="status"></p>
-
-
 </div>
-
-
 
 <div class="ad-box">
-
-<!-- ADSTERRA BAWAH -->
-
+<!-- TEMPAT ADSTERRA BAWAH -->
 </div>
-
-
 
 <button id="openBtn" class="btn btn-success open-btn">
-
-<i class="fa-solid fa-arrow-right"></i>
-
-Open Link
-
+<i class="fa-solid fa-arrow-right"></i> Open Link
 </button>
-
-
 </div>
-
-
-
 </div>
-
-
 </div>
-
-
 </section>
 
+<div id="floatingAd" class="floating-ad">
+<div class="floating-ad-icon">
+<i class="fa-solid fa-bullhorn"></i>
+</div>
+<div class="floating-ad-content">
+<strong>Click2Pay Ads</strong>
+<span id="floatingAdText">Nikmati link cepat & mudah</span>
+</div>
+<button type="button" id="closeFloatingAd" aria-label="Tutup">
+<i class="fa-solid fa-xmark"></i>
+</button>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// =====================================================
-// SUPABASE
-// =====================================================
-const SUPABASE_URL =
-"https://lwjtagxkqeprjpupmadf.supabase.co";
-const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3anRhZ3hrcWVwcmpwdXBtYWRmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NDMwMTE3NiwiZXhwIjoyMDk5ODc3MTc2fQ.jaiA6dZ2IWMh2gJuS9qPEorNlXpMT5BgyXaRRSJCSvk";
-const supabaseClient =
-supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-);
-// =====================================================
-// GET CODE
-// =====================================================
-let code =
-new URLSearchParams(location.search)
-.get("code");
-if(!code){
-    code =
-    localStorage.getItem("task_code");
+"use strict";
+
+/* FLOATING NOTIFICATION */
+const floatingAd=document.getElementById("floatingAd");
+const floatingAdText=document.getElementById("floatingAdText");
+const closeFloatingAd=document.getElementById("closeFloatingAd");
+
+const floatingMessages=[
+"Selesaikan proses untuk mendapatkan link.",
+"Jangan lupa bergabung dengan Telegram Click2Pay.",
+"Update terbaru Click2Pay tersedia di Telegram.",
+"Gunakan Click2Pay untuk monetisasi link Anda."
+];
+
+let floatingIndex=0;
+
+function rotateFloatingAd(){
+if(!floatingAdText)return;
+floatingAdText.textContent=floatingMessages[floatingIndex];
+floatingIndex=(floatingIndex+1)%floatingMessages.length;
 }
-console.log("FINAL CODE:", code);
-// =====================================================
-// ELEMENT
-// =====================================================
-const downloadBtn =
-document.getElementById("downloadBtn");
-const loading =
-document.getElementById("loading");
-const loadingText =
-document.getElementById("loadingText");
-const linkPanel =
-document.getElementById("linkPanel");
-const getBtn =
-document.getElementById("getBtn");
-const progress =
-document.getElementById("progress");
-const progressBar =
-document.getElementById("progressBar");
-const status =
-document.getElementById("status");
-const openBtn =
-document.getElementById("openBtn");
-// =====================================================
-// CODE CHECK
-// =====================================================
+
+rotateFloatingAd();
+setInterval(rotateFloatingAd,4000);
+
+closeFloatingAd?.addEventListener("click",()=>{
+floatingAd.style.display="none";
+});
+
+/* SUPABASE */
+const SUPABASE_URL="https://lwjtagxkqeprjpupmadf.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3anRhZ3hrcWVwcmpwdXBtYWRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzMDExNzYsImV4cCI6MjA5OTg3NzE3Nn0.Cg8TIBtOE4PHmnSybJtMqEoCFx-Qm4Kkl8exSOanTes";
+const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+/* CODE */
+let code=new URLSearchParams(location.search).get("code")||localStorage.getItem("task_code")||"";
+code=String(code).trim();
+console.log("FINAL CODE:",code);
+
+/* ELEMENT */
+const downloadBtn=document.getElementById("downloadBtn");
+const loading=document.getElementById("loading");
+const loadingText=document.getElementById("loadingText");
+const linkPanel=document.getElementById("linkPanel");
+const getBtn=document.getElementById("getBtn");
+const progress=document.getElementById("progress");
+const progressBar=document.getElementById("progressBar");
+const status=document.getElementById("status");
+const openBtn=document.getElementById("openBtn");
+
+let processing=false;
+
 if(!code){
-    downloadBtn.disabled = true;
-    status.innerHTML =
-    "Kode link tidak ditemukan.";
+downloadBtn.disabled=true;
+status.textContent="Kode link tidak ditemukan.";
 }
-// =====================================================
-// DOWNLOAD 5 DETIK
-// =====================================================
-downloadBtn.onclick = () => {
-    downloadBtn.style.display = "none";
-    loading.style.display = "block";
-    let seconds = 5;
-    loadingText.textContent =
-    "Menyiapkan link " + seconds + " detik";
-    const timer =
-    setInterval(() => {
-        seconds--;
-        loadingText.textContent =
-        "Menyiapkan link " + seconds + " detik";
-        if(seconds <= 0){
-            clearInterval(timer);
-            loading.style.display = "none";
-            linkPanel.style.display = "block";
-            status.textContent =
-            "Silakan klik Get Link";
-        }
-    },1000);
+
+/* DOWNLOAD TIMER */
+downloadBtn.onclick=()=>{
+if(!code)return;
+
+downloadBtn.style.display="none";
+loading.style.display="block";
+
+let seconds=5;
+loadingText.textContent=`Menyiapkan link ${seconds} detik`;
+
+const timer=setInterval(()=>{
+seconds--;
+loadingText.textContent=`Menyiapkan link ${seconds} detik`;
+
+if(seconds<=0){
+clearInterval(timer);
+loading.style.display="none";
+linkPanel.style.display="block";
+status.textContent="Silakan klik Get Link.";
+}
+},1000);
 };
-// =====================================================
-// GET LINK 3 DETIK
-// =====================================================
-getBtn.onclick = () => {
-    getBtn.style.display = "none";
-    progress.style.display = "block";
-    let percent = 0;
-    const timer =
-    setInterval(() => {
-        percent++;
-        progressBar.style.width =
-        percent + "%";
-        status.textContent =
-        "Memproses " + percent + "%";
-        if(percent >= 100){
-            clearInterval(timer);
-            status.textContent =
-            "Link berhasil dibuat";
-            openBtn.style.display =
-            "inline-flex";
-        }
-    },30);
+
+/* GET LINK TIMER */
+getBtn.onclick=()=>{
+if(processing)return;
+
+getBtn.style.display="none";
+progress.style.display="block";
+
+let percent=0;
+progressBar.style.width="0%";
+
+const timer=setInterval(()=>{
+percent++;
+progressBar.style.width=percent+"%";
+status.textContent=`Memproses ${percent}%`;
+
+if(percent>=100){
+clearInterval(timer);
+status.textContent="Link siap dibuka.";
+openBtn.style.display="inline-flex";
+}
+},30);
 };
-// =====================================================
-// OPEN LINK
-// =====================================================
-openBtn.onclick = async () => {
+
+/* GET LINK DATA */
+async function getLinkData(){
+const {data,error}=await supabaseClient
+.from("links")
+.select("id,user_id,short_code,destination,destination_url,status,link_type,type")
+.eq("short_code",code)
+.maybeSingle();
+
+if(error)throw error;
+if(!data)throw new Error("Link tidak ditemukan.");
+
+return data;
+}
+
+/* GET CPM */
+async function getEarning(){
+let earning=75;
+
+const {data,error}=await supabaseClient
+.from("cpm_rates")
+.select("cpm")
+.eq("country","Indonesia")
+.maybeSingle();
+
+if(error){
+console.warn("CPM ERROR:",error);
+return earning;
+}
+
+if(data){
+const cpm=Number(data.cpm);
+if(Number.isFinite(cpm)&&cpm>0)earning=cpm;
+}
+
+return earning;
+}
+
+/* PROCESS ADS VIEW */
+async function processAdsView(linkId,earning){
+const {data,error}=await supabaseClient.rpc("process_ads_view",{
+p_link_id:linkId,
+p_earning:earning
+});
+
+if(error){
+console.error("PROCESS ADS VIEW ERROR:",error);
+throw new Error("Gagal mencatat view dan earning.");
+}
+
+if(!data||data.success!==true){
+throw new Error("Transaksi earning gagal.");
+}
+
+return data;
+}
+
+/* OPEN LINK */
+openBtn.onclick=async()=>{
+if(processing)return;
+
+processing=true;
+openBtn.disabled=true;
+status.textContent="Mencatat view...";
+
 try{
-    // =================================================
-    // VALIDASI CODE
-    // =================================================
-    if(!code){
-        alert("Kode tidak valid");
-        return;
-    }
-    // =================================================
-    // AMBIL LINK
-    // =================================================
-    const {
-        data: link,
-        error: linkError
-    } =
-    await supabaseClient
-    .from("links")
-    .select("*")
-    .eq(
-        "short_code",
-        String(code)
-    )
-    .maybeSingle();
-    if(linkError){
-        console.error(
-            "GET LINK ERROR:",
-            linkError
-        );
-        alert(
-            "Gagal mengambil data link."
-        );
-        return;
-    }
-    if(!link){
-        alert(
-            "Link tidak ditemukan."
-        );
-        return;
-    }
-    // =================================================
-    // STATUS
-    // =================================================
-    if(
-        String(link.status).toLowerCase()
-        !== "active"
-    ){
-        alert(
-            "Link sudah tidak aktif."
-        );
-        return;
-    }
-    // =================================================
-    // DESTINATION
-    // =================================================
-    const destination =
-    link.destination_url ||
-    link.destination;
-    if(!destination){
-        alert(
-            "URL tujuan tidak ditemukan."
-        );
-        return;
-    }
-    // =================================================
-    // ANTI DOUBLE VIEW
-    //
-    // Hanya blokir refresh/klik berulang
-    // dalam session browser ini.
-    // Tidak memakai localStorage permanen.
-    // =================================================
-    const sessionKey =
-    "clicked_" + code;
-    if(
-        sessionStorage.getItem(sessionKey)
-    ){
-        window.location.href =
-        destination;
-        return;
-    }
-    sessionStorage.setItem(
-        sessionKey,
-        "1"
-    );
-    // =================================================
-    // CPM
-    // =================================================
-    let earning = 75;
-    const {
-        data: cpmData,
-        error: cpmError
-    } =
-    await supabaseClient
-    .from("cpm_rates")
-    .select("cpm")
-    .eq(
-        "country",
-        "Indonesia"
-    )
-    .maybeSingle();
-    if(cpmError){
-        console.warn(
-            "CPM ERROR:",
-            cpmError
-        );
-    }
-    if(cpmData){
-        earning =
-        Number(cpmData.cpm || 75);
-    }
-    console.log(
-        "EARNING:",
-        earning
-    );
-    // =================================================
-    // UPDATE LINKS
-    // =================================================
-    const newViews =
-    Number(link.views || 0) + 1;
-    const newTotalViews =
-    Number(link.total_views || 0) + 1;
-    const newTotalClicks =
-    Number(link.total_clicks || 0) + 1;
-    const newTotalEarnings =
-    Number(link.total_earnings || 0)
-    + earning;
-    const {
-        data: updatedLink,
-        error: linkUpdateError
-    } =
-    await supabaseClient
-    .from("links")
-    .update({
-        views:
-        newViews,
-        clicks:
-        Number(link.clicks || 0) + 1,
-        total_views:
-        newTotalViews,
-        total_clicks:
-        newTotalClicks,
-        total_earnings:
-        newTotalEarnings
-    })
-    .eq(
-        "id",
-        link.id
-    )
-    .select()
-    .maybeSingle();
-    if(linkUpdateError){
-        console.error(
-            "LINK UPDATE ERROR:",
-            linkUpdateError
-        );
-    }else{
-        console.log(
-            "LINK UPDATED:",
-            updatedLink
-        );
-    }
-    // =================================================
-    // SIMPAN LINK VIEW
-    // =================================================
-    const {
-        data: viewData,
-        error: viewError
-    } =
-    await supabaseClient
-    .from("link_views")
-    .insert({
-        link_id:
-        link.id,
-        earning:
-        earning,
-        is_valid:
-        true,
-        created_at:
-        new Date().toISOString()
-    })
-    .select()
-    .maybeSingle();
-    if(viewError){
-        console.error(
-            "LINK VIEWS ERROR:",
-            viewError
-        );
-    }else{
-        console.log(
-            "LINK VIEW SAVED:",
-            viewData
-        );
-    }
-    // =================================================
-    // UPDATE USERS
-    // =================================================
-    const {
-        data: user,
-        error: userError
-    } =
-    await supabaseClient
-    .from("users")
-    .select(`
-        id,
-        balance,
-        ads_earning_today,
-        ads_earning_month,
-        ads_earning_total,
-        total_views,
-        total_clicks
-    `)
-    .eq(
-        "id",
-        link.user_id
-    )
-    .maybeSingle();
-    if(userError){
-        console.error(
-            "GET USER ERROR:",
-            userError
-        );
-    }
-    if(user){
-        const {
-            error: userUpdateError
-        } =
-        await supabaseClient
-        .from("users")
-        .update({
-            balance:
-            Number(user.balance || 0)
-            + earning,
-            ads_earning_today:
-            Number(
-                user.ads_earning_today || 0
-            )
-            + earning,
-            ads_earning_month:
-            Number(
-                user.ads_earning_month || 0
-            )
-            + earning,
-            ads_earning_total:
-            Number(
-                user.ads_earning_total || 0
-            )
-            + earning,
-            total_views:
-            Number(
-                user.total_views || 0
-            )
-            + 1,
-            total_clicks:
-            Number(
-                user.total_clicks || 0
-            )
-            + 1
-        })
-        .eq(
-            "id",
-            link.user_id
-        );
-        if(userUpdateError){
-            console.error(
-                "USER UPDATE ERROR:",
-                userUpdateError
-            );
-        }else{
-            console.log(
-                "USER UPDATED"
-            );
-        }
-    }
-    // =================================================
-    // TANGGAL ASIA/JAKARTA
-    // =================================================
-    const todayDate =
-    new Intl.DateTimeFormat(
-        "en-CA",
-        {
-            timeZone:
-            "Asia/Jakarta"
-        }
-    ).format(
-        new Date()
-    );
-    console.log(
-        "REPORT DATE:",
-        todayDate
-    );
-    // =================================================
-    // DAILY REPORT
-    // =================================================
-    const {
-        data: report,
-        error: reportSelectError
-    } =
-    await supabaseClient
-    .from("daily_reports")
-    .select("*")
-    .eq(
-        "user_id",
-        link.user_id
-    )
-    .eq(
-        "report_date",
-        todayDate
-    )
-    .maybeSingle();
-    if(reportSelectError){
-        console.error(
-            "REPORT SELECT ERROR:",
-            reportSelectError
-        );
-    }
-    // =================================================
-    // UPDATE REPORT
-    // =================================================
-    if(report){
-        const {
-            error: reportUpdateError
-        } =
-        await supabaseClient
-        .from("daily_reports")
-        .update({
-            ads_views:
-            Number(report.ads_views || 0)
-            + 1,
-            ads_clicks:
-            Number(report.ads_clicks || 0),
-            ads_earnings:
-            Number(
-                report.ads_earnings || 0
-            )
-            + earning
-        })
-        .eq(
-            "id",
-            report.id
-        );
-        if(reportUpdateError){
-            console.error(
-                "REPORT UPDATE ERROR:",
-                reportUpdateError
-            );
-        }else{
-            console.log(
-                "DAILY REPORT UPDATED"
-            );
-        }
-    }
-    // =================================================
-    // INSERT REPORT
-    // =================================================
-    else{
-        const {
-            error: reportInsertError
-        } =
-        await supabaseClient
-        .from("daily_reports")
-        .insert({
-            user_id:
-            link.user_id,
-            report_date:
-            todayDate,
-            ads_views:
-            1,
-            ads_clicks:
-            0,
-            ads_earnings:
-            earning,
-            sell_views:
-            0,
-            sell_clicks:
-            0,
-            sell_earnings:
-            0
-        });
-        if(reportInsertError){
-            console.error(
-                "REPORT INSERT ERROR:",
-                reportInsertError
-            );
-        }else{
-            console.log(
-                "DAILY REPORT CREATED"
-            );
-        }
-    }
-    // =================================================
-    // REDIRECT
-    // =================================================
-    console.log(
-        "REDIRECT:",
-        destination
-    );
-    window.location.href =
-    destination;
+const link=await getLinkData();
+
+if(String(link.status||"").toLowerCase()!=="active"){
+throw new Error("Link sudah tidak aktif.");
+}
+
+const type=String(link.link_type||link.type||"").toLowerCase().trim();
+
+if(type&&type!=="ads"){
+throw new Error("Link ini bukan Ads Link.");
+}
+
+const destination=link.destination_url||link.destination;
+
+if(!destination){
+throw new Error("URL tujuan tidak ditemukan.");
+}
+
+let destinationUrl;
+
+try{
+destinationUrl=new URL(destination,location.origin);
+}catch{
+throw new Error("URL tujuan tidak valid.");
+}
+
+if(destinationUrl.protocol!=="http:"&&destinationUrl.protocol!=="https:"){
+throw new Error("Protocol URL tidak valid.");
+}
+
+/* ANTI DOUBLE VIEW */
+const sessionKey="ads_view_"+link.id;
+
+if(sessionStorage.getItem(sessionKey)){
+window.location.href=destinationUrl.href;
+return;
+}
+
+/* CPM */
+const earning=await getEarning();
+console.log("ADS EARNING:",earning);
+
+/* DATABASE */
+const result=await processAdsView(link.id,earning);
+console.log("ADS TRANSACTION:",result);
+
+/* MARK SESSION */
+sessionStorage.setItem(sessionKey,"1");
+
+/* SUCCESS */
+status.textContent=`View tercatat +Rp ${earning.toLocaleString("id-ID")}`;
+
+setTimeout(()=>{
+window.location.href=destinationUrl.href;
+},300);
+
 }catch(error){
-    console.error(
-        "FINAL ERROR:",
-        error
-    );
-    alert(
-        "Terjadi kesalahan. Cek Console."
-    );
+console.error("OPEN LINK ERROR:",error);
+
+processing=false;
+openBtn.disabled=false;
+
+status.textContent=error?.message||"Terjadi kesalahan.";
+
+alert(error?.message||"Gagal memproses link.");
 }
 };
 </script>
 
 </body>
 </html>
-
