@@ -1,8 +1,7 @@
 // js/database.js
 // =====================================================
 // CLICK2PAY DATABASE
-// FINAL FRONTEND VERSION
-// Supabase + Backend API
+// DATABASE-ALIGNED FRONTEND VERSION
 // =====================================================
 
 "use strict";
@@ -76,14 +75,19 @@ function currentUserId() {
 function saveUserLocal(user) {
     if (!user) return;
 
-    if (user.id !== undefined && user.id !== null) {
+    if (
+        user.id !== undefined &&
+        user.id !== null
+    ) {
         localStorage.setItem(
             "user_id",
             String(user.id)
         );
     }
 
-    if (user.username !== undefined) {
+    if (
+        user.username !== undefined
+    ) {
         localStorage.setItem(
             "username",
             user.username || ""
@@ -155,6 +159,10 @@ function isAdsLink(link) {
     );
 }
 
+// =====================================================
+// NORMALIZE LINK
+// =====================================================
+
 function normalizeLink(link) {
     if (!link) return null;
 
@@ -167,20 +175,22 @@ function normalizeLink(link) {
 
     normalized.type =
         type ||
-        normalizeString(link.type);
+        normalizeString(
+            link.type
+        );
 
     normalized.link_type =
         type ||
-        normalizeString(link.link_type);
+        normalizeString(
+            link.link_type
+        );
 
     normalized.title =
         link.title ||
-        link.name ||
         "";
 
     normalized.destination =
         link.destination ||
-        link.destination_url ||
         "";
 
     normalized.destination_url =
@@ -190,64 +200,51 @@ function normalizeLink(link) {
 
     normalized.short_code =
         link.short_code ||
-        link.code ||
         "";
 
     normalized.total_views =
         Number(
-            link.total_views ??
-            link.views ??
-            0
+            link.total_views ?? 0
         );
 
     normalized.total_clicks =
         Number(
-            link.total_clicks ??
-            link.clicks ??
-            0
+            link.total_clicks ?? 0
         );
 
     normalized.total_earnings =
         Number(
-            link.total_earnings ??
-            link.earnings ??
-            0
+            link.total_earnings ?? 0
         );
 
     normalized.views =
         Number(
-            link.views ??
-            link.total_views ??
-            0
+            link.views ?? 0
         );
 
     normalized.clicks =
         Number(
-            link.clicks ??
-            link.total_clicks ??
-            0
+            link.clicks ?? 0
         );
 
     normalized.earnings =
         Number(
-            link.earnings ??
-            link.total_earnings ??
-            0
+            link.earnings ?? 0
         );
 
     normalized.price =
         Number(
-            link.price || 0
+            link.price ?? 0
         );
 
     normalized.sales =
         Number(
-            link.sales || 0
+            link.sales ?? 0
         );
 
     normalized.sold =
         Number(
-            link.sold || 0
+            link.sold ?? 0
         );
 
     return normalized;
@@ -262,6 +259,10 @@ function normalizeLinks(rows) {
         .map(normalizeLink)
         .filter(Boolean);
 }
+
+// =====================================================
+// EMPTY STATISTICS
+// =====================================================
 
 function emptyStatistics() {
     return {
@@ -306,7 +307,10 @@ async function getSession() {
             return null;
         }
 
-        return data?.session || null;
+        return (
+            data?.session ||
+            null
+        );
 
     } catch (error) {
         console.error(
@@ -348,7 +352,9 @@ async function apiRequest(
         ...(options.headers || {})
     };
 
-    if (session?.access_token) {
+    if (
+        session?.access_token
+    ) {
         headers.Authorization =
             `Bearer ${session.access_token}`;
     }
@@ -364,6 +370,7 @@ async function apiRequest(
                     headers
                 }
             );
+
     } catch (error) {
         console.error(
             "API NETWORK ERROR:",
@@ -393,6 +400,7 @@ async function apiRequest(
         } catch {
             result = null;
         }
+
     } else {
         try {
             const text =
@@ -404,6 +412,7 @@ async function apiRequest(
                         message: text
                     }
                     : null;
+
         } catch {
             result = null;
         }
@@ -424,7 +433,7 @@ async function apiRequest(
 }
 
 // =====================================================
-// USER
+// USERS
 // =====================================================
 
 async function getUser() {
@@ -443,7 +452,29 @@ async function getUser() {
         } =
             await supabaseClient
                 .from("users")
-                .select("*")
+                .select(`
+                    id,
+                    username,
+                    email,
+                    balance,
+                    total_ads,
+                    total_sell,
+                    total_views,
+                    total_clicks,
+                    sell_unlocked,
+                    withdraw_count,
+                    is_admin,
+                    is_banned,
+                    email_verified,
+                    created_at,
+                    updated_at,
+                    ref_code,
+                    sell_earning_total,
+                    sell_earning_month,
+                    sell_earning_today,
+                    is_premium,
+                    premium_expires_at
+                `)
                 .eq(
                     "id",
                     session.user.id
@@ -491,7 +522,29 @@ async function getProfile(userId) {
         } =
             await supabaseClient
                 .from("users")
-                .select("*")
+                .select(`
+                    id,
+                    username,
+                    email,
+                    balance,
+                    total_ads,
+                    total_sell,
+                    total_views,
+                    total_clicks,
+                    sell_unlocked,
+                    withdraw_count,
+                    is_admin,
+                    is_banned,
+                    email_verified,
+                    created_at,
+                    updated_at,
+                    ref_code,
+                    sell_earning_total,
+                    sell_earning_month,
+                    sell_earning_today,
+                    is_premium,
+                    premium_expires_at
+                `)
                 .eq(
                     "id",
                     userId
@@ -537,6 +590,10 @@ async function getUsers() {
 async function getProfiles() {
     return getUsers();
 }
+
+// =====================================================
+// UPDATE USERS
+// =====================================================
 
 async function updateProfile(
     payload = {}
@@ -598,9 +655,14 @@ async function updateProfile(
     return data;
 }
 
+// =====================================================
+// LOGOUT
+// =====================================================
+
 async function logout() {
     try {
         await supabaseClient.auth.signOut();
+
     } catch (error) {
         console.error(
             "LOGOUT ERROR:",
@@ -619,11 +681,15 @@ async function logout() {
 }
 
 // =====================================================
-// PROFILES
+// PROFILES TABLE
 // =====================================================
 
-async function getUserProfile(userId) {
-    if (!userId) return null;
+async function getUserProfile(
+    userId
+) {
+    if (!userId) {
+        return null;
+    }
 
     const {
         data,
@@ -631,7 +697,26 @@ async function getUserProfile(userId) {
     } =
         await supabaseClient
             .from("profiles")
-            .select("*")
+            .select(`
+                id,
+                username,
+                full_name,
+                photo_url,
+                balance,
+                ads_earning_today,
+                ads_earning_month,
+                ads_earning_total,
+                sell_earning_today,
+                sell_earning_month,
+                sell_earning_total,
+                total_views,
+                total_clicks,
+                withdraw_count,
+                sell_link_enabled,
+                status,
+                created_at,
+                updated_at
+            `)
             .eq(
                 "id",
                 userId
@@ -731,8 +816,12 @@ async function updateUserProfile(
 // SELL ACCESS
 // =====================================================
 
-async function getSellAccess(userId) {
-    if (!userId) return null;
+async function getSellAccess(
+    userId
+) {
+    if (!userId) {
+        return null;
+    }
 
     const session =
         await getSession();
@@ -795,11 +884,15 @@ async function canUseSellLink(
         return false;
     }
 
-    if (user.is_banned === true) {
+    if (
+        user.is_banned === true
+    ) {
         return false;
     }
 
-    if (user.sell_unlocked === true) {
+    if (
+        user.sell_unlocked === true
+    ) {
         return true;
     }
 
@@ -811,7 +904,9 @@ async function canUseSellLink(
         return true;
     }
 
-    if (user.is_premium === true) {
+    if (
+        user.is_premium === true
+    ) {
         if (
             !user.premium_expires_at
         ) {
@@ -839,16 +934,10 @@ async function canUseSellLink(
 // =====================================================
 // LINKS
 // =====================================================
-// PENTING:
-// Jangan menggunakan daftar kolom panjang
-// yang dapat menyebabkan seluruh query gagal
-// jika salah satu kolom tidak tersedia.
-//
-// Gunakan "*" agar Ads Link dan Sell Link
-// tetap dapat dibaca selama row ada.
-// =====================================================
 
-async function getLinks(userId) {
+async function getLinks(
+    userId
+) {
     if (!userId) {
         return [];
     }
@@ -913,7 +1002,9 @@ async function getLinks(userId) {
 // ADS LINKS
 // =====================================================
 
-async function getAdsLinks(userId) {
+async function getAdsLinks(
+    userId
+) {
     const links =
         await getLinks(userId);
 
@@ -926,7 +1017,9 @@ async function getAdsLinks(userId) {
 // SELL LINKS
 // =====================================================
 
-async function getSellLinks(userId) {
+async function getSellLinks(
+    userId
+) {
     const links =
         await getLinks(userId);
 
@@ -939,7 +1032,9 @@ async function getSellLinks(userId) {
 // LINK BY CODE
 // =====================================================
 
-async function getLinkByCode(code) {
+async function getLinkByCode(
+    code
+) {
     const normalizedCode =
         normalizeString(code);
 
@@ -1022,7 +1117,7 @@ async function createLink(
         normalizeString(
             payload.type ||
             payload.link_type ||
-            "ads"
+            LINK_TYPES.ADS
         ).toLowerCase();
 
     if (
@@ -1043,13 +1138,13 @@ async function createLink(
         title,
 
         alias:
-            payload.alias ||
+            payload.alias ??
             null,
 
         destination,
 
         campaign:
-            payload.campaign ||
+            payload.campaign ??
             null,
 
         device:
@@ -1057,7 +1152,7 @@ async function createLink(
             "all",
 
         expired_at:
-            payload.expired_at ||
+            payload.expired_at ??
             null,
 
         price:
@@ -1083,11 +1178,11 @@ async function createLink(
             type,
 
         custom_alias:
-            payload.custom_alias ||
+            payload.custom_alias ??
             null,
 
         campaign_name:
-            payload.campaign_name ||
+            payload.campaign_name ??
             null,
 
         target_device:
@@ -1236,7 +1331,9 @@ async function updateLink(
 // DELETE LINK
 // =====================================================
 
-async function deleteLink(id) {
+async function deleteLink(
+    id
+) {
     if (!id) {
         throw new Error(
             "Link ID wajib diisi"
@@ -1314,7 +1411,9 @@ async function createLinkView(
     );
 }
 
-async function getLinkViews(linkId) {
+async function getLinkViews(
+    linkId
+) {
     if (!linkId) {
         return [];
     }
@@ -1325,7 +1424,18 @@ async function getLinkViews(linkId) {
     } =
         await supabaseClient
             .from("link_views")
-            .select("*")
+            .select(`
+                id,
+                link_id,
+                visitor_ip,
+                country,
+                device,
+                browser,
+                referer,
+                is_valid,
+                earning,
+                created_at
+            `)
             .eq(
                 "link_id",
                 linkId
@@ -1398,14 +1508,22 @@ async function getLinkAccess(
     } =
         await supabaseClient
             .from("link_access")
-            .select("*")
+            .select(`
+                id,
+                link_id,
+                payment_id,
+                buyer_id,
+                created_at
+            `)
             .eq(
                 "link_id",
                 linkId
             )
             .eq(
                 "buyer_id",
-                session.user.id
+                String(
+                    session.user.id
+                )
             );
 
     if (error) {
@@ -1544,7 +1662,12 @@ async function getSellOrders(
                 qris_string,
                 balance_processed,
                 quantity,
-                views
+                views,
+                qris_image_url,
+                dompetx_payment_id,
+                payment_status,
+                updated_at,
+                balance_credited
             `)
             .eq(
                 "seller_id",
@@ -1612,7 +1735,17 @@ async function getLinkPayment(
     } =
         await supabaseClient
             .from("link_payments")
-            .select("*")
+            .select(`
+                id,
+                link_id,
+                invoice_id,
+                amount,
+                qr_url,
+                status,
+                expired_at,
+                paid_at,
+                created_at
+            `)
             .eq(
                 "invoice_id",
                 invoiceId
@@ -1776,7 +1909,13 @@ async function getPaymentRequests(
     } =
         await supabaseClient
             .from("payment_requests")
-            .select("*")
+            .select(`
+                id,
+                user_id,
+                payment_name,
+                status,
+                created_at
+            `)
             .eq(
                 "user_id",
                 session.user.id
@@ -2090,23 +2229,145 @@ async function createWithdrawal(
 }
 
 // =====================================================
-// LEGACY WITHDRAW
+// LEGACY WITHDRAWS TABLE
 // =====================================================
 
 async function getWithdraws(
     userId = null
 ) {
-    return getWithdrawals(
-        userId
-    );
+    const session =
+        await getSession();
+
+    if (!session?.user) {
+        return [];
+    }
+
+    const targetUser =
+        userId ||
+        session.user.id;
+
+    if (
+        String(targetUser) !==
+        String(session.user.id)
+    ) {
+        return [];
+    }
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("withdraws")
+            .select(`
+                id,
+                user_id,
+                method,
+                account_number,
+                amount,
+                status,
+                created_at,
+                type,
+                fee
+            `)
+            .eq(
+                "user_id",
+                session.user.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+    if (error) {
+        console.error(
+            "GET WITHDRAWS:",
+            error
+        );
+
+        return [];
+    }
+
+    return data || [];
 }
 
 async function createWithdraw(
     payload = {}
 ) {
-    return createWithdrawal(
-        payload
-    );
+    const session =
+        await requireSession();
+
+    if (
+        payload.amount ===
+        undefined
+    ) {
+        throw new Error(
+            "amount wajib diisi"
+        );
+    }
+
+    const amount =
+        Number(
+            payload.amount
+        );
+
+    if (
+        !Number.isFinite(amount) ||
+        amount <= 0
+    ) {
+        throw new Error(
+            "Jumlah withdraw tidak valid."
+        );
+    }
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("withdraws")
+            .insert({
+                user_id:
+                    session.user.id,
+
+                method:
+                    payload.method ||
+                    "",
+
+                account_number:
+                    payload.account_number ||
+                    "",
+
+                amount,
+
+                status:
+                    payload.status ||
+                    "pending",
+
+                type:
+                    payload.type ||
+                    "withdraw",
+
+                fee:
+                    Number(
+                        payload.fee || 0
+                    )
+            })
+            .select()
+            .single();
+
+    if (error) {
+        console.error(
+            "CREATE WITHDRAW:",
+            error
+        );
+
+        throw error;
+    }
+
+    return data;
 }
 
 // =====================================================
@@ -2418,11 +2679,26 @@ async function upsertDailyReport(
     reportDate,
     payload = {}
 ) {
+    const session =
+        await requireSession();
+
+    if (
+        String(userId) !==
+        String(session.user.id)
+    ) {
+        throw new Error(
+            "Tidak boleh mengubah report user lain."
+        );
+    }
+
     return apiRequest(
         "/api/reports/daily",
         {
             method: "POST",
             body: JSON.stringify({
+                user_id:
+                    session.user.id,
+
                 report_date:
                     reportDate,
 
@@ -2436,6 +2712,11 @@ async function upsertDailyReport(
                         payload.ads_clicks || 0
                     ),
 
+                ads_earnings:
+                    Number(
+                        payload.ads_earnings || 0
+                    ),
+
                 sell_views:
                     Number(
                         payload.sell_views || 0
@@ -2444,6 +2725,11 @@ async function upsertDailyReport(
                 sell_clicks:
                     Number(
                         payload.sell_clicks || 0
+                    ),
+
+                sell_earnings:
+                    Number(
+                        payload.sell_earnings || 0
                     )
             })
         }
@@ -2509,8 +2795,7 @@ async function getStatistics(
                 ) =>
                     total +
                     Number(
-                        item.total_views ||
-                        0
+                        item.total_views || 0
                     ),
                 0
             ),
@@ -2523,8 +2808,7 @@ async function getStatistics(
                 ) =>
                     total +
                     Number(
-                        item.total_clicks ||
-                        0
+                        item.total_clicks || 0
                     ),
                 0
             ),
@@ -2537,8 +2821,7 @@ async function getStatistics(
                 ) =>
                     total +
                     Number(
-                        item.total_views ||
-                        0
+                        item.total_views || 0
                     ),
                 0
             ),
@@ -2551,8 +2834,7 @@ async function getStatistics(
                 ) =>
                     total +
                     Number(
-                        item.total_clicks ||
-                        0
+                        item.total_clicks || 0
                     ),
                 0
             ),
@@ -2565,8 +2847,7 @@ async function getStatistics(
                 ) =>
                     total +
                     Number(
-                        item.quantity ||
-                        1
+                        item.quantity || 1
                     ),
                 0
             ),
@@ -2579,8 +2860,7 @@ async function getStatistics(
                 ) =>
                     total +
                     Number(
-                        item.price ||
-                        0
+                        item.price || 0
                     ),
                 0
             ),
@@ -2593,8 +2873,7 @@ async function getStatistics(
                 ) =>
                     total +
                     Number(
-                        item.fee ||
-                        0
+                        item.fee || 0
                     ),
                 0
             ),
@@ -2607,8 +2886,7 @@ async function getStatistics(
                 ) =>
                     total +
                     Number(
-                        item.seller_receive ||
-                        0
+                        item.seller_receive || 0
                     ),
                 0
             )
@@ -2680,7 +2958,14 @@ async function getNotifications(
     } =
         await supabaseClient
             .from("notifications")
-            .select("*")
+            .select(`
+                id,
+                user_id,
+                title,
+                message,
+                is_read,
+                created_at
+            `)
             .eq(
                 "user_id",
                 session.user.id
@@ -2749,7 +3034,7 @@ async function markNotificationRead(
 }
 
 // =====================================================
-// CPM
+// CPM MARKET
 // =====================================================
 
 async function getCPMMarket() {
@@ -2788,6 +3073,10 @@ async function getCPMMarket() {
     return data || [];
 }
 
+// =====================================================
+// CPM RATE
+// =====================================================
+
 async function getCPMRate(
     country = "Indonesia"
 ) {
@@ -2825,6 +3114,10 @@ async function getCPMRate(
         data?.cpm || 0
     );
 }
+
+// =====================================================
+// CPM SETTINGS
+// =====================================================
 
 async function getCPMSettings(
     country = null
@@ -2873,6 +3166,56 @@ async function getCPMSettings(
 }
 
 // =====================================================
+// SETTINGS
+// =====================================================
+
+async function getSettings(
+    key = null
+) {
+    let query =
+        supabaseClient
+            .from("settings")
+            .select(`
+                key,
+                value,
+                maintenance,
+                ads_cpm,
+                sell_cpm,
+                minimum_withdraw,
+                updated_at
+            `);
+
+    if (key) {
+        query =
+            query.eq(
+                "key",
+                key
+            );
+    }
+
+    const {
+        data,
+        error
+    } =
+        await query;
+
+    if (error) {
+        console.error(
+            "GET SETTINGS:",
+            error
+        );
+
+        return key
+            ? null
+            : [];
+    }
+
+    return key
+        ? data?.[0] || null
+        : data || [];
+}
+
+// =====================================================
 // REFERRALS
 // =====================================================
 
@@ -2903,7 +3246,13 @@ async function getReferrals(
     } =
         await supabaseClient
             .from("referrals")
-            .select("*")
+            .select(`
+                id,
+                referrer_id,
+                referred_id,
+                bonus,
+                created_at
+            `)
             .or(
                 `referrer_id.eq.${session.user.id},referred_id.eq.${session.user.id}`
             )
@@ -2927,6 +3276,125 @@ async function getReferrals(
 }
 
 // =====================================================
+// LOGIN ACTIVITY
+// =====================================================
+
+async function getLoginActivity(
+    userId
+) {
+    if (!userId) {
+        return [];
+    }
+
+    const session =
+        await getSession();
+
+    if (!session?.user) {
+        return [];
+    }
+
+    if (
+        String(userId) !==
+        String(session.user.id)
+    ) {
+        return [];
+    }
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("login_activity")
+            .select(`
+                id,
+                user_id,
+                ip_address,
+                device,
+                browser,
+                created_at,
+                region,
+                latitude,
+                longitude,
+                ip,
+                city,
+                country,
+                org,
+                user_agent
+            `)
+            .eq(
+                "user_id",
+                session.user.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+    if (error) {
+        console.error(
+            "GET LOGIN ACTIVITY:",
+            error
+        );
+
+        return [];
+    }
+
+    return data || [];
+}
+
+// =====================================================
+// MENUS
+// =====================================================
+
+async function getMenus(
+    role = null
+) {
+    let query =
+        supabaseClient
+            .from("menus")
+            .select(`
+                id,
+                name,
+                icon,
+                link,
+                role
+            `)
+            .order(
+                "id",
+                {
+                    ascending: true
+                }
+            );
+
+    if (role) {
+        query =
+            query.or(
+                `role.eq.${role},role.is.null`
+            );
+    }
+
+    const {
+        data,
+        error
+    } =
+        await query;
+
+    if (error) {
+        console.error(
+            "GET MENUS:",
+            error
+        );
+
+        return [];
+    }
+
+    return data || [];
+}
+
+// =====================================================
 // GLOBAL EXPORT
 // =====================================================
 
@@ -2936,8 +3404,15 @@ window.database = {
     supabase:
         supabaseClient,
 
+    apiRequest,
+
     // Session
     getSession,
+
+    // Local user
+    currentUserId,
+    saveUserLocal,
+    clearLocalUser,
 
     // User
     getUser,
@@ -2948,7 +3423,7 @@ window.database = {
     updateProfile,
     logout,
 
-    // Profile
+    // Profiles
     getUserProfile,
     updateUserProfile,
 
@@ -2978,7 +3453,7 @@ window.database = {
     createSellOrder,
     getSellOrders,
 
-    // Link payment
+    // Link payments
     createLinkPayment,
     getLinkPayment,
     updateLinkPayment,
@@ -3000,11 +3475,13 @@ window.database = {
     getTransactions,
     createTransaction,
 
-    // Withdraw
-    getWithdraws,
-    createWithdraw,
+    // Withdrawals
     getWithdrawals,
     createWithdrawal,
+
+    // Legacy withdraws
+    getWithdraws,
+    createWithdraw,
 
     // Payment methods
     getPaymentMethods,
@@ -3032,8 +3509,17 @@ window.database = {
     getCPMRate,
     getCPMSettings,
 
+    // Settings
+    getSettings,
+
     // Referrals
-    getReferrals
+    getReferrals,
+
+    // Login activity
+    getLoginActivity,
+
+    // Menus
+    getMenus
 };
 
 // =====================================================
@@ -3045,6 +3531,7 @@ console.log(
     {
         api: API_URL,
         supabase: SUPABASE_URL,
+        databaseAligned: true,
         sell: true,
         ads: true
     }
