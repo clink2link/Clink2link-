@@ -682,41 +682,53 @@
 /* =====================================================
    17. DESTINATION
 ===================================================== */
-.destination-link,
-.link-info{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    width:100%;
-    min-width:0;
-    margin:10px 0;
-    font-size:12px;
-    line-height:1.4;
-}
-.destination-link i,
-.link-info i{
-    flex:0 0 auto;
-    width:14px;
-    color:#2563eb;
-    font-size:12px;
-}
-.destination-url{
-    display:block;
-    flex:1 1 auto;
-    min-width:0;
-    max-width:100%;
-    color:#3b82f6;
-    text-decoration:none;
-    /* URL panjang tidak membuat card melebar */
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-.destination-url:hover{
-    color:#2563eb;
-    text-decoration:underline;
+.link-info {
+    width: 100%;
+    min-width: 0;
+    margin: 10px 0;
+    overflow: hidden;
 }
 
+.destination-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.destination-wrapper > i {
+    flex: 0 0 14px;
+    width: 14px;
+    margin-top: 2px;
+    color: #2563eb;
+    font-size: 12px;
+}
+
+.destination-link {
+    display: block;
+    flex: 1 1 auto;
+    width: 0;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #3b82f6;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.destination-link:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.destination-empty {
+    color: #999;
+}
 
 /* =====================================================
    18. BADGE
