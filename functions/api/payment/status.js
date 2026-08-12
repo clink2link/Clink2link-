@@ -12,16 +12,31 @@
 // 4. Cek status DompetX
 // 5. Jika paid:
 //      -> validasi nominal
+//      -> hitung fee Click2Pay
 //      -> process_sell_payment(order_id)
 //      -> saldo seller masuk
 //      -> order menjadi paid
 //      -> ambil destination URL
-// 6. Return redirect_url
+// 6. Return rincian:
+//      - amount
+//      - fee_percent
+//      - fee_amount
+//      - seller_receive
+//      - redirect_url
 //
 // ENV:
 // DOMPETX_API_KEY
 // SUPABASE_URL
 // SUPABASE_SERVICE_KEY
+// MARKET_FEE
+//
+// MARKET_FEE:
+// Contoh:
+// 20 = 20%
+// 15 = 15%
+// 10 = 10%
+//
+// Jika MARKET_FEE tidak ada -> default 20%
 // ============================================================
 
 export async function onRequestGet(context) {
@@ -40,6 +55,37 @@ export async function onRequestGet(context) {
 
         const supabaseKey =
             String(env.SUPABASE_SERVICE_KEY || "").trim();
+
+        // =====================================================
+        // MARKET FEE
+        // =====================================================
+        //
+        // Default 20%.
+        //
+        // Contoh:
+        // MARKET_FEE=20
+        //
+        // Jangan gunakan 0.20.
+        // Gunakan 20 untuk 20%.
+        //
+
+        const rawMarketFee =
+            Number(
+                String(
+                    env.MARKET_FEE ?? "20"
+                ).trim()
+            );
+
+        const marketFeePercent =
+            Number.isFinite(rawMarketFee) &&
+            rawMarketFee >= 0 &&
+            rawMarketFee <= 100
+                ? rawMarketFee
+                : 20;
+
+        // =====================================================
+        // VALIDATE ENV
+        // =====================================================
 
         if (!apiKey) {
             return jsonResponse({
@@ -193,6 +239,54 @@ export async function onRequestGet(context) {
                 .toLowerCase();
 
         // =====================================================
+        // ORDER AMOUNT
+        // =====================================================
+
+        const orderAmount =
+            Number(
+                order.price
+            );
+
+        // =====================================================
+        // VALIDATE ORDER AMOUNT
+        // =====================================================
+
+        if (
+            !Number.isInteger(orderAmount) ||
+            orderAmount < 1000
+        ) {
+            return jsonResponse({
+                success: false,
+                paid: false,
+                processed: false,
+                error:
+                    "Harga order tidak valid",
+                data: {
+                    order_id:
+                        orderId,
+
+                    order_amount:
+                        orderAmount
+                }
+            }, 409);
+        }
+
+        // =====================================================
+        // CALCULATE FEE
+        // =====================================================
+
+        const feeAmount =
+            Math.floor(
+                orderAmount *
+                marketFeePercent /
+                100
+            );
+
+        const calculatedSellerReceive =
+            orderAmount -
+            feeAmount;
+
+        // =====================================================
         // JIKA ORDER SUDAH PAID
         // =====================================================
 
@@ -211,12 +305,44 @@ export async function onRequestGet(context) {
                     order.link_id
                 );
 
+            // Ambil seller_receive dari DB jika tersedia.
+            // Jika tidak ada, gunakan hasil kalkulasi.
+            const storedSellerReceive =
+                Number(
+                    order.seller_receive
+                );
+
+            const sellerReceive =
+                Number.isInteger(
+                    storedSellerReceive
+                ) &&
+                storedSellerReceive >= 0
+                    ? storedSellerReceive
+                    : calculatedSellerReceive;
+
+            const actualFee =
+                orderAmount -
+                sellerReceive;
+
+            const actualFeePercent =
+                orderAmount > 0
+                    ? Number(
+                        (
+                            actualFee /
+                            orderAmount *
+                            100
+                        ).toFixed(2)
+                    )
+                    : marketFeePercent;
+
             return jsonResponse({
                 success: true,
                 paid: true,
                 processed: true,
+
                 message:
                     "Order sudah dibayar",
+
                 data: {
                     order_id:
                         orderId,
@@ -226,6 +352,32 @@ export async function onRequestGet(context) {
 
                     paid_at:
                         order.paid_at || null,
+
+                    // =====================================
+                    // RINCIAN PEMBAYARAN
+                    // =====================================
+
+                    amount:
+                        orderAmount,
+
+                    gross_amount:
+                        orderAmount,
+
+                    fee_percent:
+                        actualFeePercent,
+
+                    fee_amount:
+                        actualFee,
+
+                    seller_receive:
+                        sellerReceive,
+
+                    net_amount:
+                        sellerReceive,
+
+                    // =====================================
+                    // REDIRECT
+                    // =====================================
 
                     redirect_url:
                         destination,
@@ -249,15 +401,6 @@ export async function onRequestGet(context) {
 
         // =====================================================
         // REFERENCE
-        //
-        // Prioritas:
-        //
-        // 1. invoice_id
-        // 2. reference
-        // 3. fallback CLP-{orderId}
-        //
-        // Ini penting karena sebelumnya database kamu
-        // ternyata belum menyimpan payment_id/reference.
         // =====================================================
 
         const storedReference =
@@ -302,8 +445,6 @@ export async function onRequestGet(context) {
 
         // =====================================================
         // SIGNATURE
-        //
-        // GET request menggunakan "{}"
         // =====================================================
 
         const dompetBodyString =
@@ -320,8 +461,6 @@ export async function onRequestGet(context) {
 
         // =====================================================
         // DOMPETX STATUS URL
-        //
-        // PAYMENT ID > REFERENCE
         // =====================================================
 
         let statusUrl;
@@ -519,7 +658,7 @@ export async function onRequestGet(context) {
                 .toLowerCase();
 
         // =====================================================
-        // PAYMENT ID DARI DOMPETX
+        // PAYMENT ID
         // =====================================================
 
         const returnedPaymentId =
@@ -631,48 +770,6 @@ export async function onRequestGet(context) {
         }
 
         // =====================================================
-        // VALIDATE ORDER AMOUNT
-        // =====================================================
-
-        const orderAmount =
-            Number(
-                order.price
-            );
-
-        if (
-            !Number.isInteger(orderAmount) ||
-            orderAmount < 1000
-        ) {
-            console.error(
-                "INVALID ORDER AMOUNT:",
-                {
-                    order_id:
-                        orderId,
-
-                    order_amount:
-                        orderAmount
-                }
-            );
-
-            return jsonResponse({
-                success: false,
-                paid: true,
-                processed: false,
-
-                error:
-                    "Harga order tidak valid",
-
-                data: {
-                    order_id:
-                        orderId,
-
-                    order_amount:
-                        orderAmount
-                }
-            }, 409);
-        }
-
-        // =====================================================
         // VALIDATE PAYMENT AMOUNT
         // =====================================================
 
@@ -722,12 +819,41 @@ export async function onRequestGet(context) {
         }
 
         // =====================================================
+        // FEE INFORMATION
+        // =====================================================
+
+        console.log(
+            "CLICK2PAY FEE:",
+            {
+                order_id:
+                    orderId,
+
+                gross_amount:
+                    orderAmount,
+
+                fee_percent:
+                    marketFeePercent,
+
+                fee_amount:
+                    feeAmount,
+
+                seller_receive:
+                    calculatedSellerReceive
+            }
+        );
+
+        // =====================================================
         // PROCESS SELL PAYMENT
         //
         // RPC HARUS IDEMPOTENT.
         //
-        // Artinya kalau status endpoint dipanggil 10x,
-        // seller hanya menerima saldo 1x.
+        // Seller hanya menerima saldo 1x.
+        //
+        // CATATAN:
+        // RPC sebaiknya menggunakan order.seller_receive
+        // yang sudah dihitung saat order dibuat.
+        //
+        // Jadi endpoint ini TIDAK mengubah saldo langsung.
         // =====================================================
 
         console.log(
@@ -739,8 +865,17 @@ export async function onRequestGet(context) {
                 payment_id:
                     returnedPaymentId,
 
-                amount:
-                    paymentAmount
+                gross_amount:
+                    paymentAmount,
+
+                fee_percent:
+                    marketFeePercent,
+
+                fee_amount:
+                    feeAmount,
+
+                calculated_seller_receive:
+                    calculatedSellerReceive
             }
         );
 
@@ -825,7 +960,24 @@ export async function onRequestGet(context) {
                     "Pembayaran berhasil tetapi gagal memproses saldo seller",
 
                 detail:
-                    rpcData
+                    rpcData,
+
+                data: {
+                    order_id:
+                        orderId,
+
+                    amount:
+                        orderAmount,
+
+                    fee_percent:
+                        marketFeePercent,
+
+                    fee_amount:
+                        feeAmount,
+
+                    calculated_seller_receive:
+                        calculatedSellerReceive
+                }
             }, 500);
         }
 
@@ -856,11 +1008,56 @@ export async function onRequestGet(context) {
                     payment_status:
                         paymentStatus,
 
+                    amount:
+                        orderAmount,
+
+                    fee_percent:
+                        marketFeePercent,
+
+                    fee_amount:
+                        feeAmount,
+
+                    seller_receive:
+                        rpcData?.seller_receive ??
+                        calculatedSellerReceive,
+
                     rpc:
                         rpcData
                 }
             }, 500);
         }
+
+        // =====================================================
+        // SELLER RECEIVE
+        // =====================================================
+
+        const rpcSellerReceive =
+            Number(
+                rpcData?.seller_receive
+            );
+
+        const sellerReceive =
+            Number.isInteger(
+                rpcSellerReceive
+            ) &&
+            rpcSellerReceive >= 0
+                ? rpcSellerReceive
+                : calculatedSellerReceive;
+
+        const actualFee =
+            orderAmount -
+            sellerReceive;
+
+        const actualFeePercent =
+            orderAmount > 0
+                ? Number(
+                    (
+                        actualFee /
+                        orderAmount *
+                        100
+                    ).toFixed(2)
+                )
+                : marketFeePercent;
 
         // =====================================================
         // GET DESTINATION
@@ -889,13 +1086,26 @@ export async function onRequestGet(context) {
                 reference:
                     paymentReference,
 
-                amount:
-                    paymentAmount,
+                gross_amount:
+                    orderAmount,
+
+                fee_percent:
+                    actualFeePercent,
+
+                fee_amount:
+                    actualFee,
+
+                seller_receive:
+                    sellerReceive,
 
                 destination:
                     destination
             }
         );
+
+        // =====================================================
+        // FINAL RESPONSE
+        // =====================================================
 
         return jsonResponse({
             success: true,
@@ -918,18 +1128,49 @@ export async function onRequestGet(context) {
                 payment_status:
                     paymentStatus,
 
+                // =========================================
+                // PEMBAYARAN
+                // =========================================
+
                 amount:
-                    paymentAmount,
+                    orderAmount,
+
+                gross_amount:
+                    orderAmount,
+
+                // =========================================
+                // FEE CLICK2PAY
+                // =========================================
+
+                fee_percent:
+                    actualFeePercent,
+
+                fee_amount:
+                    actualFee,
+
+                // =========================================
+                // SALDO SELLER
+                // =========================================
 
                 seller_receive:
-                    rpcData?.seller_receive ??
-                    null,
+                    sellerReceive,
+
+                net_amount:
+                    sellerReceive,
+
+                // =========================================
+                // REDIRECT
+                // =========================================
 
                 redirect_url:
                     destination,
 
                 destination_url:
                     destination,
+
+                // =========================================
+                // RPC
+                // =========================================
 
                 rpc:
                     rpcData
@@ -957,6 +1198,7 @@ export async function onRequestGet(context) {
         }, 500);
     }
 }
+
 
 // ============================================================
 // GET DESTINATION URL
@@ -1029,6 +1271,7 @@ async function getDestinationUrl(
     }
 }
 
+
 // ============================================================
 // HMAC-SHA256
 // ============================================================
@@ -1085,6 +1328,7 @@ async function generateHmacSha256(
         )
         .join("");
 }
+
 
 // ============================================================
 // JSON RESPONSE
