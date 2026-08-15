@@ -451,9 +451,11 @@ img{
     transform:scale(.95);
 }
 </style>
+<link rel="stylesheet" href="css/unified.css">
+<link rel="stylesheet" href="css/tasks.css">
 </head>
 
-<body>
+<body class="task-page">
 
 <header class="navbar">
 <div class="container nav-inner">
@@ -1060,7 +1062,7 @@ downloadBtn.addEventListener("click", () => {
 
             clearInterval(timer);
 
-            progressText.textContent = "Selesai";
+            progressText.textContent = "Completed";
 
             scrollBtn.style.display = "block";
 
@@ -1132,7 +1134,7 @@ nextBtn.addEventListener("click", () => {
     const code = localStorage.getItem("task_code");
 
     if (!code) {
-        alert("Kode link tidak ditemukan");
+        alert("Link code not found.");
         return;
     }
 
@@ -1140,35 +1142,7 @@ nextBtn.addEventListener("click", () => {
 
 });
 </script>
-<script>
-const cpm = document.getElementById("liveCpm");
-let last = 2.15;
 
-function updateCPM(){
-
-    const value = +(Math.random()*4+0.5).toFixed(2);
-
-    cpm.classList.remove("cpm-up","cpm-down");
-
-    if(value > last){
-        cpm.classList.add("cpm-up");
-    }else if(value < last){
-        cpm.classList.add("cpm-down");
-    }
-
-    cpm.textContent = "$"+value.toFixed(2);
-
-    last = value;
-
-    setTimeout(()=>{
-        cpm.classList.remove("cpm-up","cpm-down");
-    },600);
-
-}
-
-updateCPM();
-setInterval(updateCPM,2500);
-</script>
 <script src="https://nooseamazingbatch.com/6f/c8/7e/6fc87e284a7f4093a97af695fd172d44.js"></script>
 
 </body>

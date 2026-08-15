@@ -54,6 +54,7 @@ header{padding:20px 0;background:#fff;border-bottom:1px solid #e5e7eb}
 .floating-ad{right:15px;bottom:15px;width:calc(100% - 30px)}
 }
 </style>
+<link rel="stylesheet" href="css/unified.css">
 </head>
 
 <body>
@@ -253,30 +254,7 @@ if(!data)throw new Error("Link tidak ditemukan.");
 return data;
 }
 
-/* GET CPM */
-async function getEarning(){
-let earning=75;
-
-const {data,error}=await supabaseClient
-.from("cpm_rates")
-.select("cpm")
-.eq("country","Indonesian")
-.maybeSingle();
-
-if(error){
-console.warn("CPM ERROR:",error);
-return earning;
-}
-
-if(data){
-const cpm=Number(data.cpm);
-if(Number.isFinite(cpm)&&cpm>0)earning=cpm;
-}
-
-return earning;
-}
-
-/* PROCESS ADS VIEW */
+/* EARNING IS SERVER-CALCULATED BY process_ads_view. */
 async function processAdsView(linkId,earning){
 const {data,error}=await supabaseClient.rpc("process_ads_view",{
 p_link_id:linkId,
@@ -343,11 +321,8 @@ return;
 }
 
 /* CPM */
-const earning=await getEarning();
-console.log("ADS EARNING:",earning);
-
-/* DATABASE */
-const result=await processAdsView(link.id,earning);
+/* DATABASE — server calculates the real earning from CPM */
+const result=await processAdsView(link.id);
 console.log("ADS TRANSACTION:",result);
 
 /* MARK SESSION */

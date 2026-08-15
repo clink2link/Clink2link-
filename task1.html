@@ -435,9 +435,11 @@ img{
     bottom:calc(-100% + 40px);
 }
 </style>
+<link rel="stylesheet" href="css/unified.css">
+<link rel="stylesheet" href="css/tasks.css">
 </head>
 
-<body>
+<body class="task-page">
 
 <header class="navbar">
 <div class="container nav-inner">
@@ -822,7 +824,7 @@ Tips Menggunakan
 </h3>
 
 <p>
-Selesaikan seluruh task secara berurutan agar proses
+Completedkan seluruh task secara berurutan agar proses
 generate link berjalan with baik.
 </p>
 
@@ -1014,7 +1016,7 @@ downloadBtn.addEventListener("click", () => {
 
             clearInterval(timer);
 
-            progressText.textContent = "Selesai";
+            progressText.textContent = "Completed";
 
             scrollBtn.style.display = "block";
 
@@ -1087,7 +1089,7 @@ nextBtn.addEventListener("click", () => {
 
     if (!code) {
 
-        alert("Kode link tidak ditemukan");
+        alert("Link code not found.");
 
         return;
 
