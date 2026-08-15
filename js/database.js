@@ -696,7 +696,7 @@ async function getUserProfile(
         error
     } =
         await supabaseClient
-            .from("profiles")
+            .from("users")
             .select(`
                 id,
                 username,
@@ -791,7 +791,7 @@ async function updateUserProfile(
         error
     } =
         await supabaseClient
-            .from("profiles")
+            .from("users")
             .update(update)
             .eq(
                 "id",

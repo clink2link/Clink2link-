@@ -31,7 +31,7 @@ async function init(){
     .maybeSingle();
 
     if(!admin){
-        alert("Akses ditolak");
+        alert("Access denied");
         location.href="dashboard.html";
         return;
     }
@@ -55,7 +55,7 @@ async function loadDashboard(){
 async function loadUsers(){
 
     const {data,error}=await supabase
-    .from("profiles")
+    .from("users")
     .select("*");
 
     if(error){
@@ -137,7 +137,7 @@ async function loadRecentWithdraw(){
     if(!data.length){
 
         recentWithdraw.innerHTML=
-        "<tr><td colspan='5'>Belum ada data</td></tr>";
+        "<tr><td colspan='5'>No data available</td></tr>";
 
         return;
 

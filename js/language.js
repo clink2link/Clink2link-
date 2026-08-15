@@ -2091,6 +2091,8 @@ list: {
         }
     }
 
+}
+}
 };
 
 /* =====================================================
@@ -2152,7 +2154,7 @@ if(
 ){
     return saved;
 }
-return "id";
+return "en";
 
 }
 
@@ -2167,7 +2169,7 @@ language = getLanguage()
 if(
     !translations[language]
 ){
-    language = "id";
+    language = "en";
 }
 const data =
     translations[language];
@@ -2298,7 +2300,7 @@ language
 if(
     !translations[language]
 ){
-    language = "id";
+    language = "en";
 }
 applyLanguage(
     language
