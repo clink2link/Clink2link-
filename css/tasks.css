@@ -1,0 +1,11 @@
+
+/* Unified task flow */
+.task-page{min-height:100vh}
+.task-shell{width:min(760px,calc(100% - 24px));margin:0 auto;padding:24px 0 70px}
+.task-card{background:#fff;border:1px solid #e5eaf2;border-radius:22px;box-shadow:0 15px 45px rgba(15,23,42,.08);padding:clamp(22px,5vw,42px)}
+.task-card h1{font-size:clamp(25px,5vw,38px);line-height:1.15;margin-bottom:10px}
+.task-card p{color:#64748b}
+.task-step{display:flex;align-items:center;gap:10px;margin-bottom:18px;color:#2563eb;font-weight:800}
+.task-step span{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#eff6ff}
+.progress-bar{background:#e8eef8!important;border-radius:999px!important}
+.progress-fill{background:linear-gradient(90deg,#2563eb,#06b6d4)!important}

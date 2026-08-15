@@ -1,0 +1,37 @@
+
+/* Click2Pay Unified Professional UI */
+:root{
+ --c2p-primary:#2563eb;
+ --c2p-primary-dark:#1d4ed8;
+ --c2p-accent:#06b6d4;
+ --c2p-bg:#f6f8fc;
+ --c2p-surface:#ffffff;
+ --c2p-text:#0f172a;
+ --c2p-muted:#64748b;
+ --c2p-border:#e5eaf2;
+ --c2p-radius:18px;
+ --c2p-shadow:0 10px 35px rgba(15,23,42,.07);
+}
+html{background:var(--c2p-bg);scroll-behavior:smooth}
+body{background:var(--c2p-bg)!important;color:var(--c2p-text)!important;font-family:Inter,Poppins,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}
+button,.btn,input,select,textarea{font-family:inherit!important}
+button,.btn{border-radius:12px!important}
+.card,.panel,.info-box,.create-form,.profile-card,.setting-menu,.info-note,.link-section,.quick-stats,.stats-card,.table-card,.form-card,.hero-box,.side-card{
+ border-radius:18px!important;border:1px solid var(--c2p-border)!important;box-shadow:var(--c2p-shadow)!important;
+}
+input,select,textarea{border-color:var(--c2p-border)!important;border-radius:12px!important}
+.navbar,.topbar,.app-navbar{
+ background:rgba(255,255,255,.88)!important;backdrop-filter:blur(18px)!important;border-bottom:1px solid var(--c2p-border)!important;
+}
+.logo{color:var(--c2p-primary)!important}
+.btn-primary,.btn-register,#downloadBtn,#linkBtn,.btnads{
+ background:linear-gradient(135deg,var(--c2p-primary),var(--c2p-accent))!important;color:#fff!important;border:0!important;
+ box-shadow:0 8px 18px rgba(37,99,235,.18)!important;
+}
+.btn-primary:hover,.btn-register:hover,#downloadBtn:hover,#linkBtn:hover,.btnads:hover{filter:brightness(.97);transform:translateY(-1px)}
+.page-title h1,.hero h1{letter-spacing:-.025em}
+.ad-box{border-radius:14px!important}
+@media(max-width:700px){
+ .container,.app-container,.dash-container{width:min(100% - 24px,1200px)!important}
+ .card,.panel,.info-box,.create-form{border-radius:15px!important}
+}

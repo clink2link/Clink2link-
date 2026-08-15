@@ -1,0 +1,43 @@
+
+:root{
+  --c2p-bg:#f5f7fb;--c2p-surface:#fff;--c2p-surface2:#f8fafc;--c2p-text:#0f172a;
+  --c2p-muted:#64748b;--c2p-border:#e2e8f0;--c2p-primary:#4f46e5;--c2p-primary2:#7c3aed;
+  --c2p-success:#059669;--c2p-danger:#dc2626;--c2p-shadow:0 18px 55px rgba(15,23,42,.08);
+  --c2p-radius:20px;
+}
+html.dark{--c2p-bg:#070b14;--c2p-surface:#0d1422;--c2p-surface2:#111b2c;--c2p-text:#f8fafc;--c2p-muted:#94a3b8;--c2p-border:#223047;--c2p-shadow:0 20px 70px rgba(0,0,0,.32)}
+*{box-sizing:border-box}
+body{background:radial-gradient(circle at 15% -10%,rgba(99,102,241,.10),transparent 30%),var(--c2p-bg)!important;color:var(--c2p-text)!important;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:inherit}
+button,input,select,textarea{font:inherit}
+.c2p-shell{max-width:1180px;margin:0 auto;padding:24px}
+.c2p-card,.card,.dashboard-card,.link-card,.settings-card,.notification-card,.activity-card,.profile-card,.premium-card,.buy-product-card,.buy-sell-card{
+ background:var(--c2p-surface)!important;border:1px solid var(--c2p-border)!important;border-radius:var(--c2p-radius)!important;box-shadow:var(--c2p-shadow)!important;
+}
+.c2p-btn,.primary-btn,.btn-primary,.buy-btn,.action-btn{border:0!important;border-radius:14px!important;padding:12px 18px!important;font-weight:750!important;transition:.2s ease!important}
+.c2p-btn:hover,.primary-btn:hover,.btn-primary:hover,.buy-btn:hover,.action-btn:hover{transform:translateY(-1px);filter:brightness(1.03)}
+.c2p-input,input,select,textarea{background:var(--c2p-surface2)!important;color:var(--c2p-text)!important;border:1px solid var(--c2p-border)!important;border-radius:13px!important}
+.c2p-topbar{position:sticky;top:0;z-index:1000;backdrop-filter:blur(18px);background:color-mix(in srgb,var(--c2p-surface) 82%,transparent);border-bottom:1px solid var(--c2p-border)}
+.c2p-brand{font-weight:900;letter-spacing:-.04em}
+.c2p-gradient{background:linear-gradient(135deg,var(--c2p-primary),var(--c2p-primary2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.c2p-hero{padding:72px 24px;text-align:center}
+.c2p-hero h1{font-size:clamp(38px,6vw,72px);line-height:1.02;letter-spacing:-.06em;margin:0 auto 18px;max-width:900px}
+.c2p-hero p{max-width:720px;margin:0 auto;color:var(--c2p-muted);font-size:18px;line-height:1.7}
+.c2p-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.c2p-stat{padding:22px}
+.c2p-stat strong{display:block;font-size:28px;margin-top:8px}
+.c2p-section{padding:34px 0}
+.c2p-section h2{font-size:30px;letter-spacing:-.035em}
+.c2p-muted{color:var(--c2p-muted)}
+.c2p-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;background:rgba(79,70,229,.10);color:var(--c2p-primary);font-weight:750;font-size:12px}
+.c2p-toast{position:fixed;right:20px;bottom:20px;z-index:99999;max-width:380px;padding:14px 17px;border-radius:14px;background:#0f172a;color:white;box-shadow:0 18px 45px rgba(0,0,0,.25);opacity:0;transform:translateY(10px);transition:.2s}
+.c2p-toast.show{opacity:1;transform:none}
+.c2p-modal{position:fixed;inset:0;z-index:100000;background:rgba(2,6,23,.62);backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px}
+.c2p-modal>div{width:min(520px,100%);padding:26px;background:var(--c2p-surface);border:1px solid var(--c2p-border);border-radius:22px;box-shadow:0 30px 90px rgba(0,0,0,.25)}
+.c2p-lang-menu{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:800px){.c2p-grid{grid-template-columns:1fr}.c2p-shell{padding:16px}.c2p-hero{padding:48px 12px}}
+
+.register-bg,.app-bg,body.login-page{background:radial-gradient(circle at 20% 0%,rgba(99,102,241,.12),transparent 35%),var(--c2p-bg)!important}
+.register-card,.payment-box,.ref-card,.ref-box,.stat-card,.pay-card,.info-box,.notif-list,.container,.app-container,.app-body{background:var(--c2p-surface)!important;color:var(--c2p-text)!important;border-color:var(--c2p-border)!important;border-radius:20px!important;box-shadow:var(--c2p-shadow)!important}
+.register-logo,.page-title,.section-title,.register-title{color:var(--c2p-text)!important}
+.btn-primary,.btn-secondary,.google-login-btn{border-radius:14px!important}
