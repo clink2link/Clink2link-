@@ -356,24 +356,9 @@ create trigger users_profile_sync after insert or update on public.users
 for each row execute function public.sync_user_profile();
 
 -- New Supabase Auth user -> application user.
-create or replace function public.handle_new_auth_user()
-returns trigger language plpgsql security definer set search_path = public as $$
-begin
-  insert into public.users(id,email,username,email_verified)
-  values (
-    new.id,
-    new.email,
-    coalesce(new.raw_user_meta_data->>'username', split_part(coalesce(new.email,''),'@',1)),
-    coalesce(new.email_confirmed_at is not null,false)
-  )
-  on conflict(id) do update set email=excluded.email,email_verified=excluded.email_verified,updated_at=now();
-  return new;
-end $$;
 
-drop trigger if exists on_auth_user_created_click2pay on auth.users;
-create trigger on_auth_user_created_click2pay
-after insert on auth.users
-for each row execute function public.handle_new_auth_user();
+
+
 
 -- Atomic sell payment processor. The backend calls this RPC after DompetX confirms payment.
 create or replace function public.process_sell_payment(p_order_id uuid)
@@ -423,6 +408,163 @@ begin
     'fee',fee_value
   );
 end $$;
+
+
+-- ============================================================
+-- Ads earning RPC
+-- The client-supplied earning is deliberately ignored. The
+-- server reads CPM and calculates CPM / 1000 per valid view.
+-- ============================================================
+create or replace function public.process_ads_view(
+  p_link_id uuid,
+  p_earning numeric default 0
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_link public.links%rowtype;
+  v_cpm numeric;
+  v_earning numeric;
+  v_today date := current_date;
+begin
+  select * into v_link
+  from public.links
+  where id = p_link_id
+  for update;
+
+  if not found then
+    return jsonb_build_object('success',false,'error','Link not found');
+  end if;
+
+  if lower(coalesce(v_link.status,'')) <> 'active' then
+    return jsonb_build_object('success',false,'error','Link is not active');
+  end if;
+
+  if lower(coalesce(v_link.link_type, v_link.type,'')) <> 'ads' then
+    return jsonb_build_object('success',false,'error','Not an ads link');
+  end if;
+
+  select cpm into v_cpm
+  from public.cpm_rates
+  where lower(country) in ('indonesia','indonesian')
+  order by case when lower(country)='indonesia' then 0 else 1 end
+  limit 1;
+
+  if v_cpm is null or v_cpm <= 0 then
+    return jsonb_build_object('success',false,'error','CPM rate is not configured');
+  end if;
+
+  -- CPM means earnings per 1,000 views.
+  v_earning := round(v_cpm / 1000.0, 2);
+
+  update public.links
+  set views = coalesce(views,0)+1,
+      total_views = coalesce(total_views,0)+1,
+      earnings = coalesce(earnings,0)+v_earning,
+      total_earnings = coalesce(total_earnings,0)+v_earning,
+      updated_at = now()
+  where id = v_link.id;
+
+  insert into public.link_views(link_id,is_valid,earning,created_at)
+  values(v_link.id,true,v_earning,now());
+
+  update public.users
+  set balance = coalesce(balance,0)+v_earning,
+      total_ads = coalesce(total_ads,0)+v_earning,
+      total_views = coalesce(total_views,0)+1,
+      ads_earning_today = coalesce(ads_earning_today,0)+v_earning,
+      ads_earning_month = coalesce(ads_earning_month,0)+v_earning,
+      ads_earning_total = coalesce(ads_earning_total,0)+v_earning,
+      updated_at = now()
+  where id = v_link.user_id;
+
+  insert into public.transactions(user_id,type,amount,title,description,status)
+  values(v_link.user_id,'ads_earning',v_earning,'Ads View Earning','Ads Link view '||v_link.id,'success');
+
+  insert into public.wallet_transactions(user_id,type,amount,title,description,status)
+  values(v_link.user_id,'credit',v_earning,'Ads View Earning','Ads Link view','success');
+
+  insert into public.daily_reports(user_id,report_date,ads_views,ads_clicks,ads_earnings)
+  values(v_link.user_id,v_today,1,0,v_earning)
+  on conflict(user_id,report_date) do update set
+    ads_views = coalesce(public.daily_reports.ads_views,0)+1,
+    ads_earnings = coalesce(public.daily_reports.ads_earnings,0)+v_earning;
+
+  return jsonb_build_object(
+    'success',true,
+    'link_id',v_link.id,
+    'cpm',v_cpm,
+    'earning',v_earning
+  );
+end;
+$$;
+
+-- Login helper: exposes only the email address associated with a username.
+create or replace function public.get_login_email(p_username text)
+returns text
+language sql
+security definer
+set search_path = public
+as $$
+  select email
+  from public.users
+  where lower(username)=lower(trim(p_username))
+    and coalesce(is_banned,false)=false
+  limit 1;
+$$;
+
+grant execute on function public.get_login_email(text) to anon, authenticated;
+
+create or replace function public.is_username_available(p_username text)
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+  select not exists(
+    select 1 from public.users
+    where lower(username)=lower(trim(p_username))
+  );
+$$;
+
+grant execute on function public.is_username_available(text) to anon, authenticated;
+grant execute on function public.process_ads_view(uuid,numeric) to anon, authenticated;
+
+-- Keep application user data synchronized when Auth confirms an email.
+create or replace function public.handle_new_auth_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.users(id,email,username,email_verified)
+  values (
+    new.id,
+    new.email,
+    coalesce(
+      nullif(new.raw_user_meta_data->>'username',''),
+      split_part(coalesce(new.email,''),'@',1)
+    ),
+    coalesce(new.email_confirmed_at is not null,false)
+  )
+  on conflict(id) do update set
+    email=excluded.email,
+    email_verified=excluded.email_verified,
+    updated_at=now();
+  return new;
+end;
+$$;
+
+
+
+drop trigger if exists on_auth_user_updated_click2pay on auth.users;
+create trigger on_auth_user_updated_click2pay
+after update of email,email_confirmed_at on auth.users
+for each row execute function public.handle_new_auth_user();
 
 -- RLS: the browser can access only its own rows. Service key bypasses RLS for payment/admin APIs.
 alter table public.users enable row level security;
@@ -521,3 +663,147 @@ alter table public.users add column if not exists premium_expires_at timestamptz
 alter table public.users add column if not exists status text not null default 'active';
 alter table public.users add column if not exists ref_code text;
 alter table public.users add column if not exists updated_at timestamptz not null default now();
+
+-- ============================================================
+-- Admin helper + policies
+-- ============================================================
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists(
+    select 1 from public.admins a where a.user_id = auth.uid()
+  );
+$$;
+
+grant execute on function public.is_admin() to anon, authenticated;
+
+alter table public.admins enable row level security;
+alter table public.cpm_rates enable row level security;
+alter table public.cpm_market enable row level security;
+alter table public.cpm_settings enable row level security;
+alter table public.settings enable row level security;
+alter table public.announcements enable row level security;
+alter table public.menus enable row level security;
+alter table public.sell_orders enable row level security;
+alter table public.link_payments enable row level security;
+alter table public.link_access enable row level security;
+alter table public.link_views enable row level security;
+
+-- Public/read-only configuration.
+do $$ begin
+  create policy cpm_rates_public_select on public.cpm_rates for select using (true);
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy cpm_market_public_select on public.cpm_market for select using (true);
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy cpm_settings_public_select on public.cpm_settings for select using (true);
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy settings_public_select on public.settings for select using (true);
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy announcements_public_select on public.announcements for select using (true);
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy menus_public_select on public.menus for select using (true);
+exception when duplicate_object then null; end $$;
+
+-- Admin access.
+do $$ begin
+  create policy admins_self_select on public.admins for select using (auth.uid()=user_id or public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy users_admin_all on public.users for all using (public.is_admin()) with check (public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy profiles_admin_all on public.profiles for all using (public.is_admin()) with check (public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy links_admin_all on public.links for all using (public.is_admin()) with check (public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy withdraws_admin_all on public.withdraws for all using (public.is_admin()) with check (public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy withdrawals_admin_all on public.withdrawals for all using (public.is_admin()) with check (public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy transactions_admin_select on public.transactions for select using (public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy wallet_transactions_admin_select on public.wallet_transactions for select using (public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy cpm_rates_admin_update on public.cpm_rates for all using (public.is_admin()) with check (public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy cpm_market_admin_all on public.cpm_market for all using (public.is_admin()) with check (public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy cpm_settings_admin_all on public.cpm_settings for all using (public.is_admin()) with check (public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy settings_admin_all on public.settings for all using (public.is_admin()) with check (public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy announcements_admin_all on public.announcements for all using (public.is_admin()) with check (public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy menus_admin_all on public.menus for all using (public.is_admin()) with check (public.is_admin());
+exception when duplicate_object then null; end $$;
+
+-- Owner/buyer access for payment-related browser reads.
+do $$ begin
+  create policy sell_orders_participant_select on public.sell_orders for select
+  using (auth.uid()=seller_id or auth.uid()=buyer_id or public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy link_payments_owner_select on public.link_payments for select
+  using (exists(select 1 from public.links l where l.id=link_id and l.user_id=auth.uid()) or public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy link_access_participant_select on public.link_access for select
+  using (auth.uid()=buyer_id or exists(select 1 from public.links l where l.id=link_id and l.user_id=auth.uid()) or public.is_admin());
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy link_views_owner_select on public.link_views for select
+  using (exists(select 1 from public.links l where l.id=link_id and l.user_id=auth.uid()) or public.is_admin());
+exception when duplicate_object then null; end $$;
+
+
+
+-- ============================================================
+-- Safe default configuration / seed values
+-- ============================================================
+insert into public.settings(key,value,maintenance,ads_cpm,sell_cpm,minimum_withdraw)
+values('default','active',false,5000,10000,10000)
+on conflict(key) do update set
+  value=excluded.value,
+  maintenance=public.settings.maintenance;
+
+insert into public.cpm_rates(country,cpm,history,change,trend)
+values('Indonesia',5000,'[5000]'::jsonb,0,50)
+on conflict(country) do nothing;
+
+insert into public.cpm_market(country,flag,cpm,change,trend)
+values('Indonesia','🇮🇩',5000,0,50)
+on conflict(country) do nothing;
+
+insert into public.cpm_settings(country,ads_cpm,sell_cpm)
+values('Indonesia',5000,10000)
+on conflict(country) do nothing;
+
+create unique index if not exists daily_reports_user_date_uidx on public.daily_reports(user_id, report_date);
+
+
+-- Canonical Supabase Auth -> application user trigger
+drop trigger if exists on_auth_user_created_click2pay on auth.users;
+create trigger on_auth_user_created_click2pay
+after insert on auth.users
+for each row execute function public.handle_new_auth_user();
+
