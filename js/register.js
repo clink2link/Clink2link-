@@ -239,21 +239,21 @@ if (form) {
             // =============================================
             if (!userName) {
                 showRegisterAlert(
-                    "❌ Username wajib diisi."
+                    "Username is required."
                 );
                 username.focus();
                 return;
             }
             if (userName.length < 4) {
                 showRegisterAlert(
-                    "❌ Username minimal 4 karakter."
+                    "Username must be at least 4 characters."
                 );
                 username.focus();
                 return;
             }
             if (userName.length > 7) {
                 showRegisterAlert(
-                    "❌ Username maksimal 7 karakter."
+                    "Username must be at most 7 characters."
                 );
                 username.focus();
                 return;
@@ -264,7 +264,7 @@ if (form) {
                 )
             ) {
                 showRegisterAlert(
-                    "❌ Username hanya boleh huruf, angka dan underscore."
+                    "Username may contain only letters, numbers, and underscores."
                 );
                 username.focus();
                 return;
@@ -274,7 +274,7 @@ if (form) {
             // =============================================
             if (!userEmail) {
                 showRegisterAlert(
-                    "❌ Email wajib diisi."
+                    "Email is required."
                 );
                 email.focus();
                 return;
@@ -284,7 +284,7 @@ if (form) {
                     .test(userEmail)
             ) {
                 showRegisterAlert(
-                    "❌ Format email tidak valid."
+                    "Please enter a valid email address."
                 );
                 email.focus();
                 return;
@@ -296,7 +296,7 @@ if (form) {
                 userPassword.length < 6
             ) {
                 showRegisterAlert(
-                    "❌ Password minimal 6 karakter."
+                    "Password must be at least 6 characters."
                 );
                 password.focus();
                 return;
@@ -306,7 +306,7 @@ if (form) {
                 userConfirm
             ) {
                 showRegisterAlert(
-                    "❌ Konfirmasi password tidak sama."
+                    "Passwords do not match."
                 );
                 confirmPassword.focus();
                 return;
@@ -319,7 +319,7 @@ if (form) {
                 !database.supabase
             ) {
                 showRegisterAlert(
-                    "❌ Database belum siap."
+                    "Database is not ready. Please try again."
                 );
                 return;
             }
@@ -330,106 +330,52 @@ if (form) {
                 btn.disabled = true;
                 btn.innerHTML = `
                     <i class="fa-solid fa-spinner fa-spin"></i>
-                    <span>Mendaftar...</span>
+                    <span>Creating account...</span>
                 `;
             }
             try {
                 // =========================================
-                // CHECK USERNAME
+                // CHECK USERNAME AVAILABILITY (SERVER RPC)
                 // =========================================
-                const {
-                    data: exist,
-                    error: checkError
-                } =
-                    await database.supabase
-                        .from("users")
-                        .select("id")
-                        .ilike(
-                            "username",
-                            userName
-                        )
-                        .maybeSingle();
-                if (checkError) {
-                    throw checkError;
-                }
-                if (exist) {
-                    showRegisterAlert(
-                        "❌ Username sudah digunakan."
-                    );
+                const { data: usernameAvailable, error: usernameError } =
+                    await database.supabase.rpc("is_username_available", {
+                        p_username: userName
+                    });
+
+                if (usernameError) throw usernameError;
+
+                if (!usernameAvailable) {
+                    showRegisterAlert("Username is already in use.");
                     username.focus();
                     return;
                 }
+
                 // =========================================
                 // CREATE SUPABASE AUTH USER
+                // public.users is created automatically by
+                // the Auth trigger: handle_new_auth_user()
                 // =========================================
                 const {
                     data: authData,
                     error: authError
-                } =
-                    await database.supabase
-                        .auth
-                        .signUp({
-                            email:
-                                userEmail,
-                            password:
-                                userPassword,
-                            options: {
-                                data: {
-                                    username:
-                                        userName
-                                }
-                            }
-                        });
+                } = await database.supabase.auth.signUp({
+                    email: userEmail,
+                    password: userPassword,
+                    options: {
+                        data: {
+                            username: userName
+                        }
+                    }
+                });
+
                 if (authError) {
                     throw authError;
                 }
+
                 if (!authData?.user) {
-                    throw new Error(
-                        "Gagal membuat akun."
-                    );
+                    throw new Error("Unable to create the account.");
                 }
-                const authUserId =
-                    authData.user.id;
-                console.log(
-                    "AUTH USER CREATED:",
-                    authUserId
-                );
-                // =========================================
-                // INSERT USERS
-                // =========================================
-                const {
-                    data: newUser,
-                    error: userError
-                } =
-                    await database.supabase
-                        .from("users")
-                        .insert({
-                            id:
-                                authUserId,
-                            username:
-                                userName,
-                            email:
-                                userEmail,
-                            balance:
-                                0,
-                            is_admin:
-                                false,
-                            is_banned:
-                                false
-                        })
-                        .select()
-                        .single();
-                if (userError) {
-                    console.error(
-                        "INSERT USERS ERROR:",
-                        userError
-                    );
-                    throw userError;
-                }
-                console.log(
-                    "USER PROFILE CREATED:",
-                    newUser
-                );
+
                 // =========================================
                 // SIGN OUT
                 // =========================================
@@ -440,7 +386,7 @@ if (form) {
                 // SUCCESS
                 // =========================================
                 showRegisterAlert(
-                    "📩 Registrasi berhasil. Silakan cek email untuk verifikasi akun.",
+                    "Registration successful. Please check your email to verify your account.",
                     "success"
                 );
                 // =========================================
@@ -458,7 +404,7 @@ if (form) {
                 );
                 let message =
                     err?.message ||
-                    "Registrasi gagal.";
+                    "Registration failed.";
                 // =========================================
                 // DUPLICATE EMAIL
                 // =========================================
@@ -481,7 +427,7 @@ if (form) {
                     btn.disabled = false;
                     btn.innerHTML = `
                         <i class="fa-solid fa-user-plus"></i>
-                        <span>Daftar</span>
+                        <span>Register</span>
                     `;
                 }
             }

@@ -23,7 +23,7 @@ if (googleBtn) {
             const { error } = await database.supabase.auth.signInWithOAuth({
                 provider: "google",
                 options: {
-                    redirectTo: "https://click2pay.my.id/dashboard.html"
+                    redirectTo: `${window.location.origin}/dashboard.html`
                 }
             });
 
@@ -172,51 +172,19 @@ let email=login.toLowerCase();
 
 if(!login.includes("@")){
 
-const {data:user,error}=await database.supabase
-.from("users")
-.select("id,username,email")
-.ilike("username",login)
-.maybeSingle();
+const { data: emailData, error: emailError } =
+await database.supabase.rpc("get_login_email", {
+    p_username: login
+});
 
-if(error) throw error;
+if(emailError) throw emailError;
 
-if(!user){
-
-showAlert(
-"❌ Username tidak ditemukan."
-);
-
-return;
-
+if(!emailData){
+    showAlert("Username tidak ditemukan.");
+    return;
 }
 
-email=user.email.toLowerCase();
-
-}
-
-// =========================
-// EMAIL LOGIN
-// =========================
-
-else{
-
-const {data:user,error}=await database.supabase
-.from("users")
-.select("id,email")
-.eq("email",email)
-.maybeSingle();
-
-if(error) throw error;
-
-if(!user){
-
-showAlert(
-"❌ Email tidak terdaftar."
-);
-
-return;
-
-}
+email = String(emailData).toLowerCase();
 
 }
 

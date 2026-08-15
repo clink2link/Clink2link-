@@ -64,44 +64,10 @@ throw new Error(
 
 
 // ==========================
-// CEK EMAIL USERS
+// SEND RESET EMAIL
+// Supabase handles the account lookup securely.
+// Do not query public.users as an anonymous visitor.
 // ==========================
-
-
-const {
-data:user,
-error:userError
-
-}=await database.supabase
-.from("users")
-.select("id,email")
-.eq("email",email)
-.maybeSingle();
-
-
-
-if(userError){
-
-throw userError;
-
-}
-
-
-
-if(!user){
-
-
-alert(
-"❌ Email belum terdaftar."
-);
-
-
-return;
-
-
-}
-
-
 
 // ==========================
 // KIRIM RESET EMAIL
@@ -120,7 +86,7 @@ email,
 
 redirectTo:
 
-"https://click2pay.my.id/reset-password.html"
+`${window.location.origin}/reset-password.html`
 
 }
 

@@ -1,171 +1,48 @@
-/* =========================
-CONFIG
-========================= */
-const USER_KEY = "c2p_user";
+"use strict";
 
-/* =========================
-USER HELPERS
-========================= */
-function getUser(){
-return JSON.parse(localStorage.getItem(USER_KEY)) || {};
-}
+// Premium is controlled by public.users.is_premium and premium_expires_at.
+// Never mutate premium state in localStorage: payment must be confirmed server-side.
+(function () {
+  const db = window.database;
 
-function saveUser(user){
-localStorage.setItem(USER_KEY, JSON.stringify(user));
-}
+  function activePremium(user) {
+    if (!user || user.is_premium !== true) return false;
+    if (!user.premium_expires_at) return true;
+    return new Date(user.premium_expires_at).getTime() > Date.now();
+  }
 
-function isPremium(){
-return getUser().premium === true;
-}
+  async function refreshPremiumUI() {
+    if (!db || typeof db.getUser !== "function") return;
+    try {
+      const user = await db.getUser();
+      const premium = activePremium(user);
+      document.querySelectorAll(".btn-upgrade").forEach((btn) => {
+        btn.disabled = premium;
+        btn.textContent = premium ? "Premium Active" : "Upgrade Premium";
+      });
+      document.querySelectorAll("[data-premium-status]").forEach((el) => {
+        el.textContent = premium ? "Premium Active" : "Free Plan";
+      });
+    } catch (err) {
+      console.warn("Premium status unavailable", err);
+    }
+  }
 
-/* =========================
-INIT BUTTON
-========================= */
-document.addEventListener("DOMContentLoaded", () => {
+  // Keep upgrade buttons informational until a real payment endpoint is configured.
+  // This prevents the previous dummy upgrade from granting premium for free.
+  function showUpgradeMessage() {
+    if (typeof window.showToast === "function") {
+      window.showToast("Premium upgrades require a confirmed payment.");
+    } else {
+      alert("Premium upgrades require a confirmed payment.");
+    }
+  }
 
-const btnTop = document.getElementById("btnUpgrade");
-const btnBottom = document.getElementById("btnUpgradeBottom");
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("#btnUpgrade,#btnUpgradeBottom,.btn-upgrade")
+      .forEach((btn) => btn.addEventListener("click", showUpgradeMessage));
+    refreshPremiumUI();
+  });
 
-// jika sudah premium
-if(isPremium()){
-updatePremiumUI();
-}
-
-// klik tombol upgrade
-if(btnTop){
-btnTop.addEventListener("click", upgradePremium);
-}
-
-if(btnBottom){
-btnBottom.addEventListener("click", upgradePremium);
-}
-
-});
-
-/* =========================
-UPGRADE (DUMMY)
-========================= */
-function upgradePremium(){
-
-const confirmBuy = confirm("Upgrade ke Premium Rp25.000 / bulan?");
-
-if(!confirmBuy) return;
-
-let user = getUser();
-
-user.premium = true;
-user.premium_since = new Date().toISOString();
-
-saveUser(user);
-
-showToast("🔥 Kamu sekarang Premium!");
-
-setTimeout(()=>{
-location.reload();
-},800);
-
-}
-
-/* =========================
-UPDATE UI PREMIUM
-========================= */
-function updatePremiumUI(){
-
-// tombol upgrade disable
-document.querySelectorAll(".btn-upgrade").forEach(btn=>{
-btn.innerText = "Kamu sudah Premium 💎";
-btn.disabled = true;
-btn.style.opacity = "0.7";
-});
-
-// optional: kasih badge
-const title = document.querySelector(".page-title h1");
-if(title){
-title.innerHTML += " <span style='color:gold'>💎</span>";
-}
-
-}
-
-/* =========================
-ADS SYSTEM
-========================= */
-
-function getAdsDelay(){
-return isPremium() ? 0 : 10;
-}
-
-function openAdsLink(url){
-
-const delay = getAdsDelay();
-
-if(delay === 0){
-window.location.href = url;
-return;
-}
-
-showAdsLoading(delay, url);
-
-}
-
-/* =========================
-ADS LOADER UI
-========================= */
-function showAdsLoading(seconds, url){
-
-let overlay = document.createElement("div");
-overlay.className = "ads-loading";
-
-overlay.innerHTML = `
-<div class="ads-box">
-<h3>⏳ Tunggu ${seconds} detik</h3>
-<p>Iklan sedang diproses...</p>
-<div class="ads-timer" id="adsTimer">${seconds}</div>
-</div>
-`;
-
-document.body.appendChild(overlay);
-
-let time = seconds;
-
-const interval = setInterval(()=>{
-time--;
-
-const timerEl = document.getElementById("adsTimer");
-if(timerEl){
-timerEl.innerText = time;
-}
-
-if(time <= 0){
-clearInterval(interval);
-window.location.href = url;
-}
-
-},1000);
-
-}
-
-/* =========================
-TOAST NOTIFICATION
-========================= */
-function showToast(message){
-
-let toast = document.createElement("div");
-toast.className = "c2p-toast";
-toast.innerText = message;
-
-document.body.appendChild(toast);
-
-setTimeout(()=>{
-toast.classList.add("show");
-},100);
-
-setTimeout(()=>{
-toast.classList.remove("show");
-
-setTimeout(()=>{
-toast.remove();
-},300);
-
-},2500);
-
-}
+  window.Click2PayPremium = { activePremium, refreshPremiumUI };
+})();

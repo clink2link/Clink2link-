@@ -839,12 +839,7 @@ document.addEventListener("DOMContentLoaded", () => {
             i++
         ) {
             code +=
-                chars[
-                    Math.floor(
-                        Math.random() *
-                            chars.length
-                    )
-                ];
+                chars[(crypto.getRandomValues(new Uint32Array(1))[0] % chars.length)];
         }
 
         return code;

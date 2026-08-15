@@ -1081,10 +1081,7 @@ function generateShortCode(length = 5) {
 
     for (let i = 0; i < length; i++) {
         const index =
-            Math.floor(
-                Math.random() *
-                SHORT_CODE_CHARS.length
-            );
+            (crypto.getRandomValues(new Uint32Array(1))[0] % SHORT_CODE_CHARS.length);
 
         code += SHORT_CODE_CHARS[index];
     }

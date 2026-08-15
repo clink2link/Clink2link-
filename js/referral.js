@@ -46,11 +46,7 @@ let refCode = user.ref_code;
 if(!refCode){
 
 refCode =
-"C2P"+
-Math.random()
-.toString(36)
-.substring(2,8)
-.toUpperCase();
+"C2P" + (crypto.randomUUID ? crypto.randomUUID().replaceAll("-", "").slice(0, 8).toUpperCase() : Date.now().toString(36).slice(-8).toUpperCase());
 
 }
 

@@ -238,7 +238,7 @@ list: {
             title:
                 "Buat Ads Link Baru",
             description:
-                "Masukkan tujuan link yang ingin dimonetisasi.",
+                "Masukkan tujuan link that you want dimonetisasi.",
             linkName:
                 "Nama Link",
             linkNamePlaceholder:
@@ -999,7 +999,7 @@ list: {
 
         create: {
             title: "Buat Sell Link Baru",
-            description: "Masukkan link yang ingin dijual kepada pembeli.",
+            description: "Masukkan link yang to sell kepada pembeli.",
             linkTitle: "Judul Link",
             linkPlaceholder: "Contoh: Premium File, Course, Template",
             destination: "URL Tujuan",
