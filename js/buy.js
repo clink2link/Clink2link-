@@ -73,6 +73,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             Number(
                 link.price || 0
             );
+        let displayPrice = price;
+        let premiumBuyer = false;
+        try {
+            const current = await window.database.getUser();
+            premiumBuyer = !!current?.is_premium &&
+                (!current.premium_expires_at || new Date(current.premium_expires_at).getTime() > Date.now());
+            if (premiumBuyer) displayPrice = Math.max(1000, Math.floor(price * 0.5));
+        } catch (_) {}
         const sellerId =
             link.user_id ||
             link.seller_id ||
@@ -100,8 +108,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                     ${title}
                 </div>
                 <div class="buy-price">
-                    Rp ${price.toLocaleString("id-ID")}
+                    ${premiumBuyer ? `<del style="opacity:.5;font-size:14px">Rp ${price.toLocaleString("id-ID")}</del><br>` : ""}
+                    Rp ${displayPrice.toLocaleString("id-ID")}
                 </div>
+                ${premiumBuyer ? `<div class="buy-badge">Premium · 50% discount</div>` : ""}
                 <div class="buy-info-row">
                     <span class="buy-badge">
                         <i class="fa-solid fa-cart-shopping"></i>
@@ -161,7 +171,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 seller_id:
                                     sellerId,
                                 buyer_id:
-                                    null
+                                    (await window.database.getUser())?.id || null
                             })
                         }
                     );
