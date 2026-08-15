@@ -368,6 +368,10 @@ export async function onRequestPost(context) {
                 buyerId,
             price:
                 price,
+            original_price:
+                originalPrice,
+            discount_percent:
+                discountPercent,
             fee:
                 fee,
             seller_receive:

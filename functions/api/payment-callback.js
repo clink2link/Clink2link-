@@ -118,6 +118,26 @@ export async function onRequestPost(context) {
             });
         }
         // ==========================================
+        // PREMIUM ORDER
+        // ==========================================
+        if (String(reference).startsWith("PREM-")) {
+            const orders = await supabaseRequest(
+                env, "premium_orders", "GET", null,
+                `?invoice_id=eq.${encodeURIComponent(reference)}&select=*`
+            );
+            if (!orders.length) return json({success:true,message:"Premium order not found"});
+            const order=orders[0];
+            if (order.status === "paid") return json({success:true,already_processed:true});
+            if (amount !== Number(order.amount)) return json({success:false,error:"Premium payment amount mismatch"},400);
+            const rpcUrl=`${env.SUPABASE_URL}/rest/v1/rpc/process_premium_payment`;
+            const rpc=await fetch(rpcUrl,{method:"POST",headers:{"apikey":env.SUPABASE_SERVICE_KEY,"Authorization":`Bearer ${env.SUPABASE_SERVICE_KEY}`,"Content-Type":"application/json"},body:JSON.stringify({p_order_id:order.id})});
+            const result=await rpc.json().catch(()=>({}));
+            if(!rpc.ok || result?.success===false) throw new Error(result?.error||"Premium processing failed");
+            await supabaseRequest(env,"premium_orders","PATCH",JSON.stringify({payment_id:String(paymentId||""),status:"paid",paid_at:new Date().toISOString(),updated_at:new Date().toISOString()}),`?id=eq.${encodeURIComponent(order.id)}`);
+            return json({success:true,type:"premium",order_id:order.id,expires_at:result.expires_at});
+        }
+
+        // ==========================================
         // FIND SELL ORDER
         // ==========================================
         const orders =
