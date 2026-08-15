@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>Referral • Click2Pay</title>
+<title>Referrals • Click2Pay</title>
 
 <script>
 if(localStorage.getItem("theme")==="dark"){
@@ -21,6 +21,7 @@ document.documentElement.classList.add("dark");
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
 </head>
 
 <body class="app-body">
@@ -34,7 +35,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 <section class="page-title">
 <i class="fa-solid fa-user-plus"></i>
 <div>
-<h1>Referral</h1>
+<h1>Referrals</h1>
 <p>Undang teman & dapatkan bonus</p>
 </div>
 </section>
@@ -42,22 +43,22 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 <section class="info-box">
 <div class="info-header">
 <i class="fa-solid fa-circle-info"></i>
-<h3>Program Referral</h3>
+<h3>Program Referrals</h3>
 </div>
 <ul>
 <li><i class="fa-solid fa-check"></i> Bagikan link ke teman</li>
-<li><i class="fa-solid fa-check"></i> Teman daftar pakai link kamu</li>
-<li><i class="fa-solid fa-check"></i> Kamu dapat bonus otomatis</li>
-<li><i class="fa-solid fa-check"></i> Bonus masuk ke saldo</li>
+<li><i class="fa-solid fa-check"></i> Teman register pakai link you</li>
+<li><i class="fa-solid fa-check"></i> You dapat bonus otomatis</li>
+<li><i class="fa-solid fa-check"></i> Bonus sign in ke saldo</li>
 </ul>
 </section>
 
 <section class="ref-card">
-<h3>Kode Referral Kamu</h3>
+<h3>Kode Referrals You</h3>
 
 <div class="ref-box">
 <input id="refCode" readonly>
-<button onclick="copyReferral()">Copy</button>
+<button onclick="copyReferrals()">Copy</button>
 </div>
 
 <p class="ref-link" id="refLink"></p>
@@ -66,7 +67,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 <section class="quick-stats">
 <div class="stat-card">
 <i class="fa-solid fa-users"></i>
-<h4>Total Referral</h4>
+<h4>Total Referrals</h4>
 <h2 id="totalRef">0</h2>
 </div>
 

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aktivitas Login - Click2Pay</title>
+<title>Login Activity - Click2Pay</title>
 <!-- =========================
      INITIAL THEME
 ========================= -->
@@ -54,6 +54,7 @@
     rel="stylesheet"
     href="css/activity.css"
 >
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body class="app-body">
 <!-- =========================
@@ -71,11 +72,11 @@
         <h1>
             <i class="fa-solid fa-user-clock"></i>
             <span data-i18n="loginActivity">
-                Aktivitas Login
+                Login Activity
             </span>
         </h1>
         <p data-i18n="loginActivityDescription">
-            Riwayat perangkat dan waktu login akun kamu.
+            History perangkat and waktu login account you.
         </p>
     </section>
     <!-- =========================
@@ -140,7 +141,7 @@
             class="info-list"
         >
             <span data-i18n="loadingData">
-                Memuat data...
+                Loading data...
             </span>
         </div>
     </section>
@@ -179,7 +180,7 @@
             .then(function (response) {
                 if (!response.ok) {
                     throw new Error(
-                        "Gagal memuat navbar: " +
+                        "Failed loading navbar: " +
                         response.status
                     );
                 }

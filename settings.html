@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Pengaturan • Click2Pay</title>
+<title>Settings • Click2Pay</title>
 
 <script>
 if(localStorage.getItem("theme")==="dark"){
@@ -17,6 +17,7 @@ document.documentElement.classList.add("dark");
 <link rel="stylesheet" href="css/app-ui.css">
 <link rel="stylesheet" href="css/settings.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
 </head>
 
 <body class="app-body">
@@ -29,34 +30,34 @@ document.documentElement.classList.add("dark");
 <section class="page-title">
 <i class="fa-solid fa-gear"></i>
 <div>
-<h1>Pengaturan</h1>
-<p>Kelola akun dan preferensi Click2Pay</p>
+<h1>Settings</h1>
+<p>Manage account and preferensi Click2Pay</p>
 </div>
 </section>
 
 
 <section class="settings-card">
 
-<h3><i class="fa-solid fa-user-gear"></i> Akun</h3>
+<h3><i class="fa-solid fa-user-gear"></i> Account</h3>
 
 <a href="profile.html" class="setting-item">
 <div>
 <i class="fa-solid fa-user"></i>
 <div>
-<b>Profile</b>
-<small>Lihat informasi akun</small>
+<b>Profilee</b>
+<small>Lihat informasi account</small>
 </div>
 </div>
 <i class="fa-solid fa-chevron-right"></i>
 </a>
 
 
-<a href="payment-setting.html" class="setting-item">
+<a href="paymentsetting.html" class="setting-item">
 <div>
 <i class="fa-solid fa-wallet"></i>
 <div>
-<b>Pembayaran</b>
-<small>Atur bank / e-wallet untuk withdraw</small>
+<b>Payment</b>
+<small>Atur bank / e-wallet for withdraw</small>
 </div>
 </div>
 <i class="fa-solid fa-chevron-right"></i>
@@ -91,8 +92,8 @@ document.documentElement.classList.add("dark");
 <div>
 <i class="fa-solid fa-bell"></i>
 <div>
-<b>Notifikasi</b>
-<small>Update transaksi dan informasi</small>
+<b>Notifications</b>
+<small>Update transaksi and informasi</small>
 </div>
 </div>
 
@@ -108,8 +109,8 @@ document.documentElement.classList.add("dark");
 <div>
 <i class="fa-solid fa-language"></i>
 <div>
-<b>Bahasa</b>
-<small>Indonesia</small>
+<b>Language</b>
+<small>Indonesian</small>
 </div>
 </div>
 
@@ -130,7 +131,7 @@ document.documentElement.classList.add("dark");
 <i class="fa-solid fa-key"></i>
 <div>
 <b>Ganti Password</b>
-<small>Ubah password akun</small>
+<small>Ubah password account</small>
 </div>
 </div>
 
@@ -145,15 +146,15 @@ document.documentElement.classList.add("dark");
 
 <section class="settings-card">
 
-<h3><i class="fa-solid fa-users-gear"></i> Manajemen Akun</h3>
+<h3><i class="fa-solid fa-users-gear"></i> Manajemen Account</h3>
 
 
 <a href="#" onclick="addAccount(event)" class="setting-item">
 <div>
 <i class="fa-solid fa-user-plus"></i>
 <div>
-<b>Tambah Akun</b>
-<small>Tambah akun Click2Pay lain</small>
+<b>Tambah Account</b>
+<small>Tambah account Click2Pay lain</small>
 </div>
 </div>
 
@@ -167,8 +168,8 @@ document.documentElement.classList.add("dark");
 <div>
 <i class="fa-solid fa-right-left"></i>
 <div>
-<b>Ganti Akun</b>
-<small>Masuk menggunakan akun lain</small>
+<b>Ganti Account</b>
+<small>Sign In menggunakan account lain</small>
 </div>
 </div>
 
@@ -183,8 +184,8 @@ document.documentElement.classList.add("dark");
 <div>
 <i class="fa-solid fa-right-from-bracket"></i>
 <div>
-<b>Keluar</b>
-<small>Logout akun sekarang</small>
+<b>Log Out</b>
+<small>Logout account sekarang</small>
 </div>
 </div>
 
@@ -199,8 +200,8 @@ document.documentElement.classList.add("dark");
 <div>
 <i class="fa-solid fa-trash"></i>
 <div>
-<b>Hapus Akun</b>
-<small>Hapus akun permanen</small>
+<b>Delete Account</b>
+<small>Delete account permanen</small>
 </div>
 </div>
 

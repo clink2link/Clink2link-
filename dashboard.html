@@ -34,6 +34,7 @@
 <link rel="stylesheet" href="css/navbar.css">
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body class="dash-body">
 <div class="dash-bg"></div>
@@ -66,8 +67,8 @@
 <div class="notice-content">
 <div class="notice-track">
     <span data-i18n="dashboard.notice">
-        Jika belum tahu caranya, silakan klik panduan di bawah ini.
-        Jika ingin mengaktifkan fitur Sell Link, Anda dapat upgrade Premium
+        Jika not yet tahu caranya, please klik panduan di bawah ini.
+        Jika ingin mengaktifkan fitur Sell Links, You dapat upgrade Premium
         atau menghubungi admin.
     </span>
 </div>
@@ -85,7 +86,7 @@
 <h2>
     <i class="fa-solid fa-book-open"></i>
     <span data-i18n="dashboard.guide.title">
-        Panduan Click2Pay
+        Guide Click2Pay
     </span>
 </h2>
 <i id="guideArrow"
@@ -108,11 +109,11 @@
             <i class="fa-solid fa-link"></i>
         </div>
         <h3 data-i18n="dashboard.guide.ads.title">
-            Buat Ads Link
+            Create Ads Links
         </h3>
         <p data-i18n="dashboard.guide.ads.description">
-            Pelajari cara membuat Ads Link
-            pertama dan membagikannya.
+            Pelajari cara membuat Ads Links
+            pertama and membagikannya.
         </p>
         <button class="guide-btn"
                 onclick="location.href='tutorial-ads.html'">
@@ -130,11 +131,11 @@
             <i class="fa-solid fa-cart-shopping"></i>
         </div>
         <h3 data-i18n="dashboard.guide.sell.title">
-            Buat Sell Link
+            Create Sell Links
         </h3>
         <p data-i18n="dashboard.guide.sell.description">
-            Cara mengaktifkan Sell Link
-            dan menjual akses premium.
+            Cara mengaktifkan Sell Links
+            and menjual akses premium.
         </p>
         <button class="guide-btn"
                 onclick="location.href='tutorial-sell.html'">
@@ -152,14 +153,14 @@
             <i class="fa-solid fa-chart-line"></i>
         </div>
         <h3 data-i18n="dashboard.guide.statistics.title">
-            Lihat Statistik
+            Lihat Statistics
         </h3>
         <p data-i18n="dashboard.guide.statistics.description">
             Pelajari arti Views, Click,
-            CPM dan Pendapatan.
+            CPM and Earnings.
         </p>
         <button class="guide-btn"
-                onclick="location.href='tutorial-statistik.html'">
+                onclick="location.href='tutorial-statistics.html'">
             <i class="fa-solid fa-arrow-right"></i>
             <span data-i18n="common.open">
                 Buka
@@ -177,7 +178,7 @@
             Withdraw
         </h3>
         <p data-i18n="dashboard.guide.withdraw.description">
-            Cara menarik saldo ke rekening
+            Cara menarik saldo ke bank account
             atau e-wallet.
         </p>
         <button class="guide-btn"
@@ -196,14 +197,14 @@
             <i class="fa-solid fa-money-bill-trend-up"></i>
         </div>
         <h3 data-i18n="dashboard.guide.earnings.title">
-            Mendapatkan Penghasilan
+            Mendapatkan Earnings
         </h3>
         <p data-i18n="dashboard.guide.earnings.description">
             Tips meningkatkan traffic
-            dan pendapatan harian.
+            and earnings harian.
         </p>
         <button class="guide-btn"
-                onclick="location.href='tutorial-penghasilan.html'">
+                onclick="location.href='tutorial-earnings.html'">
             <i class="fa-solid fa-arrow-right"></i>
             <span data-i18n="common.open">
                 Buka
@@ -218,14 +219,14 @@
             <i class="fa-solid fa-user-gear"></i>
         </div>
         <h3 data-i18n="dashboard.guide.account.title">
-            Pengaturan Akun
+            Settings Account
         </h3>
         <p data-i18n="dashboard.guide.account.description">
-            Mengubah profil, password,
-            atau pengaturan akun.
+            Mengubah profile, password,
+            atau settings account.
         </p>
         <button class="guide-btn"
-                onclick="location.href='tutorial-akun.html'">
+                onclick="location.href='tutorial-account.html'">
             <i class="fa-solid fa-arrow-right"></i>
             <span data-i18n="common.open">
                 Buka
@@ -240,14 +241,14 @@
             <i class="fa-solid fa-trash"></i>
         </div>
         <h3 data-i18n="dashboard.guide.delete.title">
-            Hapus Akun
+            Delete Account
         </h3>
         <p data-i18n="dashboard.guide.delete.description">
-            Panduan menonaktifkan atau
-            menghapus akun permanen.
+            Guide menonaktifkan atau
+            menghapus account permanen.
         </p>
         <button class="guide-btn"
-                onclick="location.href='tutorial-hapus-akun.html'">
+                onclick="location.href='tutorial-delete-account.html'">
             <i class="fa-solid fa-arrow-right"></i>
             <span data-i18n="common.open">
                 Buka
@@ -265,8 +266,8 @@
             Pusat Bantuan
         </h3>
         <p data-i18n="dashboard.guide.faq.description">
-            FAQ dan pertanyaan yang
-            sering ditanyakan pengguna.
+            FAQ and pertanyaan that
+            sering ditanyakan users.
         </p>
         <button class="guide-btn"
                 onclick="location.href='tutorial-faq.html'">
@@ -300,7 +301,7 @@
 <div class="cpm-header">
     <p id="countryNotice"
        data-i18n="dashboard.market.loading">
-        Memuat CPM negara...
+        Loading CPM negara...
     </p>
     <div class="market-live">
         <span class="live-dot"></span>
@@ -343,7 +344,7 @@
 <div>
     <i class="fa-solid fa-chart-line"></i>
     <span data-i18n="dashboard.adsReport.title">
-        Report Pendapatan Ads
+        Report Earnings Ads
     </span>
 </div>
 <small id="todayDate">
@@ -357,7 +358,7 @@
         <i class="fa-solid fa-calendar-day"></i>
     </div>
     <h4 data-i18n="dashboard.adsReport.today">
-        Ads Hari Ini
+        Ads Day Ini
     </h4>
     <h2 id="adsToday">
         Rp 0
@@ -369,7 +370,7 @@
         <i class="fa-solid fa-wallet"></i>
     </div>
     <h4 data-i18n="dashboard.adsReport.month">
-        Ads Bulan Ini
+        Ads Month Ini
     </h4>
     <h2 id="adsMonth">
         Rp 0
@@ -393,7 +394,7 @@
         <i class="fa-solid fa-eye"></i>
     </div>
     <h4 data-i18n="dashboard.adsReport.views">
-        Total Views
+        Total Viewss
     </h4>
     <h2 id="adsViewsMonth">
         0
@@ -409,7 +410,7 @@
 <div>
     <i class="fa-solid fa-cart-shopping"></i>
     <span data-i18n="dashboard.sellReport.title">
-        Report Pendapatan Sell Link
+        Report Earnings Sell Links
     </span>
 </div>
 <small id="todayDateSell">
@@ -423,7 +424,7 @@
         <i class="fa-solid fa-calendar-day"></i>
     </div>
     <h4 data-i18n="dashboard.sellReport.today">
-        Pendapatan Hari Ini
+        Earnings Day Ini
     </h4>
     <h2 id="sellToday">
         Rp 0
@@ -435,7 +436,7 @@
         <i class="fa-solid fa-wallet"></i>
     </div>
     <h4 data-i18n="dashboard.sellReport.month">
-        Pendapatan Bulan Ini
+        Earnings Month Ini
     </h4>
     <h2 id="sellMonth">
         Rp 0
@@ -447,7 +448,7 @@
         <i class="fa-solid fa-cart-shopping"></i>
     </div>
     <h4 data-i18n="dashboard.sellReport.sold">
-        Total Terjual
+        Total Sold
     </h4>
     <h2 id="sellTotalSold">
         0x
@@ -459,7 +460,7 @@
         <i class="fa-solid fa-link"></i>
     </div>
     <h4 data-i18n="dashboard.sellReport.links">
-        Total Sell Link
+        Total Sell Links
     </h4>
     <h2 id="sellTotalLink">
         0
@@ -480,12 +481,12 @@
     <h2>
         <i class="fa-solid fa-chart-line"></i>
         <span data-i18n="dashboard.statistics.ads">
-            Statistik Ads
+            Statistics Ads
         </span>
     </h2>
     <select id="adsMonthSelect">
         <option data-i18n="common.loading">
-            Memuat...
+            Loading...
         </option>
     </select>
 </div>
@@ -503,7 +504,7 @@
     </div>
     <div>
         <span data-i18n="common.clicks">
-            Klik
+            Clicks
         </span>
         <b id="adsClicks">
             0
@@ -532,12 +533,12 @@
     <h2>
         <i class="fa-solid fa-cart-shopping"></i>
         <span data-i18n="dashboard.statistics.sell">
-            Statistik Sell Link
+            Statistics Sell Links
         </span>
     </h2>
     <select id="sellMonthSelect">
         <option data-i18n="common.loading">
-            Memuat...
+            Loading...
         </option>
     </select>
 </div>
@@ -555,7 +556,7 @@
     </div>
     <div>
         <span data-i18n="common.clicks">
-            Klik
+            Clicks
         </span>
         <b id="sellClicks">
             0
@@ -585,7 +586,7 @@
 <div class="report-header">
     <i class="fa-solid fa-chart-column"></i>
     <span data-i18n="dashboard.dailyAds.title">
-        Detail Report Harian Ads Link
+        Daily Ads Link Reports
     </span>
 </div>
 <div class="report-table">
@@ -593,16 +594,16 @@
         <thead>
             <tr>
                 <th data-i18n="common.date">
-                    Tanggal
+                    Date
                 </th>
                 <th data-i18n="common.views">
                     Views
                 </th>
                 <th data-i18n="common.clicks">
-                    Klik
+                    Clicks
                 </th>
                 <th data-i18n="common.earnings">
-                    Pendapatan
+                    Earnings
                 </th>
                 <th data-i18n="common.cpm">
                     CPM
@@ -614,7 +615,7 @@
                 <td colspan="5"
                     class="empty"
                     data-i18n="dashboard.dailyAds.empty">
-                    Belum ada data report ADS.
+                    No data available report ADS.
                 </td>
             </tr>
         </tbody>
@@ -630,7 +631,7 @@
 <div class="report-header">
     <i class="fa-solid fa-cart-shopping"></i>
     <span data-i18n="dashboard.dailySell.title">
-        Detail Report Harian Sell Link
+        Daily Sell Link Reports
     </span>
 </div>
 <div class="report-table">
@@ -638,16 +639,16 @@
         <thead>
             <tr>
                 <th data-i18n="common.date">
-                    Tanggal
+                    Date
                 </th>
                 <th data-i18n="common.views">
                     Views
                 </th>
                 <th data-i18n="common.clicks">
-                    Klik
+                    Clicks
                 </th>
                 <th data-i18n="common.earnings">
-                    Pendapatan
+                    Earnings
                 </th>
                 <th data-i18n="common.cpm">
                     CPM
@@ -659,7 +660,7 @@
                 <td colspan="5"
                     class="empty"
                     data-i18n="dashboard.dailySell.empty">
-                    Belum ada laporan SELL.
+                    None yet laporan SELL.
                 </td>
             </tr>
         </tbody>
@@ -674,12 +675,12 @@
 <h2>
 <i class="fa-solid fa-bullhorn"></i>
 <span data-i18n="dashboard.announcement.title">
-    Pengumuman Admin
+    Admin Announcements
 </span>
 </h2>
 <div id="announcementBox"
      data-i18n="dashboard.announcement.empty">
-Belum ada pengumuman.
+No announcements yet.
 </div>
 </div>
 </div>
@@ -735,7 +736,7 @@ document.addEventListener(
             .then(function(response){
                 if(!response.ok){
                     throw new Error(
-                        "Gagal memuat navbar: " +
+                        "Failed loading navbar: " +
                         response.status
                     );
                 }
@@ -869,7 +870,7 @@ document.addEventListener(
             .then(function(response){
                 if(!response.ok){
                     throw new Error(
-                        "Gagal memuat footer: " +
+                        "Failed loading footer: " +
                         response.status
                     );
                 }

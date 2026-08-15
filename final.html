@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -80,7 +80,7 @@ header{padding:20px 0;background:#fff;border-bottom:1px solid #e5e7eb}
 <div class="container">
 <div class="card">
 <h1 class="title">Download Link</h1>
-<p class="desc">Selesaikan proses untuk mendapatkan link tujuan.</p>
+<p class="desc">Complete the process to access the destination link.</p>
 
 <button id="downloadBtn" class="btn btn-primary">
 <i class="fa-solid fa-download"></i> Download Link
@@ -88,7 +88,7 @@ header{padding:20px 0;background:#fff;border-bottom:1px solid #e5e7eb}
 
 <div id="loading" class="loading">
 <div class="spinner"></div>
-<p id="loadingText">Memproses...</p>
+<p id="loadingText">Processing...</p>
 </div>
 
 <div id="linkPanel" class="link-panel">
@@ -127,9 +127,9 @@ header{padding:20px 0;background:#fff;border-bottom:1px solid #e5e7eb}
 </div>
 <div class="floating-ad-content">
 <strong>Click2Pay Ads</strong>
-<span id="floatingAdText">Nikmati link cepat & mudah</span>
+<span id="floatingAdText">Enjoy a fast and easy link experience</span>
 </div>
-<button type="button" id="closeFloatingAd" aria-label="Tutup">
+<button type="button" id="closeFloatingAd" aria-label="Close">
 <i class="fa-solid fa-xmark"></i>
 </button>
 </div>
@@ -144,10 +144,10 @@ const floatingAdText=document.getElementById("floatingAdText");
 const closeFloatingAd=document.getElementById("closeFloatingAd");
 
 const floatingMessages=[
-"Selesaikan proses untuk mendapatkan link.",
-"Jangan lupa bergabung dengan Telegram Click2Pay.",
+"Selesaikan proses for mendapatkan link.",
+"Jangan lupa bergabung with Telegram Click2Pay.",
 "Update terbaru Click2Pay tersedia di Telegram.",
-"Gunakan Click2Pay untuk monetisasi link Anda."
+"Gunakan Click2Pay for monetisasi link You."
 ];
 
 let floatingIndex=0;
@@ -201,17 +201,17 @@ downloadBtn.style.display="none";
 loading.style.display="block";
 
 let seconds=5;
-loadingText.textContent=`Menyiapkan link ${seconds} detik`;
+loadingText.textContent=`Menyiapkan link ${seconds} seconds`;
 
 const timer=setInterval(()=>{
 seconds--;
-loadingText.textContent=`Menyiapkan link ${seconds} detik`;
+loadingText.textContent=`Menyiapkan link ${seconds} seconds`;
 
 if(seconds<=0){
 clearInterval(timer);
 loading.style.display="none";
 linkPanel.style.display="block";
-status.textContent="Silakan klik Get Link.";
+status.textContent="Please klik Get Link.";
 }
 },1000);
 };
@@ -229,7 +229,7 @@ progressBar.style.width="0%";
 const timer=setInterval(()=>{
 percent++;
 progressBar.style.width=percent+"%";
-status.textContent=`Memproses ${percent}%`;
+status.textContent=`Processing ${percent}%`;
 
 if(percent>=100){
 clearInterval(timer);
@@ -260,7 +260,7 @@ let earning=75;
 const {data,error}=await supabaseClient
 .from("cpm_rates")
 .select("cpm")
-.eq("country","Indonesia")
+.eq("country","Indonesian")
 .maybeSingle();
 
 if(error){
@@ -285,11 +285,11 @@ p_earning:earning
 
 if(error){
 console.error("PROCESS ADS VIEW ERROR:",error);
-throw new Error("Gagal mencatat view dan earning.");
+throw new Error("Failed mencatat view and earning.");
 }
 
 if(!data||data.success!==true){
-throw new Error("Transaksi earning gagal.");
+throw new Error("Transaksi earning failed.");
 }
 
 return data;
@@ -307,19 +307,19 @@ try{
 const link=await getLinkData();
 
 if(String(link.status||"").toLowerCase()!=="active"){
-throw new Error("Link sudah tidak aktif.");
+throw new Error("Link already tidak aktif.");
 }
 
 const type=String(link.link_type||link.type||"").toLowerCase().trim();
 
 if(type&&type!=="ads"){
-throw new Error("Link ini bukan Ads Link.");
+throw new Error("Link ini bukan Ads Links.");
 }
 
 const destination=link.destination_url||link.destination;
 
 if(!destination){
-throw new Error("URL tujuan tidak ditemukan.");
+throw new Error("URL destination tidak ditemukan.");
 }
 
 let destinationUrl;
@@ -327,7 +327,7 @@ let destinationUrl;
 try{
 destinationUrl=new URL(destination,location.origin);
 }catch{
-throw new Error("URL tujuan tidak valid.");
+throw new Error("URL destination tidak valid.");
 }
 
 if(destinationUrl.protocol!=="http:"&&destinationUrl.protocol!=="https:"){
@@ -368,7 +368,7 @@ openBtn.disabled=false;
 
 status.textContent=error?.message||"Terjadi kesalahan.";
 
-alert(error?.message||"Gagal memproses link.");
+alert(error?.message||"Failed processing link.");
 }
 };
 </script>

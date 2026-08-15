@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Profile • Click2Pay</title>
+<title>Profilee • Click2Pay</title>
 <!-- =========================
      INITIAL THEME
 ========================= -->
@@ -38,6 +38,7 @@
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/app-ui.css">
 <link rel="stylesheet" href="css/profile.css">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body class="app-body">
 <!-- =========================
@@ -60,10 +61,10 @@
 <i class="fa-solid fa-user"></i>
 <div>
     <h1 data-i18n="profileTitle">
-        Profile
+        Profilee
     </h1>
     <p data-i18n="profileDescription">
-        Kelola informasi akun Click2Pay kamu.
+        Manage informasi account Click2Pay you.
     </p>
 </div>
 </section>
@@ -147,11 +148,11 @@
     <div class="profile-item">
         <span>
             <i class="fa-solid fa-users"></i>
-            <span data-i18n="totalReferral">
-                Total Referral
+            <span data-i18n="totalReferrals">
+                Total Referrals
             </span>
         </span>
-        <b id="profileReferral">
+        <b id="profileReferrals">
             0
             <span data-i18n="people">
                 Orang
@@ -163,10 +164,10 @@
         <span>
             <i class="fa-solid fa-gift"></i>
             <span data-i18n="referralIncome">
-                Pendapatan Referral
+                Earnings Referrals
             </span>
         </span>
-        <b id="profileReferralIncome">
+        <b id="profileReferralsIncome">
             Rp 0
         </b>
     </div>
@@ -204,10 +205,10 @@
 <i class="fa-solid fa-shield-halved"></i>
 <div>
     <h3 data-i18n="accountSecurity">
-        Keamanan Akun
+        Keamanan Account
     </h3>
     <p data-i18n="securityDescription">
-        Jangan pernah membagikan password, kode OTP, ataupun data pembayaran kepada siapa pun.
+        Jangan pernah membagikan password, kode OTP, ataupun data payment kepada siapa pun.
     </p>
 </div>
 </section>
@@ -218,7 +219,7 @@
 <div class="setting-title">
     <i class="fa-solid fa-building-columns"></i>
     <h2 data-i18n="paymentInformation">
-        Informasi Pembayaran
+        Informasi Payment
     </h2>
 </div>
 <div class="setting-list">
@@ -227,12 +228,12 @@
         class="payment-empty"
         id="paymentEmpty">
         <i class="fa-solid fa-wallet"></i>
-        <h3 data-i18n="noPaymentMethod">
-            Belum ada metode pembayaran
+        <h3 data-i18n="noPaymentsMethod">
+            None yet metode payment
         </h3>
-        <p data-i18n="noPaymentDescription">
-            Kamu belum menambahkan Bank atau E-Wallet.
-            Tambahkan metode pembayaran agar dapat menerima penarikan saldo.
+        <p data-i18n="noPaymentsDescription">
+            You not yet menambahkan Bank atau E-Wallet.
+            Tambahkan metode payment agar dapat menerima penarikan saldo.
         </p>
         <a
             href="paymentsetting.html"
@@ -241,8 +242,8 @@
                 <i class="fa-solid fa-wallet"></i>
             </div>
             <div class="payment-btn-text">
-                <b data-i18n="setupPayment">
-                    Atur Pembayaran
+                <b data-i18n="setupPayments">
+                    Atur Payment
                 </b>
                 <small data-i18n="addBankWallet">
                     Tambah Bank atau E-Wallet
@@ -270,7 +271,7 @@
                     <br>
                     <small
                         id="paymentNumber">
-                        Nomor Rekening / Nomor HP
+                        Account Number / Number HP
                     </small>
                 </div>
             </div>
@@ -284,7 +285,7 @@
                 <i class="fa-solid fa-user-check"></i>
                 <div>
                     <b data-i18n="accountName">
-                        Atas Nama
+                        Atas Name
                     </b>
                     <br>
                     <small id="paymentName">
@@ -304,7 +305,7 @@
 <div class="setting-title">
     <i class="fa-solid fa-user-gear"></i>
     <h2 data-i18n="accountManagement">
-        Manajemen Akun
+        Manajemen Account
     </h2>
 </div>
 <div class="setting-list">
@@ -316,7 +317,7 @@
         <div>
             <i class="fa-solid fa-user-plus"></i>
             <span data-i18n="addNewAccount">
-                Tambah Akun Baru
+                Tambah Account New
             </span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
@@ -329,7 +330,7 @@
         <div>
             <i class="fa-solid fa-right-left"></i>
             <span data-i18n="switchAccount">
-                Ganti Akun
+                Ganti Account
             </span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
@@ -342,7 +343,7 @@
         <div>
             <i class="fa-solid fa-right-from-bracket"></i>
             <span data-i18n="logout">
-                Keluar
+                Log Out
             </span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
@@ -355,7 +356,7 @@
         <div>
             <i class="fa-solid fa-trash"></i>
             <span data-i18n="deleteAccount">
-                Hapus Akun
+                Delete Account
             </span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>

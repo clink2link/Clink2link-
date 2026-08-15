@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Payment Setting • Click2Pay</title>
+<title>Payments Setting • Click2Pay</title>
 
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/theme.css">
@@ -30,11 +30,11 @@
 
 <h1>
 <i class="fa-solid fa-gear"></i>
-Payment Setting
+Payments Setting
 </h1>
 
 <p>
-Atur rekening atau e-wallet untuk menerima withdraw.
+Atur bank account atau e-wallet for menerima withdraw.
 </p>
 
 </div>
@@ -44,11 +44,11 @@ Atur rekening atau e-wallet untuk menerima withdraw.
 
 <h2>
 <i class="fa-solid fa-building-columns"></i>
-Data Pembayaran
+Data Payment
 </h2>
 
 <p>
-Simpan rekening yang valid agar proses withdraw berjalan lancar.
+Save bank account that valid agar proses withdraw berjalan lancar.
 </p>
 
 
@@ -58,13 +58,13 @@ Simpan rekening yang valid agar proses withdraw berjalan lancar.
 
 <div>
 
-<b>Catatan Pembayaran</b>
+<b>Catatan Payment</b>
 
 <ul>
-<li>Gunakan nama pemilik rekening yang benar.</li>
-<li>Nomor rekening/e-wallet harus aktif.</li>
-<li>Kesalahan data pembayaran dapat menyebabkan withdraw gagal.</li>
-<li>Data pembayaran hanya digunakan untuk proses withdraw.</li>
+<li>Gunakan name pemilik bank account that benar.</li>
+<li>Number bank account/e-wallet harus aktif.</li>
+<li>Kesalahan data payment dapat menyebabkan withdraw failed.</li>
+<li>Data payment hanya digunakan for proses withdraw.</li>
 </ul>
 
 </div>
@@ -74,7 +74,7 @@ Simpan rekening yang valid agar proses withdraw berjalan lancar.
 
 
 <label>
-Nama Pemilik Rekening
+Name Pemilik Bank account
 </label>
 
 <div class="input-box">
@@ -84,7 +84,7 @@ Nama Pemilik Rekening
 <input
 id="accountName"
 type="text"
-placeholder="Nama sesuai rekening">
+placeholder="Name sesuai bank account">
 
 </div>
 
@@ -141,7 +141,7 @@ LinkAja
 </option>
 
 <option value="Lainnya">
-Lainnya / Tidak Ada
+Lainnya / No Ada
 </option>
 
 
@@ -154,11 +154,11 @@ Lainnya / Tidak Ada
 
 <!-- REQUEST PAYMENT -->
 
-<div id="requestPaymentBox" style="display:none;">
+<div id="requestPaymentsBox" style="display:none;">
 
 
 <label>
-Nama Bank / E-Wallet
+Name Bank / E-Wallet
 </label>
 
 
@@ -177,17 +177,17 @@ placeholder="Contoh: SeaBank, Jago, dll">
 
 <p class="small-note">
 
-Jika bank atau e-wallet belum tersedia, silakan ajukan permintaan.
+Jika bank atau e-wallet not yet tersedia, please ajukan permintaan.
 Admin akan melakukan pengecekan terlebih dahulu.
 
 </p>
 
 
-<button id="requestPaymentBtn" class="btn-secondary">
+<button id="requestPaymentsBtn" class="btn-secondary">
 
 <i class="fa-solid fa-paper-plane"></i>
 
-Request Tambah Pembayaran
+Request Tambah Payment
 
 </button>
 
@@ -199,7 +199,7 @@ Request Tambah Pembayaran
 
 
 <label>
-Nomor Rekening / E-Wallet
+Account Number / E-Wallet
 </label>
 
 
@@ -210,18 +210,18 @@ Nomor Rekening / E-Wallet
 <input
 id="accountNumber"
 type="text"
-placeholder="Nomor rekening atau nomor e-wallet">
+placeholder="Number bank account atau number e-wallet">
 
 </div>
 
 
 
 
-<button id="savePayment" class="btn-primary">
+<button id="savePayments" class="btn-primary">
 
 <i class="fa-solid fa-floppy-disk"></i>
 
-Simpan Pembayaran
+Save Payment
 
 </button>
 
@@ -233,14 +233,14 @@ Simpan Pembayaran
 
 
 
-<div id="savedPayment" class="payment-box" style="display:none;">
+<div id="savedPayments" class="payment-box" style="display:none;">
 
 
 <h2>
 
 <i class="fa-solid fa-circle-check"></i>
 
-Pembayaran Tersimpan
+Payment Tersimpan
 
 </h2>
 
@@ -256,10 +256,10 @@ Pembayaran Tersimpan
 
 <div>
 
-<b>Pembayaran Aktif</b>
+<b>Payment Active</b>
 
 <p>
-Rekening ini akan digunakan sebagai tujuan withdraw.
+Bank account ini akan digunakan sebagai destination withdraw.
 Pastikan data selalu benar.
 </p>
 
@@ -269,7 +269,7 @@ Pastikan data selalu benar.
 
 
 
-<button id="editPayment" class="btn-secondary">
+<button id="editPayments" class="btn-secondary">
 
 <i class="fa-solid fa-pen"></i>
 

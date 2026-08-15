@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,6 +27,7 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 >
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body class="app-body">
 <!-- =========================
@@ -51,7 +52,7 @@
                 Withdraw
             </h1>
             <p>
-                Tarik pendapatan dari Click2Pay
+                Tarik earnings dari Click2Pay
             </p>
         </div>
     </section>
@@ -61,7 +62,7 @@
     <section class="withdraw-card balance-card">
         <h3>
             <i class="fa-solid fa-wallet"></i>
-            Saldo Kamu
+            Saldo You
         </h3>
         <div class="balance">
             Rp <span id="balance">0</span>
@@ -90,7 +91,7 @@
             </li>
             <li>
                 <i class="fa-solid fa-check"></i>
-                Pastikan data rekening / e-wallet benar.
+                Pastikan data bank account / e-wallet benar.
             </li>
         </ul>
     </section>
@@ -187,12 +188,12 @@
         <!-- TARGET -->
         <div class="form-group">
             <label for="target">
-                Nomor Tujuan
+                Number Destination
             </label>
             <input
                 id="target"
                 type="text"
-                placeholder="Nomor rekening / e-wallet"
+                placeholder="Number bank account / e-wallet"
                 autocomplete="off"
             >
         </div>
@@ -212,11 +213,11 @@
     <section class="withdraw-card">
         <h3>
             <i class="fa-solid fa-clock-rotate-left"></i>
-            Riwayat Withdraw
+            History Withdraw
         </h3>
         <div id="withdrawList">
             <div class="empty">
-                Belum ada riwayat withdraw
+                None yet history withdraw
             </div>
         </div>
     </section>
@@ -268,7 +269,7 @@
         })
         .catch(function (error) {
             console.error(
-                "Gagal memuat navbar:",
+                "Failed loading navbar:",
                 error
             );
         });
@@ -302,7 +303,7 @@
         })
         .catch(function (error) {
             console.error(
-                "Gagal memuat footer:",
+                "Failed loading footer:",
                 error
             );
         });

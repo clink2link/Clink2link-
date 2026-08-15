@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>History Saldo • Click2Pay</title>
+<title>Balance History • Click2Pay</title>
 
 <script>
 if(localStorage.getItem("theme")==="dark"){
@@ -24,6 +24,7 @@ if(localStorage.getItem("theme")==="dark"){
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+<link rel="stylesheet" href="css/style.css">
 </head>
 
 <body class="app-body">
@@ -39,8 +40,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         <i class="fa-solid fa-clock-rotate-left"></i>
 
         <div>
-            <h1>History Saldo</h1>
-            <p>Riwayat seluruh transaksi saldo akun Click2Pay.</p>
+            <h1>Balance History</h1>
+            <p>History seluruh transaksi saldo account Click2Pay.</p>
         </div>
     </section>
 
@@ -53,10 +54,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         </div>
 
         <ul>
-            <li><i class="fa-solid fa-check"></i> Semua pemasukan dan pengeluaran tercatat otomatis.</li>
-            <li><i class="fa-solid fa-check"></i> Riwayat diurutkan dari transaksi terbaru.</li>
+            <li><i class="fa-solid fa-check"></i> All pemasukan and pengeluaran tercatat otomatis.</li>
+            <li><i class="fa-solid fa-check"></i> History diurutkan dari transaksi terbaru.</li>
             <li><i class="fa-solid fa-check"></i> Status transaksi selalu diperbarui.</li>
-            <li><i class="fa-solid fa-check"></i> Gunakan pencarian dan filter agar lebih mudah.</li>
+            <li><i class="fa-solid fa-check"></i> Gunakan pencarian and filter agar lebih easy.</li>
         </ul>
 
     </section>
@@ -66,13 +67,13 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
         <div class="stat-card">
             <i class="fa-solid fa-wallet"></i>
-            <h4>Total Masuk</h4>
+            <h4>Total Sign In</h4>
             <h2 id="totalIn">Rp0</h2>
         </div>
 
         <div class="stat-card">
             <i class="fa-solid fa-arrow-up"></i>
-            <h4>Total Keluar</h4>
+            <h4>Total Log Out</h4>
             <h2 id="totalOut">Rp0</h2>
         </div>
 
@@ -99,21 +100,21 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
             <input
                 id="searchInput"
                 type="text"
-                placeholder="Cari transaksi...">
+                placeholder="Search transaksi...">
         </div>
 
         <div class="link-filter">
 
             <button class="active" data-filter="all">
-                Semua
+                All
             </button>
 
             <button data-filter="income">
-                Masuk
+                Sign In
             </button>
 
             <button data-filter="expense">
-                Keluar
+                Log Out
             </button>
 
             <button data-filter="pending">
@@ -131,7 +132,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
             <h2>
                 <i class="fa-solid fa-list"></i>
-                Daftar Transaksi
+                Register Transaksi
             </h2>
 
             <div class="section-actions">
@@ -153,14 +154,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         <!-- Loading -->
         <div id="historyLoading" class="loading-box">
             <i class="fa-solid fa-spinner fa-spin"></i>
-            Memuat riwayat transaksi...
+            Loading history transaksi...
         </div>
 
         <!-- Empty -->
         <div id="historyEmpty" class="empty-box" style="display:none;">
             <i class="fa-solid fa-wallet"></i>
-            <h3>Belum ada transaksi</h3>
-            <p>Riwayat saldo akan muncul di sini.</p>
+            <h3>None yet transaksi</h3>
+            <p>History saldo akan muncul di sini.</p>
         </div>
 
         <!-- List -->
