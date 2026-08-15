@@ -55,6 +55,7 @@ header{padding:20px 0;background:#fff;border-bottom:1px solid #e5e7eb}
 }
 </style>
 <link rel="stylesheet" href="css/unified.css">
+<link rel="stylesheet" href="/css/premium-unified.css">
 </head>
 
 <body>
@@ -145,10 +146,10 @@ const floatingAdText=document.getElementById("floatingAdText");
 const closeFloatingAd=document.getElementById("closeFloatingAd");
 
 const floatingMessages=[
-"Selesaikan proses for mendapatkan link.",
+"Complete the process to get your link.",
 "Jangan lupa bergabung with Telegram Click2Pay.",
 "Update terbaru Click2Pay tersedia di Telegram.",
-"Gunakan Click2Pay for monetisasi link You."
+"Use Click2Pay to monetize your links."
 ];
 
 let floatingIndex=0;
@@ -191,7 +192,7 @@ let processing=false;
 
 if(!code){
 downloadBtn.disabled=true;
-status.textContent="Kode link tidak ditemukan.";
+status.textContent="Link code not found.";
 }
 
 /* DOWNLOAD TIMER */
@@ -202,17 +203,17 @@ downloadBtn.style.display="none";
 loading.style.display="block";
 
 let seconds=5;
-loadingText.textContent=`Menyiapkan link ${seconds} seconds`;
+loadingText.textContent=`Preparing your link — ${seconds} seconds`;
 
 const timer=setInterval(()=>{
 seconds--;
-loadingText.textContent=`Menyiapkan link ${seconds} seconds`;
+loadingText.textContent=`Preparing your link — ${seconds} seconds`;
 
 if(seconds<=0){
 clearInterval(timer);
 loading.style.display="none";
 linkPanel.style.display="block";
-status.textContent="Please klik Get Link.";
+status.textContent="Please click Get Link.";
 }
 },1000);
 };
@@ -234,7 +235,7 @@ status.textContent=`Processing ${percent}%`;
 
 if(percent>=100){
 clearInterval(timer);
-status.textContent="Link siap dibuka.";
+status.textContent="Your link is ready.";
 openBtn.style.display="inline-flex";
 }
 },30);
@@ -249,7 +250,7 @@ const {data,error}=await supabaseClient
 .maybeSingle();
 
 if(error)throw error;
-if(!data)throw new Error("Link tidak ditemukan.");
+if(!data)throw new Error("Link not found.");
 
 return data;
 }
@@ -291,7 +292,7 @@ throw new Error("Link already tidak aktif.");
 const type=String(link.link_type||link.type||"").toLowerCase().trim();
 
 if(type&&type!=="ads"){
-throw new Error("Link ini bukan Ads Links.");
+throw new Error("This is not an Ads Link.");
 }
 
 const destination=link.destination_url||link.destination;
@@ -329,7 +330,7 @@ console.log("ADS TRANSACTION:",result);
 sessionStorage.setItem(sessionKey,"1");
 
 /* SUCCESS */
-status.textContent=`View tercatat +Rp ${earning.toLocaleString("id-ID")}`;
+status.textContent=`View recorded • ${result?.earning_display || "Earnings calculated securely"}`;
 
 setTimeout(()=>{
 window.location.href=destinationUrl.href;
@@ -341,12 +342,13 @@ console.error("OPEN LINK ERROR:",error);
 processing=false;
 openBtn.disabled=false;
 
-status.textContent=error?.message||"Terjadi kesalahan.";
+status.textContent=error?.message||"Something went wrong.";
 
 alert(error?.message||"Failed processing link.");
 }
 };
 </script>
 
+<script src="/js/c2p-core.js"></script>
 </body>
 </html>
