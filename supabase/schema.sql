@@ -531,7 +531,8 @@ as $$
 $$;
 
 grant execute on function public.is_username_available(text) to anon, authenticated;
-grant execute on function public.process_ads_view(uuid,numeric) to anon, authenticated;
+revoke execute on function public.process_ads_view(uuid,numeric) from public, anon, authenticated;
+grant execute on function public.process_ads_view(uuid,numeric) to service_role;
 
 -- Keep application user data synchronized when Auth confirms an email.
 create or replace function public.handle_new_auth_user()
@@ -540,6 +541,9 @@ language plpgsql
 security definer
 set search_path = public
 as $$
+declare
+  v_ref_code text;
+  v_referrer uuid;
 begin
   insert into public.users(id,email,username,email_verified)
   values (
@@ -555,6 +559,25 @@ begin
     email=excluded.email,
     email_verified=excluded.email_verified,
     updated_at=now();
+
+  -- Apply a referral once, directly from Auth metadata. This avoids trusting
+  -- a browser-side balance update and does not require the user to be logged in.
+  v_ref_code := nullif(trim(new.raw_user_meta_data->>'referral_code'),'');
+  if v_ref_code is not null then
+    select id into v_referrer
+    from public.users
+    where upper(ref_code)=upper(v_ref_code) and id<>new.id
+    limit 1;
+    if v_referrer is not null and not exists(select 1 from public.referrals where referred_id=new.id) then
+      insert into public.referrals(referrer_id,referred_id,referred_email,bonus)
+      values(v_referrer,new.id,new.email,2000);
+      update public.users set balance=coalesce(balance,0)+2000,updated_at=now() where id=v_referrer;
+      insert into public.wallet_transactions(user_id,type,amount,title,description,status)
+      values(v_referrer,'credit',2000,'Referral Bonus','New referred user','success');
+      insert into public.notifications(user_id,title,message)
+      values(v_referrer,'Referral Bonus','You received Rp 2,000 from a new referral.');
+    end if;
+  end if;
   return new;
 end;
 $$;
@@ -787,11 +810,11 @@ on conflict(key) do update set
   maintenance=public.settings.maintenance;
 
 insert into public.cpm_rates(country,cpm,history,change,trend)
-values('Indonesia',5000,'[5000]'::jsonb,0,50)
+values('Indonesia',5000,'[5000]'::jsonb,0,'stable')
 on conflict(country) do nothing;
 
 insert into public.cpm_market(country,flag,cpm,change,trend)
-values('Indonesia','🇮🇩',5000,0,50)
+values('Indonesia','🇮🇩',5000,0,'stable')
 on conflict(country) do nothing;
 
 insert into public.cpm_settings(country,ads_cpm,sell_cpm)
@@ -822,6 +845,7 @@ create table if not exists public.premium_orders (
   status text not null default 'pending',
   invoice_id text unique,
   payment_id text,
+  qr_url text,
   expires_at timestamptz,
   paid_at timestamptz,
   created_at timestamptz not null default now(),
@@ -831,6 +855,8 @@ create index if not exists premium_orders_user_idx on public.premium_orders(user
 alter table public.premium_orders enable row level security;
 drop policy if exists premium_orders_self_select on public.premium_orders;
 create policy premium_orders_self_select on public.premium_orders for select using(auth.uid()=user_id);
+
+alter table public.premium_orders add column if not exists qr_url text;
 
 alter table public.sell_orders add column if not exists original_price numeric(18,2);
 alter table public.sell_orders add column if not exists discount_percent numeric(5,2) not null default 0;
@@ -855,7 +881,7 @@ begin
  select * into o from public.premium_orders where id=p_order_id for update;
  if not found then return jsonb_build_object('success',false,'error','Premium order not found'); end if;
  if o.status='paid' then return jsonb_build_object('success',true,'already_processed',true,'expires_at',o.expires_at); end if;
- exp:=now()+interval '30 days';
+ exp:=greatest(coalesce((select premium_expires_at from public.users where id=o.user_id),now()),now())+interval '30 days';
  update public.premium_orders set status='paid',paid_at=coalesce(paid_at,now()),expires_at=exp,updated_at=now() where id=o.id;
  update public.users set is_premium=true,premium_expires_at=exp,updated_at=now() where id=o.user_id;
  insert into public.transactions(user_id,type,amount,title,description,status) values(o.user_id,'premium_purchase',o.amount,'Premium Monthly','30-day Premium membership','success');
@@ -887,3 +913,17 @@ insert into public.cpm_rates(country,cpm,history,change,trend) values('Indonesia
 insert into public.cpm_market(country,flag,cpm,change,trend) values('Indonesia','🇮🇩',5000,0,'stable') on conflict(country) do nothing;
 insert into public.cpm_settings(country,ads_cpm,sell_cpm) values('Indonesia',5000,10000) on conflict(country) do nothing;
 insert into public.settings(key,value,maintenance,ads_cpm,sell_cpm,minimum_withdraw) values('default','Click2Pay',false,5000,10000,10000) on conflict(key) do nothing;
+
+-- SECURITY HARDENING: money-moving RPCs are backend-only.
+revoke execute on function public.process_ads_view(uuid,numeric) from public, anon, authenticated;
+grant execute on function public.process_ads_view(uuid,numeric) to service_role;
+revoke execute on function public.process_sell_payment(uuid) from public, anon, authenticated;
+grant execute on function public.process_sell_payment(uuid) to service_role;
+revoke execute on function public.process_dompetx_sell_payment(uuid,text,bigint) from public, anon, authenticated;
+grant execute on function public.process_dompetx_sell_payment(uuid,text,bigint) to service_role;
+revoke execute on function public.process_premium_payment(uuid) from public, anon, authenticated;
+grant execute on function public.process_premium_payment(uuid) to service_role;
+revoke execute on function public.process_referral_signup(uuid,text) from public, anon, authenticated;
+grant execute on function public.process_referral_signup(uuid,text) to service_role;
+create index if not exists link_views_fingerprint_idx on public.link_views(link_id,visitor_ip,created_at desc);
+create unique index if not exists users_ref_code_uidx on public.users(ref_code) where ref_code is not null;
