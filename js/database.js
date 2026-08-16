@@ -2419,9 +2419,12 @@ async function getWithdraws(
                 id,
                 user_id,
                 method,
+                account_name,
                 account_number,
                 amount,
                 status,
+                paid_at,
+                note,
                 created_at,
                 type,
                 fee
@@ -2449,80 +2452,31 @@ async function getWithdraws(
     return data || [];
 }
 
-async function createWithdraw(
-    payload = {}
-) {
-    const session =
-        await requireSession();
-
-    if (
-        payload.amount ===
-        undefined
-    ) {
-        throw new Error(
-            "amount wajib diisi"
-        );
+async function createWithdraw(payload = {}) {
+    const session = await requireSession();
+    const amount = Math.floor(Number(payload.amount));
+    if (!Number.isFinite(amount) || amount <= 0) {
+        throw new Error("Jumlah withdraw tidak valid.");
     }
 
-    const amount =
-        Number(
-            payload.amount
-        );
-
-    if (
-        !Number.isFinite(amount) ||
-        amount <= 0
-    ) {
-        throw new Error(
-            "Jumlah withdraw tidak valid."
-        );
-    }
-
-    const {
-        data,
-        error
-    } =
-        await supabaseClient
-            .from("withdraws")
-            .insert({
-                user_id:
-                    session.user.id,
-
-                method:
-                    payload.method ||
-                    "",
-
-                account_number:
-                    payload.account_number ||
-                    "",
-
-                amount,
-
-                status:
-                    payload.status ||
-                    "pending",
-
-                type:
-                    payload.type ||
-                    "withdraw",
-
-                fee:
-                    Number(
-                        payload.fee || 0
-                    )
-            })
-            .select()
-            .single();
+    const { data, error } = await supabaseClient.rpc(
+        "request_withdrawal",
+        {
+            p_amount: amount,
+            p_method: String(payload.method || "").trim(),
+            p_account_name: payload.account_name || null,
+            p_account_number: String(payload.account_number || "").trim(),
+            p_type: String(payload.type || "manual").toLowerCase()
+        }
+    );
 
     if (error) {
-        console.error(
-            "CREATE WITHDRAW:",
-            error
-        );
-
-        throw error;
+        console.error("CREATE WITHDRAW RPC:", error);
+        throw new Error(error.message || "Gagal membuat withdraw.");
     }
-
+    if (!data?.success) {
+        throw new Error(data?.error || "Withdraw ditolak.");
+    }
     return data;
 }
 
