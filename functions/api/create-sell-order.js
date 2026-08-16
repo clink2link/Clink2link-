@@ -66,10 +66,22 @@ export async function onRequestPost(context) {
             body?.seller_id ||
             body?.sellerId ||
             null;
-        const buyerId =
-            body?.buyer_id ||
-            body?.buyerId ||
-            null;
+        // Buyer identity is never trusted from JSON. If the buyer is
+        // logged in, derive the UUID from the Supabase access token.
+        // Anonymous buyers remain supported with buyer_id = null.
+        let buyerId = null;
+        const authHeader = request.headers.get("Authorization") || "";
+        if (authHeader.startsWith("Bearer ")) {
+            const token = authHeader.slice(7).trim();
+            try {
+                const authRes = await fetch(
+                    `${env.SUPABASE_URL}/auth/v1/user`,
+                    { headers: { apikey: env.SUPABASE_SERVICE_KEY, Authorization: `Bearer ${token}` } }
+                );
+                const authUser = await authRes.json().catch(() => null);
+                if (authRes.ok && authUser?.id) buyerId = authUser.id;
+            } catch (_) {}
+        }
         if (!linkId) {
             return json({
                 success: false,
@@ -205,8 +217,32 @@ export async function onRequestPost(context) {
                     "Harga link tidak valid"
             }, 400);
         }
-        const price =
+        const originalPrice =
             Math.floor(rawPrice);
+
+        // Premium buyers receive 50% off the listed Sell Link price.
+        // The Premium state is read from the database, never from the client.
+        let discountPercent = 0;
+        let price = originalPrice;
+        if (buyerId) {
+            const premiumRows = await supabaseRequest(
+                env,
+                "users",
+                "GET",
+                null,
+                `?id=eq.${encodeURIComponent(buyerId)}&select=is_premium,premium_expires_at`
+            );
+            const premium = premiumRows?.[0];
+            const premiumActive =
+                premium?.is_premium === true &&
+                premium?.premium_expires_at &&
+                new Date(premium.premium_expires_at).getTime() > Date.now();
+            if (premiumActive) {
+                discountPercent = 50;
+                price = Math.max(1000, Math.floor(originalPrice * 0.5));
+            }
+        }
+
         // ========================================
         // MARKET FEE
         // ========================================

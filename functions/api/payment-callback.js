@@ -102,20 +102,22 @@ export async function onRequestPost(context) {
             "settlement",
             "berhasil"
         ];
-        if (
-            !paidStatuses.includes(status)
-        ) {
-            console.log(
-                "PAYMENT BELUM PAID:",
-                status
-            );
-            return json({
-                success: true,
-                message:
-                    "Payment belum paid",
-                status,
-                reference
-            });
+        if (!paidStatuses.includes(status)) {
+            console.log("PAYMENT BELUM PAID:", status);
+            return json({success:true,message:"Payment belum paid",status,reference});
+        }
+
+        // Never trust a public webhook body for money movement. Confirm the
+        // transaction directly with DompetX before changing Click2Pay state.
+        const verified = await verifyDompetXPayment(env, paymentId, reference);
+        if (!verified.paid) return json({success:true,message:"Payment not confirmed by provider",status:verified.status||status,reference});
+        if (verified.reference && String(verified.reference) !== String(reference)) {
+            return json({success:false,error:"Payment reference mismatch"},400);
+        }
+        if (Number.isFinite(verified.amount)) {
+            // Use provider-confirmed amount from this point forward.
+            // The local order amount is still checked below.
+            console.log("DOMPETX VERIFIED AMOUNT:", verified.amount);
         }
         // ==========================================
         // PREMIUM ORDER
@@ -128,7 +130,7 @@ export async function onRequestPost(context) {
             if (!orders.length) return json({success:true,message:"Premium order not found"});
             const order=orders[0];
             if (order.status === "paid") return json({success:true,already_processed:true});
-            if (amount !== Number(order.amount)) return json({success:false,error:"Premium payment amount mismatch"},400);
+            if (Number(verified.amount) !== Number(order.amount)) return json({success:false,error:"Premium payment amount mismatch"},400);
             const rpcUrl=`${env.SUPABASE_URL}/rest/v1/rpc/process_premium_payment`;
             const rpc=await fetch(rpcUrl,{method:"POST",headers:{"apikey":env.SUPABASE_SERVICE_KEY,"Authorization":`Bearer ${env.SUPABASE_SERVICE_KEY}`,"Content-Type":"application/json"},body:JSON.stringify({p_order_id:order.id})});
             const result=await rpc.json().catch(()=>({}));
@@ -242,13 +244,13 @@ export async function onRequestPost(context) {
             );
         }
         if (
-            amount !== orderAmount
+            Number(verified.amount) !== orderAmount
         ) {
             console.error(
                 "NOMINAL TIDAK SESUAI:",
                 {
-                    webhook_amount:
-                        amount,
+                    provider_amount:
+                        verified.amount,
                     order_amount:
                         orderAmount,
                     order_id:
@@ -269,7 +271,7 @@ export async function onRequestPost(context) {
                     expected:
                         orderAmount,
                     received:
-                        amount
+                        verified.amount
                 }
             }, 400);
         }
@@ -612,6 +614,26 @@ async function supabaseRequest(
 // ==========================================
 // JSON RESPONSE
 // ==========================================
+async function verifyDompetXPayment(env,paymentId,reference){
+    const apiKey=String(env.DOMPETX_API_KEY||"").trim();
+    if(!apiKey) throw new Error("DOMPETX_API_KEY belum dikonfigurasi");
+    const timestamp=Math.floor(Date.now()/1000).toString();
+    const signature=await hmacSha256(`${timestamp}.{}`,apiKey);
+    const url=paymentId
+      ? `https://api.dompetx.com/v1/payments/check-status/${encodeURIComponent(paymentId)}`
+      : `https://api.dompetx.com/v1/payments/check-status?reference=${encodeURIComponent(reference)}`;
+    const r=await fetch(url,{headers:{"Content-Type":"application/json","X-DOMPAY-API-Key":apiKey,"X-DOMPAY-Signature":signature,"X-DOMPAY-Timestamp":timestamp}});
+    const raw=await r.text();let body={};try{body=JSON.parse(raw)}catch{}
+    if(!r.ok) throw new Error(body?.message||body?.error||"DompetX verification failed");
+    const d=body?.data&&typeof body.data==="object"?body.data:body;
+    const st=String(d?.status||d?.payment_status||d?.paymentStatus||"").toLowerCase();
+    return {paid:["paid","success","successful","completed","complete","settlement","settled","berhasil"].includes(st),status:st,amount:Number(d?.amount??d?.gross_amount??d?.total_amount),reference:d?.reference||reference};
+}
+async function hmacSha256(message,secret){
+    const key=await crypto.subtle.importKey("raw",new TextEncoder().encode(secret),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
+    const sig=await crypto.subtle.sign("HMAC",key,new TextEncoder().encode(message));
+    return [...new Uint8Array(sig)].map(x=>x.toString(16).padStart(2,"0")).join("");
+}
 function json(
     data,
     status = 200
