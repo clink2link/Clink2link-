@@ -1,0 +1,19 @@
+CLICK2PAY PRODUCTION DEPLOY ORDER
+
+1) Supabase SQL Editor: run supabase/fresh-install.sql ONLY for a clean reset.
+2) Run supabase/schema.sql.
+3) Run supabase/launch-check.sql and confirm expected_table_count = 26.
+4) Supabase Auth: configure Site URL and Redirect URLs for your production domain.
+5) Cloudflare Pages/Functions environment variables:
+   SUPABASE_URL
+   SUPABASE_SERVICE_KEY
+   DOMPETX_API_KEY
+   MARKET_FEE=20
+6) Deploy the website root.
+7) DompetX webhook: https://YOUR-DOMAIN/api/payment-callback
+8) Test in this order:
+   register -> email verification -> login -> create Ads Link -> Task 1 -> Task 2 -> Task 3 -> final -> earning
+   create Sell Link -> anonymous buyer -> QRIS -> paid -> seller balance
+   Premium -> QRIS -> paid -> Premium active -> Ads bypass -> 50% Sell Link buyer discount
+   payment method -> withdrawal -> transaction history
+9) Do NOT expose SUPABASE_SERVICE_KEY in browser code.

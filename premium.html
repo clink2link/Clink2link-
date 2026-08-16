@@ -1,1 +1,40 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Premium • Click2Pay</title><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/premium-unified.css"></head><body><main class="c2p-shell"><section class="c2p-hero"><span class="c2p-badge">CLICK2PAY PREMIUM</span><h1>Unlock <span class="c2p-gradient">Premium</span></h1><p>One simple monthly plan with a faster, cleaner experience and exclusive savings.</p></section><div class="c2p-grid"><article class="c2p-card c2p-stat"><i class="fa-solid fa-ban"></i><h3>Ad-Free Ads Links</h3><p class="c2p-muted">Premium users skip the Ads Link interstitial and go directly to the destination.</p></article><article class="c2p-card c2p-stat"><i class="fa-solid fa-tag"></i><h3>50% Sell Link Discount</h3><p class="c2p-muted">Pay only 50% of the listed Sell Link price when your Premium membership is active.</p></article><article class="c2p-card c2p-stat"><i class="fa-solid fa-shield-halved"></i><h3>Secure Billing</h3><p class="c2p-muted">Payment is confirmed server-side before Premium is activated.</p></article></div><section style="max-width:560px;margin:30px auto"><div class="c2p-card" style="padding:32px;text-align:center"><div class="c2p-muted">MONTHLY PLAN</div><div style="font-size:48px;font-weight:900;margin:8px 0">Rp 100.000</div><div class="c2p-muted">30 days</div><button id="buyPremium" class="c2p-btn" style="margin-top:22px;width:100%;background:linear-gradient(135deg,var(--c2p-primary),var(--c2p-primary2));color:white">Upgrade Premium</button><div id="premiumStatus" class="c2p-muted" style="margin-top:16px"></div><div id="qrBox" style="margin-top:20px"></div></div></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/js/database.js"></script><script src="/js/premium.js"></script><script src="/js/c2p-core.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Premium • Click2Pay</title>
+<script>if(localStorage.getItem("theme")==="dark")document.documentElement.classList.add("dark");</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="/css/theme.css"><link rel="stylesheet" href="/css/navbar.css"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/unified.css"><link rel="stylesheet" href="/css/premium-unified.css"><link rel="stylesheet" href="/css/pro-premium.css">
+<link rel="icon" type="image/png" href="/favicon.png"><link rel="shortcut icon" href="/favicon.ico">
+</head>
+<body class="app-body"><div class="app-bg"></div><div id="navbar"></div>
+<main class="c2p-shell">
+  <section class="pro-premium-hero">
+    <div style="position:relative;z-index:1;max-width:760px">
+      <span class="c2p-badge" style="background:rgba(255,255,255,.10);color:#fff;border-color:rgba(255,255,255,.16)"><i class="fa-solid fa-crown"></i> CLICK2PAY PREMIUM</span>
+      <h1 style="font-size:clamp(2.5rem,6vw,5.2rem);margin:16px 0 10px;line-height:1">Earn more. <span style="color:#67e8f9">Convert better.</span></h1>
+      <p style="color:#cbd5e1;font-size:17px;max-width:650px">One premium plan designed for creators who want a cleaner Ads Link experience and 50% savings on Sell Links.</p>
+      <div class="pro-price">Rp 100.000 <span style="font-size:18px;font-weight:700;color:#cbd5e1">/ 30 days</span></div>
+    </div>
+  </section>
+  <div class="c2p-grid" style="margin-top:20px">
+    <article class="c2p-card c2p-stat"><i class="fa-solid fa-ban"></i><h3>Ad-free Ads Links</h3><p class="c2p-muted">Premium visitors skip the Ads Link interstitial and go directly to the destination.</p></article>
+    <article class="c2p-card c2p-stat"><i class="fa-solid fa-tag"></i><h3>50% Sell Link savings</h3><p class="c2p-muted">When your Premium membership is active, eligible Sell Link purchases cost only 50% of the listed price.</p></article>
+    <article class="c2p-card c2p-stat"><i class="fa-solid fa-shield-halved"></i><h3>Server-side verification</h3><p class="c2p-muted">Premium is activated only after the payment is confirmed by the server.</p></article>
+  </div>
+  <section class="c2p-card" style="max-width:700px;margin:20px auto;padding:28px">
+    <div style="display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap">
+      <div><span class="c2p-badge">MONTHLY</span><h2 style="margin-top:10px">Premium membership</h2><p id="premiumStatus" class="c2p-muted">Checking your membership...</p></div>
+      <button id="buyPremium" class="c2p-btn" style="min-width:190px"><i class="fa-solid fa-bolt"></i> Upgrade Premium</button>
+    </div>
+    <ul class="pro-feature-list"><li><i class="fa-solid fa-check"></i><span>30 days of Premium access</span></li><li><i class="fa-solid fa-check"></i><span>Ad-free experience for Ads Links</span></li><li><i class="fa-solid fa-check"></i><span>50% discount on eligible Sell Link purchases</span></li><li><i class="fa-solid fa-check"></i><span>Automatic server-side activation after payment</span></li></ul>
+    <div id="qrBox"></div>
+  </section>
+</main>
+<div id="footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/js/database.js"></script><script src="/js/language.js"></script><script src="/js/c2p-core.js"></script><script src="/js/premium.js"></script><script src="/js/pro-ui.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded",async()=>{try{document.getElementById("navbar").innerHTML=await (await fetch("/components/navbar.html")).text();window.c2pInit?.();window.c2pLanguage?.refreshLanguage();document.getElementById("footer").innerHTML=await (await fetch("/components/footer.html")).then(r=>r.text());}catch(e){console.error(e)}});
+</script>
+</body></html>

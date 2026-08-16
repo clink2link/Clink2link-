@@ -1,1 +1,68 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Settings • Click2Pay</title><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/premium-unified.css"></head><body><main class="c2p-shell"><div class="c2p-card" style="padding:30px;max-width:760px;margin:30px auto"><span class="c2p-badge">Click2Pay</span><h1>Settings</h1><p class="c2p-muted">Manage your account, security, appearance and language.</p><section class="c2p-section"><h2>Appearance</h2><label style="display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid var(--c2p-border)"><span><b>Dark Mode</b><small class="c2p-muted" style="display:block">Use a dark interface</small></span><input id="themeToggle" type="checkbox" style="width:22px;height:22px"></label><div style="padding:18px 0"><b>Language</b><div class="c2p-lang-menu" style="margin-top:12px"><button class="c2p-btn" data-lang="en">English</button><button class="c2p-btn" data-lang="id">Indonesia</button></div></div></section><section class="c2p-section"><h2>Security</h2><form id="passwordForm" style="display:grid;gap:12px"><input id="newPassword" type="password" minlength="8" placeholder="New password" required><input id="confirmPassword" type="password" minlength="8" placeholder="Confirm password" required><button class="c2p-btn" style="background:linear-gradient(135deg,var(--c2p-primary),var(--c2p-primary2));color:#fff">Change Password</button></form></section><section class="c2p-section"><h2>Account Management</h2><div style="display:grid;gap:12px"><button id="addAccountBtn" class="c2p-btn">Add Account</button><button id="switchAccountBtn" class="c2p-btn">Switch Account</button><button id="deleteAccountBtn" class="c2p-btn" style="background:#fee2e2;color:#991b1b">Delete Account</button><button id="logoutBtn" class="c2p-btn">Logout</button></div></section></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/js/database.js"></script><script src="/js/settings-pro.js"></script><script src="/js/c2p-core.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Settings • Click2Pay</title>
+<script>if(localStorage.getItem("theme")==="dark")document.documentElement.classList.add("dark");</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="/css/theme.css"><link rel="stylesheet" href="/css/navbar.css"><link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/unified.css"><link rel="stylesheet" href="/css/pro-premium.css">
+<link rel="icon" type="image/png" href="/favicon.png"><link rel="shortcut icon" href="/favicon.ico">
+</head>
+<body class="app-body">
+<div class="app-bg"></div><div id="navbar"></div>
+<main class="c2p-shell">
+  <section class="c2p-hero" style="padding-bottom:22px">
+    <span class="c2p-badge"><i class="fa-solid fa-sliders"></i> CLICK2PAY</span>
+    <h1>Account <span class="c2p-gradient">Settings</span></h1>
+    <p class="c2p-muted">Manage appearance, language, security and account access.</p>
+  </section>
+  <div class="c2p-grid" style="grid-template-columns:1fr 1fr">
+    <section class="c2p-card" style="padding:24px">
+      <h2><i class="fa-solid fa-palette" style="color:var(--pro-primary)"></i> Appearance</h2>
+      <p class="c2p-muted" style="margin:6px 0 20px">Personalize how Click2Pay looks on your device.</p>
+      <div class="pro-setting-row">
+        <div><b>Dark mode</b><small>Use a darker interface</small></div>
+        <button type="button" id="settingsThemeToggle" class="pro-switch" aria-label="Toggle dark mode"><span></span></button>
+      </div>
+      <div class="pro-setting-row">
+        <div><b>Language</b><small>Choose your preferred language</small></div>
+        <div class="pro-lang"><button type="button" data-lang="en">EN</button><button type="button" data-lang="id">ID</button></div>
+      </div>
+    </section>
+    <section class="c2p-card" style="padding:24px">
+      <h2><i class="fa-solid fa-shield-halved" style="color:var(--pro-primary)"></i> Security</h2>
+      <p class="c2p-muted" style="margin:6px 0 20px">Change your password without leaving your account.</p>
+      <form id="passwordForm" class="pro-form">
+        <label>New password<input id="newPassword" type="password" minlength="8" autocomplete="new-password" required></label>
+        <label>Confirm password<input id="confirmPassword" type="password" minlength="8" autocomplete="new-password" required></label>
+        <button class="c2p-btn" type="submit"><i class="fa-solid fa-key"></i> Change password</button>
+      </form>
+    </section>
+  </div>
+  <section class="c2p-card" style="padding:24px;margin-top:18px">
+    <h2><i class="fa-solid fa-user-gear" style="color:var(--pro-primary)"></i> Account management</h2>
+    <p class="c2p-muted" style="margin:6px 0 20px">Switch accounts, add another account, sign out or permanently delete this account.</p>
+    <div class="pro-actions">
+      <button id="addAccountBtn" class="c2p-btn"><i class="fa-solid fa-user-plus"></i> Add account</button>
+      <button id="switchAccountBtn" class="c2p-btn secondary"><i class="fa-solid fa-repeat"></i> Switch account</button>
+      <button id="logoutBtn" class="c2p-btn secondary"><i class="fa-solid fa-right-from-bracket"></i> Log out</button>
+      <button id="deleteAccountBtn" class="c2p-btn danger"><i class="fa-solid fa-trash"></i> Delete account</button>
+    </div>
+  </section>
+</main>
+<div id="footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/database.js"></script><script src="/js/language.js"></script><script src="/js/c2p-core.js"></script><script src="/js/settings-pro.js"></script><script src="/js/theme.js"></script><script src="/js/pro-ui.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded",async()=>{
+ const nav=document.getElementById("navbar"), foot=document.getElementById("footer");
+ try{nav.innerHTML=await (await fetch("/components/navbar.html")).text(); if(window.c2pInit)window.c2pInit(); if(window.c2pLanguage)c2pLanguage.refreshLanguage();}catch(e){console.error(e)}
+ try{foot.innerHTML=await (await fetch("/components/footer.html")).text();}catch(e){console.error(e)}
+ const t=document.getElementById("themeToggle");
+ const sync=()=>{const d=document.documentElement.classList.contains("dark");t?.classList.toggle("on",d)};
+ t?.addEventListener("click",()=>{C2PPro.setTheme(document.documentElement.classList.contains("dark")?"light":"dark");sync()});sync();
+ document.querySelectorAll("[data-lang]").forEach(b=>b.addEventListener("click",()=>{C2PPro.lang(b.dataset.lang)}));
+});
+</script>
+</body></html>
