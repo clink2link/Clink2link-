@@ -1,7 +1,8 @@
 <!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Task 2 • Click2Pay</title><script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/pro-premium.css"><link rel="icon" type="image/png" href="/favicon.png"><link rel="shortcut icon" href="/favicon.ico"></head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/pro-premium.css"><link rel="icon" type="image/png" href="/favicon.png"><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/css/premium-master.css">
+</head>
 <body class="app-body"><div class="app-bg"></div><main class="c2p-shell" style="min-height:100vh">
 <section class="c2p-hero"><span class="c2p-badge"><i class="fa-solid fa-list-check"></i> TASK 2 / 3</span><h1>Complete the second step</h1><p class="c2p-muted">Complete this step to continue. Your earnings are calculated securely on the server at the final step.</p></section>
 <section class="c2p-card" style="max-width:760px;margin:0 auto;padding:26px">
@@ -13,5 +14,5 @@
 <button id="next" class="c2p-btn" style="width:100%" disabled><i class="fa-solid fa-lock"></i> Continue to Task 3</button>
 <p id="status" class="c2p-muted" style="text-align:center;font-size:12px;margin-top:12px">Please wait for the timer to finish.</p>
 </section></main><script src="/js/c2p-core.js"></script><script src="/js/pro-ui.js"></script>
-<script>(function(){const p=new URLSearchParams(location.search),code=p.get('code')||localStorage.getItem('task_code');if(!code){document.getElementById('status').textContent='Link code not found.';return}localStorage.setItem('task_code',code);let s=7;const timer=document.getElementById('timer'),bar=document.getElementById('bar'),next=document.getElementById('next'),status=document.getElementById('status');const t=setInterval(()=>{s--;timer.textContent=s+'s';bar.style.width=((7-s)/7*100)+'%';if(s<=0){clearInterval(t);next.disabled=false;next.innerHTML='<i class="fa-solid fa-arrow-right"></i> Continue to Task 3';status.textContent='Step complete. You can continue.'}},1000);next.onclick=()=>location.href='3.html?code='+encodeURIComponent(code)})();</script>
+<script>(function(){const p=new URLSearchParams(location.search),code=p.get('code')||localStorage.getItem('task_code');if(!code){document.getElementById('status').textContent='Link code not found.';return}localStorage.setItem('task_code',code);let s=7;const timer=document.getElementById('timer'),bar=document.getElementById('bar'),next=document.getElementById('next'),status=document.getElementById('status');const t=setInterval(()=>{s--;timer.textContent=s+'s';bar.style.width=((7-s)/7*100)+'%';if(s<=0){clearInterval(t);next.disabled=false;next.innerHTML='<i class="fa-solid fa-arrow-right"></i> Continue to Task 3';status.textContent='Step complete. You can continue.'}},1000);next.onclick=()=>location.href='task3.html?code='+encodeURIComponent(code)})();</script>
 </body></html>
