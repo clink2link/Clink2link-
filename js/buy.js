@@ -154,24 +154,24 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // =================================================
                 // CREATE SELL ORDER
                 // =================================================
+                const buyer = await window.database.getUser().catch(() => null);
+                const sessionResult = await window.database.supabase.auth.getSession();
+                const accessToken = sessionResult?.data?.session?.access_token || "";
+                const orderHeaders = {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                };
+                if (accessToken) orderHeaders.Authorization = `Bearer ${accessToken}`;
                 const orderResponse =
                     await fetch(
                         "/api/create-sell-order",
                         {
                             method: "POST",
-                            headers: {
-                                "Content-Type":
-                                    "application/json",
-                                "Accept":
-                                    "application/json"
-                            },
+                            headers: orderHeaders,
                             body: JSON.stringify({
-                                link_id:
-                                    link.id,
-                                seller_id:
-                                    sellerId,
-                                buyer_id:
-                                    (await window.database.getUser())?.id || null
+                                link_id: link.id,
+                                seller_id: sellerId,
+                                buyer_id: buyer?.id || null
                             })
                         }
                     );

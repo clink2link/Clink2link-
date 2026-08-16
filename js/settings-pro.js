@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // =========================================================
     // THEME
     // =========================================================
-    const themeToggle = document.getElementById("themeToggle");
+    const themeToggle = document.getElementById("settingsThemeToggle") || document.getElementById("themeToggle");
 
     const savedTheme =
         localStorage.getItem("theme") ||

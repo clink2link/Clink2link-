@@ -74,11 +74,23 @@ window.C2P = window.C2P || {};
    document.documentElement.classList.toggle("dark",t==="dark");
    document.body?.classList.toggle("dark",t==="dark");
  }
+ const wordID={
+   "you":"Anda","your":"Anda","please":"silakan","yet":"masih",
+   "and":"dan","with":"dengan","that":"yang","for":"untuk","users":"pengguna","user":"pengguna","account":"akun","accounts":"akun","payment":"pembayaran","payments":"pembayaran","balance":"saldo","earnings":"pendapatan","earning":"pendapatan","withdraw":"penarikan","withdrawal":"penarikan","settings":"pengaturan","profile":"profil","history":"riwayat","activity":"aktivitas","support":"bantuan","language":"bahasa","click":"klik","views":"tampilan","view":"tampilan","price":"harga","buyer":"pembeli","seller":"penjual","secure":"aman","fast":"cepat","easy":"mudah","features":"fitur","active":"aktif","expired":"kedaluwarsa","pending":"menunggu","success":"berhasil","failed":"gagal","please":"silakan","enter":"masukkan","create":"buat","manage":"kelola","save":"simpan","delete":"hapus","change":"ubah","password":"kata sandi","premium":"premium","ads":"iklan","sell":"jual","link":"link","links":"link","current":"saat ini","total":"total","monthly":"bulanan","daily":"harian","available":"tersedia","not":"tidak","already":"sudah","new":"baru","old":"lama"
+ };
+ const wordEN=Object.fromEntries(Object.entries(wordID).map(([k,v])=>[v,k]));
+ function normalizeWords(text,target){
+   let out=text;
+   const map=target==="id"?wordID:wordEN;
+   for(const [a,b] of Object.entries(map)) out=out.replace(new RegExp("\\b"+a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","gi"),m=>{const x=m[0]===m[0].toUpperCase()?b[0].toUpperCase()+b.slice(1):b;return x;});
+   return out;
+ }
  function tr(text,target){
    const s=(text||"").trim();
    if(!s)return text;
-   if(target==="id") return id[s]||s;
-   return dict[s]||id2en[s]||s;
+   let exact=target==="id"?(id[s]||s):(dict[s]||id2en[s]||s);
+   if(exact!==s)return exact;
+   return normalizeWords(s,target);
  }
  function translate(){
    const target=lang();
@@ -118,15 +130,7 @@ window.C2P = window.C2P || {};
    document.body.appendChild(wrap); return wrap;
  }
  window.C2P={...window.C2P,lang,tr,translate,setLanguage,applyTheme,setTheme,toast,modal};
- function mountControls(){
-   if(document.getElementById("c2p-global-controls")) return;
-   const box=document.createElement("div");box.id="c2p-global-controls";
-   box.style.cssText="position:fixed;right:16px;bottom:16px;z-index:9998;display:flex;gap:6px;padding:6px;border:1px solid var(--c2p-border);border-radius:14px;background:color-mix(in srgb,var(--c2p-surface) 92%,transparent);backdrop-filter:blur(16px);box-shadow:var(--c2p-shadow)";
-   box.innerHTML='<button type="button" data-c2p-lang="en" style="border:0;background:transparent;padding:7px;cursor:pointer">EN</button><button type="button" data-c2p-lang="id" style="border:0;background:transparent;padding:7px;cursor:pointer">ID</button><button type="button" id="c2p-theme" style="border:0;background:transparent;padding:7px;cursor:pointer">◐</button>';
-   document.body.appendChild(box);
-   box.querySelectorAll("[data-c2p-lang]").forEach(b=>b.onclick=()=>setLanguage(b.dataset.c2pLang));
-   box.querySelector("#c2p-theme").onclick=()=>setTheme((localStorage.getItem("theme")||"light")==="dark"?"light":"dark");
- }
- document.addEventListener("DOMContentLoaded",()=>{applyTheme();mountControls();setTimeout(translate,20)});
+ function mountControls(){}
+ document.addEventListener("DOMContentLoaded",()=>{applyTheme();setTimeout(translate,20)});
  window.addEventListener("storage",e=>{if(e.key==="language"||e.key==="theme"){applyTheme();translate()}});
 })();

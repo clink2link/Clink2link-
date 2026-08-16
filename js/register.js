@@ -355,6 +355,8 @@ if (form) {
                 // public.users is created automatically by
                 // the Auth trigger: handle_new_auth_user()
                 // =========================================
+                const referralCode = new URLSearchParams(location.search).get("ref") || localStorage.getItem("c2p_referral") || "";
+                if (referralCode) localStorage.setItem("c2p_referral", referralCode.trim());
                 const {
                     data: authData,
                     error: authError
@@ -363,7 +365,8 @@ if (form) {
                     password: userPassword,
                     options: {
                         data: {
-                            username: userName
+                            username: userName,
+                            referral_code: referralCode.trim() || null
                         }
                     }
                 });
@@ -385,6 +388,7 @@ if (form) {
                 // =========================================
                 // SUCCESS
                 // =========================================
+                localStorage.removeItem("c2p_referral");
                 showRegisterAlert(
                     "Registration successful. Please check your email to verify your account.",
                     "success"
