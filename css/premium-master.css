@@ -1,0 +1,100 @@
+
+/* =========================================================
+   CLICK2PAY — PREMIUM MASTER UI
+   One visual system for every application page.
+   ========================================================= */
+:root{
+  --c2p-bg:#f5f7fb;
+  --c2p-surface:rgba(255,255,255,.92);
+  --c2p-surface-2:#ffffff;
+  --c2p-text:#101828;
+  --c2p-muted:#667085;
+  --c2p-border:rgba(16,24,40,.09);
+  --c2p-primary:#635bff;
+  --c2p-primary-2:#8b5cf6;
+  --c2p-success:#12b76a;
+  --c2p-danger:#f04438;
+  --c2p-warning:#f79009;
+  --c2p-shadow:0 20px 60px rgba(16,24,40,.08);
+  --c2p-radius:22px;
+}
+html.dark{
+  --c2p-bg:#080b12;
+  --c2p-surface:rgba(17,24,39,.88);
+  --c2p-surface-2:#111827;
+  --c2p-text:#f8fafc;
+  --c2p-muted:#98a2b3;
+  --c2p-border:rgba(255,255,255,.09);
+  --c2p-shadow:0 24px 70px rgba(0,0,0,.34);
+}
+html,body{background:var(--c2p-bg);color:var(--c2p-text)}
+body{
+  font-family:Inter,Poppins,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.app-bg{
+  position:fixed!important;inset:0!important;pointer-events:none!important;
+  background:
+    radial-gradient(700px 350px at 10% -5%,rgba(99,91,255,.12),transparent 70%),
+    radial-gradient(650px 360px at 100% 0%,rgba(139,92,246,.10),transparent 68%);
+  z-index:0!important;
+}
+.app-container,.c2p-shell{position:relative;z-index:1}
+.c2p-card,.withdraw-card,.page-card,.card,.panel,.settings-card,.profile-card,.stat-card{
+  border:1px solid var(--c2p-border)!important;
+  background:var(--c2p-surface)!important;
+  box-shadow:var(--c2p-shadow)!important;
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-radius:var(--c2p-radius)!important;
+}
+button,.c2p-btn,.btn-withdraw,.type-btn{
+  font-family:inherit;
+  border-radius:14px;
+  transition:transform .18s ease,box-shadow .18s ease,opacity .18s ease,border-color .18s ease;
+}
+button:hover,.c2p-btn:hover,.btn-withdraw:hover,.type-btn:hover{
+  transform:translateY(-1px);
+}
+input,select,textarea{
+  border:1px solid var(--c2p-border)!important;
+  border-radius:14px!important;
+  background:var(--c2p-surface-2)!important;
+  color:var(--c2p-text)!important;
+  min-height:46px;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none!important;
+  border-color:rgba(99,91,255,.55)!important;
+  box-shadow:0 0 0 4px rgba(99,91,255,.10)!important;
+}
+.page-title{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:22px;
+}
+.page-title>i{
+  width:48px;height:48px;display:grid;place-items:center;
+  border-radius:15px;color:#fff;
+  background:linear-gradient(135deg,var(--c2p-primary),var(--c2p-primary-2));
+  box-shadow:0 12px 30px rgba(99,91,255,.22);
+}
+.page-title h1{margin:0;font-size:clamp(1.55rem,3vw,2rem);letter-spacing:-.035em}
+.page-title p{margin:4px 0 0;color:var(--c2p-muted)}
+.c2p-btn,.btn-withdraw{
+  border:0!important;
+  color:#fff!important;
+  background:linear-gradient(135deg,var(--c2p-primary),var(--c2p-primary-2))!important;
+  box-shadow:0 12px 28px rgba(99,91,255,.20)!important;
+}
+.c2p-muted{color:var(--c2p-muted)!important}
+table{color:var(--c2p-text)}
+th{color:var(--c2p-muted);font-weight:600}
+td,th{border-bottom:1px solid var(--c2p-border);padding:13px 10px}
+.badge,.c2p-badge{
+  border-radius:999px!important;
+}
+::selection{background:rgba(99,91,255,.22)}
+@media(max-width:640px){
+  .app-container,.c2p-shell{padding-left:15px!important;padding-right:15px!important}
+  .c2p-card,.withdraw-card{border-radius:18px!important}
+}
